@@ -13,6 +13,9 @@ metadata:
     {{- if .tls }}
     ingress.kubernetes.io/secure-backends: "true"
     {{- end }}
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
     {{- range $key, $value := .annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}

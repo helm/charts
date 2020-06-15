@@ -1,0 +1,33 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "kured.fullname" . }}
+  labels:
+    app: {{ template "kured.name" . }}
+    chart: {{ template "kured.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+# Allow kured to read spec.unschedulable
+# Allow kubectl to drain/uncordon
+#
+# NB: These permissions are tightly coupled to the bundled version of kubectl; the ones below
+# match https://github.com/kubernetes/kubernetes/blob/v1.12.1/pkg/kubectl/cmd/drain.go
+#
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs:     ["get", "patch"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs:     ["list","delete","get"]
+- apiGroups: ["extensions"]
+  resources: ["daemonsets"]
+  verbs:     ["get"]
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs:     ["get"]
+- apiGroups: [""]
+  resources: ["pods/eviction"]
+  verbs:     ["create"]
+{{- end -}}

@@ -1,0 +1,46 @@
+{{- if .Values.kubeDns.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-dns
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-dns
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-dns
+      release: {{ $.Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics-dnsmasq
+    {{- if .Values.kubeDns.serviceMonitor.interval }}
+    interval: {{ .Values.kubeDns.serviceMonitor.interval }}
+    {{- end }}
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubeDns.serviceMonitor.dnsmasqMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeDns.serviceMonitor.dnsmasqMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubeDns.serviceMonitor.dnsmasqRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubeDns.serviceMonitor.dnsmasqRelabelings | indent 4 }}
+{{- end }}
+  - port: http-metrics-skydns
+    {{- if .Values.kubeDns.serviceMonitor.interval }}
+    interval: {{ .Values.kubeDns.serviceMonitor.interval }}
+    {{- end }}
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubeDns.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeDns.serviceMonitor.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubeDns.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeDns.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
+{{- end }}

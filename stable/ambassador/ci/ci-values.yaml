@@ -1,0 +1,30 @@
+daemonSet: true
+rbac:
+  create: false
+
+prometheusExporter:
+  enabled: true
+
+env:
+  AMBASSADOR_SINGLE_NAMESPACE: true
+  AMBASSADOR_NO_KUBEWATCH: no_kubewatch
+
+volumes:
+  - name: nothing
+    emptyDir: {}
+
+volumeMounts:
+  - mountPath: /var/nothing
+    name: nothing
+    readOnly: true
+
+ambassadorConfig: |
+  apiVersion: ambassador/v1
+  kind: Module
+  name: ambassador
+  config:
+    service_port: 8080
+
+crds:
+  create: false
+  keep: false

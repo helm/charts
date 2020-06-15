@@ -1,0 +1,5 @@
+---
+github:
+  user: foo
+  token: bar
+  secret: baz

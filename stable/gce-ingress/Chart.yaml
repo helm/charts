@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "1.4.0"
+description: A GCE Ingress Controller
+name: gce-ingress
+version: 1.2.0
+keywords:
+  - ingress
+  - gce
+sources:
+  - https://github.com/kubernetes/ingress-gce
+maintainers:
+  - name: paulczar
+    email: username.taken@gmail.com
+engine: gotpl
+home: https://github.com/kubernetes/ingress-gce

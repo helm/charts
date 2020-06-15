@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "burrow.name" . }}
+    chart: {{ template "burrow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name:  {{ template "burrow.fullname" . }}-info
+spec:
+  type: {{ .Values.info.service.type }}
+{{- if .Values.info.service.loadBalance }}
+  sessionAffinity: ClientIP
+{{- end }}
+  ports:
+    - name: info
+      port: {{ $.Values.config.RPC.Info.ListenPort }}
+      targetPort: info
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" . }}
+    release: {{ .Release.Name }}
+{{- if not .Values.info.service.loadBalance }}
+    nodeNumber: {{ .Values.info.service.node | quote }}
+{{- end }}

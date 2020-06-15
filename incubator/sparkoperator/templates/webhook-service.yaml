@@ -1,0 +1,20 @@
+{{ if .Values.enableWebhook }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-webhook
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    helm.sh/chart: {{ include "sparkoperator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+  - port: 443
+    targetPort: {{ .Values.webhookPort }}
+    name: webhook
+  selector:
+    app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
+    app.kubernetes.io/version: {{ .Values.operatorVersion }}
+{{ end }}

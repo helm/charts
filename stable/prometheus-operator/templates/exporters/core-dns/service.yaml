@@ -1,0 +1,24 @@
+{{- if .Values.coreDns.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-coredns
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-coredns
+    jobLabel: coredns
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: {{ .Values.coreDns.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.coreDns.service.targetPort }}
+  selector:
+    {{- if .Values.coreDns.service.selector }}
+{{ toYaml .Values.coreDns.service.selector | indent 4 }}
+    {{- else}}
+    k8s-app: kube-dns
+    {{- end}}
+{{- end }}

@@ -1,13 +1,17 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.8+ with Beta APIs enabled.
-* PV support on the underlying infrastructure.
+
+* Kubernetes 1.9+
+* Kubernetes beta APIs enabled only if `podDisruptionBudget` is enabled
+* PV support on the underlying infrastructure
 
 ## StatefulSet Details
+
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
 ## StatefulSet Caveats
+
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## Chart Details
@@ -19,9 +23,9 @@ using Kubernetes StatefulSets and Init Containers.
 
 To install the chart with the release name `my-release`:
 
-```console
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-$ helm install --name my-release stable/mongodb-replicaset
+``` console
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -32,34 +36,50 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
+| `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
+| `updateStrategy`                    | Update strategy                                                   | `nil`                                               |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
-| `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
-| `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
+| `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
+| `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
+| `installImage.tag`                  | Image tag for the install container                                       | `0.7`                                               |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
+| `copyConfigImage.repository`        | Image name for the copy config init container                             | `busybox`                                           |
+| `copyConfigImage.tag`               | Image tag for the copy config init container                              | `1.29.3`                                            |
+| `copyConfigImage.pullPolicy`        | Image pull policy for the copy config init container                      | `IfNotPresent`                                      |
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
-| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
+| `statefulSetAnnotations`            | Annotations to be added to MongoDB statefulSet                            | `{}`                                                |
+| `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
+| `securityContext.fsGroup`           | Group ID for the container                                                | `999`                                               |
+| `securityContext.runAsUser`         | User ID for the container                                                 | `999`                                               |
+| `securityContext.runAsNonRoot`      |                                                                           | `true`                                              |
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.accessModes`      | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
+| `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
+| `tls.mode`                          | Set the SSL operation mode (disabled, allowSSL, preferSSL, requireSSL)    | `requireSSL`                                        |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
+| `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |
+| `init.timeout`                      | The amount of time in seconds to wait for bootstrap to finish             | `900`                                               |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
-| `metrics.image.pullPolicy           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
-| `metrics.port                       | Port for metrics exporter                                                 | `9216`                                              |
-| `metrics.path                       | URL Path to expose metics                                                 | `/metrics`                                          |
-| `metrics.socketTimeout              | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout                | Time an operation with this session will wait before returning an error   | `1m`                                                |
-| `metrics.prometheusServiceDiscovery | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `bitnami/mongodb-exporter`                          |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.9.0-debian-9-r2`                                 |
+| `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
+| `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
+| `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.resources`                 | Metrics pod resource requests and limits                                  | `{}`                                                |
+| `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
+| `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
+| `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
+| `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
@@ -67,35 +87,47 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
+| `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
+| `secretAnnotations`                 | Annotations to be added to the secret if auth is enabled                  | `{}`                                                |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
+| `initMongodStandalone`              | If set, initContainer executes script in standalone mode                  | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
-| `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
-| `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
+| `priorityClassName`                 | Pod priority class name                                                   | ``                                                  |
+| `livenessProbe.failureThreshold`    | Liveness probe failure threshold                                          | `3`                                                 |
+| `livenessProbe.initialDelaySeconds` | Liveness probe initial delay seconds                                      | `30`                                                |
+| `livenessProbe.periodSeconds`       | Liveness probe period seconds                                             | `10`                                                |
+| `livenessProbe.successThreshold`    | Liveness probe success threshold                                          | `1`                                                 |
+| `livenessProbe.timeoutSeconds`      | Liveness probe timeout seconds                                            | `5`                                                 |
+| `readinessProbe.failureThreshold`   | Readiness probe failure threshold                                         | `3`                                                 |
+| `readinessProbe.initialDelaySeconds`| Readiness probe initial delay seconds                                     | `5`                                                 |
+| `readinessProbe.periodSeconds`      | Readiness probe period seconds                                            | `10`                                                |
+| `readinessProbe.successThreshold`   | Readiness probe success threshold                                         | `1`                                                 |
+| `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
+| `extraContainers`                   | Additional containers to add to the StatefulSet                           | `[]`                                                |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `extraVolumes`                      | Additional volumes to add to the resources                                | `[]`                                                |
+| `global.namespaceOverride`          | Override the deployment namespace                                         | Not set (`Release.Namespace`)                       |
 
 *MongoDB config file*
 
-All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, 
-the chart creates an empty config file. Entries may be added via  the `configmap` configuration value. 
+All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, the chart creates an empty config file. Entries may be added via  the `configmap` configuration value.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```console
-$ helm install --name my-release -f values.yaml stable/mongodb-replicaset
+``` console
+helm install --name my-release -f values.yaml stable/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into 
-the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable 
-be set, in order to access the pods.
+Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
 
 ## Authentication
 
@@ -107,13 +139,19 @@ keys `user` and `password`, that for the key file must contain `key.txt`.  The u
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
 
+To connect to the mongo shell with authentication enabled, use a command similar to the following (substituting values as appropriate):
+
+```shell
+kubectl exec -it mongodb-replicaset-0 -- mongo mydb -u admin -p password --authenticationDatabase admin
+```
+
 ## TLS support
 
 To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
 
 ```console
-$ openssl genrsa -out ca.key 2048
-$ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
+openssl genrsa -out ca.key 2048
+openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
 ```
 
 After that paste the base64 encoded (`cat ca.key | base64 -w0`) cert and key into the fields `tls.cacert` and
@@ -127,13 +165,16 @@ configmap:
     port: 27017
     ssl:
       mode: requireSSL
-      CAFile: /ca/tls.crt
+      CAFile: /data/configdb/tls.crt
       PEMKeyFile: /work-dir/mongo.pem
+      # Set to false to require mutual TLS encryption
+      allowConnectionsWithoutCertificates: true
   replication:
     replSetName: rs0
   security:
     authorization: enabled
-    clusterAuthMode: x509
+    # # Uncomment to enable mutual TLS encryption
+    # clusterAuthMode: x509
     keyFile: /keydir/key.txt
 ```
 
@@ -169,10 +210,11 @@ alternative hostnames you want to allow access to the MongoDB replicaset. You sh
 mongodb with your `mongo.pem` certificate:
 
 ```console
-$ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
+mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
 ```
 
 ## Promethus metrics
+
 Enabling the metrics as follows will allow for each replicaset pod to export Prometheus compatible metrics
 on server status, individual replicaset information, replication oplogs, and storage engine.
 
@@ -193,35 +235,10 @@ metrics:
 
 More information on [MongoDB Exporter](https://github.com/percona/mongodb_exporter) metrics available.
 
-## Readiness probe
-The default values for the readiness probe are:
-
-```yaml
-readinessProbe:
-  initialDelaySeconds: 5
-  timeoutSeconds: 1
-  failureThreshold: 3
-  periodSeconds: 10
-  successThreshold: 1
-```
-
-## Liveness probe
-The default values for the liveness probe are:
-
-```yaml
-livenessProbe:
-  initialDelaySeconds: 30
-  timeoutSeconds: 5
-  failureThreshold: 3
-  periodSeconds: 10
-  successThreshold: 1
-```
-
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
-environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the 
-following before proceeding. The example scripts below assume 3 pods only.
+environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
 
 ```console
 export RELEASE_NAME=messy-hydra
@@ -230,12 +247,13 @@ export RELEASE_NAME=messy-hydra
 ### Cluster Health
 
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
+for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
 ### Failover
 
 One can check the roles being played by each node by using the following:
+
 ```console
 $ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
@@ -243,32 +261,32 @@ MongoDB shell version: 3.6.3
 connecting to: mongodb://127.0.0.1:27017
 MongoDB server version: 3.6.3
 {
-	"hosts" : [
-		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-		"messy-hydra-mongodb-1.messy-hydra-mongodb.default.svc.cluster.local:27017",
-		"messy-hydra-mongodb-2.messy-hydra-mongodb.default.svc.cluster.local:27017"
-	],
-	"setName" : "rs0",
-	"setVersion" : 3,
-	"ismaster" : true,
-	"secondary" : false,
-	"primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-	"me" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-	"electionId" : ObjectId("7fffffff0000000000000001"),
-	"maxBsonObjectSize" : 16777216,
-	"maxMessageSizeBytes" : 48000000,
-	"maxWriteBatchSize" : 1000,
-	"localTime" : ISODate("2016-09-13T01:10:12.680Z"),
-	"maxWireVersion" : 4,
-	"minWireVersion" : 0,
-	"ok" : 1
+  "hosts" : [
+    "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+    "messy-hydra-mongodb-1.messy-hydra-mongodb.default.svc.cluster.local:27017",
+    "messy-hydra-mongodb-2.messy-hydra-mongodb.default.svc.cluster.local:27017"
+  ],
+  "setName" : "rs0",
+  "setVersion" : 3,
+  "ismaster" : true,
+  "secondary" : false,
+  "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+  "me" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+  "electionId" : ObjectId("7fffffff0000000000000001"),
+  "maxBsonObjectSize" : 16777216,
+  "maxMessageSizeBytes" : 48000000,
+  "maxWriteBatchSize" : 1000,
+  "localTime" : ISODate("2016-09-13T01:10:12.680Z"),
+  "maxWireVersion" : 4,
+  "minWireVersion" : 0,
+  "ok" : 1
 }
-
-
 ```
+
 This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
+
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
@@ -278,6 +296,7 @@ connecting to: mongodb://127.0.0.1:27017
 ```
 
 Watch existing members:
+
 ```console
 $ kubectl run --attach bbox --image=mongo:3.6 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
@@ -292,6 +311,7 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 ```
 
 Kill the primary and watch as a new master getting elected.
+
 ```console
 $ kubectl delete pod $RELEASE_NAME-mongodb-replicaset-0
 
@@ -299,6 +319,7 @@ pod "messy-hydra-mongodb-0" deleted
 ```
 
 Delete all pods and let the statefulset controller bring it up.
+
 ```console
 $ kubectl delete po -l "app=mongodb-replicaset,release=$RELEASE_NAME"
 $ kubectl get po --watch-only
@@ -337,6 +358,7 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 ```
 
 Check the previously inserted key:
+
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
@@ -348,3 +370,69 @@ connecting to: mongodb://127.0.0.1:27017
 ### Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.
+
+### Indexes and Maintenance
+
+You can run Mongo in standalone mode and execute Javascript code on each replica at initContainer time using `initMongodStandalone`.
+This allows you to create indexes on replicasets following [best practices](https://docs.mongodb.com/manual/tutorial/build-indexes-on-replica-sets/).
+
+#### Example: Creating Indexes
+
+```js
+initMongodStandalone: |+
+  db = db.getSiblingDB("mydb")
+  db.my_users.createIndex({email: 1})
+```
+
+Tail the logs to debug running indexes or to follow their progress
+
+```sh
+kubectl exec -it $RELEASE-mongodb-replicaset-0 -c bootstrap -- tail -f /work-dir/log.txt
+```
+
+### Migrate existing ReplicaSets into Kubernetes
+If you have an existing ReplicaSet that currently is deployed outside of Kubernetes and want to move it into a cluster you can do so by using the `skipInitialization` flag.
+
+First set the `skipInitialization` variable to `true` in values.yaml and install the Helm chart. That way you end up with uninitialized MongoDB pods that can be added to the existing ReplicaSet.
+
+Now take care of realizing the DNS correct resolution of all ReplicaSet members. In Kubernetes you can for example use an `ExternalName`.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb01
+  namespace: mongo
+spec:
+  type: ExternalName
+  externalName: mongodb01.mydomain.com
+```
+
+If you also put each StatefulSet member behind a loadbalancer the ReplicaSet members outside of the cluster will also be able to reach the pods inside the cluster.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-0
+  namespace: mongo
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: mongodb-0
+  ports:
+    - port: 27017
+      targetPort: 27017
+  type: LoadBalancer
+```
+
+Now all that is left to do is to put the LoadBalancer IP into the `/etc/hosts` file (or realize the DNS resolution through another way)
+```
+1.2.3.4       mongodb-0
+5.6.7.8       mongodb-1
+```
+
+With a setup like this each replicaset member can resolve the DNS entry of each other and you can just add the new pods to your existing MongoDB cluster as if they where just normal nodes.
+
+Of course you need to make sure to get your security settings right. Enforced TLS is a good idea in a setup like this. Also make sure that you activate auth and get the firewall settings right.
+
+Once you fully migrated remove the old nodes from the replicaset.

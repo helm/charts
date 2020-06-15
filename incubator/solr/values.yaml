@@ -1,0 +1,133 @@
+---
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imagePullSecrets
+##
+# global:
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
+# Which port should solr listen on
+port: 8983
+
+# Number of solr instances to run
+replicaCount: 3
+
+# Settings for solr java memory
+javaMem: "-Xms2g -Xmx3g"
+
+# Set the limits and requests on solr pod resources
+resources: {}
+
+# Extra environment variables - allows yaml definitions
+extraEnvVars: []
+
+# Specify the initial script file name here to be executed before starting Solr
+# The file is located relative to the solr chart root folder
+initScript: ""
+
+# Sets the termination Grace period for the solr pods
+# This can take a while for shards to elect new leaders
+terminationGracePeriodSeconds: 180
+
+# Solr image settings
+image:
+  repository: solr
+  tag: 8.4.0
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
+
+# Solr pod liveness
+livenessProbe:
+  initialDelaySeconds: 45
+  periodSeconds: 10
+
+# Solr pod readiness
+readinessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 5
+
+# Annotations to apply to the solr pods
+podAnnotations: {}
+
+# Affinity group rules or the solr pods
+affinity: {}
+
+# Tolerations for pod assignment
+tolerations: []
+
+# Update Strategy for solr pods
+updateStrategy:
+  type: "RollingUpdate"
+
+# The log level of the Solr instances
+logLevel: "INFO"
+
+# Solr pod disruption budget
+podDisruptionBudget:
+  maxUnavailable: 1
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+# Configuration for the solr PVC
+volumeClaimTemplates:
+  storageClassName: ""
+  storageSize: "20Gi"
+  accessModes:
+    - "ReadWriteOnce"
+
+# Configuration for solr TLS handling, see README.md for more instructions
+tls:
+  enabled: false
+  wantClientAuth: "false"
+  needClientAuth: "false"
+  keystorePassword: "changeit"
+  importKubernetesCA: "false"
+  checkPeerName: "false"
+  caSecret:
+    name: ""
+    bundlePath: ""
+  certSecret:
+    name: ""
+    keyPath: "tls.key"
+    certPath: "tls.crt"
+
+# Configuration for the solr service
+service:
+  type: ClusterIP
+  annotations: {}
+
+# Configuration for the solr prometheus exporter
+exporter:
+  image: {}
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  #   pullSecrets:
+  #     - myRegistryKeySecretName
+  enabled: false  # Deploy the exporter
+  configFile: "/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml"  # The config file to point the exporter to
+  updateStrategy: {}
+  podAnnotations: {}  # Annotations to apply to the exporter pod
+  resources: {}  # Resource limits for the exporter
+  port: 9983  # The port to run the exporter on
+  threads: 7  # The number of threads the exporter uses to query solr
+  livenessProbe:  # Liveness configuration for exporter pod
+    initialDelaySeconds: 20
+    periodSeconds: 10
+  readinessProbe:  # Readiness configuration for exporter pod
+    initialDelaySeconds: 15
+    periodSeconds: 5
+  service:
+    type: "ClusterIP"
+    annotations: {}

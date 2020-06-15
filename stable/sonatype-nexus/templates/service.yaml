@@ -1,0 +1,40 @@
+{{- if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.service.name }}
+  name: {{ .Values.service.name }}
+{{- else }}
+  name: {{ template "nexus.name" . }}-service
+{{- end }}
+  labels:
+{{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  {{- if .Values.service.portName }}
+  - name: {{ .Values.service.portName }}
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+  {{- end }}
+  {{- with .Values.service.ports  }}
+{{ toYaml . | indent 2 }}
+  {{- end }}
+  selector:
+    app: {{ template "nexus.name" . }}
+    release: {{ .Release.Name }}
+  type: {{ .Values.service.serviceType }}
+  {{ if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range .Values.service.loadBalancerSourceRanges }}
+    - {{ . }}
+    {{- end }}
+  {{ end }}
+{{- end}}
+

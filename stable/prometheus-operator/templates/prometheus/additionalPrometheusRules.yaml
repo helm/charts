@@ -1,0 +1,40 @@
+{{- if or .Values.additionalPrometheusRules .Values.additionalPrometheusRulesMap}}
+apiVersion: v1
+kind: List
+items:
+{{- if .Values.additionalPrometheusRulesMap }}
+{{- range $prometheusRuleName, $prometheusRule := .Values.additionalPrometheusRulesMap }}
+  - apiVersion: monitoring.coreos.com/v1
+    kind: PrometheusRule
+    metadata:
+      name: {{ template "prometheus-operator.name" $ }}-{{ $prometheusRuleName }}
+      namespace: {{ $.Release.Namespace }}
+      labels:
+        app: {{ template "prometheus-operator.name" $ }}
+{{ include "prometheus-operator.labels" $ | indent 8 }}
+    {{- if $prometheusRule.additionalLabels }}
+{{ toYaml $prometheusRule.additionalLabels | indent 8 }}
+    {{- end }}
+    spec:
+      groups:
+{{ toYaml $prometheusRule.groups| indent 8 }}
+{{- end }}
+{{- else }}
+{{- range .Values.additionalPrometheusRules }}
+  - apiVersion: monitoring.coreos.com/v1
+    kind: PrometheusRule
+    metadata:
+      name: {{ template "prometheus-operator.name" $ }}-{{ .name }}
+      namespace: {{ $.Release.Namespace }}
+      labels:
+        app: {{ template "prometheus-operator.name" $ }}
+{{ include "prometheus-operator.labels" $ | indent 8 }}
+    {{- if .additionalLabels }}
+{{ toYaml .additionalLabels | indent 8 }}
+    {{- end }}
+    spec:
+      groups:
+{{ toYaml .groups| indent 8 }}
+{{- end }}
+{{- end }}
+{{- end }}

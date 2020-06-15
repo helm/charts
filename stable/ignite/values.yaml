@@ -1,0 +1,59 @@
+# Default values for ignite.
+replicaCount: 2
+
+image:
+  repository: apacheignite/ignite
+  tag: 2.7.6
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+dataStorage:
+  config: |-
+
+env:
+  OPTION_LIBS: "ignite-kubernetes,ignite-rest-http"
+  IGNITE_QUIET: "false"
+  JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
+peerClassLoadingEnabled: false
+
+persistence:
+  enabled: false
+  persistenceVolume:
+    size: 8Gi
+    provisioner: kubernetes.io/aws-ebs
+    provisionerParameters:
+      type: gp2
+      fsType: ext4
+  walVolume:
+    size: 8Gi
+    provisioner: kubernetes.io/aws-ebs
+    provisionerParameters:
+      type: gp2
+      fsType: ext4
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

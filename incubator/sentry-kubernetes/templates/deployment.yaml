@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
@@ -14,8 +14,11 @@ spec:
         checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry-kubernetes.name" . }}
-        release: {{.Release.Name }}    
+        release: {{.Release.Name }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -24,15 +27,19 @@ spec:
           - name: DSN
             valueFrom:
               secretKeyRef:
-                name: {{ template "sentry-kubernetes.fullname" . }}
+                name: {{ template "sentry-kubernetes.secretName" . }}
                 key: sentry.dsn
           {{ if .Values.sentry.environment }}
           - name: ENVIRONMENT
             value: {{ .Values.sentry.environment }}
           {{ end }}
           {{ if .Values.sentry.release }}
-          - name: RELEASE 
+          - name: RELEASE
             value: {{ .Values.sentry.release }}
+          {{ end }}
+          {{ if .Values.sentry.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.sentry.logLevel }}
           {{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}

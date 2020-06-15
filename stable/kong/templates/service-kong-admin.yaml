@@ -1,3 +1,4 @@
+{{- if .Values.admin.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,14 +8,19 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.admin.type }}
-  {{- if and (eq .Values.admin.type "LoadBalancer") .Values.admin.loadBalancerIP }}
+  {{- if eq .Values.admin.type "LoadBalancer" }}
+  {{- if .Values.admin.loadBalancerIP }}
   loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.admin.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.admin.loadBalancerSourceRanges }}
+  - {{ $cidr }}
+  {{- end }}
+  {{- end }}
   {{- end }}
   ports:
   - name: kong-admin
@@ -25,5 +31,5 @@ spec:
   {{- end }}
     protocol: TCP
   selector:
-    app: {{ template "kong.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "kong.selectorLabels" . | nindent 4 }}
+{{- end -}}

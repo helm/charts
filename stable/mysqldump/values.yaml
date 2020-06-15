@@ -1,0 +1,150 @@
+# Default values for mysqldump.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  registry: docker.io
+  repository: monotek/gcloud-mysql
+  tag: "8"
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images#
+  pullPolicy: IfNotPresent
+
+mysql:
+## Without a host set, this chart will not do anything as it is expected
+## to be used only when there's an existing database to backup.
+  host: ""
+  username: root
+  # overriden by existingDbSecret / existingDbSecretKey if set
+  password:
+  port: 3306
+  # db for single db backup
+  db: dbname
+  # Get password from existing secret
+  # existingSecret:
+  # existingSecretKey:
+
+# use --all-databases if enabled
+allDatabases:
+  enabled: true
+  # creates single backup file with all databases
+  singleBackupFile: false
+
+# options to pass to mysqldump
+options: "--opt --single-transaction"
+
+# save sql backup to a directory named like the database or "alldatabases"
+saveToDirectory: false
+
+# if to dump all databases to stdout when not uploading
+dumpAllToStdout: false
+
+## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
+## to get a cronjob.
+schedule: "0 3 * * *"
+
+# enable some debug options
+debug: false
+
+# cronjob history
+successfulJobsHistoryLimit: 5
+failedJobsHistoryLimit: 5
+
+# additional steps for mysqldump shell script
+# will be inserted after all backup and upload jobs completed successfully.
+# Use "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" as dump file name.
+# see examples
+additionalSteps: []
+#  - gsutil cp "${BACKUP_DIR}/${TIMESTAMP}_${MYSQL_DB}.sql.gz" gs://mybucket/latest.sql.gz
+#  - echo "latest sql dump updated"
+
+## set persistentVolumeClaim to use a PVC that already exists.
+## if set will override any settings under `persistence` otherwise
+## if not set and `persistence.enabled` set to true, will create a PVC.
+# persistentVolumeClaim: <existing-PVC>
+
+persistence:
+  enabled: true
+  size: 8Gi
+  accessMode: ReadWriteOnce
+  subPath:
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+# delete old backups
+housekeeping:
+  enabled: true
+  keepDays: 10
+
+# upload backup
+upload:
+  googlestoragebucket:
+    enabled: false
+    # bucketname with gs:// prefix
+    bucketname: gs://mybucket/test
+    # jsonKeyfile of you serviceaccount as string
+    jsonKeyfile: ""
+    # secretFileName specifies the keyfile name inside the secret
+    secretFileName: keyfile.json
+    # existingSecret can be enabled to use an existing secret
+    # existingSecret: mysecret
+    # serviceAccountName to set a specific service account name
+    # serviceAccountName
+    # usingGCPController to enable autogeneration and injection of the service account
+    usingGCPController: false
+
+  ssh:
+    enabled: false
+    user: backup
+    host: yourdomain.com
+    dir: /backup
+    # id_rsa private key as string
+    privatekey: ""
+
+  openstack:
+    enabled: false
+    user: backup@mydomain
+    userDomain: default
+    # overriden by used if secretName/secretKey set
+    password:
+    authUrl: https://mydomain:5000/v3
+    project: my_project
+    projectDomain: default
+    # container/folder(/subfolder ...)
+    destination: backup/mysql
+    # existingSecret can be enabled to use an existing secret
+    # existingSecret:
+    # existingSecretKey defines the key to use, or 'openstack-backup-password' if not set
+    # existingSecretKey:
+    # set to 0 to disable TTL on uploaded files
+    ttlDays: 30
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## Pod Security Context
+securityContext:
+  enabled: false
+  fsGroup: 999
+  runAsUser: 999

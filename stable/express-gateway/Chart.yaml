@@ -1,0 +1,13 @@
+apiVersion: v1
+description: Express Gateway is an API Gateway that sits at the heart of any microservices architecture
+engine: gotpl
+home: https://express-gateway.io
+icon: https://cdn.rawgit.com/ExpressGateway/express-gateway/1757a863/logo/mark-only/ExpressGateway_logomark.png
+maintainers:
+- name: XVincentX
+  email: vincenz.chianese@icloud.com
+name: express-gateway
+sources:
+- https://github.com/expressgateway/express-gateway
+version: 1.6.3
+appVersion: 1.16.9

@@ -30,3 +30,25 @@ Create chart name and version as used by the chart label.
 {{- define "oauth2-proxy.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Get the secret name.
+*/}}
+{{- define "oauth2-proxy.secretName" -}}
+{{- if .Values.config.existingSecret -}}
+{{- printf "%s" .Values.config.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "oauth2-proxy.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "oauth2-proxy.serviceAccountName" -}}
+{{- if .Values.serviceAccount.enabled -}}
+    {{ default (include "oauth2-proxy.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

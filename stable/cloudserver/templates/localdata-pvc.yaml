@@ -1,0 +1,34 @@
+{{- if .Values.localdata.persistentVolume.enabled -}}
+{{- if not .Values.localdata.persistentVolume.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "cloudserver.localdata.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": keep
+  {{- if .Values.localdata.persistentVolume.annotations }}
+{{ toYaml .Values.localdata.persistentVolume.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    app: {{ template "cloudserver.name" . }}
+    chart: {{ template "cloudserver.chart" . }}
+    component: localdata
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  accessModes:
+{{- range .Values.localdata.persistentVolume.accessModes }}
+    - {{ . | quote }}
+{{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.localdata.persistentVolume.size | quote }}
+{{- if .Values.localdata.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.localdata.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.localdata.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
+{{- end -}}

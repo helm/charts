@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "zookeeper.fullname" . }}
@@ -9,9 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
     component: server
 spec:
-  serviceName: {{ template "zookeeper.fullname" . }}-headless
+  serviceName: {{ template "zookeeper.headless" . }}
   replicas: {{ .Values.replicaCount }}
-  terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   selector:
     matchLabels:
       app: {{ template "zookeeper.name" . }}
@@ -31,14 +30,15 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       {{- end }}
+{{- if .Values.podAnnotations }}
       annotations:
-      {{- if .Values.podAnnotations }}
         ## Custom pod annotations
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-      {{- end }}
+{{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
@@ -52,19 +52,36 @@ spec:
         - name: zookeeper
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /bin/bash
-            - -xec
-            - zkGenConfig.sh && exec zkServer.sh start-foreground
+        {{- with .Values.command }}
+          command: {{ range . }}
+             - {{ . | quote }}
+          {{- end }}
+        {{- end }}
           ports:
 {{- range $key, $port := .Values.ports }}
             - name: {{ $key }}
 {{ toYaml $port | indent 14 }}
 {{- end }}
           livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
+            exec:
+              command:
+                - sh
+                - /config-scripts/ok
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
           readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
+            exec:
+              command:
+                - sh
+                - /config-scripts/ready
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
           env:
             - name: ZK_REPLICAS
               value: {{ .Values.replicaCount | quote }}
@@ -72,11 +89,33 @@ spec:
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
           {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- range $key := $secret.keys }}
+            - name: {{ (print $secret.name "_" $key) | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $key }}
+            {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /var/lib/zookeeper
+              mountPath: /data
+            {{- range $secret := .Values.secrets }}
+              {{- if $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+            - name: {{ $.Release.Name }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}/{{ $key }}
+              subPath: {{ $key }}
+              readOnly: true
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            - name: config
+              mountPath: /config-scripts
+
 
 {{- if .Values.exporters.jmx.enabled }}
         - name: jmx-exporter
@@ -148,8 +187,16 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-      {{- if (or .Values.exporters.jmx.enabled (not .Values.persistence.enabled)) }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ template "zookeeper.fullname" . }}
+            defaultMode: 0555
+        {{- range .Values.secrets }}
+        - name: {{ $.Release.Name }}-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
         {{- if .Values.exporters.jmx.enabled }}
         - name: config-jmx-exporter
           configMap:
@@ -159,7 +206,6 @@ spec:
         - name: data
           emptyDir: {}
         {{- end }}
-      {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

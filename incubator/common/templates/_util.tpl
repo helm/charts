@@ -9,7 +9,7 @@ This takes an array of three values:
 */ -}}
 {{- define "common.util.merge" -}}
 {{- $top := first . -}}
-{{- $overrides := fromYaml (include (index . 1) $top) -}}
-{{- $tpl := fromYaml (include (index . 2) $top) -}}
+{{- $overrides := fromYaml (include (index . 1) $top) | default (dict ) -}}
+{{- $tpl := fromYaml (include (index . 2) $top) | default (dict ) -}}
 {{- toYaml (merge $overrides $tpl) -}}
 {{- end -}}

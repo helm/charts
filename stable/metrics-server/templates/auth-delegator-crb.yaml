@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "metrics-server.fullname" . }}:system:auth-delegator
-  namespace: kube-system
   labels:
     app: {{ template "metrics-server.name" . }}
     chart: {{ template "metrics-server.chart" . }}
@@ -15,6 +14,6 @@ roleRef:
   name: system:auth-delegator
 subjects:
   - kind: ServiceAccount
-    name: {{ template "metrics-server.fullname" . }}
+    name: {{ template "metrics-server.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}

@@ -1,0 +1,12 @@
+dependencies:
+- name: zookeeper
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 2.1.4
+- name: mysql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.6.4
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 8.6.4
+digest: sha256:e44359eeece66b0314a9c4e6d72466a1ba7fc7d7caa4855c1557e736be25a686
+generated: "2020-06-11T17:04:06.764571+08:00"

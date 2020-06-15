@@ -1,0 +1,16 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.prometheusSpec.additionalAlertRelabelConfigs }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-relabel-confg
+  namespace: {{ $.Release.Namespace }}
+{{- if .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations }}
+  annotations:
+{{ toYaml .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-prometheus-am-relabel-confg
+{{ include "prometheus-operator.labels" . | indent 4 }}
+data:
+  additional-alert-relabel-configs.yaml: {{ toYaml .Values.prometheus.prometheusSpec.additionalAlertRelabelConfigs | b64enc | quote }}
+{{- end }}

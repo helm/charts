@@ -1,5 +1,10 @@
 # Elastabot Helm Chart
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. Refer to the [Elastabot GitHub project](https://github.com/jertel/elastabot) for information on installing this chart from the new repository.
+
+## Overview 
 [Elastabot](https://github.com/jertel/elastabot): A Slack bot companion to Elasticsearch and [ElastAlert](https://github.com/kubernetes/charts/tree/master/stable/elastalert). Current support includes searching for data, checking the cluster health, acknowledging (and silencing) alerts, and also triggering triage events, which are currently initiated via an smtp email. The emails by default will contain the alert details, but arbitrary triage requests can also be created. The triage email is best used with a ticketing system that is monitoring for such emails, such as Jira.
 
 ## Usage
@@ -40,7 +45,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | elasticsearch.sslStrictEnabled | If true, the SSL/TLS certificates will be validated against known certificate authorities                                | `false`
 | elasticsearch.timeoutSeconds   | Number of seconds to wait for an Elasticsearch response                                                                  | `10`
 | elasticsearch.urlPrefix        | URL prefix for Elasticsearch, typically an empty string                                                                  |
-| elastalert.index               | The index prefix used by Elastalert within Elasticsearch, typically elastalert or elastalert_status                      | `elastalert_status`
+| elastalert.index               | The index prefix used by Elastalert within Elasticsearch, typically elastalert                                           | `elastalert`
 | elastalert.silenceMinutes      | Number of minutes to silence an acknowledge alert if a silence duration is not explicitly given with the ack command.    | `240`
 | elastalert.recentMinutes       | Number of minutes to look back through Elasticsearch indices for a matching triggered alert                              | `4320`
 | smtp.host                      | Hostname for the SMTP server                                                                                             |

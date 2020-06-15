@@ -6,7 +6,7 @@
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w ui'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kubeless.fullname" . }}-ui -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kubeless.fullname" . }}-ui --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   export SERVICE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kubeless.fullname" . }}-ui -o jsonpath='{.spec.ports[0].port}')
   echo http://$SERVICE_IP:$SERVICE_PORT/
 {{- else if contains "ClusterIP"  .Values.ui.service.type }}

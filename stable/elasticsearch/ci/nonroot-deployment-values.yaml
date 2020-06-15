@@ -1,0 +1,12 @@
+---
+# Deploy Chart as non-root and unprivileged
+
+chownInitContainer:
+  enabled: false
+
+securityContext:
+  enabled: true
+  runAsUser: 1000
+
+sysctlInitContainer:
+  enabled: false

@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled -}}
 {{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: RoleBinding
@@ -16,3 +17,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "concourse.worker.fullname" . }}
 {{- end -}}
+{{- end }}

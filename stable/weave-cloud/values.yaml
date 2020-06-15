@@ -6,8 +6,8 @@ agent:
   name: weave-agent
 
 image:
-  repository: quay.io/weaveworks/launcher-agent
-  tag: 1.0.0
+  repository: weaveworks/launcher-agent
+  tag: 1.4.0
   pullPolicy: IfNotPresent
 
 rbac:

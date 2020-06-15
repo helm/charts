@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "spinnaker.fullname" . }}-cleanup-using-hal"
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
+    component: halyard
+  annotations:
+    "helm.sh/hook": "pre-delete"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  template:
+    metadata:
+    {{- if .Values.halyard.annotations }}
+      annotations:
+{{ toYaml .Values.halyard.annotations | indent 8 }}
+    {{- end }}
+      labels:
+{{ include "spinnaker.standard-labels" . | indent 8 }}
+        component: halyard
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: halyard-config
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-config
+      {{- if .Values.halyard.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
+      containers:
+      - name: halyard-install
+        image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
+        volumeMounts:
+        - name: halyard-config
+          mountPath: /opt/halyard/scripts
+        command:
+        - bash
+        - -xe
+        - "/opt/halyard/scripts/clean.sh"

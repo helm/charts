@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mysqldump.fullname" . }}
+  labels:
+{{ include "mysqldump.labels" . | indent 4 }}
+data:
+  MYSQL_HOST: {{ .Values.mysql.host | quote }}
+  MYSQL_USERNAME: {{ .Values.mysql.username | quote }}
+  MYSQL_PORT: {{ .Values.mysql.port | quote }}
+  MYSQL_OPTS: {{ .Values.options | quote }}
+  KEEP_DAYS: {{ .Values.housekeeping.keepDays | quote }}
+{{- if .Values.upload.openstack.enabled }}
+  OS_AUTH_URL: {{ .Values.upload.openstack.authUrl }}
+  OS_PROJECT_NAME: {{ .Values.upload.openstack.project }}
+  OS_PROJECT_DOMAIN_NAME: {{ .Values.upload.openstack.projectDomain }}
+  OS_USERNAME: {{ .Values.upload.openstack.user }}
+  OS_USER_DOMAIN_NAME: {{ .Values.upload.openstack.userDomain }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mysqldump.fullname" . }}-script
+  labels:
+{{ include "mysqldump.labels" . | indent 4 }}
+data:
+  openstack-upload.py: |-
+{{ .Files.Get "files/openstack-upload.py" | indent 4 }}
+  backup.sh: |-
+    #!/bin/sh
+    #
+    # mysql backup script
+    #
+    {{ if .Values.debug }}
+    set -ex
+    {{ end }}
+    BACKUP_DIR="/backup"
+    TIMESTAMP="$(date +%Y%m%d%H%M%S)"
+
+    echo "test mysql connection"
+    if [ -z "$(mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} -B -N -e 'SHOW DATABASES;')" ]; then
+      echo "mysql connection failed! exiting..."
+      exit 1
+    fi
+
+    echo "started" > ${BACKUP_DIR}/${TIMESTAMP}.state
+
+    {{ if (.Values.persistence.enabled) or (.Values.persistentVolumeClaim) }}
+    {{ if .Values.housekeeping.enabled }}
+    echo "delete old backups"
+    find ${BACKUP_DIR} -maxdepth 2 -mtime +${KEEP_DAYS} -regex "^${BACKUP_DIR}/.*[0-9]*_.*\.sql\.gz$" -type f -exec rm {} \;
+    {{ end -}}
+    {{ end -}}
+
+    {{ if and (.Values.mysql.db) (eq .Values.allDatabases.enabled false) }}
+    MYSQL_DB="{{ .Values.mysql.db }}"
+    echo "Backing up single db ${MYSQL_DB}"
+    {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    rc=$?
+    {{ else if and (.Values.allDatabases.enabled) (eq .Values.allDatabases.singleBackupFile false)}}
+    for MYSQL_DB in $(mysql -h "${MYSQL_HOST}" -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} -B -N -e "SHOW DATABASES;"|egrep -v '^(information|performance)_schema$'); do
+      echo "Backing up db ${MYSQL_DB}"
+      {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+      mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --databases ${MYSQL_DB} | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+      rc=$?
+    done
+
+    {{ else if and (.Values.allDatabases.enabled) (.Values.allDatabases.singleBackupFile) }}
+    echo "Backing up all databases"
+    MYSQL_DB="alldatabases"
+    {{ if .Values.saveToDirectory }}mkdir -p "${BACKUP_DIR}"/"${MYSQL_DB}"{{ end }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --all-databases | gzip > ${BACKUP_DIR}/{{ if .Values.saveToDirectory }}${MYSQL_DB}/{{ end }}${TIMESTAMP}_${MYSQL_DB}.sql.gz
+    rc=$?
+    {{- end -}}
+
+    {{- if or (.Values.upload.googlestoragebucket.enabled) (.Values.upload.ssh.enabled) (.Values.upload.openstack.enabled) -}}
+    {{ if .Values.upload.ssh.enabled -}}
+    echo "upload files via ssh to {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}"
+    rsync -av --delete --exclude=*.state -e 'ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null' ${BACKUP_DIR}/ {{ .Values.upload.ssh.user }}@{{ .Values.upload.ssh.host }}:{{ .Values.upload.ssh.dir }}
+    rcu=$?
+    {{ end -}}
+
+    {{ if .Values.upload.googlestoragebucket.enabled -}}
+    echo "upload files to google storage bucket {{ .Values.upload.googlestoragebucket.bucketname }}"
+    gcloud auth activate-service-account --key-file /root/gcloud/{{ .Values.upload.googlestoragebucket.secretFileName }}
+    gsutil -m rsync -r -x '.*\.state' -d ${BACKUP_DIR}/ {{ .Values.upload.googlestoragebucket.bucketname }}
+    rcu=$?
+    {{ end }}
+
+    {{ if .Values.upload.openstack.enabled -}}
+    echo "upload files to openstack at {{ .Values.upload.openstack.destination }}"
+    python /scripts/openstack-upload.py \
+      --source=${BACKUP_DIR} \
+      --destination={{ .Values.upload.openstack.destination }} \
+      {{ if .Values.upload.openstack.ttlDays -}} --ttl-days={{ .Values.upload.openstack.ttlDays }} {{- end }} \
+      {{ if .Values.debug -}} --verbose {{- end }}
+    rcu=$?
+    {{ end }}
+
+    if [ "$rcu" != "0" ]; then
+      echo "upload failed"
+      exit 1
+    fi
+
+    {{- else  }}
+    {{ if .Values.dumpAllToStdout }}
+    mysqldump ${MYSQL_OPTS} -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USERNAME} --all-databases
+    rc=$?
+    {{ end }}
+    {{ end }}
+
+    {{ if .Values.debug }}
+      echo Contents of ${BACKUP_DIR}
+      ls -lahR ${BACKUP_DIR}
+    {{ end }}
+
+    if [ "$rc" != "0" ]; then
+      echo "backup failed"
+      exit 1
+    fi
+
+    {{ if .Values.additionalSteps }}
+     {{- range .Values.additionalSteps }}
+      {{ . }}
+     {{- end }}
+    {{- end }}
+
+    echo "complete" > ${BACKUP_DIR}/${TIMESTAMP}.state
+
+    echo "Disk usage in ${BACKUP_DIR}"
+    du -h -d 2 ${BACKUP_DIR}
+
+    echo "Backup successful! :-)"

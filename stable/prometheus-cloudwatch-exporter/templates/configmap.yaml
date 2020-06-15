@@ -8,5 +8,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  config.yaml: |
+  config.yml: |
 {{ printf .Values.config | indent 4 }}

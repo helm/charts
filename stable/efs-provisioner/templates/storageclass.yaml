@@ -8,9 +8,12 @@ metadata:
     chart: {{ template "efs-provisioner.chartname" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-{{- if .Values.efsProvisioner.storageClass.isDefault }}
   annotations:
+{{- if .Values.efsProvisioner.storageClass.isDefault }}
     storageclass.kubernetes.io/is-default-class: "true"
+{{- end }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 provisioner: {{ .Values.efsProvisioner.provisionerName }}
 parameters:
@@ -24,3 +27,9 @@ parameters:
   gidAllocate: "false"
 {{- end }}
 reclaimPolicy: {{ .Values.efsProvisioner.storageClass.reclaimPolicy }}
+{{- if .Values.efsProvisioner.storageClass.mountOptions }}
+mountOptions:
+  {{- range .Values.efsProvisioner.storageClass.mountOptions }}
+  - {{ . }}
+  {{- end }}
+{{- end }}

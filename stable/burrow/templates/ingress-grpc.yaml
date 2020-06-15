@@ -1,0 +1,32 @@
+{{- if .Values.grpc.ingress.enabled -}}
+{{- $serviceName := printf "%s-grpc" (include "burrow.fullname" .) -}}
+{{- $servicePort := .Values.config.RPC.GRPC.ListenPort -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "burrow.name" . }}
+    chart: {{ template "burrow.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "burrow.fullname" . }}-grpc
+  annotations:
+    {{- range $key, $value := .Values.grpc.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.grpc.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.grpc.ingress.tls }}
+  tls:
+{{ toYaml .Values.grpc.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

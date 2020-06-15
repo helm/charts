@@ -1,0 +1,17 @@
+{{- if .Values.controller.template -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}-template
+  namespace: {{ .Release.Namespace }}
+data:
+  haproxy.tmpl: |-
+{{ .Values.controller.template | indent 4 }}
+{{/* .Files.Get "haproxy.tmpl" | indent 4 */}}
+{{- end }}

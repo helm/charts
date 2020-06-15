@@ -1,0 +1,19 @@
+{{- if (and .Values.rbac.create .Values.sar.enabled) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "opa.name" . }}
+    chart: {{ template "opa.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: sar
+  name: {{ template "opa.sarfullname" . }}
+rules:
+  - apiGroups:
+      - "authorization.k8s.io"
+    resources:
+    - subjectaccessreviews
+    verbs:
+    - create
+{{- end -}}

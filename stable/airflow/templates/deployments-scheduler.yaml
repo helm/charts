@@ -1,0 +1,314 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "airflow.fullname" . }}-scheduler
+  {{- if .Values.scheduler.annotations }}
+  annotations:
+    {{- toYaml .Values.scheduler.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: scheduler
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.scheduler.labels }}
+    {{- toYaml .Values.scheduler.labels | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: 1
+  strategy:
+    # Kill the scheduler as soon as possible.
+    # It will restart quickly with all the workers, minimizing the time they are not synchronized.
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: scheduler
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-scripts-git.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
+        checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
+        checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
+        {{- if and (.Values.dags.git.url) (.Values.dags.git.ref) }}
+        checksum/dags-git-ref: {{ .Values.dags.git.ref | sha256sum }}
+        {{- end }}
+        {{- if .Values.airflow.podAnnotations }}
+        {{- toYaml .Values.airflow.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.scheduler.podAnnotations }}
+        {{- toYaml .Values.scheduler.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        app: {{ include "airflow.labels.app" . }}
+        component: scheduler
+        release: {{ .Release.Name }}
+        {{- if .Values.scheduler.podLabels }}
+        {{- toYaml .Values.scheduler.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.scheduler.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.scheduler.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.scheduler.affinity }}
+      affinity:
+        {{- toYaml .Values.scheduler.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.scheduler.tolerations }}
+      tolerations:
+        {{- toYaml .Values.scheduler.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.scheduler.securityContext }}
+      securityContext:
+        {{- toYaml .Values.scheduler.securityContext | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "airflow.serviceAccountName" . }}
+      {{- if or (.Values.dags.initContainer.enabled) (.Values.scheduler.preinitdb) (.Values.scheduler.extraInitContainers) }}
+      initContainers:
+        {{- if .Values.scheduler.preinitdb }}
+        - name: {{ .Chart.Name }}-preinitdb
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          command:
+            - "/usr/bin/dumb-init"
+            - "--"
+          args:
+            - "/bin/bash"
+            - "-c"
+            - "/home/airflow/scripts/preinit-db.sh"
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.scheduler.resources | nindent 12 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /home/airflow/scripts
+        {{- end }}
+        {{- if .Values.dags.initContainer.enabled }}
+        - name: git-clone
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }}
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.dags.initContainer.resources | nindent 12 }}
+          command:
+            - /home/airflow/git/git-clone.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath }}"
+            - "{{ .Values.dags.git.repoHost }}"
+            - "{{ .Values.dags.git.repoPort }}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /home/airflow/git
+            - name: dags-data
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+        {{- end }}
+        {{- if .Values.scheduler.extraInitContainers }}
+        {{- toYaml .Values.scheduler.extraInitContainers | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      containers:
+        {{- if .Values.dags.git.gitSync.enabled }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }}
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          command:
+            - /home/airflow/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath }}"
+            - "{{ .Values.dags.git.repoHost }}"
+            - "{{ .Values.dags.git.repoPort }}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /home/airflow/git
+            - name: dags-data
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+          resources:
+            {{- toYaml .Values.dags.git.gitSync.resources | nindent 12 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}-scheduler
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.scheduler.resources | nindent 12 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /home/airflow/scripts
+            {{- if .Values.dags.persistence.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.dags.persistence.subPath }}
+            {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            {{- end }}
+            {{- if .Values.logs.persistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logs.persistence.subPath }}
+            {{- end }}
+            {{- if .Values.scheduler.connections }}
+            - name: connections
+              mountPath: /home/airflow/connections
+            {{- end}}
+            {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
+            - name: variables-pools
+              mountPath: /home/airflow/variables-pools/
+            {{- end}}
+            {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.airflow.extraVolumeMounts }}
+            {{- toYaml .Values.airflow.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          command:
+            - "/usr/bin/dumb-init"
+            - "--"
+          args:
+            - "bash"
+            - "-c"
+            - >
+              true \
+              {{- if gt .Values.scheduler.initialStartupDelay 0.0 }}
+               && echo "*** waiting {{ .Values.scheduler.initialStartupDelay }}s..." \
+               && sleep {{ .Values.scheduler.initialStartupDelay }} \
+              {{- end }}
+               && mkdir -p /home/airflow/.local/bin \
+               && echo 'export PATH="/home/airflow/.local/bin:$PATH"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"' >> /home/airflow/airflow_env.sh \
+              {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
+               && echo 'export AIRFLOW__CELERY__RESULT_BACKEND="{{ include "airflow.connection.celery.backend" . }}"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CELERY__BROKER_URL="{{ include "airflow.connection.celery.broker" . }}"' >> /home/airflow/airflow_env.sh \
+              {{- end }}
+               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.profile \
+               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.bashrc \
+               && source /home/airflow/airflow_env.sh \
+              {{- if .Values.dags.installRequirements }}
+               && echo "*** installing requirements..." \
+               && /home/airflow/scripts/install-requirements.sh \
+              {{- end }}
+              {{- if .Values.airflow.extraPipPackages }}
+               && echo "*** installing global extra pip packages..." \
+               && pip install --user {{ range .Values.airflow.extraPipPackages }} {{ . | quote }} {{ end }} \
+              {{- end }}
+              {{- if .Values.scheduler.initdb }}
+               && echo "*** executing Airflow initdb..." \
+               && airflow initdb \
+              {{- end }}
+              {{- if .Values.scheduler.variables }}
+               && echo "*** adding Airflow variables..." \
+               && airflow variables -i /home/airflow/variables-pools/variables.json \
+              {{- end }}
+              {{- if .Values.scheduler.connections }}
+               && echo "*** adding Airflow connections..." \
+               && /home/airflow/connections/add-connections.sh \
+              {{- end }}
+              {{- if .Values.scheduler.pools }}
+               && echo "*** adding Airflow pools..." \
+               && airflow pool -i /home/airflow/variables-pools/pools.json \
+              {{- end }}
+               && echo "*** running scheduler..." \
+               && exec airflow scheduler -n {{ .Values.scheduler.numRuns }}
+        {{- if .Values.airflow.extraContainers }}
+        {{- toYaml .Values.airflow.extraContainers | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        {{- if .Values.dags.persistence.enabled }}
+        - name: dags-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.dags.persistence.existingClaim | default (include "airflow.fullname" . ) }}
+        {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: dags-data
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.logs.persistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logs.persistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
+        {{- end }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: git-clone
+          configMap:
+            name: {{ include "airflow.fullname" . }}-scripts-git
+            defaultMode: 0755
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
+        {{- end }}
+        {{- if .Values.scheduler.connections }}
+        - name: connections
+          secret:
+            secretName: {{ include "airflow.fullname" . }}-connections
+            defaultMode: 0755
+        {{- end }}
+        {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
+        - name: variables-pools
+          configMap:
+            name: {{ include "airflow.fullname" . }}-variables-pools
+            defaultMode: 0755
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+       {{- if .Values.airflow.extraVolumes }}
+       {{- toYaml .Values.airflow.extraVolumes | nindent 8 }}
+       {{- end }}

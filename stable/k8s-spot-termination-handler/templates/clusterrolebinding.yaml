@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "k8s-spot-termination-handler.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "k8s-spot-termination-handler.name" . }}
+    helm.sh/chart: {{ template "k8s-spot-termination-handler.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "k8s-spot-termination-handler.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace | quote }}
+{{- end}}

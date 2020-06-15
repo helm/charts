@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "ignite.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "ignite.name" . }}
+    helm.sh/chart: {{ include "ignite.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "ignite.fullname" . }}
+  serviceName: {{ include "ignite.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "ignite.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "ignite.serviceAccountName" . }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "ignite.fullname" . }}-configmap
+            items:
+            - key: ignite-config.xml
+              path: default-config.xml
+      containers:
+      - name: ignite
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.env }}
+        env:
+{{- range $name, $value := .Values.env }}
+        - name: "{{ $name }}"
+          value: "{{ $value }}"
+{{- end }}
+{{- end }}
+        ports:
+        - containerPort: 11211 # JDBC port number.
+        - containerPort: 47100 # communication SPI port number.
+        - containerPort: 47500 # discovery SPI port number.
+        - containerPort: 49112 # JMX port number.
+        - containerPort: 10800 # SQL port number.
+        - containerPort: 8080 # REST port number.
+        - containerPort: 10900 #Thin clients port number.
+        volumeMounts:
+{{- if (.Values.persistence.enabled) }}
+        - mountPath: "/wal"
+          name: ignite-wal
+        - mountPath: "/persistence"
+          name: ignite-persistence
+{{- end }}
+        - name: config-volume
+          mountPath: /opt/ignite/apache-ignite/config
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+{{- if (.Values.persistence.enabled) }}
+  - metadata:
+      name: ignite-persistence
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "{{ include "ignite.fullname" . }}-persistence-storage-class"
+      resources:
+        requests:
+          storage: {{ .Values.persistence.persistenceVolume.size }}
+  - metadata:
+      name: ignite-wal
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "{{ include "ignite.fullname" . }}-wal-storage-class"
+      resources:
+        requests:
+          storage: {{ .Values.persistence.walVolume.size }}
+{{- end }}

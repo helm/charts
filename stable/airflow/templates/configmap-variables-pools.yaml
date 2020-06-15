@@ -1,0 +1,20 @@
+{{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "airflow.fullname" . }}-variables-pools
+    labels:
+        app: {{ include "airflow.labels.app" . }}
+        chart: {{ include "airflow.labels.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+data:
+  {{- if .Values.scheduler.variables }}
+  variables.json: |
+    {{- .Values.scheduler.variables | nindent 4 }}
+  {{- end }}
+  {{- if .Values.scheduler.pools }}
+  pools.json: |
+    {{- .Values.scheduler.pools | nindent 4 }}
+  {{- end }}
+{{- end }}

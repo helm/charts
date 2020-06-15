@@ -1,0 +1,44 @@
+{{- if .Values.client.ingress.enabled -}}
+{{- $fullName := include "elasticsearch.client.fullname" . -}}
+{{- $ingressPath := .Values.client.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.client.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+{{- with .Values.client.ingress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- if and ( .Values.client.ingress.user ) ( .Values.client.ingress.password ) }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: '{{ include "elasticsearch.client.fullname" . }}-auth'
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication-Required"
+{{- end }}
+spec:
+{{- if .Values.client.ingress.tls }}
+  tls:
+  {{- range .Values.client.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.client.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+  {{- end }}
+{{- end }}

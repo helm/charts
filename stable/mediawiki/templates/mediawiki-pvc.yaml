@@ -10,15 +10,9 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
-    - {{ .Values.persistence.mediawiki.accessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.mediawiki.size | quote }}
-{{- if .Values.persistence.mediawiki.storageClass }}
-{{- if (eq "-" .Values.persistence.mediawiki.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: {{ .Values.persistence.mediawiki.storageClass | quote }}
-{{- end }}
-{{- end }}
+      storage: {{ .Values.persistence.size | quote }}
+  {{ include "mediawiki.storageClass" . }}
 {{- end -}}

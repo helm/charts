@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "prisma.fullname" . }}
+  labels:
+    app: {{ template "prisma.name" . }}
+    chart: {{ template "prisma.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "prisma.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "prisma.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "prisma.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: prisma
+              containerPort: 4466
+              protocol: TCP
+          env:
+            - name: CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "prisma.fullname" . }}
+                  key: config
+            {{- if .Values.auth.secret }}
+            - name: PRISMA_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "prisma.fullname" . }}
+                  key: api-secret
+            {{- end}}
+            - name: PRISMA_CONFIG_PATH
+              value: "/app/config.yml"
+            - name: PRISMA_DB_CONNECTOR
+              value: {{ .Values.database.connector | quote }}
+            - name: PRISMA_DB_HOST
+              value: {{ template "prisma.database.host" . }}
+            - name: PRISMA_DB_PORT
+              value: {{ template "prisma.database.port" . }}
+            - name: PRISMA_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "prisma.fullname" . }}
+                  key: db-user
+            - name: PRISMA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "prisma.databaseSecret.fullname" . }}
+                  key: {{ template "prisma.databaseSecret.key" . }}
+            - name: PRISMA_DB_MIGRATIONS
+              value: {{ .Values.database.migrations | quote }}
+            - name: PRISMA_DB_NAME
+              value: {{ .Values.database.name | quote }}
+            - name: PRISMA_DB_SSL
+              value: {{ .Values.database.ssl | quote }}
+            - name: PRISMA_DB_CONNECTIONLIMIT
+              value: {{ .Values.database.connectionLimit | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

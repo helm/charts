@@ -1,0 +1,58 @@
+{{- if eq .Values.schedule "now" }}
+
+Running mysqldump now.
+
+For job status run:
+
+$ kubectl get job {{ template "mysqldump.fullname" . }} -o wide
+
+$ kubectl get pods --selector=job-name={{ template "mysqldump.fullname" . }} --show-all -o wide
+
+To see the logs from the backup job run:
+
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+
+mysqldump contents can be found in:
+{{- if .Values.persistentVolumeClaim }}
+$ kubectl get persistentvolumeclaim {{ .Values.persistentVolumeClaim }}
+{{- else -}}
+{{- if .Values.persistence.enabled }}
+$ kubectl get persistentvolumeclaim {{ template "mysqldump.fullname" . }}
+{{- else }}
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+{{- end -}}
+{{- end }}
+
+{{- else }}
+
+Running mysqldump on crontab schedule "{{ .Values.schedule }}"
+
+For cronjob status run:
+
+$ kubectl get cronjob {{ template "mysqldump.fullname" . }} -o wide
+
+$ kubectl get jobs --selector=cronjob-name={{ template "mysqldump.fullname" . }}
+
+To see the logs from the most recent backup job run:
+
+$ kubectl logs $(kubectl get pods --selector \
+  job-name=$(kubectl get jobs --selector=cronjob-name={{ template "mysqldump.fullname" . }} \
+  --output=jsonpath='{.items[-1:].metadata.name}') \
+  --output=jsonpath={.items..metadata.name})
+
+To run cronjob now run:
+
+$ kubectl create job {{ template "mysqldump.fullname" . }} --from=cronjob/{{ template "mysqldump.fullname" . }}
+
+mysqldump contents can be found in:
+{{- if .Values.persistentVolumeClaim }}
+$ kubectl get persistentvolumeclaim {{ .Values.persistentVolumeClaim }}
+{{- else -}}
+{{- if .Values.persistence.enabled }}
+$ kubectl get persistentvolumeclaim {{ template "mysqldump.fullname" . }}
+{{- else }}
+$ kubectl logs `kubectl get pods --selector=job-name=test-mysqldump --output=jsonpath={.items..metadata.name}`
+{{- end -}}
+{{- end }}
+
+{{- end }}

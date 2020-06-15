@@ -3,9 +3,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
@@ -14,6 +15,7 @@ metadata:
 data:
   enabled_plugins: |
     [
+{{ .Values.extraPlugins | indent 6 }}
       {{- if .Values.rabbitmqLDAPPlugin.enabled }}
       rabbitmq_auth_backend_ldap,
       {{- end }}
@@ -38,13 +40,18 @@ data:
       rabbitmq_auth_mechanism_ssl,
       {{- end }}
 
+      {{- if .Values.rabbitmqAuthHTTP.enabled }}
+      rabbitmq_auth_backend_http,
+      {{- end }}
+
+      {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+      rabbitmq_prometheus,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
-      rabbitmq_federation,
-      rabbitmq_federation_management,
       rabbitmq_management,
-      rabbitmq_peer_discovery_k8s,
-      rabbitmq_shovel,
-      rabbitmq_shovel_management
+      rabbitmq_peer_discovery_k8s
+      
     ].
 
   rabbitmq.conf: |
@@ -58,20 +65,29 @@ data:
 
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
-    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.k8s.host = kubernetes.default.svc.{{ .Values.clusterDomain }}
     cluster_formation.k8s.address_type = hostname
     cluster_formation.node_cleanup.interval = 10
     # Set to false if automatic cleanup of absent nodes is desired.
     # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
     cluster_formation.node_cleanup.only_log_warning = true
-    cluster_partition_handling = autoheal
+    cluster_partition_handling = {{ .Values.rabbitmqClusterPartitionHandling }}
 
+    {{- if eq .Values.rabbitmqUsername "guest" }}
     ## The default "guest" user is only permitted to access the server
     ## via a loopback interface (e.g. localhost)
     loopback_users.guest = false
+    {{- end }}
+
+    management.load_definitions = /etc/definitions/definitions.json
 
     ## Memory-based Flow Control threshold
-    vm_memory_high_watermark.absolute = {{ .Values.rabbitmqMemoryHighWatermark }}
+    vm_memory_high_watermark.{{ .Values.rabbitmqMemoryHighWatermarkType }} = {{ .Values.rabbitmqMemoryHighWatermark }}
+
+    ## Auth HTTP Backend Plugin
+    {{- if .Values.rabbitmqAuthHTTP.enabled }}
+{{ .Values.rabbitmqAuthHTTP.config | indent 4 }}
+    {{- end }}
 
     ## LDAP Plugin
     {{- if .Values.rabbitmqLDAPPlugin.enabled }}
@@ -98,9 +114,23 @@ data:
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
     {{- end }}
 
+    ## Prometheus Plugin
+    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+{{ .Values.rabbitmqPrometheusPlugin.config | indent 4 }}
+    prometheus.path = {{ .Values.rabbitmqPrometheusPlugin.path }}
+    prometheus.tcp.port =  {{ .Values.rabbitmqPrometheusPlugin.port }}
+    {{- end }}
+
     ## AMQPS support
     {{- if .Values.rabbitmqAmqpsSupport.enabled }}
 {{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
     {{- end }}
 
+{{ .Values.extraConfig | indent 4 }}
+
+{{- end }}
+
+{{- if .Values.advancedConfig }}
+  advanced.config: |
+{{ .Values.advancedConfig | indent 4 }}
 {{- end }}

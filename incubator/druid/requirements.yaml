@@ -1,0 +1,13 @@
+dependencies:
+- name: zookeeper
+  version: 2.1.4
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: zookeeper.enabled
+- name: mysql
+  version: 1.6.4
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mysql.enabled
+- name: postgresql
+  version: 8.6.4
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: postgresql.enabled

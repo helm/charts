@@ -4,6 +4,10 @@
 
 imagePullPolicy: IfNotPresent
 
+# Node labels for pod assignment
+# ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
 bootnode:
   image:
     repository: ethereum/client-go
@@ -26,6 +30,8 @@ geth:
     replicaCount: 2
     service:
       type: ClusterIP
+    args:
+      rpcapi: 'eth,net,web3'
   miner:
     # miner nodes
     replicaCount: 3

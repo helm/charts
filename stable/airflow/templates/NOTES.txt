@@ -1,0 +1,30 @@
+Congratulations. You have just deployed Apache Airflow!
+
+{{- if .Values.ingress.enabled }}
+Ingress URL to Airflow and Flower:
+
+   - Airflow: http://{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}/
+   {{- if .Values.flower.enabled }}
+   - Flower: http://{{ .Values.ingress.flower.host }}{{ .Values.ingress.flower.path }}/
+   {{- end }}
+
+{{- end }}
+
+1. Get the Airflow Service URL by running these commands:
+
+{{- if contains "NodePort" .Values.web.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "airflow.fullname" . }}-web)
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+{{- else if contains "LoadBalancer" .Values.web.service.type }}
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of the service by running 'kubectl get svc -w {{ include "airflow.fullname" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "airflow.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://$SERVICE_IP:{{ .Values.web.service.externalPort }}/
+{{- else if contains "ClusterIP" .Values.web.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component=web,app={{ include "airflow.labels.app" . }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:8080
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:8080
+{{- end }}
+
+2. Open Airflow in your web browser

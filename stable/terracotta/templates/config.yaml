@@ -1,0 +1,36 @@
+{{- $root := . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "terracotta.fullname" . }}-configuration
+  labels:
+    app: {{ template "terracotta.name" . }}
+    chart: {{ template "terracotta.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  tc-config.xml: |
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <tc-config xmlns="http://www.terracotta.org/config">
+        <plugins>
+            <config>
+                <ohr:offheap-resources xmlns:ohr="http://www.terracotta.org/config/offheap-resource">
+                  {{- range .Values.offheaps }}
+                    <ohr:resource name="{{ .name }}" unit="{{ .unit }}">{{ .size }}</ohr:resource>
+                  {{- end}}
+                </ohr:offheap-resources>
+            </config>
+        </plugins>
+        <servers>
+        {{ range $i :=  until (int .Values.replicaCount) }}
+            <server host="{{ template "terracotta.fullname" $root}}-{{ $i }}.{{ template "terracotta.fullname" $root}}" name="{{ template "terracotta.fullname" $root}}-{{ $i }}" bind="0.0.0.0">
+                <logs>stdout:</logs>
+                <tsa-port bind="0.0.0.0">9410</tsa-port>
+                <tsa-group-port bind="0.0.0.0">9430</tsa-group-port>
+            </server>
+        {{ end }}
+        </servers>
+        <failover-priority>
+          <availability/>
+        </failover-priority>
+    </tc-config>

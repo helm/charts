@@ -1,0 +1,3 @@
+---
+# disable internal port by setting authProxyEnabled
+authProxyEnabled: true

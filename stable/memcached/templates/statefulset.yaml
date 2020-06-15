@@ -1,23 +1,36 @@
-apiVersion: apps/v1beta1
-kind: StatefulSet
+apiVersion: apps/v1
+kind: {{ .Values.kind }}
 metadata:
   name: {{ template "memcached.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "memcached.labels" . | indent 4 }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "memcached.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if eq .Values.kind "StatefulSet" }}
   serviceName: {{ template "memcached.fullname" . }}
+  {{- end }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "memcached.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app.kubernetes.io/name: {{ include "memcached.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end}}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       affinity:
         podAntiAffinity:
         {{- if eq .Values.AntiAffinity "hard" }}
@@ -25,8 +38,8 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "memcached.fullname" . }}
-                release: {{ .Release.Name | quote }}
+                app.kubernetes.io/name: {{ include "memcached.name" . }}
+                app.kubernetes.io/instance: {{ .Release.Name }}
         {{- else if eq .Values.AntiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -34,16 +47,23 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "memcached.fullname" . }}
-                  release: {{ .Release.Name | quote }}
+                  app.kubernetes.io/name: {{ include "memcached.name" . }}
+                  app.kubernetes.io/instance: {{ .Release.Name }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
         command:
         - memcached
-        - -m {{ .Values.memcached.maxItemMemory  }}
+        - -m {{ .Values.memcached.maxItemMemory }}
         {{- if .Values.memcached.extendedOptions }}
         - -o
         - {{ .Values.memcached.extendedOptions }}
@@ -51,6 +71,9 @@ spec:
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
+{{- with .Values.memcached.extraArgs }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         ports:
         - name: memcache
           containerPort: 11211
@@ -66,6 +89,20 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ .Values.metrics.image }}
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9150
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
@@ -73,3 +110,24 @@ spec:
       volumes:
 {{ tpl . $ | indent 6 }}
 {{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
+{{- if eq .Values.kind "StatefulSet" }}
+  updateStrategy:
+{{- else }}
+  strategy:
+{{- end }}
+    type: {{ .Values.updateStrategy.type }}
+    {{- if (eq "Recreate" .Values.updateStrategy.type) }}
+    rollingUpdate: null
+    {{- end }}

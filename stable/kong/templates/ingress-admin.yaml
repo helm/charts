@@ -1,0 +1,32 @@
+{{- if .Values.admin.ingress.enabled -}}
+{{- $serviceName := include "kong.fullname" . -}}
+{{- $servicePort := .Values.admin.servicePort -}}
+{{- $path := .Values.admin.ingress.path -}}
+{{- $tls := .Values.admin.ingress.tls -}}
+{{- $hostname := .Values.admin.ingress.hostname -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kong.fullname" . }}-admin
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+  annotations:
+    {{- range $key, $value := .Values.admin.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ $hostname }}
+    http:
+      paths:
+        - path: {{ $path }}
+          backend:
+            serviceName: {{ $serviceName }}-admin
+            servicePort: {{ $servicePort }}
+  {{- if $tls }}
+  tls:
+  - hosts:
+    - {{ $hostname }}
+    secretName: {{ $tls }}
+  {{- end -}}
+{{- end -}}

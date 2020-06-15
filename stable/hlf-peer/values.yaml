@@ -1,0 +1,139 @@
+# Default values for  hlf-peer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: hyperledger/fabric-peer
+  tag: 1.4.3
+  pullPolicy: IfNotPresent
+
+service:
+  # Cluster IP or LoadBalancer
+  type: ClusterIP
+  portRequest: 7051
+  portEvent: 7053
+
+dockerSocketPath: /var/run/docker.sock
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+  path: /
+  hosts:
+    - hlf-peer.local
+  tls: []
+  #  - secretName: hlf-peer-tls
+  #    hosts:
+  #      - hlf-peer.local
+
+persistence:
+  enabled: true
+  annotations: {}
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  # existingClaim: ""
+
+logging:
+  level: info
+  peer: info
+  cauthdsl: warning
+  gossip: info
+  grpc: error
+  ledger: info
+  msp: warning
+  policies: warning
+
+##################################
+## Peer configuration options    #
+##################################
+peer:
+  # Type of database ("goleveldb" or "CouchDB"):
+  databaseType: goleveldb
+  # If CouchDB is used, which chart holds it
+  couchdbInstance: cdb-peer1
+  ## MSP ID of the Peer
+  mspID: Org1MSP
+  gossip:
+    bootstrap: ""
+    endpoint: ""
+    externalEndpoint: ""
+    orgLeader: "false"
+    useLeaderElection: "true"
+
+  tls:
+    server:
+      enabled: "false"
+    client:
+      enabled: "false"
+
+# Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
+secrets:
+  ## These secrets should contain the Orderer crypto materials and credentials
+  peer: {}
+    ## Credentials, saved under keys 'CA_USERNAME' and 'CA_PASSWORD'
+    # cred: hlf--peer1-cred
+    ## Certificate, saved under key 'cert.pem'
+    # cert: hlf--peer1-idcert
+    ## Key, saved under 'key.pem'
+    # key: hlf--peer1-idkey
+    ## CA Cert, saved under 'cacert.pem'
+    # caCert: hlf--peer1-cacert
+    ## Intermediate CA Cert (optional), saved under 'intermediatecacert.pem'
+    # intCaCert: hlf--peer1-caintcert
+    ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    # tls: hlf--peer1-tls
+    ## TLS root CA certificate saved under key 'cert.pem'
+    # tlsRootCert: hlf--peer-tlsrootcert
+    ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClient: hlf--peer1-tls
+    ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClientRootCerts: hlf--ord-tlsrootcert
+  ## This should contain "channel" transaction derived from a configtx.yaml
+  ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
+  # channels:
+  # - foochannel
+  # - barchannel
+  ## This should contain the Certificate of the Peer Organisation admin
+  ## This is necessary to successfully run the peer
+  # adminCert: hlf--peer-admincert
+  ## This should contain the Private Key of the Peer Organisation admin
+  ## This is necessary to successfully join a channel
+  # adminKey: hlf--peer-adminkey
+  ## This should include the Orderer TLS 'cacert.pem'
+  # ordTlsRootCert: hlf--ord-tlsrootcert
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each Peer should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: hlf-peer

@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: 5.12.35
+description: Ubiquiti Network's Unifi Controller
+name: unifi
+version: 0.10.0
+keywords:
+  - ubiquiti
+  - unifi
+  - mongodb
+home: https://github.com/jacobalberty/unifi-docker
+icon: https://blog.ubnt.com/wp-content/uploads/2016/10/unifi-app-logo.png
+sources:
+  - https://github.com/jacobalberty/unifi-docker
+  - https://github.com/helm/charts/tree/master/stable/unifi
+maintainers:
+  - name: billimek
+    email: jeff@billimek.com
+  - name: mcronce
+    email: mike@quadra-tec.net

@@ -20,7 +20,7 @@ spec:
     - port: {{ .Values.service.port }}
       protocol: TCP
       name: {{ .Values.service.name }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: 5000
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
 {{- end }}

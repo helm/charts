@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: "0.6.2"
+description: A Helm chart for prometheus-nats-exporter
+name: prometheus-nats-exporter
+version: 2.5.0
+home: https://github.com/nats-io/prometheus-nats-exporter
+sources:
+  - https://github.com/nats-io/prometheus-nats-exporter
+keywords:
+  - nats
+  - prometheus
+  - exporter
+maintainers:
+  - email: okgolove@markeloff.net
+    name: okgolove
+  - email: carlos@carlosbecker.com
+    name: caarlos0

@@ -1,0 +1,20 @@
+# This version of the ambassador helm chart is deprecated.
+# All future updates should be instead made to the datawire-hosted Helm chart,
+# located at https://github.com/datawire/ambassador-chart.
+apiVersion: v1
+appVersion: 0.86.1
+description: DEPRECATED A Helm chart for Datawire Ambassador
+name: ambassador
+version: 5.3.2
+deprecated: true
+icon: https://www.getambassador.io/images/logo.png
+home: https://www.getambassador.io/
+sources:
+  - https://github.com/datawire/ambassador
+  - https://github.com/prometheus/statsd_exporter
+keywords:
+  - api gateway
+  - ambassador
+  - datawire
+  - envoy
+engine: gotpl

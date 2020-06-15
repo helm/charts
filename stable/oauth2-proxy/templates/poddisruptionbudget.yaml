@@ -1,0 +1,17 @@
+{{- if and .Values.podDisruptionBudget.enabled (gt (.Values.replicaCount | int) 1) }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "oauth2-proxy.name" . }}
+    chart: {{ template "oauth2-proxy.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "oauth2-proxy.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "oauth2-proxy.name" . }}
+      release: {{ .Release.Name }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+{{- end }}

@@ -8,6 +8,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if .Values.service.percona.headless }}
+  clusterIP: None
+  {{- end }}
   ports:
   - name: mysql
     port: 3306

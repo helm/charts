@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  healthz-port: {{ .Values.controller.healthzPort | quote }}
+  stats-port: {{ .Values.controller.stats.port | quote }}
+{{- if .Values.controller.logs.enabled }}
+  syslog-endpoint: "localhost:514"
+{{- end }}
+{{- if .Values.controller.config }}
+{{ toYaml .Values.controller.config | indent 2 }}
+{{- end }}

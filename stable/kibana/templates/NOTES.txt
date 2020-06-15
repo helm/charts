@@ -1,3 +1,18 @@
 To verify that {{ template "kibana.fullname" . }} has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kibana.fullname" . }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kibana.name" . }}"
+
+Kibana can be accessed:
+
+  * From outside the cluster, run these commands in the same shell:
+    {{- if contains "NodePort" .Values.service.type }}
+
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kibana.fullname" . }})
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+    {{- else if contains "ClusterIP"  .Values.service.type }}
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kibana.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:5601 to use Kibana"
+    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 5601:5601
+    {{- end }}

@@ -1,0 +1,142 @@
+{{- if .Values.daemonset.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "metricbeat.fullname" . }}
+  labels:
+    app: {{ template "metricbeat.name" . }}
+    chart: {{ template "metricbeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "metricbeat.name" . }}
+      release: {{ .Release.Name }}
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "metricbeat.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ toYaml (default .Values.daemonset.config .Values.daemonset.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.daemonset.modules .Values.daemonset.overrideModules) | sha256sum }}
+{{- if .Values.daemonset.podAnnotations }}
+  {{- range $key, $value := .Values.daemonset.podAnnotations }}
+        {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+{{- if .Values.daemonset.args }}
+{{ toYaml .Values.daemonset.args | indent 8 }}
+{{- else }}
+        - "-e"
+{{- if .Values.plugins }}
+        - "--plugin"
+        - {{ .Values.plugins | join "," | quote }}
+{{- end }}
+        - "-system.hostfs=/hostfs"
+{{- if .Values.daemonset.debug }}
+        - "-d"
+        - "*"
+{{- end }}
+{{- end }}
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
+        securityContext:
+          runAsUser: 0
+{{- if .Values.daemonset.capabilities }}
+          capabilities:
+            add:
+{{ toYaml .Values.daemonset.capabilities | indent 12 }}
+{{- end }}
+        resources:
+{{- if .Values.daemonset.resources }}
+{{ toYaml .Values.daemonset.resources | indent 10 }}
+{{- else if .Values.resources }}
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/metricbeat/metricbeat.yml
+          readOnly: true
+          subPath: metricbeat.yml
+        - name: modules
+          mountPath: /usr/share/metricbeat/modules.d
+          readOnly: true
+        - name: data
+          mountPath: /usr/share/metricbeat/data
+        - name: proc
+          mountPath: /hostfs/proc
+          readOnly: true
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+          readOnly: true
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-daemonset-config
+      - name: modules
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-daemonset-modules
+      - name: data
+        hostPath:
+          path: /var/lib/metricbeat
+          type: DirectoryOrCreate
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+      terminationGracePeriodSeconds: 60
+{{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+{{- end }}
+      serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
+      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+{{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 6 }}
+{{- end }}
+{{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}

@@ -4,21 +4,15 @@ apiVersion: v1
 metadata:
   name: {{ template "prestashop.fullname" . }}-prestashop
   labels:
-    app: {{ template "prestashop.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "prestashop.name" . }}"
+    chart: "{{ template "prestashop.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
-    - {{ .Values.persistence.prestashop.accessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.prestashop.size | quote }}
-{{- if .Values.persistence.prestashop.storageClass }}
-{{- if (eq "-" .Values.persistence.prestashop.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.prestashop.storageClass }}"
-{{- end }}
-{{- end }}
+      storage: {{ .Values.persistence.size | quote }}
+  {{ include "prestashop.storageClass" . }}
 {{- end -}}

@@ -1,3 +1,5 @@
+This Chart is Deprecated. We have moved it to stable.
+
 Congratulations. You have just deployed JFrog Distribution!
 
 1. Get the Distribution URL by running these commands:

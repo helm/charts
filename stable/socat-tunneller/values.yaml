@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: alpine/socat
+  tag: 1.0.3
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+tunnel:
+  host: myhost
+  port: 9999

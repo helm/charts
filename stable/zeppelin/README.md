@@ -26,6 +26,12 @@ The following table lists the configurable parameters of the Zeppelin chart and 
 | `hadoop.useConfigMap`                | Use external Hadoop configuration for Spark executors             | `false`                                                    |
 | `hadoop.configMapName`               | Name of the hadoop config map to use (must be in same namespace)  | `hadoop-config`                                            |
 | `hadoop.configPath`                  | Path in the Zeppelin image where the Hadoop config is mounted     | `/usr/hadoop-2.7.3/etc/hadoop`                             |
+| `ingress.enabled`                    | Enable ingress                                                    | `false`                                                    |
+| `ingress.annotations`                | Ingress annotations                                               | `{}`                                                       |
+| `ingress.hosts`                      | Ingress Hostnames                                                 | `["zeppelin.local"]`                                       |
+| `ingress.path`                       | Path within the URL structure                                     | `/`                                                        |
+| `ingress.tls`                        | Ingress TLS configuration                                         | `[]`                                                       |
+| `nodeSelecor`                        | Node selector for the Zeppelin deployment                         | `{}`                                                       |
 
 ## Related charts
 

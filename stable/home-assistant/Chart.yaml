@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 0.108.7
+description: Home Assistant
+name: home-assistant
+version: 0.13.4
+keywords:
+- home-assistant
+- hass
+- homeassistant
+home: https://github.com/home-assistant/home-assistant
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Home_Assistant_Logo.svg/519px-Home_Assistant_Logo.svg.png
+sources:
+- https://github.com/home-assistant/home-assistant
+- https://github.com/danielperna84/hass-configurator
+- https://github.com/cdr/code-server
+deprecated: true

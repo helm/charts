@@ -7,27 +7,40 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- with .Values.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-    {{- range $key, $value := .Values.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
+    {{- with .Values.service.annotations }}
+    {{ tpl (toYaml .) $ | nindent 4 }}
     {{- end }}
 spec:
-{{ if .Values.service.clusterIP }}
+  # so the mesh peer-finder works
+  publishNotReadyAddresses: true
+  {{ if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP | quote  }}
-{{ end }}
+  {{ end }}
   type: {{ .Values.service.type }}
   {{ if eq .Values.service.type "LoadBalancer" -}} {{ if .Values.service.loadBalancerIP -}}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{ end -}}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ toYaml .Values.service.loadBalancerSourceRanges | nindent 2}}
   {{ end -}}
   {{- end -}}
   ports:
     - port: 3000
       protocol: TCP
-      name: aerospike-client
+      name: client
     - port: 3002
       protocol: TCP
-      name: aerospike-mesh
+      name: mesh
+    {{ if .Values.metrics.enabled }}
+    - port: 9145
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     app: {{ template "aerospike.name" . }}
     release: {{ .Release.Name }}

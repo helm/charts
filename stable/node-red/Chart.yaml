@@ -1,0 +1,14 @@
+apiVersion: v1
+appVersion: 1.0.4
+description: Node-RED is low-code programming for event-driven applications
+name: node-red
+version: 1.4.3
+keywords:
+  - nodered
+  - node-red
+home: https://github.com/node-red/node-red-docker
+icon: https://nodered.org/about/resources/media/node-red-icon-2.png
+sources:
+  - https://github.com/node-red/node-red-docker
+  - https://github.com/kubernetes/charts/stable/node-red
+deprecated: true

@@ -1,28 +1,42 @@
 {{- if .Values.ingress.enabled }}
-apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "owncloud.fullname" . }}
   labels:
     app: {{ template "owncloud.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-{{- if .Values.ingress.annotations }}
+    chart: {{ template "owncloud.chart" . }}
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- end }}
+    {{- range .Values.ingress.hosts }}
+    {{- if .tls }}
+    ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+    {{- end }}
+    {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   rules:
-  - host: {{ .Values.owncloudHost }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ .name }}
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: {{ template "owncloud.fullname" . }}
-          servicePort: {{ .Values.ingress.servicePort }}
-{{- if .Values.ingress.tls }}
+        - path: {{ default "/" .path }}
+          backend:
+            serviceName: {{ template "owncloud.fullname" $ }}
+            servicePort: 80
+  {{- end }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
+{{- range .Values.ingress.hosts }}
+  - hosts:
+{{- if .tls }}
+    - {{ .name }}
+    secretName: {{ .tlsSecret }}
+{{- end }}
+{{- end }}
 {{- end }}

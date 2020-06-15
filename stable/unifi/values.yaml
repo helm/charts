@@ -1,0 +1,299 @@
+# Default values for unifi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
+image:
+  repository: jacobalberty/unifi
+  tag: 5.12.35
+  pullPolicy: IfNotPresent
+
+# If enabled, the controller, discovery, GUI, and STUN services will not be
+# created.
+# Instead, one service will be created with the port and nodePort settings from
+# controllerService, discoveryService, guiService, and stunService.
+# This is useful if, for example, the ClusterIP network is routable and being
+# accessed directly by access points, and the APs don't have a way to discern
+# different services on different IPs.
+unifiedService:
+  enabled: false
+  type: ClusterIP
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
+guiService:
+  type: ClusterIP
+  port: 8443
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
+captivePortalService:
+  enabled: false
+  type: ClusterIP
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  http: 8880
+  https: 8843
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
+
+  # Ingress settings only for the captive portal
+  ingress:
+    enabled: false
+    annotations: {}
+      # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+controllerService:
+  type: NodePort
+  port: 8080
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+  ##
+  # Ingress settings only for the controller
+  ingress:
+    enabled: false
+    annotations: {}
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+
+stunService:
+  type: NodePort
+  port: 3478   # udp
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
+discoveryService:
+  type: NodePort
+  port: 10001  # udp
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  labels: {}
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
+
+ingress:
+  enabled: false
+  annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+timezone: UTC
+
+runAsRoot: false
+UID: 999
+GID: 999
+
+## If you provide your own custom certificate in <unifi-data>/cert
+## you can define the following parameters to configure the controller
+customCert:
+  enabled: false
+  isChain: false
+  certName: tls.crt
+  keyName: tls.key
+  # If you want to store certificate and its key as a Kubernetes tls secret
+  # you can pass the name of that secret using certSecret variable
+  # certSecret: unifi-tls
+
+# define an external mongoDB instead of using the built-in mongodb
+mongodb:
+  enabled: false
+  dbUri: mongodb://mongo/unifi
+  statDbUri: mongodb://mongo/unifi_stat
+  databaseName: unifi
+
+persistence:
+  enabled: true
+  ## unifi data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
+  #
+  ## Applies a prefix to the directories created by the unifi container
+  # subPath: unifi
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+extraVolumes: []
+  ## specify additional volume to be used by extraVolumeMounts inside unifi container
+  # - name: additional-volume
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+
+extraVolumeMounts: []
+  ## specify additional VolumeMount to be mounted inside unifi container
+  # - name: additional-volume
+  #   mountPath: /path/in/container
+
+extraJvmOpts: []
+  ## Extra java options
+  ## Here are some examples of valid JVM options:
+  ##
+  # - "-XX:MaxMetaspaceSize=256m"
+  # - "-Dlog4j.configurationFile=file:/configmap/log4j2.xml"
+  # - "-Dsystem_ip=1.2.3.4"
+
+extraConfigFiles: {}
+  ## Specify additional config files which are mounted to /configmap
+  ## Here is an example for a custom log4j config:
+  ##
+  # log4j2.xml: |-
+  #   <?xml version="1.0" encoding="UTF-8"?>
+  #   <Configuration>
+  #     <Appenders>
+  #       <InMemoryAppender name="InMemoryAppender" activatedLogging="false">
+  #         <PatternLayout pattern="[%d{ISO8601}] &lt;%t&gt; %-5p %-6c{1} - %m%n" />
+  #       </InMemoryAppender>
+  #       <RollingFile name="server_log" fileName="logs/server.log" filePattern="logs/server.log.%i">
+  #         <PatternLayout pattern="[%d{ISO8601}] &lt;%t&gt; %-5p %-6c{1} - %m%n" />
+  #         <SizeBasedTriggeringPolicy size="10 MB"/>
+  #         <DefaultRolloverStrategy max="3" fileIndex="min" />
+  #       </RollingFile>
+  #       <Console name="STDOUT" target="SYSTEM_OUT">
+  #         <PatternLayout pattern="&lt;%t&gt; %-5p %-6c{1} - %m%n"/>
+  #       </Console>
+  #     </Appenders>
+  #     <Loggers>
+  #       <Root level="INFO">
+  #         <AppenderRef ref="InMemoryAppender" />
+  #         <AppenderRef ref="server_log" />
+  #         <AppenderRef ref="STDOUT" />
+  #       </Root>
+  #     </Loggers>
+  #   </Configuration>
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+deploymentAnnotations: {}

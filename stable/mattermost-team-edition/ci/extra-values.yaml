@@ -1,0 +1,21 @@
+mysql:
+  enabled: true
+  mysqlRootPassword: "rootpassword"
+  mysqlUser: "mmuser"
+  mysqlPassword: "mmpassword"
+  mysqlDatabase: mattermost
+
+extraEnvVars:
+  - name: TEST_SAMPLE
+    value: blablabal
+
+extraInitContainers:
+  - name: test-init
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command:
+      - sh
+      - "-c"
+      - |
+        echo "TEST blablabla"
+        exit 0

@@ -1,9 +1,20 @@
 global:
   ## NodeSelector to be used in every deployment
   ## hub, chrome, firefox, chromeDebug and firefoxDebug
-  ## can also be spceifed at chart level see below
+  ## can also be specified at chart level see below
   nodeSelector:
   #  label: value
+  ## Configure HostAliases
+  hostAliases: []
+  affinity:
+  #  label: value
+  tolerations:
+  #  label: value
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  ## to be used in every deployment hub, chrome, firefox, chromeDebug and firefoxDebug
+  ## can also be specified at chart level see below.
+  ## Specifying secret at a chart level will override the global option
+  imagePullSecrets:
 
 hub:
   ## The repository and image
@@ -12,7 +23,10 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.13.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -21,11 +35,37 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub console
+  ## The port the service listens on
+  servicePort: 4444
+
+  ## nodePort - The node port the service exposed on
+  # nodePort: 30044
+
+  ## Timeout for probe Hub readiness via HTTP request on hub.probePath
   readinessTimeout: 1
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  ## Initial delay before performing the first readinessProbe
+  readinessDelay: 15
+
+  ## Timeout for probe Hub liveness via HTTP request on hub.probePath
   livenessTimeout: 1
+
+  ## Path for checking readiness and liveness via HTTP Request
+  probePath: "/wd/hub/status"
+
+  # Configure security context on the hub pod
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -51,6 +91,9 @@ hub:
       cpu: ".5"
       memory: "512Mi"
 
+  ## Configure annotations on the hub pod
+  podAnnotations: {}
+
   ## The type of service to create
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
   ## ref: https://kubernetes.io/docs/user-guide/services/
@@ -59,6 +102,7 @@ hub:
   ## The LoadBalancer IP Address
   ## ref: https://kubernetes.io/docs/user-guide/services/
   ## serviceLoadBalancerIP: "40.121.183.52"
+  loadBalancerSourceRanges: []
 
   ## Control where client requests go, to the same pod or round-robin
   ##   Values: ClientIP or None
@@ -70,30 +114,46 @@ hub:
   #   # internal AWS ELB
   #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 
-  ## ref: https://seleniumhq.github.io/docs/grid.html#step_1_start_the_hub
+  ## ref: https://github.com/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes
+  ## In milliseconds
   # gridNewSessionWaitTimeout: -1
   # gridJettyMaxThreads: -1
   ## In milliseconds
   # gridNodePolling: 5000
   ## In milliseconds
   # gridCleanUpCycle: 5000
-  ## In milliseconds
-  # gridTimeout: 30000
-  ## In milliseconds
+  ## In seconds
+  # gridTimeout: 30
+  ## In seconds
   # gridBrowserTimeout: 0
   # gridMaxSession: 5
   ## In milliseconds
-  # gridUnregisterIfStillDownAfer: 30000
+  # gridUnregisterIfStillDownAfter: 30000
   # timeZone: UTC
 
   ## NodeSelector to be used for the hub
   nodeSelector:
   #  label: value
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - selenium-hub.local
+    tls: []
+    #  - secretName: selenium-hub-tls
+    #    hosts:
+    #      - selenium-hub.local
 
 
 chrome:
   ## Enable the creation of a node-chrome pod
   enabled: false
+
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
 
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/
@@ -101,14 +161,40 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
-  tag: "3.13.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
+  ## Configure annotations on the chrome pods
+  podAnnotations: {}
+
+  # Configure security context on the chrome pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
@@ -171,20 +257,49 @@ chromeDebug:
   ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
-  tag: "3.13.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
+  ## Configure annotations on the chrome debug pods
+  podAnnotations: {}
+
+  # Configure security context on the chrome debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -246,20 +361,49 @@ firefox:
   ## Enable the creation of a node-firefox pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
-  tag: "3.13.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
+  ## Configure annotations on the firefox pods
+  podAnnotations: {}
+
+  # Configure security context on the firefox pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -308,20 +452,49 @@ firefoxDebug:
   ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
+  ## DaemonSet instead of Deployment
+  runAsDaemonSet: false
+
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
-  tag: "3.13.0"
+  tag: "3.141.59"
+
+  ## imagePullSecrets is the secret to use to pull the image from in case of a private flavour image
+  # imagePullSecrets: "regcred"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
-  ## The number of pods in the deployment
+  ## The number of pods in the deployment. This is ignored if runAsDaemonSet is enabled.
   replicas: 1
+
+  ## When true will add a liveness check to the pod
+  enableLivenessProbe: false
+
+  ## When true will wait for current running sessions to finish before terminating the pod
+  waitForRunningSessions: false
+
+  ## Configure annotations on the firefox debug pods
+  podAnnotations: {}
+
+  # Configure security context on the firefox debug pods
+  # securityContext:
+  #   fsGroup: 1000
+  #   runAsUser: 1000
+
+  ## Additional environment variables to set
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC

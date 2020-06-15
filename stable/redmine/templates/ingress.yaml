@@ -1,23 +1,45 @@
 {{- if .Values.ingress.enabled }}
-apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-{{- if .Values.ingress.annotations }}
-  annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- end }}
   name: {{ template "redmine.fullname" . }}
+  labels: {{- include "redmine.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- if .Values.ingress.annotations }}
+    {{- include "redmine.tplValue" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
+    {{- end }}
 spec:
   rules:
-  - host: {{ .Values.ingress.hostname | quote }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "redmine.fullname" . }}
-          servicePort: 80
-{{- if .Values.ingress.tls }}
+    {{- if .Values.ingress.hostname }}
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: "{{ template "redmine.fullname" . }}"
+            servicePort: http-redmine
+    {{- end }}
+    {{- range .Values.ingress.extraHosts }}
+    - host: {{ .name }}
+      http:
+        paths:
+        - path: {{ default "/" .path }}
+          backend:
+            serviceName: "{{ template "redmine.fullname" $ }}"
+            servicePort: http-redmine
+    {{- end }}
+  {{- if or .Values.ingress.tls .Values.ingress.extraTls .Values.ingress.hosts }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
+    {{- if .Values.ingress.tls }}
+    - hosts:
+        - {{ .Values.ingress.hostname }}
+      secretName: {{ printf "%s-tls" .Values.ingress.hostname }}
+    {{- end }}
+    {{- if .Values.ingress.extraTls }}
+    {{- toYaml .Values.ingress.extraTls | nindent 4 }}
+    {{- end }}
+  {{- end }}
 {{- end }}

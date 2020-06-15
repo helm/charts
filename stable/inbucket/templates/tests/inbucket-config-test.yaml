@@ -1,0 +1,15 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "inbucket.name" . }}-tests
+  labels:
+    app.kubernetes.io/name: {{ include "inbucket.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "inbucket.chart" . }}
+data:
+  run.sh: |-
+    @test "Testing Inbucket is accessible" {
+      curl --retry 48 --retry-delay 10 {{ include "inbucket.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port.http }}
+    }

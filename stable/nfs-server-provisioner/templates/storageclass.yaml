@@ -8,9 +8,21 @@ metadata:
     chart: {{ template "nfs-provisioner.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- if .Values.storageClass.defaultClass }}
+  {{- if .Values.storageClass.defaultClass }}
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-{{- end }}
+  {{- end }}
 provisioner: {{ template "nfs-provisioner.provisionerName" . }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+{{ if .Values.storageClass.allowVolumeExpansion }}
+allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+{{ end }}
+{{- with .Values.storageClass.parameters }}
+parameters:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.storageClass.mountOptions }}
+mountOptions:
+{{- toYaml . | nindent 2 }}
+{{- end }}
 {{ end -}}

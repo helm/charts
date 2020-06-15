@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluentd.fullname" . }}
+  labels:
+    app: {{ template "fluentd.name" . }}
+    chart: {{ template "fluentd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.configMaps }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
+  metrics.conf: |
+    <source>
+      @type prometheus
+      port {{ .Values.metrics.service.port }}
+    </source>
+
+    <source>
+      @type prometheus_monitor
+    </source>
+
+    <source>
+      @type prometheus_output_monitor
+    </source>
+{{- end }}
+{{- if and (.Values.plugins.enabled) (gt (len .Values.plugins.pluginsList) 0) }}
+  install-plugins.sh: |-
+    #!/bin/sh
+  {{- range $plugin := .Values.plugins.pluginsList }}
+    fluent-gem install {{ $plugin }}
+  {{- end }}
+    exec /run.sh
+{{- end }}

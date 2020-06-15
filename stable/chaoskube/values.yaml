@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.8.0
+imageTag: v0.14.0
 
 # number of replicas to run
 replicas: 1
@@ -25,6 +25,15 @@ namespaces:
 # don't kill pods, only log what would have been done
 dryRun: true
 
+# Enable debug logging
+debug: false
+
+# regular expression pattern for pod names to include (all included by default)
+includedPodNames:
+
+# regular expression pattern for pod names to exclude (none excluded by default)
+excludedPodNames:
+
 # Set values for exempting specific week days from Chaoskube Actions
 excludedWeekdays:
 
@@ -37,10 +46,35 @@ excludedDaysOfYear:
 # Set specific Timezone for Actions to take place
 timezone: UTC
 
-# resource requests and limits
-resources:
-  cpu: 10m
-  memory: 16Mi
+# If nothing set, defaults to "text". Switch to "json" to enable structured logging
+logFormat:
+
+# minimum lifetime of a pod before it's considered for termination (0: immediately)
+minimumAge: 0s
+
+# grace period to give pods when terminating them (negative: pod decides)
+gracePeriod: -1s
+
+metrics:
+  # Enable metrics handler
+  enabled: false
+
+  # Listening port for metrics handler
+  port: 8080
+
+  service:
+    # Metrics service type
+    type: ClusterIP
+
+    # Metrics service port
+    port: 8080
+
+  serviceMonitor:
+    # Set this to `true` to create ServiceMonitor for Prometheus operator
+    enabled: false
+
+    # Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+    additionalLabels: {}
 
 priorityClassName: ""
 
@@ -51,6 +85,39 @@ rbac:
   # only used when create is false
   serviceAccountName: default
 
-# Node labels for pod assignment
-# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
 nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each CA should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app.kubernetes.io/name: chaoskube
+
+podAnnotations: {}
+  ## Annotations for the chaoskube pod.
+  #  podAnnotations:
+  #    prometheus.io/scrape: "true"
+  #    prometheus.io/port: "8080"
+
+podLabels: {}
+  ## Labels for the chaoskube pod.
+  #  podLabels:
+  #    my.first.label: "value"
+  #    my.other.label: "other-value"

@@ -1,3 +1,4 @@
+{{- if .Values.apiserver.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,6 +8,7 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    openebs.io/component-name: maya-apiserver-svc
 spec:
   ports:
   - name: api
@@ -18,3 +20,4 @@ spec:
     release: {{ .Release.Name }}
     component: apiserver
   sessionAffinity: None
+{{- end }}

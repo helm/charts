@@ -1,0 +1,51 @@
+{{- if .Values.clusters -}}
+{{- $scriptHash := include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 8 -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "kafka-manager.bootstrap.fullname" . }}-{{ $scriptHash }}"
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "kafka-manager.name" . }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" | trunc 63 }}
+    helm.sh/chart: {{ include "kafka-manager.chart" . }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "kafka-manager.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "kafka-manager.serviceAccountName" . }}
+      restartPolicy: OnFailure
+      volumes:
+        - name: script-volume
+          configMap:
+            name: {{ template "kafka-manager.bootstrap.fullname" . }}
+            defaultMode: 0744
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      containers:
+        - name: {{ .Chart.Name }}-bootstrap
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/local/script/addClusters.sh"]
+          env:
+            - name: KAFKA_MANAGER_AUTH_ENABLED
+              value: {{ .Values.basicAuth.enabled | quote }}
+            - name: KAFKA_MANAGER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthUsername
+            - name: KAFKA_MANAGER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthPassword
+          volumeMounts:
+            - name: script-volume
+              mountPath: "/usr/local/script"
+  backoffLimit: 20
+{{- end -}}

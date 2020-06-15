@@ -1,0 +1,14 @@
+{{- if .Values.chartCrds }}
+{{ $root := . }}
+{{- if .Values.keepCRDs }}
+{{- range tuple "CRD-protected/jenkins_v1alpha2_jenkinsinstance.yaml" }}
+---
+{{ tpl ($root.Files.Get .) $root }}
+{{- end }}
+{{- else }}
+{{- range tuple "CRD/jenkins_v1alpha2_jenkinsinstance.yaml" }}
+---
+{{ tpl ($root.Files.Get .) $root }}
+{{- end }}
+{{- end }}
+{{- end }}

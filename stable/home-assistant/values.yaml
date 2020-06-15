@@ -1,0 +1,355 @@
+# Default values for home-assistant.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: homeassistant/home-assistant
+  tag: 0.108.7
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
+
+# Probes configuration
+probes:
+  liveness:
+    enabled: true
+    scheme: HTTP
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
+  readiness:
+    enabled: true
+    scheme: HTTP
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    timeoutSeconds: 10
+  startup:
+    enabled: false
+    scheme: HTTP
+    failureThreshold: 30
+    periodSeconds: 10
+service:
+  type: ClusterIP
+  port: 8123
+  portName: api
+  additionalPorts: []
+  # - name: homematicproxy
+  #   port: 2001
+  #   targetPort: 2001
+  annotations: {}
+  labels: {}
+  clusterIP: ""
+  ## List of IP addresses at which the hass-configurator service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # nodePort: 30000
+  publishNotReadyAddresses: false
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - home-assistant.local
+  tls: []
+  #  - secretName: home-assistant-tls
+  #    hosts:
+  #      - home-assistant.local
+
+hostNetwork: false
+
+persistence:
+  enabled: true
+  ## home-assistant data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
+  ##
+  ## If you want to use a volume on the host machine instead of a PVC:
+  # hostPath: /path/to/the/config/folder
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+## Additional hass container environment variable
+## For instance to add a http_proxy
+##
+extraEnv: {}
+
+## Additional hass container environment variable from k8s secrets
+## For instance to add a password
+## can use `!env_var` in the home assistant configuration to reference these variables
+extraEnvSecrets:
+  # Example
+  # This will set ${MQTT_PASSWORD} to the 'password' key from the 'mqtt' secret
+  # MQTT_PASSWORD:
+  #   secret: mqtt
+  #   key: password
+
+## If you'd like to provide your own Kubernetes Secret object instead of passing your values
+## individually, pass in the name of a created + populated Secret.
+## All secrets will be mounted as environment variables, with each key/value mapping to a
+## corresponding environment variable.
+##
+extraSecretForEnvFrom: []
+# - home-assistant-secrets
+
+# Enable pod security context (must be `true` if runAsUser or fsGroup are set)
+usePodSecurityContext: true
+# Set runAsUser to 1000 to let home-assistant run as non-root user 'hass' which exists in 'runningman84/alpine-homeassistant' docker image.
+# When setting runAsUser to a different value than 0 also set fsGroup to the same value:
+# runAsUser: <defaults to 0>
+# fsGroup: <will be omitted in deployment if runAsUser is 0>
+
+git:
+  enabled: false
+
+  ## we just use the hass-configurator container image
+  ## you can use any image which has git and openssh installed
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: 0.3.5-x86_64
+    pullPolicy: IfNotPresent
+
+  ## Specify the command that runs in the git-sync container to pull in configuration.
+  # command: []
+
+  # Committer settings
+  user:
+    name: ""
+    email: ""
+
+  # repo:
+  secret: git-creds
+  syncPath: /config
+  keyPath: /root/.ssh
+
+zwave:
+  enabled: false
+  device: ttyACM0
+
+# Mount devices or folders from the host machine. Can be used for USB device mounting.
+hostMounts: []
+  # Example
+  # - name: zha
+  #   hostPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_6120245D-if01-port0
+
+configurator:
+  enabled: false
+
+  ## hass-configurator container image
+  ##
+  image:
+    repository: causticlab/hass-configurator-docker
+    tag: 0.3.5-x86_64
+    pullPolicy: IfNotPresent
+
+  ## URL for the home assistant API endpoint
+  # hassApiUrl: http://home-assistant:8123/api/
+  ## home assistant API password
+  # hassApiPassword:
+  ## path where the home assistant configuration is stored
+  basepath: /config
+  ## don't allow switching out of the base path
+  enforceBasepath: true
+  ## username for basic auth for accessing the configurator
+  # username:
+  ## password (sha256-hash) for basic auth for accessing the configurator
+  ## For example "test" would be "{sha256}9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+  # password:
+
+  ## Additional hass-configurator container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 3218
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-configurator service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # externalTrafficPolicy: Local
+    # nodePort: 30000
+
+## Add support for Prometheus
+# settings has to be enabled in configuration.yaml
+# https://www.home-assistant.io/components/prometheus/
+monitoring:
+  enabled: false
+  serviceMonitor:
+    # When set true and if Prometheus Operator is installed then use a ServiceMonitor to configure scraping
+    enabled: true
+    # Set the namespace the ServiceMonitor should be deployed
+    # namespace: monitoring
+    # Set how frequently Prometheus should scrape
+    # interval: 30s
+    # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+    # labels:
+    # Set bearerTokenFile for home assistant auth (use long lived access tokens)
+    # bearerTokenFile:
+    # Set bearerTokenSecret for home assistant auth (use long lived access tokens)
+    # bearerTokenSecret:
+
+
+vscode:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: codercom/code-server
+    tag: 3.1.1
+    pullPolicy: IfNotPresent
+
+  ## VSCode password
+  # password:
+
+  ## path where the home assistant configuration is stored
+  hassConfig: /config
+
+  ## path where the VS Code data should reside
+  vscodePath: /config/.vscode
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - home-assistant.local
+    tls: []
+    #  - secretName: home-assistant-tls
+    #    hosts:
+    #      - home-assistant.local
+
+  service:
+    type: ClusterIP
+    port: 80
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
+appdaemon:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: acockburn/appdaemon
+    tag: 3.0.5
+    pullPolicy: IfNotPresent
+
+  ## Home Assistant API token
+  # haToken:
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - appdaemon.local
+    tls: []
+    #  - secretName: appdaemon-tls
+    #    hosts:
+    #      - appdaemon.local
+
+  service:
+    type: ClusterIP
+    port: 5050
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-appdaemon service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+# Any extra volumes to define for the pod
+extraVolumes: []
+  # - name: example-name
+  #   hostPath:
+  #     path: /path/on/host
+  #     type: DirectoryOrCreate
+
+# Any extra volume mounts to define for the containers
+extraVolumeMounts: []
+#   - name: example-name
+#     mountPath: /path/in/container

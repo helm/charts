@@ -1,0 +1,256 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.data.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.data.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.data.name }}"
+      release: {{ .Release.Name }}
+      role: data
+  serviceName: {{ template "elasticsearch.data.fullname" . }}
+  replicas: {{ .Values.data.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        component: "{{ .Values.data.name }}"
+        release: {{ .Release.Name }}
+        role: data
+{{- if or .Values.data.podAnnotations (eq .Values.data.updateStrategy.type "RollingUpdate") }}
+      annotations:
+      {{- if .Values.data.podAnnotations }}
+{{ toYaml .Values.data.podAnnotations | indent 8 }}
+      {{- end }}
+      {{- if eq .Values.data.updateStrategy.type "RollingUpdate" }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      serviceAccountName: {{ template "elasticsearch.serviceAccountName.data" . }}
+{{- if .Values.data.priorityClassName }}
+      priorityClassName: "{{ .Values.data.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
+      {{- if or .Values.data.antiAffinity .Values.data.nodeAffinity }}
+      affinity:
+      {{- end }}
+      {{- if eq .Values.data.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- else if eq .Values.data.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- end }}
+      {{- with .Values.data.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- if .Values.data.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.data.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.data.tolerations }}
+      tolerations:
+{{ toYaml .Values.data.tolerations | indent 8 }}
+{{- end }}
+{{- if or .Values.extraInitContainers .Values.sysctlInitContainer.enabled .Values.chownInitContainer.enabled .Values.cluster.plugins }}
+      initContainers:
+{{- end }}
+{{- if .Values.sysctlInitContainer.enabled }}
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+        imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.data.initResources | indent 12 }}
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+{{- end }}
+{{- if .Values.chownInitContainer.enabled }}
+      - name: "chown"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.data.initResources | indent 12 }}
+        command:
+        - /bin/bash
+        - -c
+        - >
+          set -e;
+          set -x;
+          chown elasticsearch:elasticsearch /usr/share/elasticsearch/data;
+          for datadir in $(find /usr/share/elasticsearch/data -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+            chown -R elasticsearch:elasticsearch $datadir;
+          done;
+          chown elasticsearch:elasticsearch /usr/share/elasticsearch/logs;
+          for logfile in $(find /usr/share/elasticsearch/logs -mindepth 1 -maxdepth 1 -not -name ".snapshot"); do
+            chown -R elasticsearch:elasticsearch $logfile;
+          done
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+{{- end }}
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
+{{- if .Values.cluster.plugins }}
+{{ include "plugin-installer" . | indent 6 }}
+{{- end }}
+      containers:
+      - name: elasticsearch
+        env:
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery
+        - name: NODE_MASTER
+          value: "false"
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }} {{ .Values.cluster.additionalJavaOpts }} {{ .Values.data.additionalJavaOpts }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        ports:
+        - containerPort: 9300
+          name: transport
+{{ if .Values.data.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
+        resources:
+{{ toYaml .Values.data.resources | indent 12 }}
+        readinessProbe:
+{{ toYaml .Values.data.readinessProbe | indent 10 }}
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: config
+          subPath: elasticsearch.yml
+{{- if .Values.cluster.plugins }}
+        - mountPath: /usr/share/elasticsearch/plugins/
+          name: plugindir
+{{- end }}
+{{- if hasPrefix "2." .Values.appVersion }}
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: config
+          subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.appVersion }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
+{{- if or .Values.data.hooks.preStop .Values.data.hooks.drain.enabled }}
+        - name: config
+          mountPath: /data-pre-stop-hook.sh
+          subPath: data-pre-stop-hook.sh
+{{- end }}
+{{- if or .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
+        - name: config
+          mountPath: /data-post-start-hook.sh
+          subPath: data-post-start-hook.sh
+{{- end }}
+{{- if or .Values.data.hooks.preStop .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
+        lifecycle:
+  {{- if or .Values.data.hooks.preStop .Values.data.hooks.drain.enabled }}
+          preStop:
+            exec:
+              command: ["/bin/bash","/data-pre-stop-hook.sh"]
+  {{- end }}
+  {{- if or .Values.data.hooks.postStart .Values.data.hooks.drain.enabled }}
+          postStart:
+            exec:
+              command: ["/bin/bash","/data-post-start-hook.sh"]
+  {{- end }}
+{{- end }}
+      terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.plugins }}
+      - name: plugindir
+        emptyDir: {}
+{{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
+  {{- if not .Values.data.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- end }}
+  podManagementPolicy: {{ .Values.data.podManagementPolicy }}
+  updateStrategy:
+    type: {{ .Values.data.updateStrategy.type }}
+  {{- if .Values.data.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.data.persistence.name }}
+    spec:
+      accessModes:
+        - {{ .Values.data.persistence.accessMode | quote }}
+    {{- if .Values.data.persistence.storageClass }}
+    {{- if (eq "-" .Values.data.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.data.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.data.persistence.size }}"
+  {{- end }}

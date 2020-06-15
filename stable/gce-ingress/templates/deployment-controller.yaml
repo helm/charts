@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gce-ingress.fullname" . }}
+  labels:
+    app: {{ include "gce-ingress.name" . }}
+    chart: {{ include "gce-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.controller.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "gce-ingress.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gce-ingress.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ include "gce-ingress.fullname" . }}
+      {{- end }}
+      terminationGracePeriodSeconds: 600
+      hostNetwork: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8086
+              scheme: HTTP
+            initialDelaySeconds: 30
+            # healthz reaches out to GCE
+            periodSeconds: 30
+            timeoutSeconds: 15
+            successThreshold: 1
+            failureThreshold: 5
+          volumeMounts:
+            - name: gce-config-volume
+              mountPath: /etc/gce/
+            {{- if .Values.secret }}
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+            {{- end }}
+          command:
+            - sh
+            - -c
+            - 'exec /glbc --gce-ratelimit=ga.Operations.Get,qps,10,100 --gce-ratelimit=alpha.Operations.Get,qps,10,100 --gce-ratelimit=ga.BackendServices.Get,qps,1.8,1 --gce-ratelimit=ga.HealthChecks.Get,qps,1.8,1 --gce-ratelimit=alpha.HealthChecks.Get,qps,1.8,1 --verbose --default-backend-service={{ .Release.Namespace }}/{{ include "gce-ingress.fullname" . }} --sync-period=600s --running-in-cluster=true --use-real-cloud=true --config-file-path=/etc/gce/gce.conf --healthz-port=8086 2>&1'
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+      volumes:
+      {{- if .Values.secret }}
+        - name: google-cloud-key
+          secret:
+            secretName: {{ .Values.secret }}
+            items:
+              - key: {{ default "key.json" .Values.secretKey }}
+                path: key.json
+      {{- end }}
+        - name: gce-config-volume
+          configMap:
+            name: {{ include "gce-ingress.fullname" . }}
+            items:
+            - key: gce.conf
+              path: gce.conf
+    {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.controller.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

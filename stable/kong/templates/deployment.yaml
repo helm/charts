@@ -1,81 +1,147 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "kong.fullname" . }}"
+  name: {{ template "kong.fullname" . }}
   labels:
-    app: "{{ template "kong.name" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "kong.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "kong.selectorLabels" . | nindent 6 }}
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
+
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        checksum/admission-webhook.yaml: {{ include (print $.Template.BasePath "/admission-webhook.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off" )) }}
+        {{- if .Values.dblessConfig.config }}
+        checksum/dbless.config: {{ toYaml .Values.dblessConfig.config | sha256sum }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+        {{- end }}
       labels:
-        app: {{ template "kong.name" . }}
-        release: {{ .Release.Name }}
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
     spec:
+      {{- if or .Values.ingressController.enabled .Values.podSecurityPolicy.enabled }}
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{ end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if not (eq .Values.env.database "off") }}
+      initContainers:
+      {{- include "kong.wait-for-db" . | nindent 6 }}
+      {{ end }}
       containers:
-      - name: {{ template "kong.name" . }}
+      {{- if .Values.ingressController.enabled }}
+      {{- include "kong.controller-container" . | nindent 6 }}
+      {{ end }}
+      - name: "proxy"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-        {{- if .Values.admin.useTLS }}
-        - name: KONG_ADMIN_LISTEN
-          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_ADMIN_LISTEN
-          value: 0.0.0.0:{{ .Values.admin.containerPort }}
-        {{- end }}
-        {{- if .Values.proxy.useTLS }}
-        - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        {{- end }}
-        - name: KONG_NGINX_DAEMON
-          value: "off"
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_ADMIN_ACCESS_LOG
-          value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
-        - name: KONG_ADMIN_ERROR_LOG
-          value: "/dev/stderr"
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
-        {{- if .Values.postgresql.enabled }}
-        - name: KONG_PG_HOST
-          value: {{ template "kong.postgresql.fullname" . }}
-        - name: KONG_PG_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "kong.postgresql.fullname" . }}
-              key: postgres-password
-        {{- end }}
-        {{- if .Values.cassandra.enabled }}
-        - name: KONG_CASSANDRA_CONTACT_POINTS
-          value: {{ template "kong.cassandra.fullname" . }}
-        {{- end }}
+        {{- include "kong.final_env" . | nindent 8 }}
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh", "-c", "kong quit" ]
         ports:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
+          {{- if .Values.admin.hostPort }}
+          hostPort: {{ .Values.admin.hostPort }}
+          {{- end}}
           protocol: TCP
+        {{- if .Values.proxy.http.enabled }}
         - name: proxy
-          containerPort: {{ .Values.proxy.containerPort }}
+          containerPort: {{ .Values.proxy.http.containerPort }}
+          {{- if .Values.proxy.http.hostPort }}
+          hostPort: {{ .Values.proxy.http.hostPort }}
+          {{- end}}
           protocol: TCP
+        {{- end }}
+        {{- if .Values.proxy.tls.enabled }}
+        - name: proxy-tls
+          containerPort: {{ .Values.proxy.tls.containerPort }}
+          {{- if .Values.proxy.tls.hostPort }}
+          hostPort: {{ .Values.proxy.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        - name: metrics
+          containerPort: 9542
+          protocol: TCP
+        {{- if .Values.ingressController.admissionWebhook.enabled }}
+        - name: webhook
+          containerPort: {{ .Values.ingressController.admissionWebhook.port }}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.enterprise.enabled }}
+        {{- if .Values.manager.http.enabled }}
+        - name: manager
+          containerPort: {{ .Values.manager.http.containerPort }}
+          {{- if .Values.manager.http.hostPort }}
+          hostPort: {{ .Values.manager.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.manager.tls.enabled }}
+        - name: manager-tls
+          containerPort: {{ .Values.manager.tls.containerPort }}
+          {{- if .Values.manager.tls.hostPort }}
+          hostPort: {{ .Values.manager.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portal.http.enabled }}
+        - name: portal
+          containerPort: {{ .Values.portal.http.containerPort }}
+          {{- if .Values.portal.http.hostPort }}
+          hostPort: {{ .Values.portal.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portal.tls.enabled }}
+        - name: portal-tls
+          containerPort: {{ .Values.portal.tls.containerPort }}
+          {{- if .Values.portal.tls.hostPort }}
+          hostPort: {{ .Values.portal.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portalapi.http.enabled }}
+        - name: portalapi
+          containerPort: {{ .Values.portalapi.http.containerPort }}
+          {{- if .Values.portalapi.http.hostPort }}
+          hostPort: {{ .Values.portalapi.http.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.portalapi.tls.enabled }}
+        - name: portalapi-tls
+          containerPort: {{ .Values.portalapi.tls.containerPort }}
+          {{- if .Values.portalapi.tls.hostPort }}
+          hostPort: {{ .Values.portalapi.tls.hostPort }}
+          {{- end}}
+          protocol: TCP
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        {{- include "kong.volumeMounts" . | nindent 10 }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
@@ -86,9 +152,13 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+      {{- include "kong.volumes" . | nindent 8 -}}

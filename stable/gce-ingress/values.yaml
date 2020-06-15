@@ -1,0 +1,81 @@
+# Default values for gce-ingress.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# gce-ingress needs credentials to log into GCE.  Create a secret with the key
+# of key.json with the contents of a GCE service account that has permissions to create
+# and modify load balancers.  The key should be in the JSON format.
+# Example:
+# Your secret should look like:
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: gce-key
+# type: Opaque
+# data:
+#   key.json: < base64 encoded JSON service account key>
+secret: ~
+
+## If the google auth file is saved in a different secret key you can specify it here
+# secretKey: key.json
+
+# gce config, replace values to match your environment
+config:
+  projectID:
+  network:
+  subnetwork:
+  nodeInstancePrefix:
+  nodeTags:
+  # tokenUrl should probably be left as nil
+  tokenUrl: "nil"
+
+
+controller:
+  replicaCount: 1
+  image:
+    repository: k8s.gcr.io/ingress-gce-glbc-amd64
+    tag: v1.4.0
+    pullPolicy: IfNotPresent
+  resources: {}
+    # requests:
+    #   cpu: 10m
+    #   memory: 50Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+defaultBackend:
+  replicaCount: 1
+  image:
+    repository: k8s.gcr.io/defaultbackend
+    tag: "1.4"
+    pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 20Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+service:
+  type: NodePort
+  port: 80

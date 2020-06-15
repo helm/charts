@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+{{- if .Values.ingressMonitorController.useFullName }}
+  name: {{ template "fullname" . }}
+{{- else }}
+  name: {{ template "name" . }}
+{{- end }}
+  annotations:
+{{- if .Values.ingressMonitorController.config.annotations }}
+{{ toYaml .Values.ingressMonitorController.config.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- if .Values.ingressMonitorController.config.labels }}
+{{ toYaml .Values.ingressMonitorController.config.labels | indent 4 }}
+{{- end }}
+{{- if .Values.ingressMonitorController.matchLabels }}
+{{ toYaml .Values.ingressMonitorController.matchLabels | indent 4 }}
+{{- end }}
+data:
+  config.yaml: |-
+    providers:
+    {{- range .Values.ingressMonitorController.providers }}
+    - name: {{ .name }}
+      apiKey: {{ .apiKey }}
+      apiURL: {{ .apiURL }}
+      username: {{ .username | default "null" }}
+      password: {{ .password | default "null" }}
+      alertContacts: {{ .alertContacts }}
+    {{- end }}
+    enableMonitorDeletion: {{ .Values.ingressMonitorController.enableMonitorDeletion }}
+    monitorNameTemplate: "{{ .Values.ingressMonitorController.monitorNameTemplate }}"

@@ -1,5 +1,5 @@
-{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
-apiVersion: extensions/v1beta1
+{{- if and (include "mediawiki.host" .) (or .Values.mariadb.enabled .Values.externalDatabase.host) -}}
+apiVersion: {{ template "mediawiki.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mediawiki.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
@@ -16,13 +20,21 @@ spec:
         app: {{ template "mediawiki.name" . }}
         chart: {{ template "mediawiki.chart" . }}
         release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations .Values.metrics.enabled }}
+      annotations:
+  {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+  {{- end }}
+  {{- if .Values.metrics.podAnnotations }}
+{{ toYaml .Values.metrics.podAnnotations | indent 8 }}
+  {{- end }}
+{{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "mediawiki.imagePullSecrets" . | indent 6 }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
       containers:
       - name: {{ template "mediawiki.fullname" . }}
         image: {{ template "mediawiki.image" . }}
@@ -64,6 +76,9 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
             {{- end }}
+        {{- $port:=.Values.service.port | toString }}
+        - name: MEDIAWIKI_HOST
+          value: "{{ include "mediawiki.host" . }}{{- if ne $port "80" }}:{{ .Values.service.port }}{{ end }}"
         - name: MEDIAWIKI_USERNAME
           value: {{ .Values.mediawikiUser | quote }}
         - name: MEDIAWIKI_PASSWORD
@@ -101,13 +116,18 @@ spec:
         ports:
         - name: http
           containerPort: 80
+        {{- if .Values.service.httpsPort }}
         - name: https
           containerPort: 443
+        {{ end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -117,8 +137,11 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /index.php
+            path: /api.php
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "mediawiki.host" . | quote }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -128,23 +151,42 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: mediawiki-data
-          mountPath: /bitnami/mediawiki
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/mediawiki
+          name: mediawiki-data
+          subPath: mediawiki
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "mediawiki.metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+        ports:
+        - name: metrics
+          containerPort: 9117
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  {{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: mediawiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-mediawiki
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mediawiki.fullname" . }}-mediawiki{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
       {{- end }}
 {{- end }}

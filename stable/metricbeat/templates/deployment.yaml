@@ -1,0 +1,102 @@
+# Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
+{{- if .Values.deployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "metricbeat.fullname" . }}
+  labels:
+    app: {{ template "metricbeat.name" . }}
+    chart: {{ template "metricbeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "metricbeat.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "metricbeat.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ toYaml (default .Values.deployment.config .Values.deployment.overrideConfig) | sha256sum }}
+        checksum/modules: {{ toYaml (default .Values.deployment.modules .Values.deployment.overrideModules) | sha256sum }}
+{{- if .Values.deployment.podAnnotations }}
+  {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+    spec:
+{{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+{{- end }}
+      serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+{{- if .Values.deployment.args }}
+{{ toYaml .Values.deployment.args | indent 8 }}
+{{- else }}
+        - "-e"
+{{- if .Values.plugins }}
+        - "--plugin"
+        - {{ .Values.plugins | join "," | quote }}
+{{- end }}
+{{- if .Values.deployment.debug }}
+        - "-d"
+        - "*"
+{{- end }}
+{{- end }}
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
+        securityContext:
+          runAsUser: 0
+        resources:
+{{- if .Values.deployment.resources }}
+{{ toYaml .Values.deployment.resources | indent 10 }}
+{{- else if .Values.resources }}
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}
+        volumeMounts:
+        - name: metricbeat-config
+          mountPath: /usr/share/metricbeat/metricbeat.yml
+          readOnly: true
+          subPath: metricbeat.yml
+        - name: modules
+          mountPath: /usr/share/metricbeat/modules.d
+          readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.deployment.tolerations | indent 6 }}
+{{- end }}
+{{- if .Values.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.deployment.nodeSelector | indent 8 }}
+{{- end }}
+      volumes:
+      - name: metricbeat-config
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-deployment-config
+      - name: modules
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- end }}

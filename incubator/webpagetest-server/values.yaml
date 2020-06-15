@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: timothyclarke/wptserver
-  tag: 2018-01-12
+  tag: "2018-03-08"
   pullPolicy: IfNotPresent
 service:
   name: webpagetest-server

@@ -1,0 +1,23 @@
+---
+# enable all init container types
+
+# A dashboard is defined by a name and a string with the json payload or the download url
+dashboardImport:
+  enabled: true
+  dashboards:
+    k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+
+# Enable the plugin init container with plugins retrieved from an URL
+plugins:
+  enabled: true
+  reset: false
+  # Use <plugin_name,version,url> to add/upgrade plugin
+  values:
+    - analyze-api-ui-plugin,6.7.0,https://github.com/johtani/analyze-api-ui-plugin/releases/download/6.7.0/analyze-api-ui-plugin-6.7.0.zip
+    # - other_plugin
+
+# Add your own init container
+initContainers:
+  echo-container:
+    image: "busybox"
+    command: ['sh', '-c', 'echo Hello from init container! && sleep 3']

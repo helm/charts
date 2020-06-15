@@ -1,0 +1,46 @@
+# This Service is meant to be used by clients of the database.
+# It exposes a ClusterIP that will automatically load balance connections
+# to the different database Pods.
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-public
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.service.public.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- with .Values.service.public.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.public.type | quote }}
+  ports:
+  {{- $ports := .Values.service.ports }}
+    # The main port, served by gRPC, serves Postgres-flavor SQL, inter-node
+    # traffic and the CLI.
+    - name: {{ $ports.grpc.external.name | quote }}
+      port: {{ $ports.grpc.external.port | int64 }}
+      targetPort: grpc
+  {{- if ne ($ports.grpc.internal.port | int64) ($ports.grpc.external.port | int64) }}
+    - name: {{ $ports.grpc.internal.name | quote }}
+      port: {{ $ports.grpc.internal.port | int64 }}
+      targetPort: grpc
+  {{- end }}
+    # The secondary port serves the UI as well as health and debug endpoints.
+    - name: {{ $ports.http.name | quote }}
+      port: {{ $ports.http.port | int64 }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  {{- with .Values.statefulset.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

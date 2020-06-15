@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prisma.fullname" . }}
+  labels:
+    app: {{ template "prisma.name" . }}
+    chart: {{ template "prisma.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config: |
+    port: 4466
+    {{- if .Values.auth.enabled }}
+    managementApiSecret: $PRISMA_API_SECRET
+    {{- end }}
+    databases:
+      default:
+        connector: $PRISMA_DB_CONNECTOR
+        host: $PRISMA_DB_HOST
+        port: $PRISMA_DB_PORT
+        user: $PRISMA_DB_USER
+        password: $PRISMA_DB_PASSWORD
+        migrations: $PRISMA_DB_MIGRATIONS
+        database: $PRISMA_DB_NAME
+        ssl: $PRISMA_DB_SSL
+        connectionLimit: $PRISMA_DB_CONNECTIONLIMIT

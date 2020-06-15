@@ -1,0 +1,11 @@
+{{- $self := . -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "orientdb.fullname" . }}-configmap
+data:
+  {{ range $path, $bytes := .Files.Glob "config/*" }}
+  {{ base $path }}: |-
+{{ tpl ($self.Files.Get $path) $self | indent 4 }}
+  {{ end }}

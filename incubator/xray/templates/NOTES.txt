@@ -1,3 +1,5 @@
+This Chart is Deprecated. We have moved it to stable.
+
 Congratulations! JFrog Xray services are deployed!
 
 {{- if eq .Values.common.masterKey "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" }}

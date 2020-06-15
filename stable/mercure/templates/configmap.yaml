@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mercure.fullname" . }}
+  labels:
+{{ include "mercure.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+data:
+  allowAnonymous: {{ if .Values.allowAnonymous }}"1"{{ else }}"0"{{ end }}
+  subscriptions: {{ if .Values.subscriptions }}"1"{{ else }}"0"{{ end }}
+  metrics: {{ if .Values.metrics }}"1"{{ else }}"0"{{ end }}
+  metricsLogin: {{ .Values.metricsLogin | quote }}
+  corsAllowedOrigins: {{ join " " .Values.corsAllowedOrigins | quote }}
+  debug: {{ if .Values.debug }}"1"{{ else }}"0"{{ end }}
+  demo: {{ if .Values.demo }}"1"{{ else }}"0"{{ end }}
+  logFormat: {{ .Values.logFormat | upper | quote }}
+  publishAllowedOrigins: {{ join " " .Values.publishAllowedOrigins | quote }}
+  heartbeatInterval: {{ .Values.heartbeatInterval | quote }}
+  readTimeout: {{ .Values.readTimeout | quote }}
+  writeTimeout: {{ .Values.writeTimeout | quote }}
+  dispatchTimeout: {{ .Values.dispatchTimeout | quote }}
+  compress: {{ if .Values.compress }}"1"{{ else }}"0"{{ end }}
+  useForwardedHeaders: {{ if .Values.useForwardedHeaders }}"1"{{ else }}"0"{{ end }}
+  jwtAlgorithm: {{ .Values.jwtAlgorithm | quote }}

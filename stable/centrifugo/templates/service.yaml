@@ -6,14 +6,14 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "centrifugo.name" . }}
-  name: {{ template "centrifugo.fullname" . }}
+    {{- include "centrifugo.labels" . | nindent 4 }}
+  name: {{ include "centrifugo.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   type: "{{ .Values.service.type }}"
+{{- if .Values.service.clusterIP }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -33,6 +33,14 @@ spec:
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
+      {{- if .Values.grpc.enabled }}
+    - name: grpc
+      port: {{ .Values.service.grpcPort }}
+      protocol: TCP
+      targetPort: grpc
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.grpcNodePort))) }}
+      nodePort: {{ .Values.service.grpcNodePort }}
+      {{- end }}
+      {{- end }}
   selector:
-    app: {{ template "centrifugo.name" . }}
-    release: {{ .Release.Name }}
+    {{- include "centrifugo.selectorLabels" . | nindent 4 }}

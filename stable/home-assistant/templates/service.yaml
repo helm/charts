@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "home-assistant.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    helm.sh/chart: {{ include "home-assistant.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}
+  type: ClusterIP
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{end}}
+{{- else if eq .Values.service.type "LoadBalancer" }}
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+  {{- end }}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.service.type }}
+{{- end }}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  publishNotReadyAddresses: {{ .Values.service.publishNotReadyAddresses }}
+  ports:
+    - name: {{ .Values.service.portName }}
+      port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: 8123
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{.Values.service.nodePort}}
+{{ end }}
+{{- if .Values.configurator.enabled }}
+    - name: configurator
+      port: {{ .Values.configurator.service.port }}
+      protocol: TCP
+      targetPort: 3218
+{{ if (and (eq .Values.configurator.service.type "NodePort") (not (empty .Values.configurator.service.nodePort))) }}
+      nodePort: {{.Values.configurator.service.nodePort}}
+{{ end }}
+{{- end }}
+{{- if .Values.vscode.enabled }}
+    - name: vscode
+      port: {{ .Values.vscode.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.vscode.service.port }}
+{{ if (and (eq .Values.vscode.service.type "NodePort") (not (empty .Values.vscode.service.nodePort))) }}
+      nodePort: {{.Values.vscode.service.nodePort}}
+{{ end }}
+{{- end }}
+{{- if .Values.appdaemon.enabled }}
+    - name: appdaemon
+      port: {{ .Values.appdaemon.service.port }}
+      protocol: TCP
+      targetPort: 5050
+{{ if (and (eq .Values.appdaemon.service.type "NodePort") (not (empty .Values.appdaemon.service.nodePort))) }}
+      nodePort: {{.Values.appdaemon.service.nodePort}}
+{{ end }}
+{{- end }}
+{{- if .Values.service.additionalPorts }}
+    {{- .Values.service.additionalPorts | toYaml | indent 4 }}
+{{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "home-assistant.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

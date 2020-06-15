@@ -13,6 +13,10 @@ spec:
     matchLabels:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
+  {{- if .Values.persistence.enabled }}
+  strategy:
+    type: Recreate
+  {{- end }}
   template:
     metadata:
       labels:
@@ -38,6 +42,10 @@ spec:
             value: {{ .Values.output.buffer_chunk_limit | quote }}
           - name: OUTPUT_BUFFER_QUEUE_LIMIT
             value: {{ .Values.output.buffer_queue_limit | quote }}
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
@@ -62,10 +70,19 @@ spec:
         volumeMounts:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           mountPath: /etc/fluent/config.d
+        - name: buffer
+          mountPath: "/var/log/fluentd-buffers"
       volumes:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           configMap:
             name: {{ template "fluentd.fullname" . }}
+        - name: buffer
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fluentd.fullname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

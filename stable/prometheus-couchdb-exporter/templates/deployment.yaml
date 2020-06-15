@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-couchdb-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-couchdb-exporter.name" . }}
+    chart: {{ template "prometheus-couchdb-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-couchdb-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-couchdb-exporter.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "prometheus-couchdb-exporter.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/couchdb-prometheus-exporter"
+            - "-telemetry.address=0.0.0.0:9984"
+            - "-logtostderr"
+            - "-couchdb.uri={{ .Values.couchdb.uri }}"
+            - "-databases={{ .Values.couchdb.databases }}"
+          {{- if .Values.couchdb.username }}
+            - "-couchdb.username={{ .Values.couchdb.username }}"
+          {{- end }}
+          {{- if .Values.couchdb.password }}
+            - "-couchdb.password={{ .Values.couchdb.password }}"
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 9984
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              initialDelaySeconds: 60
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

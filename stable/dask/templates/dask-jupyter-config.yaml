@@ -1,5 +1,5 @@
 {{ if .Values.jupyter.enabled -}}
-
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

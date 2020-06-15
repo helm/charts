@@ -1,0 +1,65 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "parse.fullname" . }}
+  labels: {{ include "parse.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- if .Values.dashboard.enabled }}
+    {{- range .Values.ingress.dashboard.hosts }}
+    - host: {{ .name }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            backend:
+              serviceName: {{ include "parse.fullname" $ }}
+              servicePort: dashboard-http
+    {{- end }}
+    {{- end }}
+    {{- range .Values.ingress.server.hosts }}
+    - host: {{ .name }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            backend:
+              serviceName: {{ include "parse.fullname" $ }}
+              servicePort: server-http
+    {{- end }}
+  tls:
+    {{- if .Values.dashboard.enabled }}
+    {{- range .Values.ingress.dashboard.hosts }}
+    {{- if .tls }}
+    - hosts:
+    {{- if .tlsHosts }}
+    {{- range $host := .tlsHosts }}
+      - {{ $host }}
+    {{- end }}
+    {{- else }}
+      - {{ .name }}
+    {{- end }}
+      secretName: {{ .tlsSecret }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- range .Values.ingress.server.hosts }}
+    {{- if .tls }}
+    - hosts:
+    {{- if .tlsHosts }}
+    {{- range $host := .tlsHosts }}
+      - {{ $host }}
+    {{- end }}
+    {{- else }}
+      - {{ .name }}
+    {{- end }}
+      secretName: {{ .tlsSecret }}
+    {{- end }}
+    {{- end }}
+{{- end }}

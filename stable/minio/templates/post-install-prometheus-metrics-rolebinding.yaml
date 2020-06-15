@@ -1,0 +1,20 @@
+{{- if .Values.serviceAccount.create -}}
+{{- $fullName := include "minio.fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $fullName }}-update-prometheus-secret
+  labels:
+    app: {{ template "minio.name" . }}-update-prometheus-secret
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $fullName }}-update-prometheus-secret
+subjects:
+  - kind: ServiceAccount
+    name: {{ $fullName }}-update-prometheus-secret
+    namespace: {{ .Release.Namespace | quote }}
+{{- end -}}

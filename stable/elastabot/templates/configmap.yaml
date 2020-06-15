@@ -19,7 +19,7 @@ data:
         "urlPrefix":""
       },
       "elastalert": {
-        "index": "elastalert_status",
+        "index": "{{ .Values.elastalert.index }}",
         "silenceMinutes": {{ .Values.elastalert.defaultSilenceMinutes }},
         "recentMinutes": {{ .Values.elastalert.recentAlertMinutes }}
       },

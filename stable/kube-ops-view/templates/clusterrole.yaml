@@ -3,17 +3,18 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "kube-ops-view.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+    helm.sh/chart: {{ include "kube-ops-view.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
   name: {{ template "kube-ops-view.fullname" . }}
 rules:
 - apiGroups: [""]
   resources: ["nodes", "pods"]
   verbs: ["list"]
-- apiGroups: [""]
-  resources: ["services/proxy"]
-  resourceNames: ["heapster"]
-  verbs: ["get"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
 {{- end -}}

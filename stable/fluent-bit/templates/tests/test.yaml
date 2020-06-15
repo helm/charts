@@ -1,0 +1,57 @@
+{{- if or (eq .Values.backend.type "forward") (and (eq .Values.backend.type "es") (eq .Values.backend.es.tls "off")) }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}-test
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+{{- if .Values.testFramework.pullSecrets }}
+  imagePullSecrets:
+{{ toYaml .Values.testFramework.pullSecrets | indent 4 }}
+{{- end }}
+  initContainers:
+    - name: test-framework
+      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
+      command:
+      - "bash"
+      - "-c"
+      - |
+        set -ex
+        # copy bats to tools dir
+        cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
+  containers:
+    - name: {{ .Release.Name }}-test
+      {{- if eq .Values.backend.type "forward"}}
+      image: "fluent/fluentd:v1.4-debian-1"
+      {{- else }}
+      image: "dwdraju/alpine-curl-jq"
+      {{- end }}
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      {{- if and (eq .Values.backend.forward.tls "on") (eq .Values.backend.type "forward") }}
+      securityContext:
+        # run as root to install fluent gems
+        runAsUser: 0
+      {{- end }}
+      volumeMounts:
+        - mountPath: /tests
+          name: tests
+          readOnly: true
+        - mountPath: /tools
+          name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ template "fluent-bit.fullname" . }}-test
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never
+{{- end }}

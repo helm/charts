@@ -1,6 +1,6 @@
 # Version of the signalfx-agent to deploy.  This will be the default for the
 # docker image tag if not overridden with imageTag
-agentVersion: 3.2.2
+agentVersion: 3.6.1
 
 # The access token for SignalFx.  REQUIRED
 signalFxAccessToken: ""
@@ -64,7 +64,7 @@ clusterName:
 
 # How frequently to send metrics by default in the agent.  This can be
 # overridden by individual monitors.
-metricIntervalSeconds: 15
+metricIntervalSeconds: 10
 
 # The log level of the agent.  Valid values are 'debug', 'info', 'warn', and
 # 'error'.  Info is a good default and won't be too spamy.  Note that 'debug'

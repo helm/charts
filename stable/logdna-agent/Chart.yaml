@@ -1,0 +1,24 @@
+apiVersion: v1
+name: logdna-agent
+description: Run this, get logs. All cluster containers. LogDNA collector agent daemonset for Kubernetes.
+version: 2.0.0
+appVersion: 2.1.9
+keywords:
+- logs
+- logging
+- log-management
+- agent
+- alerts
+- metrics
+- events
+- daemonset
+- logger
+home: https://logdna.com
+icon: https://logdna.com/assets/images/logdna_logo_240w.png
+sources:
+- https://github.com/logdna/logdna-agent-v2
+maintainers:
+- name: leeliu
+  email: lee@logdna.com
+- name: jakedipity
+  email: jacob.hull@logdna.com

@@ -15,6 +15,8 @@ replicaCount: 1
 ## set any pod specific resource requests here
 resources: {}
 
+extraEnvs: {}
+
 service:
   type: ClusterIP  # Change to LoadBalancer if you plan to access JanusGraph outside k8s cluster
   port: 8182

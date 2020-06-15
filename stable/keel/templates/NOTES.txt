@@ -1,3 +1,5 @@
+#### THIS CHART IS DEPRECATED! ####
+
 1. The {{ template "keel.fullname" . }} is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
 
 To verify that {{ template "keel.fullname" . }} has started, run:

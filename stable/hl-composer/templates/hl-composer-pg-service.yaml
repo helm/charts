@@ -1,0 +1,19 @@
+{{- if .Values.pg.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hl-composer.fullname" . }}-pg
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.pg.service.type }}
+  ports:
+    - port: {{ .Values.pg.service.port }}
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    name: {{ include "hl-composer.fullname" . }}-pg
+    app: {{ include "hl-composer.name" . }}
+    release: {{ .Release.Name }}
+{{- end}}

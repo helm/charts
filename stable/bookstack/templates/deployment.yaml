@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "bookstack.fullname" . }}
+  labels:
+    app: {{ template "bookstack.name" . }}
+    chart: {{ template "bookstack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "bookstack.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "bookstack.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "bookstack.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+          {{- if .Values.ldap.enabled }}
+            - name: AUTH_METHOD
+              value: ldap
+            - name: LDAP_SERVER
+              value: {{ .Values.ldap.server | quote }}
+            - name: LDAP_BASE_DN
+              value: {{ .Values.ldap.base_dn | quote }}
+            - name: LDAP_DN
+              value: {{ .Values.ldap.dn | quote }}
+            - name: LDAP_PASS
+              value: {{ .Values.ldap.pass | quote }}
+            - name: LDAP_USER_FILTER
+              value: {{ .Values.ldap.userFilter | quote }}
+            - name: LDAP_VERSION
+              value: {{ .Values.ldap.version | quote }}
+          {{- end }}
+          {{- if .Values.mariadb.enabled }}
+            - name: DB_HOST
+              value: {{ template "bookstack.mariadb.fullname" . }}
+            - name: DB_DATABASE
+              value: {{ .Values.mariadb.db.name | quote }}
+            - name: DB_USERNAME
+              value: {{ .Values.mariadb.db.user | quote }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "bookstack.mariadb.fullname" . }}
+                  key: mariadb-password
+          {{- else }}
+            - name: DB_HOST
+              value: {{ .Values.externalDatabase.host | quote }}
+            - name: DB_DATABASE
+              value: {{ .Values.externalDatabase.database | quote }}
+            - name: DB_USERNAME
+              value: {{ .Values.externalDatabase.user | quote }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+                  key: db-password
+          {{- end }}
+          {{- if .Values.app.key }}
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: app-key
+          {{- end }}
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          volumeMounts:
+          - name: uploads
+            mountPath: /var/www/bookstack/public/uploads
+          - name: storage
+            mountPath: /var/www/bookstack/storage/uploads
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: uploads
+        {{- if .Values.persistence.uploads.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: storage
+        {{- if .Values.persistence.storage.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "storage") }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

@@ -1,0 +1,100 @@
+# Default values for mercure.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+transportUrl: bolt://updates.db?size=0&cleanup_frequency=0.3
+allowAnonymous: false
+subscriptions: false
+metrics: false
+metricsLogin: "mercure"
+metricsPassword: ""
+corsAllowedOrigins: []
+debug: false
+demo: false
+jwtAlgorithm: HS256
+jwtKey: ""
+logFormat: FLUENTD
+publishAllowedOrigins: []
+publisherJwtKey: ""
+subscriberJwtKey: ""
+heartbeatInterval: "0s"
+readTimeout: "5s"
+writeTimeout: "60s"
+dispatchTimeout: "5s"
+compress: false
+useForwardedHeaders: false
+license: ""
+
+# GCP load balancers by default terminate connections after 30 seconds. This can be changed by
+# enabling the following backendConfig and changing the `timeoutSec` property.
+# More info at: https://github.com/dunglas/mercure/issues/106 and
+# https://cloud.google.com/kubernetes-engine/docs/how-to/configure-backend-service
+backendConfig:
+  enabled: false
+  timeoutSec: 30
+
+# replicaCount MUST be 1 if you use the BoltDB transport (the default)
+replicaCount: 1
+
+image:
+  repository: dunglas/mercure
+  tag: v0.10
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mercure.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

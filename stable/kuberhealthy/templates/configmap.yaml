@@ -1,0 +1,31 @@
+{{- if .Values.prometheus.enabled -}}
+{{- if .Values.prometheus.enableAlerting -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: "prometheus"
+    prometheus: {{ .Values.prometheus.name }}
+    role: alert-rules
+  name: {{ template "kuberhealthy.name" . }}
+data:
+  kuberhealthy.rules: |-
+    groups:
+    - name: ./kuberhealthy.rules
+      rules:
+      - alert: KuberhealthyError
+        expr: kuberhealthy_running < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          description: Kuberhealthy is not healthy
+      - alert: ClusterUnhealthy
+        expr: kuberhealthy_cluster_state < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          description: Kuberhealthy shows that the cluster is not healthy
+{{- end -}}
+{{- end -}}

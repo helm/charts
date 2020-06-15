@@ -1,0 +1,166 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "unifi.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "unifi.name" . }}
+    helm.sh/chart: {{ include "unifi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "unifi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "unifi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: https-gui
+              containerPort: {{ .Values.guiService.port }}
+              protocol: TCP
+            - name: controller
+              containerPort: {{ .Values.controllerService.port }}
+              protocol: TCP
+            - name: discovery
+              containerPort: 10001
+              protocol: UDP
+            - name: stun
+              containerPort: 3478
+              protocol: UDP
+              {{ if .Values.captivePortalService.enabled }}
+            - name: captive-http
+              containerPort: 8880
+              protocol: TCP
+            - name: captive-https
+              containerPort: 8843
+              protocol: TCP
+              {{ end }}
+          {{- if not .Values.runAsRoot }}
+          securityContext:
+            capabilities:
+              add:
+                - SETFCAP
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: https-gui
+              scheme: HTTPS
+            initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: https-gui
+              scheme: HTTPS
+            initialDelaySeconds: 15
+          env:
+            - name: UNIFI_HTTP_PORT
+              value: "{{ .Values.controllerService.port }}"
+            - name: UNIFI_HTTPS_PORT
+              value: "{{ .Values.guiService.port }}"
+            - name: TZ
+              value: "{{ .Values.timezone }}"
+            - name: RUNAS_UID0
+              value: "{{ .Values.runAsRoot }}"
+            - name: UNIFI_UID
+              value: "{{ .Values.UID }}"
+            - name: UNIFI_GID
+              value: "{{ .Values.GID }}"
+            {{- if .Values.extraJvmOpts }}
+            - name: JVM_EXTRA_OPTS
+              value: "{{- join " " .Values.extraJvmOpts }}"
+            {{- end }}
+            {{- if .Values.mongodb.enabled }}
+            - name: DB_URI
+              value: "{{ .Values.mongodb.dbUri }}"
+            - name: STATDB_URI
+              value: "{{ .Values.mongodb.statDbUri }}"
+            - name: DB_NAME
+              value: "{{ .Values.mongodb.databaseName }}"
+            {{- end }}
+            {{- if and .Values.customCert .Values.customCert.enabled }}
+            - name: CERT_IS_CHAIN
+              value: "{{ .Values.customCert.isChain }}"
+            - name: CERTNAME
+              value: "{{ .Values.customCert.certName }}"
+            - name: CERT_PRIVATE_NAME
+              value: "{{ .Values.customCert.keyName }}"
+            {{- end }}
+          volumeMounts:
+            - mountPath: /unifi/data
+              name: unifi-data
+              subPath: {{ ternary "data" (printf "%s/%s" .Values.persistence.subPath "data") (empty .Values.persistence.subPath) }}
+            - mountPath: /unifi/log
+              name: unifi-data
+              subPath: {{ ternary "log" (printf "%s/%s" .Values.persistence.subPath "log") (empty .Values.persistence.subPath) }}
+            - mountPath: /unifi/cert
+              {{- if and .Values.customCert .Values.customCert.enabled .Values.customCert.certSecret }}
+              name: unifi-cert-secret
+              {{- else }}
+              name: unifi-data
+              subPath: {{ ternary "cert" (printf "%s/%s" .Values.persistence.subPath "cert") (empty .Values.persistence.subPath) }}
+              {{- end }}
+            - mountPath: /unifi/init.d
+              name: unifi-data
+              subPath: {{ ternary "init.d" (printf "%s/%s" .Values.persistence.subPath "init.d") (empty .Values.persistence.subPath) }}
+            {{- if .Values.extraConfigFiles }}
+            - name: extra-config
+              mountPath: /configmap
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 12 }}{{ end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: unifi-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "unifi.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
+        {{- if .Values.extraConfigFiles }}
+        - name: extra-config
+          configMap:
+            name: {{ template "unifi.fullname" . }}
+        {{- end }}
+        {{- if and .Values.customCert .Values.customCert.enabled .Values.customCert.certSecret }}
+        - name: unifi-cert-secret
+          secret:
+            secretName: "{{ .Values.customCert.certSecret }}"
+        {{- end }}
+        {{- if .Values.extraVolumes  }}{{ toYaml .Values.extraVolumes | trim | nindent 8 }}{{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

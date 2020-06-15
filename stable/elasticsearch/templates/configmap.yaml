@@ -1,0 +1,168 @@
+{{ $minorAppVersion := regexFind "[0-9]*.[0-9]*" .Values.appVersion | float64 -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "elasticsearch.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  elasticsearch.yml: |-
+    cluster.name: {{ .Values.cluster.name }}
+
+    node.data: ${NODE_DATA:true}
+    node.master: ${NODE_MASTER:true}
+{{- if hasPrefix "5." .Values.appVersion }}
+    node.ingest: ${NODE_INGEST:true}
+{{- else if hasPrefix "6." .Values.appVersion }}
+    node.ingest: ${NODE_INGEST:true}
+{{- end }}
+    node.name: ${HOSTNAME}
+
+{{- if .Values.forceIpv6 }}
+    network.host: "::"
+{{- else }}
+    network.host: 0.0.0.0
+{{- end }}
+
+{{- if hasPrefix "2." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
+
+    discovery:
+      zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+{{- else if hasPrefix "5." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
+
+    discovery:
+      zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+
+{{- if .Values.cluster.xpackEnable }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+  {{- if or ( gt $minorAppVersion 5.4 ) ( eq $minorAppVersion 5.4 ) }}
+    xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+  {{- end }}
+    xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- else }}
+  {{- if or ( gt $minorAppVersion 5.4 ) ( eq $minorAppVersion 5.4 ) }}
+    xpack.ml.enabled: false
+  {{- end }}
+    xpack.monitoring.enabled: false
+    xpack.security.enabled: false
+    xpack.watcher.enabled: false
+{{- end }}
+{{- else if hasPrefix "6." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
+
+    discovery:
+      zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+
+{{- if and ( .Values.cluster.xpackEnable ) ( gt $minorAppVersion 6.3 )  }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
+    xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
+{{- else if .Values.cluster.xpackEnable }}
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+    xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- end }}
+{{- end }}
+
+    # see https://github.com/elastic/elasticsearch-definitive-guide/pull/679
+    processors: ${PROCESSORS:}
+
+    # avoid split-brain w/ a minimum consensus of two masters plus a data node
+    gateway.expected_master_nodes: ${EXPECTED_MASTER_NODES:2}
+    gateway.expected_data_nodes: ${EXPECTED_DATA_NODES:1}
+    gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
+    gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
+    gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
+{{- with .Values.cluster.config }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- if hasPrefix "2." .Values.appVersion }}
+  logging.yml: |-
+{{ toYaml .Values.cluster.loggingYml | indent 4 }}
+{{- else }}
+  log4j2.properties: |-
+{{ tpl .Values.cluster.log4j2Properties . | indent 4 }}
+{{- end }}
+{{- if .Values.data.hooks.drain.enabled }}
+  data-pre-stop-hook.sh: |-
+    #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    NODE_NAME=${HOSTNAME}
+    echo "Prepare to migrate data of the node ${NODE_NAME}"
+    echo "Move all data from node ${NODE_NAME}"
+    curl -s -XPUT -H 'Content-Type: application/json' '{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings' -d "{
+      \"transient\" :{
+          \"cluster.routing.allocation.exclude._name\" : \"${NODE_NAME}\"
+      }
+    }"
+    echo ""
+
+    while true ; do
+      echo -e "Wait for node ${NODE_NAME} to become empty"
+      SHARDS_ALLOCATION=$(curl -s -XGET 'http://{{ template "elasticsearch.client.fullname" . }}:9200/_cat/shards')
+      if ! echo "${SHARDS_ALLOCATION}" | grep -E "${NODE_NAME}"; then
+        break
+      fi
+      sleep 1
+    done
+    echo "Node ${NODE_NAME} is ready to shutdown"
+  data-post-start-hook.sh: |-
+    #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
+    NODE_NAME=${HOSTNAME}
+    CLUSTER_SETTINGS=$(curl -s -XGET "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings")
+    if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
+      echo "Activate node ${NODE_NAME}"
+      curl -s -XPUT -H 'Content-Type: application/json' "http://{{ template "elasticsearch.client.fullname" . }}:9200/_cluster/settings" -d "{
+        \"transient\" :{
+            \"cluster.routing.allocation.exclude._name\" : null
+        }
+      }"
+    fi
+    echo "Node ${NODE_NAME} is ready to be used"
+{{- else }}
+  {{- if .Values.data.hooks.preStop }}
+  data-pre-stop-hook.sh: |-
+{{ tpl .Values.data.hooks.preStop . | indent 4 }}
+  {{- end }}
+  {{- if .Values.data.hooks.postStart }}
+  data-post-start-hook.sh: |-
+{{ tpl .Values.data.hooks.postStart . | indent 4 }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.client.hooks.preStop }}
+  client-pre-stop-hook.sh: |-
+{{ tpl .Values.client.hooks.preStop . | indent 4 }}
+{{- end }}
+{{- if .Values.client.hooks.postStart }}
+  client-post-start-hook.sh: |-
+{{ tpl .Values.client.hooks.postStart . | indent 4 }}
+{{- end }}
+
+{{- if .Values.master.hooks.preStop }}
+  master-pre-stop-hook.sh: |-
+{{ tpl .Values.master.hooks.preStop . | indent 4 }}
+{{- end }}
+{{- if .Values.master.hooks.postStart }}
+  master-post-start-hook.sh: |-
+{{ tpl .Values.master.hooks.postStart . | indent 4 }}
+{{- end }}

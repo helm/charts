@@ -1,7 +1,8 @@
+{{- if .Values.test.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ template "keycloak.fullname" . }}-test
+  name: "{{ template "keycloak.fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
   labels:
     app: {{ template "keycloak.name" . }}
     chart: {{ template "keycloak.chart" . }}
@@ -11,6 +12,8 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  securityContext:
+{{ toYaml .Values.test.securityContext | indent 8 }}
   containers:
     - name: {{ .Chart.Name }}-test
       image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
@@ -34,3 +37,4 @@ spec:
       configMap:
         name: {{ template "keycloak.fullname" . }}-test
   restartPolicy: Never
+{{- end }}

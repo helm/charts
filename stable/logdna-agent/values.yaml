@@ -1,0 +1,35 @@
+image:
+  name: logdna/logdna-agent
+  pullPolicy: IfNotPresent
+
+logdna:
+  ## Please follow directions from https://app.logdna.com/pages/add-source
+
+  ## An ingestion key is required for this chart to run
+  # key:
+
+  # tags:
+
+  name: logdna-agent
+
+resources:
+  requests:
+    cpu: 20m
+  limits:
+    memory: 75Mi
+
+daemonset:
+  # updateStrategy:
+  #   type: "RollingUpdate"
+  tolerations: []
+
+priorityClassName: ""
+
+# updateOnSecretChange: true
+extraEnv: {}
+extraVolumeMounts: []
+extraVolumes: []
+
+serviceAccount:
+  create: true
+  name:

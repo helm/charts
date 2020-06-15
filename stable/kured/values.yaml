@@ -1,0 +1,38 @@
+image:
+  repository: weaveworks/kured
+  tag: 1.4.0
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+extraArgs: {}
+
+rbac:
+  create: true
+
+podSecurityPolicy:
+  create: false
+
+serviceAccount:
+  create: true
+  name:
+
+autolock:
+  enabled: false
+  image:
+    repository: docker.io/bitnami/kubectl
+    tag: 1.17.5
+  scheduleUnlock: 0 4 * * *
+  schedulelock: 0 6 * * *
+
+updateStrategy: OnDelete
+
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+podAnnotations: {}

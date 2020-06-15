@@ -1,0 +1,116 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "distributor.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ template "distribution.chart" . }}
+    component: {{ .Values.distributor.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ template "distributor.name" . }}
+  replicas: {{ .Values.distributor.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "distribution.name" . }}
+      release: {{ .Release.Name }}
+      role: {{ template "distributor.name" . }}
+      component: {{ .Values.distributor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distribution.name" . }}
+        component: {{ .Values.distributor.name }}
+        role: {{ template "distributor.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "distribution.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: "prepare-data"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.distributor.image.pullPolicy }}
+        command:
+        - '/bin/sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-redis {{ .Values.redis.master.port }} && echo {{ .Release.Name }}-redis ok; do sleep 2; done;
+          {{- if .Values.distributor.token }}
+          mkdir -pv {{ .Values.distributor.persistence.mountPath }}/etc/security;
+          cp -fv /tmp/security/token {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
+          chmod 400 {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
+          {{- end }}
+          chown -R 1020:1020 {{ .Values.distributor.persistence.mountPath }}
+        volumeMounts:
+        - name: distributor-data
+          mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
+        {{- if .Values.distributor.token }}
+        - name: distributor-token
+          mountPath: "/tmp/security/token"
+          subPath: token
+        {{- end }}
+      containers:
+      - name: {{ .Values.distributor.name }}
+        image: '{{ .Values.distributor.image.repository }}:{{ default .Chart.AppVersion .Values.distributor.image.version }}'
+        imagePullPolicy: {{ .Values.distributor.image.imagePullPolicy }}
+        env:
+        - name: DEFAULT_JAVA_OPTS
+          value: '-Ddistribution.home={{ .Values.distributor.persistence.mountPath }} -Dfile.encoding=UTF8 -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
+                  {{- if .Values.distributor.javaOpts.xms }}
+                  -Xms{{ .Values.distributor.javaOpts.xms }}
+                  {{- end}}
+                  {{- if .Values.distributor.javaOpts.xmx }}
+                  -Xmx{{ .Values.distributor.javaOpts.xmx }}
+                  {{- end}}
+                  -Dspring.profiles.active=production'
+        - name: redis_connectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-redis-connection
+              key: redis_connectionString
+        - name: BT_SERVER_URL
+          value: 'http://{{ include "distribution.fullname" . }}:{{ .Values.distribution.externalPort }}'
+        volumeMounts:
+        - name: distributor-data
+          mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
+        resources:
+{{ toYaml .Values.distributor.resources | indent 10 }}
+      volumes:
+      {{- if .Values.distributor.token }}
+      - name: distributor-token
+        configMap:
+          name: {{ template "distributor.fullname" . }}-token
+      {{- end }}
+      {{- if .Values.distributor.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: distributor-data
+      spec:
+      {{- if .Values.distributor.persistence.existingClaim }}
+        selector:
+          matchLabels:
+            app: {{ template "distributor.name" . }}
+      {{- else }}
+        {{- if .Values.distributor.persistence.storageClass }}
+        {{- if (eq "-" .Values.distributor.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.distributor.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+        accessModes: [ "{{ .Values.distributor.persistence.accessMode }}" ]
+        resources:
+          requests:
+            storage: {{ .Values.distributor.persistence.size }}
+      {{- end }}
+      {{- else }}
+      - name: distributor-data
+        emptyDir: {}
+      {{- end }}

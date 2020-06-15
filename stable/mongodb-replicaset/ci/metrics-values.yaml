@@ -1,0 +1,10 @@
+auth:
+  enabled: true
+  adminUser: username
+  adminPassword: password
+  metricsUser: metrics
+  metricsPassword: password
+  key: keycontent
+
+metrics:
+  enabled: true

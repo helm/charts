@@ -1,0 +1,18 @@
+---
+# enable user-defined init containers
+
+initContainers:
+  numbers-container:
+    image: "busybox"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        for i in $(seq 1 10); do
+          echo $i
+        done
+
+  echo-container:
+    image: "busybox"
+    command: ['sh', '-c', 'echo Hello from init container! && sleep 3']

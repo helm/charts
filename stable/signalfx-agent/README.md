@@ -1,5 +1,7 @@
 # SignalFx Agent
 
+**This chart has been deprecated. Please use the upstream chart found [here](https://github.com/signalfx/signalfx-agent/tree/master/deployments/k8s/helm/signalfx-agent) instead.**
+
 [SignalFx](https://signalfx.com) is a cloud monitoring and alerting solution
 for modern enterprise infrastructures.
 

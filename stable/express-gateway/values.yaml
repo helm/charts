@@ -1,0 +1,89 @@
+# Default values for Express Gateway.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: expressgateway/express-gateway
+  tag: v1.16.9
+  pullPolicy: IfNotPresent
+
+# Specify Express Gateway Admin API
+admin:
+  # HTTPS traffic on the admin port
+  https: true
+  hostname: 0.0.0.0
+  servicePort: 9876
+  containerPort: 9876
+  # Admin Service type
+  type: NodePort
+
+# Specify Express Gateway main listening service
+proxy:
+  # HTTPS traffic on the proxy port
+  https: true
+  tls: {}
+  servicePort: 8080
+  containerPort: 8080
+  type: NodePort
+
+# readinessProbe for EG pods
+readinessProbe:
+  httpGet:
+    path: "/users"
+    port: admin
+    scheme: HTTP
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 2
+
+# livenessProbe for EG pods
+livenessProbe:
+  httpGet:
+    path: "/users"
+    port: admin
+    scheme: HTTP
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  periodSeconds: 30
+  successThreshold: 1
+  failureThreshold: 2
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# Annotation to be added to pods
+podAnnotations: {}
+
+# pod count
+replicaCount: 1
+
+# Express Gateway has a choice of either run with with transactional data in memory or use Redis as
+# backend database. Redis is used by default.
+
+redis:
+  password: express-gateway
+
+storage:
+  emulate: true
+  namespace: EG
+
+crypto:
+  cipherKey: sensitiveKey
+  algorithm: aes256
+  saltRounds: 10
+session:
+  secret: keyboard cat
+  resave: false
+  saveUninitialized: false
+accessTokens:
+  timeToExpiry: 7200000
+refreshTokens:
+  timeToExpiry: 7200000
+authorizationCodes:
+  timeToExpiry: 300000
