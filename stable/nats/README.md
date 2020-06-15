@@ -2,10 +2,31 @@
 
 [NATS](https://nats.io/) is an open-source, cloud-native messaging system. It provides a lightweight server that is written in the Go programming language.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Nats Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```bash
-$ helm install stable/nats
+$ helm install my-release stable/nats
 ```
 
 ## Introduction
@@ -24,7 +45,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/nats
+$ helm install my-release stable/nats
 ```
 
 The command deploys NATS on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -108,6 +129,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `cluster.service.nodePort`           | Port to bind to for NodePort service type (NATS cluster)                                     | `nil`                                                         |
 | `cluster.service.annotations`        | Annotations for NATS cluster service                                                         | {}                                                            |
 | `cluster.service.loadBalancerIP`     | loadBalancerIP if NATS cluster service type is `LoadBalancer`                                | `nil`                                                         |
+| `cluster.connectRetries`             | Configure number of connect retries for implicit routes                                      | `nil`                                                         |
 | `monitoring.service.type`            | Kubernetes Service type (NATS monitoring)                                                    | `ClusterIP`                                                   |
 | `monitoring.service.port`            | NATS monitoring port                                                                         | `8222`                                                        |
 | `monitoring.service.nodePort`        | Port to bind to for NodePort service type (NATS monitoring)                                  | `nil`                                                         |
@@ -138,7 +160,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set auth.enabled=true,auth.user=my-user,auth.password=T0pS3cr3t \
     stable/nats
 ```
@@ -148,7 +170,7 @@ The above command enables NATS client authentication with `my-user` as user and 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/nats
+$ helm install my-release -f values.yaml stable/nats
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -231,7 +253,7 @@ NATS version 2.0.0 has renamed the server binary filename from `gnatsd` to `nats
 however, it is still possible to use the chart to deploy NATS version 1.x.x using the `natsFilename` property.
 
 ```bash
-helm install --name nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
+helm install nats-v1 --set natsFilename=gnatsd --set image.tag=1.4.1 stable/nats
 ```
 
 ### To 1.0.0

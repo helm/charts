@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 7.0.1
+  tag: 7.4.0
   pullPolicy: IfNotPresent
 
 config:
@@ -25,7 +25,6 @@ config:
       - "*"
       processors:
         - add_kubernetes_metadata:
-            in_cluster: true
         - drop_event:
             when:
               equals:

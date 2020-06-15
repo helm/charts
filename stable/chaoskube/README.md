@@ -63,6 +63,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `affinity`                                | Affinity settings for pod assignment                                                  | `{}`                             |
 | `minimumAge`                              | Set minimum pod age to filter pod by                                                  | `0s`                             |
 | `podAnnotations`                          | Annotations for the chaoskube pod                                                     | `{}`                             |
+| `podLabels`                               | Labels for the chaoskube pod                                                          | `{}`                             |
 | `gracePeriod`                             | grace period to give pods when terminating them                                       | `-1s` (pod decides)              |
 | `metrics.enabled`                         | Enable metrics handler                                                                | `false`                          |
 | `metrics.port`                            | Listening port for metrics handler                                                    | `8080`                           |

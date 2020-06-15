@@ -61,6 +61,9 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
+          ports:
+            - containerPort: 8080
+              name: metrics          
           env:
             # Pass in the name of the node on which this pod is scheduled
             # for use with drain/uncordon operations and lock acquisition

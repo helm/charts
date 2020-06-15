@@ -43,6 +43,7 @@ The following table lists the configurable parameters for this chart and their d
 | `priorityClassDefault.value`       | Priority value of the default priorityClass                                                                                     | `0`               |
 | `image.repository`                 | Image repository                                                                                                                | `k8s.gcr.io/pause`|
 | `image.tag`                        | Image tag                                                                                                                       | `3.1`             |
+| `image.pullSecrets`                | Image pull secrets                                                                                                                   | `[]`              |
 | `image.pullPolicy`                 | Container pull policy                                                                                                           | `IfNotPresent`    |
 | `fullnameOverride`                 | Override the fullname of the chart                                                                                              | `nil`             |
 | `nameOverride`                     | Override the name of the chart                                                                                                  | `nil`             |

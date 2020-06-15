@@ -1,6 +1,6 @@
 replicaCount: 1
 
-image: ipfs/go-ipfs:v0.4.21
+image: ipfs/go-ipfs:v0.4.22
 
 service:
   type: ClusterIP

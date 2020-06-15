@@ -1,0 +1,38 @@
+{{- if .Values.features.monitoring.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-prometheus-proxy
+  labels:
+    app: prometheus-proxy
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-proxy
+  template:
+    metadata:
+      labels:
+        app: prometheus-proxy
+    spec:
+      serviceAccountName: {{ .Release.Name }}-prometheus-proxy
+      containers:
+        - name: prometheus-proxy
+          image: micrometermetrics/prometheus-rsocket-proxy:0.9.0
+          imagePullPolicy: Always
+          ports:
+            - name: scrape
+              containerPort: 8080
+            - name: rsocket
+              containerPort: 7001
+          resources:
+            limits:
+              cpu: 1.0
+              memory: 2048Mi
+            requests:
+              cpu: 0.5
+              memory: 1024Mi
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+{{- end }}

@@ -10,10 +10,7 @@ kind: Ingress
 metadata:
   name: {{ template "kong.fullname" . }}-portal
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
   annotations:
     {{- range $key, $value := .Values.portal.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}

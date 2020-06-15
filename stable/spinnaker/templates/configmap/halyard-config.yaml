@@ -26,6 +26,9 @@ data:
     {{- end }}
 
     $HAL_COMMAND deploy apply
+    {{- if .Values.halyard.additionalInstallParameters }} \
+      {{- .Values.halyard.additionalInstallParameters | join " \\\n" | nindent 6 }}
+    {{- end }}
   clean.sh: |
     export HAL_COMMAND='hal --daemon-endpoint http://{{ template "spinnaker.fullname" . }}-halyard:8064'
     $HAL_COMMAND deploy clean -q
@@ -42,7 +45,7 @@ data:
     echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit \
         --endpoint http://{{ .Release.Name }}-minio:9000 \
         --access-key-id {{ .Values.minio.accessKey }} \
-        --secret-access-key --bucket {{ .Values.minio.bucket }} \
+        --secret-access-key --bucket {{ .Values.minio.defaultBucket.name }} \
         --path-style-access true
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
@@ -66,6 +69,9 @@ data:
       {{- end }}
       {{- if .Values.s3.secretKey }}
       --secret-access-key \
+      {{- end }}
+      {{- range .Values.s3.extraArgs }}
+      {{- . }} \
       {{- end }}
 
     $HAL_COMMAND config storage edit --type s3
@@ -93,16 +99,11 @@ data:
       PROVIDER_COMMAND='add'
     fi
 
-    CREDS=""
-    {{ if $registry.username -}}
-    CREDS+="--username {{ $registry.username }} --password-file /opt/registry/passwords/{{ $registry.name }}"
-    {{ if $registry.email -}}
-    CREDS+=" --email {{ $registry.email }}"
-    {{- end -}}
-    {{- end }}
-
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
-        ${CREDS} {{ if $registry.repositories }} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
+      {{ if $registry.username -}} --username {{ $registry.username }} \
+      {{ if $registry.passwordCommand -}} --password-command "{{ $registry.passwordCommand }}"{{ else -}} --password-file /opt/registry/passwords/{{ $registry.name }}{{- end }} \
+      {{ if $registry.email -}} --email {{ $registry.email }}{{- end -}}{{- end }} \
+      {{ if $registry.repositories -}} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
 
     {{- end }}
 

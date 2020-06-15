@@ -1,3 +1,4 @@
+{{ if .Values.controller.create -}}
 You should now be able to create sealed secrets.
 
 1. Install client-side tool into /usr/local/bin/
@@ -40,4 +41,7 @@ kubectl create -f mysealedsecret.[json|yaml]
 Running 'kubectl get secret secret-name -o [json|yaml]' will show the decrypted secret that was generated from the sealed secret.
 
 Both the SealedSecret and generated Secret must have the same name and namespace.
-
+{{- else }}
+Sealed Secrets controller not installed, You need to install controller before
+sealed secrets can be created.
+{{- end }}

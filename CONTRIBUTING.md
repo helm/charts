@@ -4,7 +4,7 @@ The Kubernetes Charts project accepts contributions via GitHub pull requests. Th
 
 ## Sign Your Work
 
-The sign-off is a simple line at the end of the explanation for a commit. All 
+The sign-off is a simple line at the end of the explanation for a commit. All
 commits needs to be signed. Your signature certifies that you wrote the patch or
 otherwise have the right to contribute the material. The rules are pretty simple,
 if you can certify the below (from [developercertificate.org](http://developercertificate.org/)):
@@ -76,16 +76,15 @@ your PR will be rejected by the automated DCO check.
 
 This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [helm/helm](https://github.com/helm/helm) repository.
 
-## How to Contribute a Chart
+## How to Contribute to an Existing Chart
 
-1. Fork this repository, develop and test your Chart. Remember to sign off your commits as described in the "Sign Your Work" chapter.
-1. Choose the correct folder for your chart based on the information in the [Repository Structure](README.md#repository-structure) section
-1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
+1. Fork this repository, develop and test your Chart changes. Remember to sign off your commits as described in the "Sign Your Work" chapter.
+1. Ensure your Chart changes follow the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.
 
 ***NOTE***: In order to make testing and merging of PRs easier, please submit changes to multiple charts in separate PRs.
 
-### Technical requirements
+### Technical Requirements
 
 * All Chart dependencies should also be submitted independently
 * Must pass the linter (`helm lint`)
@@ -104,12 +103,12 @@ This repository is used by Chart developers for maintaining the official charts 
 * Allow customization of the application configuration
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
-* Includes a [NOTES.txt](https://github.com/helm/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
-* Follows [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices)
-  (especially for [labels](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
-  and [values](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md))
+* Includes a [NOTES.txt](https://helm.sh/docs/topics/charts/#chart-license-readme-and-notes) explaining how to use the application after install
+* Follows [best practices](https://helm.sh/docs/chart_best_practices/)
+  (especially for [labels](https://helm.sh/docs/chart_best_practices/labels/)
+  and [values](https://helm.sh/docs/chart_best_practices/values/))
 
-### Documentation requirements
+### Documentation Requirements
 
 * Must include an in-depth `README.md`, including:
     * Short description of the Chart
@@ -119,9 +118,9 @@ This repository is used by Chart developers for maintaining the official charts 
     * Any relevant post-installation information for the Chart
     * Instructions on how to access the application or service provided by the Chart
 
-### Merge approval and release process
+### Merge Approval and Release Process
 
-A Kubernetes Charts maintainer will review the Chart submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
+A Kubernetes Charts maintainer will review the Chart change submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
 
 Once the Chart has been merged, the release job will automatically run in the CI to package and release the Chart in the [`gs://kubernetes-charts` Google Storage bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts/).
 
@@ -130,6 +129,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 Whether you are a user or contributor, official support channels include:
 
 - GitHub issues: https://github.com/helm/charts/issues
+- Slack: Charts - #Charts room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 

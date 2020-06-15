@@ -26,6 +26,7 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
+{{- include "solr.imagePullSecrets" . | indent 6 }}
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
@@ -34,6 +35,8 @@ spec:
         runAsUser: 8983
       affinity:
 {{ tpl (toYaml .Values.affinity) .  | indent 8 }}
+      tolerations:
+{{ tpl (toYaml .Values.tolerations) .  | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
 {{- if .Values.tls.enabled }}
@@ -54,6 +57,14 @@ spec:
             items:
               - key: solr.xml
                 path: solr.xml
+{{- if not ( eq .Values.initScript  "" ) }}
+        - name: solr-init-script
+          configMap:
+            name: {{ include "solr.custom-script.configmap-name" . }}
+            items:
+              - key: solr-init.sh
+                path: solr-init.sh
+{{- end }}
       initContainers:
         - name: check-zk
           image: busybox:latest
@@ -198,6 +209,10 @@ spec:
           volumeMounts:
             - name: {{ include "solr.pvc-name" . }}
               mountPath: /opt/solr/server/home
+{{- if not ( eq .Values.initScript  "" ) }}
+            - name: solr-init-script
+              mountPath: /docker-entrypoint-initdb.d
+{{- end }}
 {{ if .Values.tls.enabled }}
             - name: "keystore-volume"
               mountPath: "/etc/ssl/keystores"

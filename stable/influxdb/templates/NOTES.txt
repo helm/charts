@@ -1,27 +1,42 @@
-InfluxDB can be accessed via port {{ .Values.config.http.bind_address }} on the following DNS name from within your cluster:
+InfluxDB can be accessed via port {{ .Values.config.http.bind_address | default 8086 }} on the following DNS name from within your cluster:
 
-- http://{{ template "influxdb.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.config.http.bind_address }}
+- http://{{ include "influxdb.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.config.http.bind_address | default 8086 }}
 
 You can easily connect to the remote instance with your local influx cli. To forward the API port to localhost:8086 run the following:
 
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8086:{{ .Values.config.http.bind_address }}
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8086:{{ .Values.config.http.bind_address | default 8086 }}
 
 You can also connect to the influx cli from inside the container. To open a shell session in the InfluxDB pod run the following:
 
-- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
+- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "influxdb.fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
 To tail the logs for the InfluxDB pod run the following:
 
-- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "influxdb.fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
 
 {{- if .Values.setDefaultUser.enabled }}
 
 To retrieve the default user name:
 
-- echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+{{- if .Values.setDefaultUser.user.existingSecret }}
+
+- echo $(kubectl get secret {{ .Values.setDefaultUser.user.existingSecret }} -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- else }}
+
+- echo $(kubectl get secret {{ include "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-user']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- end }}
 
 To retrieve the default user password:
 
-- echo $(kubectl get secret {{ template "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+{{- if .Values.setDefaultUser.user.existingSecret }}
 
+- echo $(kubectl get secret {{ .Values.setDefaultUser.user.existingSecret }} -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- else }}
+
+- echo $(kubectl get secret {{ include "influxdb.fullname" . }}-auth -o "jsonpath={.data['influxdb-password']}" --namespace {{ .Release.Namespace }} | base64 --decode)
+
+{{- end }}
 {{- end }}

@@ -3,18 +3,15 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "grafana.fullname" . }}-test
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    {{- include "grafana.labels" . | nindent 4 }}
 data:
   run.sh: |-
     @test "Test Health" {
       url="http://{{ template "grafana.fullname" . }}/api/health"
 
-      code=$(curl -s -o /dev/null -I -w "%{http_code}" $url)
+      code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
       [ "$code" == "200" ]
     }
 {{- end }}

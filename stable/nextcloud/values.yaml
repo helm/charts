@@ -41,11 +41,6 @@ ingress:
   #      log_not_found off;
   #      access_log off;
   #    }
-  #    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
-  #      try_files $uri /index.php$request_uri;
-  #      # Optional: Don't log access to other assets
-  #      access_log off;
-  #    }
   #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
   #      deny all;
   #    }
@@ -58,6 +53,13 @@ ingress:
   #        - nextcloud.kube.home
   labels: {}
 
+
+# Allow configuration of lifecycle hooks
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  # postStartCommand: []
+  # preStopCommand: []
+
 nextcloud:
   host: nextcloud.kube.home
   username: admin
@@ -65,6 +67,8 @@ nextcloud:
   update: 0
   datadir: /var/www/html/data
   tableprefix:
+  persistence:
+    subPath:
   mail:
     enabled: false
     fromAddress: user
@@ -121,6 +125,53 @@ nextcloud:
   #        )
   #      );
 
+  ## Strategy used to replace old pods
+  ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  strategy:
+    type: Recreate
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 1
+    #   maxUnavailable: 0
+
+  ##
+  ## Extra environment variables
+  extraEnv:
+  #  - name: SOME_SECRET_ENV
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: nextcloud
+  #        key: secret_key
+
+  # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
+  # to NextCloud pods in Kubernetes. This can then be configured in External Storage
+  extraVolumes:
+  #  - name: nfs
+  #    nfs:
+  #      server: "10.0.0.1"
+  #      path: "/nextcloud_data"
+  #      readOnly: false
+  extraVolumeMounts:
+  #  - name: nfs
+  #    mountPath: "/legacy_data"
+
+nginx:
+  ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
+  enabled: false
+  image:
+    repository: nginx
+    tag: alpine
+    pullPolicy: IfNotPresent
+
+  config:
+    # This generates the default nginx config as per the nextcloud documentation
+    default: true
+    # custom: |-
+    #     worker_processes  1;..
+
+  resources: {}
+
 internalDatabase:
   enabled: true
   name: nextcloud
@@ -145,6 +196,13 @@ externalDatabase:
 
   ## Database name
   database: nextcloud
+
+  ## Use a existing secret
+  existingSecret:
+    enabled: false
+    # secretName: nameofsecret
+    # usernameKey: username
+    # passwordKey: password
 
 ##
 ## MariaDB chart configuration
@@ -217,6 +275,7 @@ service:
   type: ClusterIP
   port: 8080
   loadBalancerIP: nil
+  nodePort: nil
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

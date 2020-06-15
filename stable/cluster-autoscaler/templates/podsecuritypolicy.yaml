@@ -16,6 +16,9 @@ spec:
     - 'configMap'
     - 'secret'
     - 'hostPath'
+    - 'emptyDir'
+    - 'projected'
+    - 'downwardAPI'
 {{- if eq .Values.cloudProvider "gce" }}
   allowedHostPaths:
     - pathPrefix: {{ .Values.cloudConfigPath }}

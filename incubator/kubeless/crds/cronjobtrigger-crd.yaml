@@ -1,0 +1,17 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: cronjobtriggers.kubeless.io
+  labels:
+    app: kubeless
+  annotations:
+    helm.sh/hook: crd-install
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  group: kubeless.io
+  names:
+    kind: CronJobTrigger
+    plural: cronjobtriggers
+    singular: cronjobtrigger
+  scope: Namespaced
+  version: v1beta1

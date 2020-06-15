@@ -1,6 +1,9 @@
-Sysdig Monitor agents are spinning up on each node in your cluster. After a few
-seconds, you should see your hosts appearing in the Explore tab:
+The agent for Sysdig Secure DevOps Platform is spinning up on each node in your
+cluster. After a few seconds, you should see your hosts appearing in the
+Explore tab:
 
-    https://app.sysdigcloud.com/#/explore/overview/l:10
+  https://app.sysdigcloud.com/#/explore/overview/l:10
+
+  https://secure.sysdig.com/#/events/l:600/*/*?viewAs=list
 
 No further action should be required.

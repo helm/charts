@@ -10,9 +10,17 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: proxy
   name: {{ template "pomerium.proxy.fullname" . }}
-{{- if .Values.annotations }}
+{{- if or .Values.proxy.deployment.annotations .Values.annotations }}
   annotations:
-{{ toYaml .Values.annotations | indent 4 }}
+  {{- if .Values.proxy.deployment.annotations }}
+    {{- range $key, $value := .Values.proxy.deployment.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- else if .Values.annotations }}
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 spec:
   replicas: {{ default .Values.replicaCount .Values.proxy.replicaCount }}

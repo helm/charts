@@ -12,8 +12,12 @@ metadata:
     {{- if .Values.ingress.certManager }}
     kubernetes.io/tls-acme: "true"
     {{- end }}
-    {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
+    {{- if .Values.ingress.rewriteTarget }}
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{- end }}
+    {{- if .Values.ingress.annotations }}
+    {{- include "phpmyadmin.tplValue" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
     {{- end }}
 spec:
   rules:

@@ -3,8 +3,16 @@
 # Declare variables to be passed into your templates.
 image:
   repository: jaegertracing/jaeger-operator
-  tag: 1.14.0
+  tag: 1.15.1
   pullPolicy: IfNotPresent
+
+crd:
+  install: true
+
+jaeger:
+  # Specifies whether Jaeger instance should be created
+  create: false
+  spec: {}
 
 rbac:
   # Specifies whether RBAC resources should be created

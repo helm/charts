@@ -2,10 +2,31 @@
 
 [Parse](https://parse.com/) is an open source version of the Parse backend that can be deployed to any infrastructure that can run Node.js.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Parse Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/parse
+$ helm install my-release stable/parse
 ```
 
 ## Introduction
@@ -26,7 +47,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/parse
+$ helm install my-release stable/parse
 ```
 
 The command deploys Parse on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -48,7 +69,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the Parse chart and their default values.
 
 | Parameter                              | Description                                                                                                                                               | Default                                                 |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`                 | Global Docker image registry                                                                                                                              | `nil`                                                   |
 | `global.imagePullSecrets`              | Global Docker registry secret names as an array                                                                                                           | `[]` (does not add image pull secrets to deployed pods) |
 | `global.storageClass`                  | Global storage class for dynamic provisioning                                                                                                             | `nil`                                                   |
@@ -57,7 +78,7 @@ The following table lists the configurable parameters of the Parse chart and the
 | `volumePermissions.enabled`            | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                                                 |
 | `volumePermissions.image.registry`     | Init container volume-permissions image registry                                                                                                          | `docker.io`                                             |
 | `volumePermissions.image.repository`   | Init container volume-permissions image name                                                                                                              | `bitnami/minideb`                                       |
-| `volumePermissions.image.tag`          | Init container volume-permissions image tag                                                                                                               | `stretch`                                               |
+| `volumePermissions.image.tag`          | Init container volume-permissions image tag                                                                                                               | `buster`                                                |
 | `volumePermissions.image.pullPolicy`   | Init container volume-permissions image pull policy                                                                                                       | `Always`                                                |
 | `volumePermissions.resources`          | Init container resource requests/limit                                                                                                                    | `nil`                                                   |
 | `service.type`                         | Kubernetes Service type                                                                                                                                   | `LoadBalancer`                                          |
@@ -87,6 +108,9 @@ The following table lists the configurable parameters of the Parse chart and the
 | `server.affinity`                      | Affinity for pod assignment                                                                                                                               | `{}` (The value is evaluated as a template)             |
 | `server.nodeSelector`                  | Node labels for pod assignment                                                                                                                            | `{}` (The value is evaluated as a template)             |
 | `server.tolerations`                   | Tolerations for pod assignment                                                                                                                            | `[]` (The value is evaluated as a template)             |
+| `server.extraEnvVars`                  | Array containing extra env vars (evaluated as a template)                                                                                                 | `nil`                                                   |
+| `server.extraEnvVarsCM`                | ConfigMap containing extra env vars (evaluated as a template)                                                                                             | `nil`                                                   |
+| `server.extraEnvVarsSecret`            | Secret containing extra env vars  (evaluated as a template)                                                                                               | `nil`                                                   |
 | `dashboard.enabled`                    | Enable parse dashboard                                                                                                                                    | `true`                                                  |
 | `dashboard.image.registry`             | Dashboard image registry                                                                                                                                  | `docker.io`                                             |
 | `dashboard.image.repository`           | Dashboard image name                                                                                                                                      | `bitnami/parse-dashboard`                               |
@@ -99,12 +123,16 @@ The following table lists the configurable parameters of the Parse chart and the
 | `dashboard.username`                   | Dashboard username                                                                                                                                        | `user`                                                  |
 | `dashboard.password`                   | Dashboard user password                                                                                                                                   | `random 10 character alphanumeric string`               |
 | `dashboard.appName`                    | Dashboard application name                                                                                                                                | `MyDashboard`                                           |
+| `dashboard.parseServerUrlProtocol`     | Protocol used by Parse Dashboard to form the URLs to Parse Server.                                                                                        | `http`                                                  |
 | `dashboard.resources`                  | The [resources] to allocate for container                                                                                                                 | `{}`                                                    |
 | `dashboard.livenessProbe`              | Liveness probe configuration for Dashboard                                                                                                                | `Check values.yaml file`                                |
 | `dashboard.readinessProbe`             | Readiness probe configuration for Dashboard                                                                                                               | `Check values.yaml file`                                |
 | `dashboard.affinity`                   | Affinity for pod assignment                                                                                                                               | `{}` (The value is evaluated as a template)             |
 | `dashboard.nodeSelector`               | Node labels for pod assignment                                                                                                                            | `{}` (The value is evaluated as a template)             |
 | `dashboard.tolerations`                | Tolerations for pod assignment                                                                                                                            | `[]` (The value is evaluated as a template)             |
+| `dashboard.extraEnvVars`               | Array containing extra env vars (evaluated as a template)                                                                                                 | `nil`                                                   |
+| `dashboard.extraEnvVarsCM`             | ConfigMap containing extra env vars (evaluated as a template)                                                                                             | `nil`                                                   |
+| `dashboard.extraEnvVarsSecret`         | Secret containing extra env vars  (evaluated as a template)                                                                                               | `nil`                                                   |
 | `persistence.enabled`                  | Enable Parse persistence using PVC                                                                                                                        | `true`                                                  |
 | `persistence.storageClass`             | PVC Storage Class for Parse volume                                                                                                                        | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`               | PVC Access Mode for Parse volume                                                                                                                          | `ReadWriteOnce`                                         |
@@ -151,7 +179,7 @@ The above parameters map to the env variables defined in [bitnami/parse](http://
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set dashboard.username=admin,dashboard.password=password \
     stable/parse
 ```
@@ -161,7 +189,7 @@ The above command sets the Parse administrator account username and password to 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/parse
+$ helm install my-release -f values.yaml stable/parse
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -197,6 +225,18 @@ By default, the chart is configured to use Kubernetes Security Context to automa
 As an alternative, this chart supports using an initContainer to change the ownership of the volume before mounting it in the final destination.
 
 You can enable this initContainer by setting `volumePermissions.enabled` to `true`.
+
+### Adding extra environment variables
+
+In case you want to add extra environment variables (useful for advanced operations like custom init scripts), you can use the `extraEnvVars` (available in the `server` and `dashboard` sections) property.
+
+```yaml
+extraEnvVars:
+  - name: PARSE_SERVER_ALLOW_CLIENT_CLASS_CREATION
+    value: true
+```
+
+Alternatively, you can use a ConfigMap or a Secret with the environment variables. To do so, use the `extraEnvVarsCM` or the `extraEnvVarsSecret` values.
 
 ## Upgrading
 

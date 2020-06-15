@@ -1,11 +1,11 @@
-{{ if .Values.rbac.create }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: {{ template "airflow.fullname" . }}
+  name: {{ include "airflow.fullname" . }}
   labels:
-    app: {{ template "airflow.name" . }}
-    chart: {{ template "airflow.chart" . }}
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
@@ -21,4 +21,4 @@ rules:
   resources:
   - "pods/exec"
   verbs: ["create", "get"]
-{{ end }}
+{{- end }}

@@ -2,10 +2,31 @@
 
 [Ghost](https://ghost.org/) is one of the most versatile open source content management systems on the market.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Ghost Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/ghost
+$ helm install my-release stable/ghost
 ```
 
 ## Introduction
@@ -28,7 +49,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/ghost
+$ helm install my-release stable/ghost
 ```
 
 The command deploys Ghost on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -53,7 +74,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 |-------------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
 | `global.imageRegistry`              | Global Docker image registry                                  | `nil`                                                    |
 | `global.imagePullSecrets`           | Global Docker registry secret names as an array               | `[]` (does not add image pull secrets to deployed pods)  |
-| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
+| `global.storageClass`               | Global storage class for dynamic provisioning                 | `nil`                                                    |
 | `image.registry`                    | Ghost image registry                                          | `docker.io`                                              |
 | `image.repository`                  | Ghost Image name                                              | `bitnami/ghost`                                          |
 | `image.tag`                         | Ghost Image tag                                               | `{TAG_NAME}`                                             |
@@ -63,7 +84,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `fullnameOverride`                  | String to fully override ghost.fullname template with a string                                     | `nil`               |
 | `volumePermissions.image.registry`  | Init container volume-permissions image registry              | `docker.io`                                              |
 | `volumePermissions.image.repository`| Init container volume-permissions image name                  | `bitnami/minideb`                                        |
-| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `stretch`                                                 |
+| `volumePermissions.image.tag`       | Init container volume-permissions image tag                   | `buster`                                                 |
 | `volumePermissions.image.pullPolicy`| Init container volume-permissions image pull policy           | `Always`                                                 |
 | `ghostHost`                         | Ghost host to create application URLs                         | `nil`                                                    |
 | `ghostPort`                         | Ghost port to use in application URLs (defaults to `service.port` if `nil`) | `nil`                                      |
@@ -80,6 +101,18 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `smtpFromAddress`                   | SMTP from address                                             | `nil`                                                    |
 | `smtpService`                       | SMTP service                                                  | `nil`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                                      | `yes`                                                    |
+| `livenessProbe.enabled`             | Would you like a livenessProbe to be enabled                  | `true`                                                   |
+| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                      | 120                                                      |
+| `livenessProbe.periodSeconds`       | How often to perform the probe                                | 3                                                        |
+| `livenessProbe.timeoutSeconds`      | When the probe times out                                      | 5                                                        |
+| `livenessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed          | 6                                                        |
+| `livenessProbe.successThreshold`    | Minimum consecutive successes to be considered successful     | 1                                                        |
+| `readinessProbe.enabled`            | Would you like a readinessProbe to be enabled                 | `true`                                                   |
+| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated                     | 30                                                       |
+| `readinessProbe.periodSeconds`      | How often to perform the probe                                | 3                                                        |
+| `readinessProbe.timeoutSeconds`     | When the probe times out                                      | 5                                                        |
+| `readinessProbe.failureThreshold`   |  Minimum consecutive failures to be considered failed         | 6                                                        |
+| `readinessProbe.successThreshold`   | Minimum consecutive successes to be considered successful     | 1                                                        |
 | `securityContext.enabled`           | Enable security context                                       | `true`                                                   |
 | `securityContext.fsGroup`           | Group ID for the container                                    | `1001`                                                   |
 | `securityContext.runAsUser`         | User ID for the container                                     | `1001`                                                   |
@@ -116,6 +149,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `persistence.size`                  | PVC Storage Request for Ghost volume                          | `8Gi`                                                    |
 | `persistence.path`                  | Path to mount the volume at, to use other images              | `/bitnami`                                               |
 | `resources`                         | CPU/Memory resource requests/limits                           | Memory: `512Mi`, CPU: `300m`                             |
+| `nodeSelector`                      | Node selector for pod assignment                              | `{}`                                                     |
 | `affinity`                          | Map of node/pod affinities                                    | `{}`                                                     |
 
 The above parameters map to the env variables defined in [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost). For more information please refer to the [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost) image documentation.
@@ -137,7 +171,7 @@ The above parameters map to the env variables defined in [bitnami/ghost](http://
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set ghostUsername=admin,ghostPassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/ghost
 ```
@@ -147,7 +181,7 @@ The above command sets the Ghost administrator account username and password to 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/ghost
+$ helm install my-release -f values.yaml stable/ghost
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -180,6 +214,14 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 9.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pulls/17297 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 5.0.0
 

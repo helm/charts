@@ -5,11 +5,16 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.26.1"
+    tag: "0.32.0"
     pullPolicy: IfNotPresent
-    # www-data -> uid 33
-    runAsUser: 33
+    # www-data -> uid 101
+    runAsUser: 101
     allowPrivilegeEscalation: true
+
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
 
   # Configures the ports the nginx-controller listens on
   containerPort:
@@ -18,6 +23,10 @@ controller:
 
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
+
+  # Maxmind license key to download GeoLite2 Databases
+  # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+  maxmindLicenseKey: ""
 
   # Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   proxySetHeaders: {}
@@ -29,6 +38,9 @@ controller:
   # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
   # is merged
   hostNetwork: false
+
+  # Optionally customize the pod dnsConfig.
+  dnsConfig: {}
 
   # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
   # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
@@ -59,6 +71,9 @@ controller:
   ## Name of the ingress class to route through this controller
   ##
   ingressClass: nginx
+
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
 
   # labels to add to the pod container metadata
   podLabels: {}
@@ -117,6 +132,10 @@ controller:
   ## DaemonSet or Deployment
   ##
   kind: Deployment
+
+  ## Annotations to be added to the controller deployment
+  ##
+  deploymentAnnotations: {}
 
   # The update strategy to apply to the Deployment or DaemonSet
   ##
@@ -212,7 +231,7 @@ controller:
 
   autoscaling:
     enabled: false
-    minReplicas: 1
+    minReplicas: 2
     maxReplicas: 11
     targetCPUUtilizationPercentage: 50
     targetMemoryUtilizationPercentage: 50
@@ -227,8 +246,9 @@ controller:
 
     annotations: {}
     labels: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -245,6 +265,10 @@ controller:
     ## providers supporting it
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: ""
+
+    # Must be either "None" or "ClientIP" if set. Kubernetes will default to "None".
+    # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    sessionAffinity: ""
 
     healthCheckNodePort: 0
 
@@ -317,8 +341,9 @@ controller:
 
     service:
       annotations: {}
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
       externalIPs: []
       loadBalancerIP: ""
       loadBalancerSourceRanges: []
@@ -338,6 +363,8 @@ controller:
       nodeSelector: {}
 
   metrics:
+    port: 10254
+    # if this port is changed, change healthz-port: in extraArgs: accordingly
     enabled: false
 
     service:
@@ -345,8 +372,9 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      ## Deprecated, instead simply do not provide a clusterIP value
       omitClusterIP: false
-      clusterIP: ""
+      # clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available
       ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -362,6 +390,11 @@ controller:
       enabled: false
       additionalLabels: {}
       namespace: ""
+      namespaceSelector: {}
+      # Default: scrape .Release.Namespace only
+      # To scrape all, use the following:
+      # namespaceSelector:
+      #   any: true
       scrapeInterval: 30s
       # honorLabels: true
 
@@ -413,6 +446,11 @@ defaultBackend:
     # nobody user -> uid 65534
     runAsUser: 65534
 
+  # This will fix the issue of HPA not being able to read the metrics.
+  # Note that if you enable it for existing deployments, it won't work as the labels are immutable.
+  # We recommend setting this to true for new deployments.
+  useComponentLabel: false
+
   extraArgs: {}
 
   serviceAccount:
@@ -456,6 +494,9 @@ defaultBackend:
   ##
   podSecurityContext: {}
 
+  # labels to add to the deployment metadata
+  deploymentLabels: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -483,8 +524,9 @@ defaultBackend:
 
   service:
     annotations: {}
+    ## Deprecated, instead simply do not provide a clusterIP value
     omitClusterIP: false
-    clusterIP: ""
+    # clusterIP: ""
 
     ## List of IP addresses at which the default backend service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -498,9 +540,13 @@ defaultBackend:
 
   priorityClassName: ""
 
+# If provided, the value will be used as the `release` label instead of .Release.Name
+releaseLabelOverride: ""
+
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
+  scope: false
 
 # If true, create & use Pod Security Policy resources
 # https://kubernetes.io/docs/concepts/policy/pod-security-policy/
@@ -510,6 +556,7 @@ podSecurityPolicy:
 serviceAccount:
   create: true
   name:
+  annotations: {}
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

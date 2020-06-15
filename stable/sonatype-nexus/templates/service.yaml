@@ -25,7 +25,7 @@ spec:
   {{- end }}
   {{- with .Values.service.ports  }}
 {{ toYaml . | indent 2 }}
-  {{- end -}}
+  {{- end }}
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}

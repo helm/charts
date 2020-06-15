@@ -14,7 +14,9 @@ metadata:
 {{ toYaml .Values.collector.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if not .Values.collector.autoscaling.enabled }}
   replicas: {{ .Values.collector.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "jaeger.name" . }}
@@ -24,8 +26,9 @@ spec:
     type: Recreate
   template:
     metadata:
-{{- if .Values.collector.podAnnotations }}
       annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/collector-configmap.yaml") . | sha256sum }}
+{{- if .Values.collector.podAnnotations }}
 {{ toYaml .Values.collector.podAnnotations | indent 8 }}
 {{- end }}
       labels:
@@ -59,6 +62,21 @@ spec:
             value: {{ template "cassandra.host" . }}
           - name: CASSANDRA_PORT
             value: {{ .Values.storage.cassandra.port | quote }}
+          {{ if .Values.storage.cassandra.tls.enabled }}
+          - name: CASSANDRA_TLS
+            value: "true"
+          - name: CASSANDRA_TLS_SERVER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.cassandra.tls.secretName }}
+                key: commonName
+          - name: CASSANDRA_TLS_KEY
+            value: "/cassandra-tls/client-key.pem"
+          - name: CASSANDRA_TLS_CERT
+            value: "/cassandra-tls/client-cert.pem"
+          - name: CASSANDRA_TLS_CA
+            value: "/cassandra-tls/ca-cert.pem"
+          {{- end }}
           - name: CASSANDRA_KEYSPACE
             value: {{ printf "%s_%s" "jaeger_v1" .Values.cassandra.config.dc_name | quote }}
           - name: CASSANDRA_USERNAME
@@ -81,6 +99,10 @@ spec:
             value: {{ template "elasticsearch.client.url" . }}
           - name: ES_USERNAME
             value: {{ .Values.storage.elasticsearch.user }}
+          {{- end }}
+          {{- if .Values.collector.samplingConfig}}
+          - name: SAMPLING_STRATEGIES_FILE
+            value: /etc/conf/strategies.json
           {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.grpcPort }}
@@ -115,6 +137,24 @@ spec:
             subPath: {{ .subPath }}
             readOnly: {{ .readOnly }}
         {{- end }}
+        {{- if .Values.storage.cassandra.tls.enabled }}
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/ca-cert.pem"
+            subPath: "ca-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client-cert.pem"
+            subPath: "client-cert.pem"
+            readOnly: true
+          - name: {{ .Values.storage.cassandra.tls.secretName }}
+            mountPath: "/cassandra-tls/client-key.pem"
+            subPath: "client-key.pem"
+            readOnly: true
+        {{- end }}
+        {{- if .Values.collector.samplingConfig}}
+          - name: strategies
+            mountPath: /etc/conf/
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
       volumes:
@@ -123,4 +163,10 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+      {{- if .Values.collector.samplingConfig}}
+        - name: strategies
+          configMap:
+            name: {{ include "jaeger.fullname" . }}-sampling-strategies
+      {{- end }}
+
 {{- end -}}

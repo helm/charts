@@ -14,7 +14,7 @@
 
 {{- end }}
 
-{{- if eq .Values.omsagent.env.clusterName "<your_cluster_name>" }}
+{{- if and (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>") }}
 
 ##############################################################################
 ####   ERROR: You did not provide cluster name                            ####
@@ -22,7 +22,7 @@
 
 {{- end }}
 
-{{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>") (eq .Values.omsagent.env.clusterName "<your_cluster_name>")}}
+{{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>") (and (eq .Values.omsagent.env.clusterName "<your_cluster_name>") (eq .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
 
 This deployment will not complete. To proceed, run
  helm upgrade {{ .Release.Name }} \

@@ -1,44 +1,59 @@
-{{- if .Values.NetworkPolicy.Enabled }}
+{{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
 apiVersion: {{ template "cockroachdb.networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+  name: {{ template "cockroachdb.tls.serviceAccount.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   podSelector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Component}}"
-  ingress:
-  - ports:
-    - port: {{ .Values.ExternalGrpcPort}}
-    {{- if not .Values.NetworkPolicy.AllowExternal }}
-    from:
-    # Allow clients to connect.
-    - podSelector:
-        matchLabels:
-          {{.Release.Name}}-{{.Values.Component}}-client: "true"
-    # Allow other cockroachdb's to connect to form cluster.
-    - podSelector:
-        matchLabels:
-          component: "{{.Release.Name}}-{{.Values.Component}}"
+      app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    {{- with .Values.statefulset.labels }}
+      {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
-  - ports:
-    - port: {{ .Values.InternalGrpcPort}}
-    from:
-    # Allow other cockroachdb's to connect to form cluster.
-    - podSelector:
-        matchLabels:
-          component: "{{.Release.Name}}-{{.Values.Component}}"
-  {{- end }}
-  # Allow connections to admin UI.
-  - ports:
-    - port: {{.Values.ExternalHttpPort}}
-  # Allow connections from Prometheus.
-  - ports:
-    - port: {{.Values.ExternalHttpPort}}
+  ingress:
+    - ports:
+        - port: grpc
+    {{- with .Values.networkPolicy.ingress.grpc }}
+      from:
+        # Allow connections via custom rules.
+        {{- toYaml . | nindent 8 }}
+        # Allow client connection via pre-considered label.
+        - podSelector:
+            matchLabels:
+              {{ template "cockroachdb.fullname" . }}-client: "true"
+        # Allow other CockroachDBs to connect to form a cluster.
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+            {{- with .Values.statefulset.labels }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+      {{- if gt (.Values.statefulset.replicas | int64) 1 }}
+        # Allow init Job to connect to bootstrap a cluster.
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+            {{- with .Values.init.labels }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+      {{- end }}
+    {{- end }}
+    # Allow connections to admin UI and for Prometheus.
+    - ports:
+        - port: http
+    {{- with .Values.networkPolicy.ingress.http }}
+      from: {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end }}

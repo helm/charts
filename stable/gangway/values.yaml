@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/heptio-images/gangway
-  tag: v3.0.0
+  tag: v3.2.0
   pullPolicy: IfNotPresent
   ## Optional array of imagePullSecrets containing private registry credentials
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -18,6 +18,12 @@ fullnameOverride: ""
 #  -----BEGIN CERTIFICATE-----
 #  ...
 #  -----END CERTIFICATE-----
+
+# Add Env Variables to pod
+env: {}
+
+# Add annotations to the pod
+podAnnotations: {}
 
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
@@ -142,6 +148,7 @@ service:
   port: 80
   # Specifies a loadBalancerIP when using LoadBalancer service type
   # loadBalancerIP: 192.168.0.51
+  annotations: {}
 
 ingress:
   enabled: false

@@ -16,11 +16,13 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
 {{- if not .Values.controller.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.service.clusterIP }}"
+  {{- with .Values.controller.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.controller.service.externalIPs }}
   externalIPs:
@@ -35,6 +37,9 @@ spec:
 {{- end }}
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.externalTrafficPolicy) }}
   externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
+{{- end }}
+{{- if .Values.controller.service.sessionAffinity }}
+  sessionAffinity: "{{ .Values.controller.service.sessionAffinity }}"
 {{- end }}
 {{- if and (semverCompare ">=1.7-0" .Capabilities.KubeVersion.GitVersion) (.Values.controller.service.healthCheckNodePort) }}
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
@@ -83,7 +88,7 @@ spec:
   {{- end }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    app.kubernetes.io/component: controller
   type: "{{ .Values.controller.service.type }}"
 {{- end }}

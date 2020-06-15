@@ -18,7 +18,7 @@ initContainers:
 
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.2.1.RELEASE
+  version: 2.5.1.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   trustCerts: false
@@ -27,6 +27,7 @@ server:
     externalPort: 80
     annotations: {}
     labels: {}
+    loadBalancerSourceRanges: []
   configMap:
   resources: {}
   #  limits:
@@ -35,12 +36,21 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
+  containerConfiguration: {}
+  #  container:
+  #    registry-configurations:
+  #      default:
+  #        registry-host: registry-1.docker.io
+  #        authorization-type: dockeroauth2
 
 skipper:
+  enabled: true
   image: springcloud/spring-cloud-skipper-server
-  version: 2.1.2.RELEASE
+  version: 2.4.1.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
+  trustCerts: false
   service:
     type: ClusterIP
     annotations: {}
@@ -53,6 +63,7 @@ skipper:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
 
 deployer:
   resourceLimits:
@@ -65,7 +76,10 @@ deployer:
 
 rabbitmq:
   enabled: true
-  rabbitmqUsername: user
+  rabbitmq:
+    username: user
+    # this value will be encoded into a secret
+    password: changeme
 
 rabbitmq-ha:
   enabled: false
@@ -95,3 +109,111 @@ database:
   password:
   dataflow: dataflow
   skipper: skipper
+
+features:
+  streaming:
+    enabled: true
+  batch:
+    enabled: true
+  monitoring:
+    enabled: false
+
+## If you are using an ingress server then you can override the following
+## default values to create an Ingress resource
+ingress:
+  enabled: false
+  server:
+    host: data-flow.local
+  grafana:
+    host: grafana.local
+  protocol: https
+
+grafana:
+  service:
+    type: LoadBalancer
+  admin:
+    existingSecret: scdf-grafana-secret
+    userKey: admin-user
+    passwordKey: admin-password
+    defaultUsername: YWRtaW4=
+    defaultPassword: cGFzc3dvcmQ=
+  extraConfigmapMounts:
+    - name: scdf-grafana-ds-cm
+      mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+      subPath: datasources.yaml
+      configMap: scdf-grafana-ds-cm
+      readOnly: true
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder:
+          type: file
+          disableDeletion: true
+          editable: false
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      scdf-applications:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-applications.json
+      scdf-streams:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-streams.json
+      scdf-task-batch:
+        url: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/src/grafana/prometheus/docker/grafana/dashboards/scdf-task-batch.json
+
+prometheus:
+  podSecurityPolicy:
+    enabled: true
+  alertmanager:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  pushgateway:
+    enabled: false
+  server:
+    global:
+      scrape_interval: 10s
+      scrape_timeout: 9s
+      evaluation_interval: 10s
+  extraScrapeConfigs: |
+    - job_name: 'proxied-applications'
+      metrics_path: '/metrics/connected'
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - {{ .Release.Namespace }}
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: prometheus-proxy
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          action: keep
+          regex: 8080
+    - job_name: 'proxies'
+      metrics_path: '/metrics/proxy'
+      kubernetes_sd_configs:
+        - role: pod
+          namespaces:
+            names:
+              - {{ .Release.Namespace }}
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: prometheus-proxy
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          action: keep
+          regex: 8080
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+  proxy:
+    service:
+      type: LoadBalancer

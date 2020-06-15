@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create }}
 {{- if .Values.podSecurityPolicy.enabled }}
-apiVersion: policy/v1beta1
+apiVersion: {{ template "prometheus.podSecurityPolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}

@@ -79,6 +79,17 @@ Set postgres secret
 {{- end -}}
 
 {{/*
+Set postgres secretKey
+*/}}
+{{- define "sentry.postgresql.secretKey" -}}
+{{- if .Values.postgresql.enabled -}}
+"postgresql-password"
+{{- else -}}
+{{- default "postgresql-password" .Values.postgresql.existingSecretKey | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Set postgres port
 */}}
 {{- define "sentry.postgresql.port" -}}
@@ -112,6 +123,17 @@ Set redis secret
 {{- end -}}
 
 {{/*
+Set redis secretKey
+*/}}
+{{- define "sentry.redis.secretKey" -}}
+{{- if .Values.redis.enabled -}}
+"redis-password"
+{{- else -}}
+{{- default "redis-password" .Values.redis.existingSecretKey | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Set redis port
 */}}
 {{- define "sentry.redis.port" -}}
@@ -119,5 +141,16 @@ Set redis port
     "6379"
 {{- else -}}
 {{- default "6379" .Values.redis.port | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "sentry.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "sentry.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}

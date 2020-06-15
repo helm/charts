@@ -3,12 +3,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
   {{- with .Values.persistence.annotations  }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -25,5 +22,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
+  {{- if .Values.persistence.storageClassName }}
   storageClassName: {{ .Values.persistence.storageClassName }}
+  {{- end -}}
 {{- end -}}

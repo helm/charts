@@ -14,7 +14,7 @@ spec:
       app: {{ template "toplevel.name" . }}
       release: {{ .Release.Name }}
       component: cluster-agent
-  updateStrategy:
+  strategy:
     type: RollingUpdate
   template:
     metadata:

@@ -3,12 +3,9 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    {{- include "grafana.labels" . | nindent 4 }}
 {{- with .Values.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -20,11 +17,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "grafana.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
-{{- if .Values.rbac.namespaced }}
-roleRef:
-  kind: Role
-  name: {{ template "grafana.fullname" . }}
-  apiGroup: rbac.authorization.k8s.io
-{{- end }}
+  namespace: {{ template "grafana.namespace" . }}
 {{- end -}}

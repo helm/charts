@@ -8,11 +8,19 @@ image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.4
+  tag: 0.9.0
   pullPolicy: IfNotPresent
 
 deployment:
+  # additional labels
+  labels: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
@@ -60,3 +68,4 @@ config:
   # Secret used to sign session cookies. If empty it will be replaced with a
   # random 64 length string
   secret: ''
+  tlsVerify: true

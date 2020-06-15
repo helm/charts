@@ -26,11 +26,20 @@ envVars:
   ##  If no metrics limit defined, alert if the pod utilization is more than the resource request amount
   METRICS_REQUESTS: "false"
 
+## Alternative to specify environment values for the deployment via secrets.
+## See envVars above for some examples
+# envVarsFromSecret:
+#  SLACK_URL:
+#    secretKeyRef: kube-slack
+#    key: SLACK_URL
+
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
   tag: v4.2.0
   pullPolicy: IfNotPresent
+  # If specified, use these secrets to access the image
+  # pullSecret: registry-secret
 
 resources: {}
   # limits:

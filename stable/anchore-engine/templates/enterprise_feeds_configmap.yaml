@@ -14,16 +14,6 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
-  ANCHORE_DB_NAME: {{ index .Values "anchore-feeds-db" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "anchore-feeds-db" "postgresUser"  | quote }}
-  {{- if and (index .Values "anchore-feeds-db" "externalEndpoint") (not (index .Values "anchore-feeds-db" "enabled")) }}
-  ANCHORE_DB_HOST: {{ index .Values "anchore-feeds-db" "externalEndpoint" | quote }}
-  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "anchore-feeds-db" "enabled")) }}
-  ANCHORE_DB_HOST: "localhost:5432"
-  {{- else }}
-  ANCHORE_DB_HOST: "{{ template "postgres.anchore-feeds-db.fullname" . }}:5432"
-  {{- end }}
-
   config.yaml: |
     # Anchore Enterprise Service Configuration File
     # General system-wide configuration options, these should not need to
@@ -73,7 +63,7 @@ data:
           timeout: {{ .Values.anchoreEnterpriseFeeds.dbConfig.timeout }}
           ssl: false
         db_pool_size: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
-        db_pool_max_overflow: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolSize }}
+        db_pool_max_overflow: {{ .Values.anchoreEnterpriseFeeds.dbConfig.connectionPoolMaxOverflow }}
     services:
       feeds:
         enabled: true
@@ -107,12 +97,16 @@ data:
             # To enable gem driver comment the enabled property and uncomment the db_connect property.
             enabled: {{ default "false" .Values.anchoreEnterpriseFeeds.gemDriverEnabled }}
             db_connect: {{ default "'postgresql://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}/gems'" .Values.anchoreEnterpriseFeeds.gemDbEndpoint }}
+          amzn:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.amazonDriverEnabled }}
           centos:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.centosDriverEnabled }}
           debian:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.debianDriverEnabled }}
           ubuntu:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.ubuntuDriverEnabled }}
+          rhel:
+            enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.rhelDriverEnabled }}
           ol:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.olDriverEnabled }}
           alpine:
@@ -125,6 +119,16 @@ data:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.nvdv2DriverEnabled }}
           vulndb:
             enabled: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+          msrc:
+            enabled: {{ .Values.anchoreEnterpriseFeeds.msrcDriverEnabled }}
+            api_key: {{ .Values.anchoreEnterpriseFeeds.msrcApiKey }}
+            {{- with .Values.anchoreEnterpriseFeeds.msrcWhitelist }}
+            whitelist:
+              - {{ . }}
+            {{- end }}
+          github:
+            enabled: {{ .Values.anchoreEnterpriseFeeds.githubDriverEnabled }}
+            token: {{ .Values.anchoreEnterpriseFeeds.githubDriverToken }}
         {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_enable: {{ .Values.anchoreGlobal.internalServicesSsl.enabled }}
         ssl_cert: "/home/anchore/certs/{{- .Values.anchoreGlobal.internalServicesSsl.certSecretCertName }}"

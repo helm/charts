@@ -23,6 +23,9 @@ spec:
         release: {{ .Release.Name }}
       annotations: {{ toYaml .Values.etcdOperator.podAnnotations | nindent 8}}
     spec:
+      {{- if .Values.etcdOperator.priorityClassName }}
+      priorityClassName: {{ .Values.etcdOperator.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
       - name: {{ template "etcd-operator.fullname" . }}

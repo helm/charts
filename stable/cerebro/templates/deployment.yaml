@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "cerebro.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- range $key, $value := .Values.deployment.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 {{- if .Values.deployment.annotations }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
@@ -23,8 +26,14 @@ spec:
       labels:
         app: {{ template "cerebro.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.deployment.podLabels }}
+        {{- toYaml .Values.deployment.podLabels | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.deployment.podAnnotations }}
+        {{- toYaml .Values.deployment.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.securityContext }}
       securityContext:
@@ -50,6 +59,10 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+            - name: logs
+              mountPath: /opt/cerebro/logs/
+            - name: tmp
+              mountPath: /tmp
           {{- if .Values.env }}
           env:
           {{- range $index, $element := .Values.env }}
@@ -62,16 +75,20 @@ spec:
             - secretRef:
                 name: "{{ .Values.envFromSecretRef }}"
           {{- end }}
+          {{- if .Values.deployment.livenessProbe.enabled}}
           livenessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
             initialDelaySeconds: 120
+          {{- end }}
+          {{- if .Values.deployment.readinessProbe.enabled}}
           readinessProbe:
             httpGet:
               path: {{ .Values.config.basePath }}
               port: http
-            initialDelaySeconds: 120
+            initialDelaySeconds: 5
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
@@ -80,6 +97,10 @@ spec:
         - name: config
           configMap:
             name: {{ template "cerebro.fullname" . }}
+        - name: logs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

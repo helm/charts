@@ -1,5 +1,11 @@
 # Consul Helm Chart
 
+## Deprecated
+This chart is deprecated in favor of HashiCorp's [Official Helm Chart](https://github.com/hashicorp/consul-helm).
+
+See [https://www.consul.io/docs/k8s/installation/overview](https://www.consul.io/docs/k8s/installation/overview)
+for installation instructions.
+
 ## Prerequisites Details
 * Kubernetes 1.10+
 * PV support on underlying infrastructure
@@ -38,7 +44,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `joinPeers`             | Set list of hosts for -retry-join     | `[]`                                                       |
 | `joinWan`               | Set list of hosts for -retry-join-wan | `[]`                                                       |
-| `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
+| `Gossip.Encrypt`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
@@ -62,7 +68,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `uiIngress.annotations` | Associate annotations to the Ingress  | `{}`                                                       |
 | `uiIngress.labels`      | Associate labels to the Ingress       | `{}`                                                       |
 | `uiIngress.hosts`       | Associate hosts with the Ingress      | `[]`                                                       |
-| `uiIngress.tls`         | Associate TLS with the Ingress        | `[]`                                                       |
+| `uiIngress.path`        | Associate TLS with the Ingress        | `/`                                                        |
+| `uiIngress.tls`         | Associate path with the Ingress       | `[]`                                                       |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `uiService.annotations` | Extra annotations for UI service      | `{}`                                                       |

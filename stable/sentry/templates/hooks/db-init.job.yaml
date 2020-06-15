@@ -1,4 +1,5 @@
 # https://docs.sentry.io/server/installation/docker/#running-migrations
+{{- if .Values.hooks.dbInit.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -31,6 +32,10 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.hooks.tolerations }}
+      tolerations:
+{{ toYaml .Values.hooks.tolerations | indent 8 }}
+      {{- end }}
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
@@ -58,12 +63,12 @@ spec:
             {{- else }}
               name: {{ template "sentry.postgresql.secret" . }}
             {{- end }}
-              key: postgresql-password
+              key: {{ template "sentry.postgresql.secretKey" . }}
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
           value: {{ template "sentry.postgresql.port" . }}
-        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) (.Values.redis.existingSecret)  }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -72,7 +77,7 @@ spec:
             {{- else }}
               name: {{ template "sentry.redis.secret" . }}
             {{- end }}
-              key: redis-password
+              key: {{ template "sentry.redis.secretKey" . }}
         {{- end }}
         - name: SENTRY_REDIS_HOST
           value: {{ template "sentry.redis.host" . }}
@@ -107,4 +112,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "sentry.fullname" . }}
-
+{{- end -}}

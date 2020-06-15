@@ -1,6 +1,6 @@
 {{- if and .Values.nodeExporter.enabled .Values.rbac.create }}
 {{- if .Values.podSecurityPolicy.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.podSecurityPolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus.nodeExporter.fullname" . }}

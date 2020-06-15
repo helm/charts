@@ -24,11 +24,14 @@ rules:
 - apiGroups: [""]
   resources: ["events"]
   verbs: ["create", "update", "patch"]
+- apiGroups: [""]
+  resources: ["resourcequotas"]
+  verbs: ["get", "list", "watch"]
 - apiGroups: ["apiextensions.k8s.io"]
   resources: ["customresourcedefinitions"]
   verbs: ["create", "get", "update", "delete"]
 - apiGroups: ["admissionregistration.k8s.io"]
-  resources: ["mutatingwebhookconfigurations"]
+  resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
   verbs: ["create", "get", "update", "delete"]
 - apiGroups: ["sparkoperator.k8s.io"]
   resources: ["sparkapplications", "scheduledsparkapplications", "sparkapplications/status", "scheduledsparkapplications/status"]
@@ -38,6 +41,12 @@ rules:
 - apiGroups: ["scheduling.incubator.k8s.io", "scheduling.sigs.dev"]
   resources: ["podgroups"]
   verbs: ["*"]
+  {{- end }}
+  {{ if .Values.enableWebhook }}
+  # This permission is granted only if the webhook is enabled
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["delete"]
   {{- end }}
 
 ---

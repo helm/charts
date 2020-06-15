@@ -13,11 +13,13 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
 {{- if not .Values.defaultBackend.service.omitClusterIP }}
-  clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
+  {{- with .Values.defaultBackend.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.defaultBackend.service.externalIPs }}
   externalIPs:
@@ -37,7 +39,7 @@ spec:
       targetPort: http
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.defaultBackend.name }}"
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    app.kubernetes.io/component: default-backend
   type: "{{ .Values.defaultBackend.service.type }}"
 {{- end }}

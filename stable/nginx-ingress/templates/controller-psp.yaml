@@ -7,7 +7,7 @@ metadata:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
 spec:
   allowedCapabilities:
     - NET_BIND_SERVICE
@@ -17,10 +17,46 @@ spec:
   volumes:
     - 'configMap'
     #- 'emptyDir'
-    #- 'projected'
+    - 'projected'
     - 'secret'
     #- 'downwardAPI'
   hostNetwork: {{ .Values.controller.hostNetwork }}
+{{- if or .Values.controller.hostNetwork .Values.controller.daemonset.useHostPort }}
+  hostPorts:
+{{- if .Values.controller.hostNetwork }}
+{{- range $key, $value := .Values.controller.containerPort }}
+  # {{ $key }}
+  - min: {{ $value }}
+    max: {{ $value }}
+{{- end }}
+{{- else if .Values.controller.daemonset.useHostPort }}
+{{- range $key, $value := .Values.controller.daemonset.hostPorts }}
+  # {{ $key }}
+  - min: {{ $value }}
+    max: {{ $value }}
+{{- end }}
+{{- end }}
+{{- if .Values.controller.metrics.enabled }}
+  # metrics
+  - min: {{ .Values.controller.metrics.port }}
+    max: {{ .Values.controller.metrics.port }}
+{{- end }}
+{{- if .Values.controller.admissionWebhooks.enabled }}
+  # admission webhooks
+  - min: {{ .Values.controller.admissionWebhooks.port }}
+    max: {{ .Values.controller.admissionWebhooks.port }}
+{{- end }}
+{{- range $key, $value := .Values.tcp }}
+  # {{ $key }}-tcp
+  - min: {{ $key }}
+    max: {{ $key }}
+{{- end }}
+{{- range $key, $value := .Values.udp }}
+  # {{ $key }}-udp
+  - min: {{ $key }}
+    max: {{ $key }}
+{{- end }}
+{{- end }}
   hostIPC: false
   hostPID: false
   runAsUser:
@@ -41,7 +77,4 @@ spec:
   readOnlyRootFilesystem: false
   seLinux:
     rule: 'RunAsAny'
-  hostPorts:
-    - max: 65535
-      min: 1
 {{- end }}

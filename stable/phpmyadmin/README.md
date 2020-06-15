@@ -2,10 +2,31 @@
 
 [phpMyAdmin](https://www.phpmyadmin.net/) is a free and open source administration tool for MySQL and MariaDB. As a portable web application written primarily in PHP, it has become one of the most popular MySQL administration tools, especially for web hosting services.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained phpMyAdmin Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/phpmyadmin
+$ helm install my-release stable/phpmyadmin
 ```
 
 ## Introduction
@@ -23,7 +44,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/phpmyadmin
+$ helm install my-release stable/phpmyadmin
 ```
 
 The command deploys phpMyAdmin on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -61,9 +82,16 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `db.chartName`               | Database suffix if included in the same release                                                         | `nil`                                                                                         |
 | `db.host`                    | Database host to connect to                                                                             | `nil`                                                                                         |
 | `db.bundleTestDB`            | Deploy a MariaDB instance for testing purposes                                                          | `false`                                                                                       |
+| `db.enableSsl`               | Enable SSL for the connection between phpMyAdmin and the database                                       | `false`                                                                                       |
+| `db.ssl.clientKey`           | Client key file when using SSL                                                                          | ``                                                                                            |
+| `db.ssl.clientCertificate`   | Client certificate file when using SSL                                                                  | ``                                                                                            |
+| `db.ssl.caCertificate`       | CA file when using SSL                                                                                  | ``                                                                                            |
+| `db.ssl.ciphers`             | List of allowable ciphers for connections when using SSL                                                | `nil`                                                                                         |
+| `db.ssl.verify`              | Enable SSL certificate validation                                                                       | `true`                                                                                        |
 | `ingress.enabled`            | Enable ingress controller resource                                                                      | `false`                                                                                       |
 | `ingress.certManager`        | Add annotations for cert-manager                                                                        | `false`                                                                                       |
-| `ingress.annotations`        | Ingress annotations                                                                                     | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}` |
+| `ingress.rewriteTarget`      | Add annotations to redirect traffic to `/`                                                              | `true`                                                                                        |
+| `ingress.annotations`        | Ingress annotations                                                                                     | `{}`                                                                                          |
 | `ingress.hosts[0].name`      | Hostname to your PHPMyAdmin installation                                                                | `phpmyadmin.local`                                                                            |
 | `ingress.hosts[0].path`      | Path within the url structure                                                                           | `/`                                                                                           |
 | `ingress.hosts[0].tls`       | Utilize TLS backend in ingress                                                                          | `false`                                                                                       |
@@ -73,7 +101,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `nodeSelector`               | Node labels for pod assignment                                                                          | `{}`                                                                                          |
 | `tolerations`                | List of node taints to tolerate                                                                         | `[]`                                                                                          |
 | `affinity`                   | Map of node/pod affinities                                                                              | `{}`                                                                                          |
-| `podLabels`                  | Pod labels                                                                                         | `{}`                                                                                               |
+| `podLabels`                  | Pod labels                                                                                              | `{}`                                                                                          |
 | `podAnnotations`             | Pod annotations                                                                                         | `{}`                                                                                          |
 | `metrics.enabled`            | Start a side-car prometheus exporter                                                                    | `false`                                                                                       |
 | `metrics.image.registry`     | Apache exporter image registry                                                                          | `docker.io`                                                                                   |
@@ -89,7 +117,7 @@ For more information please refer to the [bitnami/phpmyadmin](http://github.com/
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set db.host=mymariadb,db.port=3306 stable/phpmyadmin
 ```
 
@@ -98,7 +126,7 @@ The above command sets the phpMyAdmin to connect to a database in `mymariadb` ho
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/phpmyadmin
+$ helm install my-release -f values.yaml stable/phpmyadmin
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

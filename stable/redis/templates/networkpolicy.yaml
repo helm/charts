@@ -18,6 +18,10 @@ spec:
     - Ingress
     - Egress
   egress:
+    # Allow dns resolution
+    - ports:
+      - port: 53
+        protocol: UDP
     # Allow outbound connections to other cluster pods
     - ports:
       - port: {{ .Values.redisPort }}
@@ -42,19 +46,23 @@ spec:
       - podSelector:
           matchLabels:
             {{ template "redis.fullname" . }}-client: "true"
-      {{- if .Values.metrics.enabled }}
       - podSelector:
           matchLabels:
             app: {{ template "redis.name" . }}
             release: {{ .Release.Name }}
-            role: metrics
-      {{- end }}
-      {{- if .Values.cluster.enabled }}
-      - podSelector:
+      {{- if .Values.networkPolicy.ingressNSMatchLabels }}
+      - namespaceSelector:
           matchLabels:
-            app: {{ template "redis.name" . }}
-            release: {{ .Release.Name }}
-            role: slave
+            {{- range $key, $value := .Values.networkPolicy.ingressNSMatchLabels }}
+            {{ $key | quote }}: {{ $value | quote }}
+            {{- end }}
+        {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
+        podSelector:
+          matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.ingressNSPodMatchLabels }}
+            {{ $key | quote }}: {{ $value | quote }}
+            {{- end }}
+        {{- end }}
       {{- end }}
       {{- end }}
     {{- if .Values.metrics.enabled }}

@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   {{- if and .Values.sonarSecretKey (not .Values.sonarProperties) (not .Values.elasticsearch.bootstrapChecks) }}
-  sonar.properties: sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt
+  sonar.properties: sonar.secretKeyPath={{ .Values.sonarqubeFolder }}/secret/sonar-secret.txt
   {{- end }}
   {{- if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
   sonar.properties:
@@ -22,5 +22,5 @@ data:
   {{- end }}
   {{- end }}
     {{- if and .Values.sonarSecretKey .Values.sonarProperties }}
-      sonar.secretKeyPath=/opt/sonarqube/secret/sonar-secret.txt
+      sonar.secretKeyPath={{ .Values.sonarqubeFolder }}/secret/sonar-secret.txt
     {{- end }}

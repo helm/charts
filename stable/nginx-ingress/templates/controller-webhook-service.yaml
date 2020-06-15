@@ -13,11 +13,13 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-admission
 spec:
 {{- if not .Values.controller.admissionWebhooks.service.omitClusterIP }}
-  clusterIP: "{{ .Values.controller.admissionWebhooks.service.clusterIP }}"
+  {{- with .Values.controller.admissionWebhooks.service.clusterIP }}
+  clusterIP: {{ if eq "-" . }}""{{ else }}{{ . | quote }}{{ end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.controller.admissionWebhooks.service.externalIPs }}
   externalIPs:
@@ -36,7 +38,7 @@ spec:
       targetPort: webhook
   selector:
     app: {{ template "nginx-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    app.kubernetes.io/component: controller
   type: "{{ .Values.controller.admissionWebhooks.service.type }}"
 {{- end }}

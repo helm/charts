@@ -1,0 +1,19 @@
+{{- if .Values.features.monitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-prometheus-proxy
+  labels:
+    app: {{ .Release.Name }}-prometheus-proxy
+spec:
+  selector:
+    app: prometheus-proxy
+  ports:
+    - name: scrape
+      port: 8080
+      targetPort: 8080
+    - name: rsocket
+      port: 7001
+      targetPort: 7001
+  type: {{ .Values.prometheus.proxy.service.type }}
+{{- end }}

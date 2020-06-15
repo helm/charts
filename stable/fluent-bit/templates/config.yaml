@@ -26,19 +26,23 @@ data:
 
   fluent-bit-input.conf: |
     [INPUT]
-        Name             tail
-        Path             {{ .Values.input.tail.path }}
-        Parser           {{ .Values.input.tail.parser }}
-        Tag              {{ .Values.filter.kubeTag }}.*
-        Refresh_Interval 5
-        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
-        Skip_Long_Lines  On
+        Name              tail
+        Path              {{ .Values.input.tail.path }}
+        Parser            {{ .Values.input.tail.parser }}
+        Tag               {{ .Values.filter.kubeTag }}.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.input.tail.memBufLimit }}
+        Skip_Long_Lines   On
 {{- if .Values.input.tail.ignore_older }}
-        Ignore_Older    {{ .Values.input.tail.ignore_older }}
+        Ignore_Older      {{ .Values.input.tail.ignore_older }}
 {{- end }}
 {{- if .Values.trackOffsets }}
-        DB               /tail-db/tail-containers-state.db
-        DB.Sync          Normal
+        DB                /tail-db/tail-containers-state.db
+        DB.Sync           Normal
+{{- end }}
+{{- if .Values.input.tail.dockerMode }}
+        Docker_Mode       On
+        Docker_Mode_Flush {{ .Values.input.tail.dockerModeFlush }}
 {{- end }}
 {{- if .Values.input.systemd.enabled }}
     [INPUT]
@@ -49,8 +53,25 @@ data:
 {{- end }}
         Max_Entries     {{ .Values.input.systemd.maxEntries }}
         Read_From_Tail  {{ .Values.input.systemd.readFromTail }}
+        Strip_Underscores  {{ .Values.input.systemd.stripUnderscores }}
 {{- end }}
 {{ .Values.extraEntries.input | indent 8 }}
+
+{{- if .Values.audit.enable }}
+    [INPUT]
+        Name              tail
+        Path              {{ .Values.audit.input.path }}
+        Parser            {{ .Values.audit.input.parser }}
+        DB                /var/log/audit.db
+        Tag               {{ .Values.audit.input.tag }}
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.audit.input.memBufLimit }}
+        Buffer_Chunk_Size {{ .Values.audit.input.bufferChunkSize }}
+        Buffer_Max_Size   {{ .Values.audit.input.bufferMaxSize }}
+        Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
+        Key               {{ .Values.audit.input.key}}
+{{ .Values.extraEntries.audit | indent 8 }}
+{{- end }}
 
   fluent-bit-filter.conf: |
     [FILTER]
@@ -74,6 +95,9 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{- if .Values.filter.useJournal }}
+        Use_Journal         On
+{{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
@@ -92,6 +116,15 @@ data:
 {{- if .Values.backend.forward.shared_key }}
         Shared_Key    {{ .Values.backend.forward.shared_key }}
 {{- end }}
+{{- if .Values.backend.forward.tls }}
+        tls           {{ .Values.backend.forward.tls }}
+{{- end }}
+{{- if .Values.backend.forward.tls_verify }}
+        tls.verify    {{ .Values.backend.forward.tls_verify }}
+{{- end }}
+{{- if .Values.backend.forward.tls_debug }}
+        tls.debug     {{ .Values.backend.forward.tls_debug }}
+{{- end }}
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
@@ -99,7 +132,7 @@ data:
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
         Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
-        Retry_Limit False
+        Retry_Limit {{ .Values.backend.es.retry_limit }}
         Type  {{ .Values.backend.es.type }}
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
@@ -109,6 +142,12 @@ data:
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.logstash_prefix_key }}
+        Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- end }}
+{{- if .Values.backend.es.logstash_dateformat }}
+        Logstash_DateFormat {{ .Values.backend.es.logstash_dateformat }}
+{{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}
 {{- end }}
@@ -169,6 +208,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- if .Values.backend.http.json_date_format }}
+        json_date_format {{ .Values.backend.http.json_date_format }}
 {{- end }}
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}

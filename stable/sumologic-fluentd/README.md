@@ -28,7 +28,7 @@ SumoLogic.
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
+- Kubernetes 1.10+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
 
 ## Installing the Chart
 
@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
+| `daemonsetAnnotations` | Annotations to add to the DaemonSet itself | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
 | `nodeSelector` | Node labels for fluentd pod assignment | `{}` |
 | `affinity` | Expressions for affinity | `{}` |

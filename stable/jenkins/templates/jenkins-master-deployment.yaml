@@ -16,6 +16,10 @@ metadata:
     {{- range $key, $val := .Values.master.deploymentLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
+  {{- if .Values.master.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.master.deploymentAnnotations | indent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
@@ -44,6 +48,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.master.schedulerName }}
+      schedulerName: {{ .Values.master.schedulerName }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -56,6 +63,9 @@ spec:
       affinity:
 {{ toYaml .Values.master.affinity | indent 8 }}
       {{- end }}
+      {{- if quote .Values.master.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.master.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- if and (.Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1") (.Values.master.priorityClassName) }}
       priorityClassName: {{ .Values.master.priorityClassName }}
       {{- end }}
@@ -63,7 +73,7 @@ spec:
       securityContext:
         runAsUser: {{ default 0 .Values.master.runAsUser }}
 {{- if and (.Values.master.runAsUser) (.Values.master.fsGroup) }}
-{{- if not (eq .Values.master.runAsUser 0.0) }}
+{{- if not (eq (int .Values.master.runAsUser) 0) }}
         fsGroup: {{ .Values.master.fsGroup }}
 {{- end }}
 {{- end }}
@@ -94,22 +104,13 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.passwordKey | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
-            {{- end }}
-            {{- end }}
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.userKey | default "jenkins-admin-user" }}
             {{- end }}
             {{- if .Values.master.initContainerEnv }}
 {{ toYaml .Values.master.initContainerEnv | indent 12 }}
@@ -119,7 +120,7 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp
-            - mountPath: /var/jenkins_home
+            - mountPath: {{ .Values.master.jenkinsHome }}
               name: jenkins-home
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
@@ -137,7 +138,7 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
             {{- end }}
             {{- if .Values.master.secretsFilesSecret }}
@@ -146,8 +147,10 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
-            - mountPath: /usr/share/jenkins/ref/plugins
+            {{- if .Values.master.overwritePluginsFromImage }}
+            - mountPath: {{ .Values.master.jenkinsRef }}/plugins
               name: plugins
+            {{- end }}
             - mountPath: /var/jenkins_plugins
               name: plugin-dir
             {{- end }}
@@ -159,16 +162,29 @@ spec:
           image: "{{ .Values.master.image }}:{{ .Values.master.tag }}"
 {{- end }}
           imagePullPolicy: "{{ .Values.master.imagePullPolicy }}"
-          {{- if .Values.master.useSecurity }}
-          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          {{- if .Values.master.httpsKeyStore.enable }}
+          {{- $httpsJKSFilePath :=  printf "%s/%s" .Values.master.httpsKeyStore.path .Values.master.httpsKeyStore.fileName -}}
+              {{- if .Values.master.useSecurity }}
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
+              {{- else }}
+          args: [ "--httpPort={{.Values.master.httpsKeyStore.httpPort}}", "--httpsPort={{.Values.master.targetPort}}", '--httpsKeyStore={{ $httpsJKSFilePath | quote }}', "--httpsKeyStorePassword=$(JENKINS_HTTPS_KEYSTORE_PASSWORD)" ]
+              {{- end }}
+          {{- else if .Values.master.useSecurity }}
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort={{.Values.master.targetPort}}"]
           {{- end }}
           {{- if .Values.master.lifecycle }}
           lifecycle:
 {{ toYaml .Values.master.lifecycle | indent 12 }}
           {{- end }}
           env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: JAVA_OPTS
-              value: {{ default "" .Values.master.javaOpts | quote }}
+              value: >
+                {{ default "" .Values.master.javaOpts }}
+                {{ if .Values.master.sidecars.configAutoReload.enabled }} -Dcasc.reload.token=$(POD_NAME) {{ end }}
             - name: JENKINS_OPTS
               value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}{{ default "" .Values.master.jenkinsOpts}}"
             - name: JENKINS_SLAVE_AGENT_PORT
@@ -177,32 +193,35 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.password | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.user | default "jenkins-admin-user" }}
+            {{- end }}
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - name: JENKINS_HTTPS_KEYSTORE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
+                  name: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
+                  key: {{ "https-jks-password" | quote }}
             {{- end }}
-            {{- end }}
-            {{- end }}
+
             {{- if .Values.master.containerEnv }}
 {{ toYaml .Values.master.containerEnv | indent 12 }}
             {{- end }}
             {{- if .Values.master.JCasC.enabled }}
             - name: CASC_JENKINS_CONFIG
-              value: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              value: {{ .Values.master.sidecars.configAutoReload.folder | default (printf "%s/casc_configs" (.Values.master.jenkinsRef)) }}
             {{- end }}
           ports:
-            - containerPort: 8080
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - containerPort: {{.Values.master.httpsKeyStore.httpPort}}
+            {{- else }}
+            - containerPort: {{.Values.master.targetPort}}
+            {{- end }}
               name: http
             - containerPort: {{ .Values.master.slaveListenerPort }}
               name: slavelistener
@@ -242,9 +261,13 @@ spec:
 {{- if .Values.persistence.mounts }}
 {{ toYaml .Values.persistence.mounts | indent 12 }}
 {{- end }}
+            {{- if .Values.master.httpsKeyStore.enable }}
+            - mountPath: {{ .Values.master.httpsKeyStore.path }}
+              name: jenkins-https-keystore
+            {{- end }}
             - mountPath: /tmp
               name: tmp
-            - mountPath: /var/jenkins_home
+            - mountPath: {{ .Values.master.jenkinsHome }}
               name: jenkins-home
               readOnly: false
               {{- if .Values.persistence.subPath }}
@@ -264,7 +287,7 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
-            - mountPath: /usr/share/jenkins/ref/secrets/
+            - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
               readOnly: false
             {{- end }}
@@ -274,47 +297,36 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.master.installPlugins }}
-            - mountPath: /usr/share/jenkins/ref/plugins/
+            - mountPath: {{ .Values.master.jenkinsRef }}/plugins/
               name: plugin-dir
               readOnly: false
             {{- end }}
             {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
             - name: sc-config-volume
-              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
+              mountPath: {{ .Values.master.sidecars.configAutoReload.folder | default (printf "%s/casc_configs" (.Values.master.jenkinsRef)) }}
             {{- end }}
 
 {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
-        - name: {{ template "jenkins.name" . }}-sc-config
+        - name: jenkins-sc-config
           image: "{{ .Values.master.sidecars.configAutoReload.image }}"
           imagePullPolicy: {{ .Values.master.sidecars.configAutoReload.imagePullPolicy }}
           env:
-            - name: JENKINSRELOADCONFIG
-              value: "true"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: LABEL
               value: "{{ template "jenkins.fullname" . }}-jenkins-config"
             - name: FOLDER
               value: "{{ .Values.master.sidecars.configAutoReload.folder }}"
             - name: NAMESPACE
-              value: "{{ .Values.master.sidecars.configAutoReload.searchNamespace }}"
-            - name: SSH_PORT
-              value: "{{ .Values.master.sidecars.configAutoReload.sshTcpPort }}"
-            - name: JENKINS_PORT
-              value: "{{ .Values.master.targetPort }}"
-            {{- if .Values.master.useSecurity }}
-            - name: ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
-            {{- if or (.Values.master.adminSshKey) (.Values.master.sidecars.configAutoReload.enabled) }}
-            {{- if .Values.master.JCasC.enabled }}
-            - name: ADMIN_PRIVATE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: {{ "jenkins-admin-private-key" | quote }}
-            {{- end }}
-            {{- end }}
+              value: "{{ .Values.master.sidecars.configAutoReload.searchNamespace | default .Release.Namespace }}"
+            - name: REQ_URL
+              value: "http://localhost:8080{{- .Values.master.jenkinsUriPrefix -}}/reload-configuration-as-code/?casc-reload-token=$(POD_NAME)"
+            - name: REQ_METHOD
+              value: "POST"
+            {{- if .Values.master.sidecars.configAutoReload.env }}
+{{ toYaml .Values.master.sidecars.configAutoReload.env | indent 12 }}
             {{- end }}
           resources:
 {{ toYaml .Values.master.sidecars.configAutoReload.resources | indent 12 }}
@@ -322,9 +334,9 @@ spec:
             - name: sc-config-volume
               mountPath: {{ .Values.master.sidecars.configAutoReload.folder | quote }}
             - name: jenkins-home
-              mountPath: /var/jenkins_home
+              mountPath: {{ .Values.master.jenkinsHome }}
               {{- if .Values.persistence.subPath }}
-                subPath: {{ .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
               {{- end }}
 {{- end}}
 
@@ -367,6 +379,7 @@ spec:
       - name: plugin-dir
         emptyDir: {}
       {{- end }}
+      {{- if not (contains "jenkins-home" (quote .Values.persistence.volumes)) }}
       - name: jenkins-home
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
@@ -374,10 +387,21 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- end -}}
       {{- if .Values.master.JCasC.enabled }}
       - name: sc-config-volume
         emptyDir: {}
       {{- end }}
+
+      {{- if .Values.master.httpsKeyStore.enable }}
+      - name: jenkins-https-keystore
+        secret:
+          secretName: {{ if .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ .Values.master.httpsKeyStore.jenkinsHttpsJksSecretName }} {{ else }} {{ template "jenkins.fullname" . }}-https-jks  {{ end }}
+          items:
+          - key: jenkins-jks-file
+            path: {{ .Values.master.httpsKeyStore.fileName }}
+      {{- end }}
+
 {{- if .Values.master.imagePullSecretName }}
       imagePullSecrets:
       - name: {{ .Values.master.imagePullSecretName }}

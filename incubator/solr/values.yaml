@@ -1,4 +1,11 @@
 ---
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imagePullSecrets
+##
+# global:
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
 
 # Which port should solr listen on
 port: 8983
@@ -15,6 +22,10 @@ resources: {}
 # Extra environment variables - allows yaml definitions
 extraEnvVars: []
 
+# Specify the initial script file name here to be executed before starting Solr
+# The file is located relative to the solr chart root folder
+initScript: ""
+
 # Sets the termination Grace period for the solr pods
 # This can take a while for shards to elect new leaders
 terminationGracePeriodSeconds: 180
@@ -22,8 +33,15 @@ terminationGracePeriodSeconds: 180
 # Solr image settings
 image:
   repository: solr
-  tag: 7.7.2
+  tag: 8.4.0
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
 
 # Solr pod liveness
 livenessProbe:
@@ -40,6 +58,9 @@ podAnnotations: {}
 
 # Affinity group rules or the solr pods
 affinity: {}
+
+# Tolerations for pod assignment
+tolerations: []
 
 # Update Strategy for solr pods
 updateStrategy:
@@ -87,6 +108,13 @@ service:
 
 # Configuration for the solr prometheus exporter
 exporter:
+  image: {}
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  #   pullSecrets:
+  #     - myRegistryKeySecretName
   enabled: false  # Deploy the exporter
   configFile: "/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml"  # The config file to point the exporter to
   updateStrategy: {}

@@ -1,19 +1,19 @@
-{{- if gt (.Values.controller.replicaCount | int) 1 }}
+{{- if or (and .Values.controller.autoscaling.enabled (gt (.Values.controller.autoscaling.minReplicas | int) 1)) (gt (.Values.controller.replicaCount | int) 1) }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.controller.name }}"
+    app.kubernetes.io/component: controller
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
-      component: "{{ .Values.controller.name }}"
+      release: {{ template "nginx-ingress.releaseLabel" . }}
+      app.kubernetes.io/component: controller
   minAvailable: {{ .Values.controller.minAvailable }}
 {{- end }}

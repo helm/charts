@@ -8,8 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "jaeger-operator.labels" . | indent 6 }}
   template:
     metadata:
       name: {{ include "jaeger-operator.fullname" . }}

@@ -38,6 +38,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" (include "nginx-ingress.fullname" .) .Values.controller.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+
+{{/*
+Allow for the ability to override the release name used as a label in many places.
+*/}}
+{{- define "nginx-ingress.releaseLabel" -}}
+{{- .Values.releaseLabelOverride | default .Release.Name | trunc 63 -}}
+{{- end -}}
+
 {{/*
 Construct the path for the publish-service.
 
@@ -91,6 +99,17 @@ Return the appropriate apiVersion for deployment.
 {{- print "apps/v1" -}}
 {{- else -}}
 {{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiGroup for PodSecurityPolicy.
+*/}}
+{{- define "podSecurityPolicy.apiGroup" -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "policy" -}}
+{{- else -}}
+{{- print "extensions" -}}
 {{- end -}}
 {{- end -}}
 
