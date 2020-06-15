@@ -3,7 +3,7 @@ name: hazelcast
 # The hazelcast chart is deprecated and no longer maintained. For details deprecation,
 # including how to un-deprecate a chart see the PROCESSES.md file.
 deprecated: true
-version: 3.3.1
+version: 3.3.2
 appVersion: "4.0.1"
 tillerVersion: ">=2.7.2"
 kubeVersion: ">=1.14.0-0"
