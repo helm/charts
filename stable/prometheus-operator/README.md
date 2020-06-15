@@ -443,7 +443,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
-| `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
+| `grafana.additionalDataSources` | Configure additional grafana datasources (passed through tpl) | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |
