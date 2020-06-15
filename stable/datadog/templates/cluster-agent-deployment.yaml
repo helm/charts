@@ -71,6 +71,10 @@ spec:
       hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+      {{- if .Values.clusterAgent.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
+      {{- end }}
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       containers:
