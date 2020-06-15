@@ -538,7 +538,7 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
-  ## Configure additional grafana datasources
+  ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
   additionalDataSources: []
   # - name: prometheus-sample
@@ -551,7 +551,7 @@ grafana:
   #       tlsSkipVerify: true
   #   orgId: 1
   #   type: prometheus
-  #   url: https://prometheus.svc:9090
+  #   url: https://{{ printf "%s-prometheus.svc" .Release.Name }}:9090
   #   version: 1
 
   ## Passed to grafana subchart and used by servicemonitor below
