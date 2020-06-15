@@ -33,7 +33,7 @@ spec:
         key: token
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - {{ .Release.Namespace | quote }}
   selector:
     matchLabels:
       app: {{ include "minio.name" . }}
