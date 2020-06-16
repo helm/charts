@@ -173,6 +173,8 @@ alertmanager:
   #         *Details:*
   #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
   #           {{ end }}
+  #       {{ end }}
+  #       {{ end }}
 
   ingress:
     enabled: false
@@ -651,6 +653,11 @@ kubelet:
     ##
     probes: true
 
+    ## Enable scraping /metrics/resource from kubelet's service
+    ##
+    resource: true
+    # From kubernetes 1.18, /metrics/resource/v1alpha1 renamed to /metrics/resource
+    resourcePath: "/metrics/resource/v1alpha1"
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
@@ -693,6 +700,16 @@ kubelet:
     #   action: replace
 
     probesRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
+
+    resourceRelabelings:
       - sourceLabels: [__metrics_path__]
         targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]

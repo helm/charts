@@ -70,6 +70,19 @@ spec:
 {{ toYaml .Values.kubelet.serviceMonitor.probesRelabelings | indent 4 }}
 {{- end }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.resource }}
+  - port: https-metrics
+    scheme: https
+    path: {{ .Values.kubelet.serviceMonitor.resourcePath }}
+{{- if .Values.kubelet.serviceMonitor.resourceMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.resourceMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.resourceRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.resourceRelabelings | indent 4 }}
+{{- end }}
+{{- end }}
   {{- else }}
   - port: http-metrics
     {{- if .Values.kubelet.serviceMonitor.interval }}
