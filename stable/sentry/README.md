@@ -151,6 +151,7 @@ Parameter                                            | Description              
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
 `ingress.labels`                                     | Ingress labels                                                                                             | `{}`
 `ingress.hostname`                                   | URL to address your Sentry installation                                                                    | `sentry.local`
+`ingress.extraPaths`                                 | Ingress extra paths to prepend to every host configuration.                                                | `[]`
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
