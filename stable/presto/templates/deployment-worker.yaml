@@ -27,6 +27,15 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.worker" . }}
+        {{- if (.Values.server.catalog.secretName | default "") }}
+        - name: presto-connectors-conf
+          secret:
+            secretName: {{ .Values.server.catalog.secretName }}
+        {{- else if .Values.server.catalog.data }}
+        - name: catalog-config-volume
+          configMap:
+            name: {{ template "presto.catalog" . }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -34,6 +43,15 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+            {{- if (.Values.server.catalog.secretName | default "") }}
+            - name: presto-connectors-conf
+              readOnly: true
+              mountPath: {{ .Values.server.config.path }}/catalog
+            {{- else if .Values.server.catalog.data }}
+            - name: catalog-config-volume
+              readOnly: true
+              mountPath: {{ .Values.server.config.path }}/catalog
+            {{- end }}
           livenessProbe:
             exec:
               command:

@@ -30,6 +30,7 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.coordinator" . }}
+      {{- if eq (int .Values.server.workers) 0 }}
         {{- if (.Values.server.catalog.secretName | default "") }}
         - name: presto-connectors-conf
           secret:
@@ -39,6 +40,7 @@ spec:
           configMap:
             name: {{ template "presto.catalog" . }}
         {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-coordinator
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

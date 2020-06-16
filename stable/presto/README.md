@@ -33,6 +33,8 @@ Configurable values are documented in the `values.yaml`:
 | `server.config.http.port`               | The port number of coordinator service                                      | `8080`                   |
 | `server.config.query.maxMemory`         | The maximum amount of distributed memory, that a query may use.             | `4GB`                    |
 | `server.config.query.maxMemoryPerNode`  | The maximum amount of user memory, that a query may use on any one machine. | `1GB`                    |
+| `server.catalog.secretName`             | The name of a secret contains properties files for catalog                  | nil                      |
+| `server.catalog.data`                   | The properties file contents for catalog                                    | nil                      |
 | `server.jvm.maxHeapSize`                | The value for JVM option `-Xmx`                                             | `8G`                     |
 | `server.jvm.gcMethod.type`              | Portion of the value for JVM option `-XX:`                                  | `UseG1GC`                |
 | `server.jvm.gcMethod.g1.heapRegionSize` | The value for JVM option `-XX:G1HeapRegionSize=`                            | `32M`                    |
@@ -50,3 +52,44 @@ $ helm install my-release stable/presto -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Popluate catalog properties
+
+You can choose to use either a secret or inline properties to configure [catalog properties](https://prestosql.io/docs/current/installation/deployment.html#catalog-properties).
+
+Option 1: Given secret like:
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+    name: prestosql-catalog-properties
+data:
+    mysql.properties: <base64-encoded-properties-file>
+    postgresql.properties: <base64-encoded-properties-file>
+```
+
+Specify the parameter using the `--set server.catalog.secretName=prestosql-catalog-properties` argument to `helm install`.
+
+Option 2: Uses inline properties in a YAML file that specifies the values for the parameters. Given below file `values-catalog-data.yaml`:
+
+```YAML
+server:
+  catalog:
+    data: 
+      mysql.properties: |
+        connector.name=mysql
+        foo=bar1
+      postgresql.properties: |
+        connector.name=postgresql
+        foo=bar2
+```
+
+```bash
+$ helm install my-release stable/presto -f values-catalog-data.yaml
+```
+
+**Notices**:
+
+1. When both `server.catalog.secretName` and `server.catalog.data` are provided, only `server.catalog.serverName` will take effect.
+1. When using `server.catalog.data`, it may expose sensitive info like db credentials in values file.
