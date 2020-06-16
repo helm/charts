@@ -12,6 +12,9 @@ controller:
   # controller.create: `true` if Sealed Secrets controller should be created
   create: true
 
+# namespace: Namespace to deploy the controller.
+namespace: ""
+
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
   create: true
