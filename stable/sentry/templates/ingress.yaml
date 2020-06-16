@@ -21,7 +21,7 @@ spec:
       http:
         paths:
           {{- range .Values.ingress.extraPaths }}
-          - path: {{ .path }}
+          - path: {{ .path | quote }}
             backend:
               serviceName: {{ .backend.serviceName }}
               servicePort: {{ .backend.servicePort}}
