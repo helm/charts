@@ -192,6 +192,8 @@ Returns kubernetes pod template configuration as code
     resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
     resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
+    runAsUser: {{ .Values.agent.runAsUser }}
+    runAsGroup: {{ .Values.agent.runAsGroup }}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: {{ .Values.agent.workingDir }}
 {{- if .Values.agent.envVars }}
