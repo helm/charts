@@ -430,6 +430,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.servicePerReplica.type` |  Alertmanager per replica Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
+| `alertmanager.serviceAccount.annotations` | Annotations to add to the serviceaccount | `""` |
 | `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `alertmanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the alertmanager instance. | `` |
 | `alertmanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the alertmanager instance. | `` |
@@ -443,7 +444,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
-| `grafana.additionalDataSources` | Configure additional grafana datasources | `[]` |
+| `grafana.additionalDataSources` | Configure additional grafana datasources (passed through tpl) | `[]` |
 | `grafana.adminPassword` | Admin password to log into the grafana UI | "prom-operator" |
 | `grafana.defaultDashboardsEnabled` | Deploy default dashboards. These are loaded using the sidecar | `true` |
 | `grafana.enabled` | If true, deploy the grafana sub-chart | `true` |

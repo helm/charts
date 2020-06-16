@@ -13,16 +13,16 @@ serviceAccount:
 
 release:
   # "openebs.io/version" label for control plane components
-  version: "1.10.0"
+  version: "1.11.0"
 
 image:
   pullPolicy: IfNotPresent
-  repository: "quay.io/"
+  repository: ""
 
 apiserver:
   enabled: true
   image: "openebs/m-apiserver"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
   replicas: 1
   ports:
     externalPort: 5656
@@ -47,7 +47,7 @@ varDirectoryPath:
 provisioner:
   enabled: true
   image: "openebs/openebs-k8s-provisioner"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -59,7 +59,7 @@ provisioner:
 localprovisioner:
   enabled: true
   image: "openebs/provisioner-localpv"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
   replicas: 1
   basePath: "/var/openebs/local"
   nodeSelector: {}
@@ -73,10 +73,10 @@ snapshotOperator:
   enabled: true
   controller:
     image: "openebs/snapshot-controller"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
   provisioner:
     image: "openebs/snapshot-provisioner"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
@@ -89,7 +89,7 @@ snapshotOperator:
 ndm:
   enabled: true
   image: "openebs/node-disk-manager-amd64"
-  imageTag: "0.5.0"
+  imageTag: "0.6.0"
   sparse:
     path: "/var/openebs/sparse"
     size: "10737418240"
@@ -100,7 +100,7 @@ ndm:
     excludeVendors: "CLOUDBYT,OpenEBS"
     enablePathFilter: true
     includePaths: ""
-    excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
+    excludePaths: "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md,/dev/rbd"
   probes:
     enableSeachest: false
   nodeSelector: {}
@@ -112,7 +112,7 @@ ndm:
 ndmOperator:
   enabled: true
   image: "openebs/node-disk-operator-amd64"
-  imageTag: "0.5.0"
+  imageTag: "0.6.0"
   replicas: 1
   upgradeStrategy: Recreate
   nodeSelector: {}
@@ -128,7 +128,7 @@ ndmOperator:
 webhook:
   enabled: true
   image: "openebs/admission-server"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
   failurePolicy: Ignore
   replicas: 1
   healthCheck:
@@ -140,27 +140,27 @@ webhook:
 
 jiva:
   image: "openebs/jiva"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
   replicas: 3
   defaultStoragePath: "/var/openebs"
 
 cstor:
   pool:
     image: "openebs/cstor-pool"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
   poolMgmt:
     image: "openebs/cstor-pool-mgmt"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
   target:
     image: "openebs/cstor-istgt"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
   volumeMgmt:
     image: "openebs/cstor-volume-mgmt"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
 
 helper:
   image: "openebs/linux-utils"
-  imageTag: "1.10.0"
+  imageTag: "1.11.0"
 
 featureGates:
   enabled: false
@@ -175,7 +175,7 @@ policies:
   monitoring:
     enabled: true
     image: "openebs/m-exporter"
-    imageTag: "1.10.0"
+    imageTag: "1.11.0"
 
 analytics:
   enabled: true
