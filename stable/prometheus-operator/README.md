@@ -430,6 +430,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.servicePerReplica.type` |  Alertmanager per replica Service type | `ClusterIP` |
 | `alertmanager.serviceAccount.create` | Create a `serviceAccount` for alertmanager | `true` |
 | `alertmanager.serviceAccount.name` | Name for Alertmanager service account | `""` |
+| `alertmanager.serviceAccount.annotations` | Annotations to add to the serviceaccount | `""` |
 | `alertmanager.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `alertmanager.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the alertmanager instance. | `` |
 | `alertmanager.serviceMonitor.relabelings` | The `relabel_configs` for scraping the alertmanager instance. | `` |
