@@ -11,7 +11,7 @@
 To install new chart, you just need to add the related repo and use `hazelcast/hazelcast` instead of `stable/hazelcast` as a chart name.
 
 ```bash
-$ helm repo add hazelcast https://hazelcast.github.io/charts
+$ helm repo add hazelcast https://hazelcast-charts.s3.amazonaws.com/
 $ helm install my-release hazelcast/hazelcast           # Helm 3
 $ helm install --name my-release hazelcast-hazelcast   # Helm 2
 ```
