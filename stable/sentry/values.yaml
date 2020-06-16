@@ -195,7 +195,7 @@ filestore:
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-  enabled: true
+  enabled: false
   hostname: sentry.local
 
   ## Extra paths to prepend to every host configuration. This is useful when configuring custom actions with
