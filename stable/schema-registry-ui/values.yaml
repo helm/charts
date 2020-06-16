@@ -20,6 +20,10 @@ schemaRegistry:
   url: "http://localhost"
   port: 8081
   proxy: false
+  allowGlobal: false
+  allowTransitive: false
+  allowDeletion: false
+  readOnlyMode: false
 
 ingress:
   enabled: false
