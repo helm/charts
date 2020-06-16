@@ -15,7 +15,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                                    | Description                                                                           | Default                                    |
 |:---------------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
 | `image.repository`                           | The image repository to pull from                                                     | `quay.io/coreos/kube-state-metrics`        |
-| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.6`                                   |
+| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.7`                                   |
 | `image.pullPolicy`                           | Image pull policy                                                                     | `IfNotPresent`                             |
 | `imagePullSecrets`                           | List of container registry secrets                                                    | `[]`                                       |
 | `replicas`                                   | Number of replicas                                                                    | `1`                                        |
