@@ -21,12 +21,8 @@ server:
       g1:
         heapRegionSize: "32M"
   catalog:
-##    secretName: ## provide secret name to populate catalog
-    data:
-      mysql.properties: |
-        foo=bar1
-      postgresql.properties: |
-        foo=bar2
+    secretName: ## provide secret name to populate the catalog folder
+    data: ## provide properties file contents to populate the catalog folder
 
 image:
   repository: prestosql/presto

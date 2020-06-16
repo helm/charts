@@ -9,6 +9,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{ .Values.server.catalog.data }}
+{{ .Values.server.catalog.data | toYaml | indent 2 }}
+{{- end }}
 ---
-{{ end }}
