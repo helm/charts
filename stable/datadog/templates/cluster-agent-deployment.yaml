@@ -207,7 +207,7 @@ spec:
             subPath: datadog-cluster.yaml
             readOnly: true
 {{- end}}
-{{- if .Values.datadog.securityAgent.compliance.configMap }}
+{{- if and .Values.datadog.securityAgent.compliance.enabled .Values.datadog.securityAgent.compliance.configMap }}
           - name: complianceconfigdir
             mountPath: /etc/datadog-agent/compliance.d
             readOnly: true
