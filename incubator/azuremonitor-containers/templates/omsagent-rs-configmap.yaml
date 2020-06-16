@@ -53,7 +53,7 @@ data:
       log_level debug
      </source>
 
-     <filter mdm.kubepodinventory** mdm.kubenodeinventory**>
+     <filter mdm.kubenodeinventory**>
       type filter_inventory2mdm
       custom_metrics_azure_regions eastus,southcentralus,westcentralus,westus2,southeastasia,northeurope,westeurope,southafricanorth,centralus,northcentralus,eastus2,koreacentral,eastasia,centralindia,uksouth,canadacentral,francecentral,japaneast,australiaeast
       log_level info

@@ -47,4 +47,3 @@ roleRef:
   name: omsagent-reader
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
-
