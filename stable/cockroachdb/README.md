@@ -62,37 +62,6 @@ Note that for a production cluster, you will likely want to override the followi
 For more information on overriding the `values.yaml` parameters, please see:
 > https://www.cockroachlabs.com/docs/stable/orchestrate-cockroachdb-with-kubernetes.html#step-2-start-cockroachdb
 
-If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`) and `tls.certs.provided` set to `no`/`false`), then you will have to manually approve the cluster's security certificates as the pods are created. You can see the pending CSRs (certificate signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each CockroachDB node (e.g., `default.node.my-release-cockroachdb-0` and one client certificate for the job that initializes the cluster (e.g., `default.node.root`).
-
-When `tls.certs.provided` is set to `yes`/`true`, this chart will use certificates created outside of Kubernetes. You may want to use this if you want to use a different certificate authority from the one being used by Kubernetes or if your Kubernetes cluster doesn't fully support certificate-signing requests. To use this, first set up your certificates and load them into your Kubernetes cluster as Secrets using the commands below:
-```
-mkdir certs
-mkdir my-safe-directory
-cockroach cert create-ca --certs-dir=certs --ca-key=my-safe-directory/ca.key
-cockroach cert create-client root --certs-dir=certs --ca-key=my-safe-directory/ca.key
-kubectl create secret generic cockroachdb-root --from-file=certs
-cockroach cert create-node --certs-dir=certs --ca-key=my-safe-directory/ca.key localhost 127.0.0.1 eerie-horse-cockroachdb-public eerie-horse-cockroachdb-public.default eerie-horse-cockroachdb-public.default.svc.cluster.local *.eerie-horse-cockroachdb *.eerie-horse-cockroachdb.default *.eerie-horse-cockroachdb.default.svc.cluster.local
-kubectl create secret generic cockroachdb-node --from-file=certs
-```
-
-Set `tls.certs.tlsSecret` to `yes/true` if you make use of [cert-manager][3] in your cluster.
-
-[cert-manager][3] stores generated certificates in dedicated TLS secrets. Thus, they are always named:
-* `ca.crt`
-* `tls.crt`
-* `tls.key`
-
-On the other hand, CockroachDB also demands dedicated certificate filenames:
-* `ca.crt`
-* `node.crt`
-* `node.key`
-* `client.root.crt`
-* `client.root.key`
-
-By activating `tls.certs.tlsSecret` we benefit from projected secrets and convert the TLS secret filenames to their according CockroachDB filenames.
-
-If you are running in secure mode, then you will have to manually approve the cluster's security certificates as the pods are created. You can see the pending CSRs (certificate signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each CockroachDB node (e.g., `default.node.my-release-cockroachdb-0` and one client certificate for the job that initializes the cluster (e.g., `default.node.root`).
-
 Confirm that all pods are `Running` successfully and init has been completed:
 ```shell
 kubectl get pods
@@ -116,7 +85,144 @@ pvc-64945b4f-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete     
 pvc-649d920d-f3f0-11e8-ab5b-42010a8e0035   100Gi      RWO            Delete           Bound     default/datadir-my-release-cockroachdb-2   standard                 51s
 ```
 
+### Secure mode with auto-generated certificates
 
+If you are running in secure mode (with configuration parameter `tls.enabled` set to `yes`/`true`) and `tls.certs.provided` set to `no`/`false`), then you will have to manually approve the cluster's security certificates as the pods are created. You can see the pending CSRs (certificate signing requests) by running `kubectl get csr`, and approve them by running `kubectl certificate approve <csr-name>`. You'll have to approve one certificate for each CockroachDB node (e.g., `default.node.my-release-cockroachdb-0` and one client certificate for the job that initializes the cluster (e.g., `default.node.root`).
+
+### Secure mode with provided certificates
+
+When `tls.certs.provided` is set to `yes`/`true`, this chart will use certificates created outside of Kubernetes. You may want to use this if you want to use a different certificate authority from the one being used by Kubernetes or if your Kubernetes cluster doesn't fully support certificate-signing requests. To use this, first set up your certificates and load them into your Kubernetes cluster as Secrets using the commands below:
+```
+mkdir certs
+mkdir my-safe-directory
+cockroach cert create-ca --certs-dir=certs --ca-key=my-safe-directory/ca.key
+cockroach cert create-client root --certs-dir=certs --ca-key=my-safe-directory/ca.key
+kubectl create secret generic cockroachdb-root --from-file=certs
+cockroach cert create-node --certs-dir=certs --ca-key=my-safe-directory/ca.key localhost 127.0.0.1 eerie-horse-cockroachdb-public eerie-horse-cockroachdb-public.default eerie-horse-cockroachdb-public.default.svc.cluster.local *.eerie-horse-cockroachdb *.eerie-horse-cockroachdb.default *.eerie-horse-cockroachdb.default.svc.cluster.local
+kubectl create secret generic cockroachdb-node --from-file=certs
+```
+
+#### Certificates provided by [cert-manager][3]
+
+Set `tls.certs.tlsSecret` to `yes/true` if you make use of [cert-manager][3] in your cluster.
+
+[cert-manager][3] stores generated certificates in dedicated TLS secrets. Thus, they are always named:
+* `ca.crt`
+* `tls.crt`
+* `tls.key`
+
+On the other hand, CockroachDB also demands dedicated certificate filenames:
+* `ca.crt`
+* `node.crt`
+* `node.key`
+* `client.root.crt`
+* `client.root.key`
+
+By activating `tls.certs.tlsSecret` we benefit from projected secrets and convert the TLS secret filenames to their according CockroachDB filenames.
+
+**Example**
+
+1. [Install cert-manager with helm][4].
+2. Create `Issuer` and `Certificate` resources in a dedicated namespace, which might be your application namespace `my-app`:
+   ```sh
+   $ cat <<EOF | kubectl apply -f -
+   ---
+   apiVersion: v1
+   kind: Namespace
+   metadata:
+     name: my-app
+   ---
+   apiVersion: cert-manager.io/v1alpha2
+   kind: ClusterIssuer
+   metadata:
+     name: selfsigning-issuer
+     namespace: my-app
+   spec:
+     selfSigned: {}
+   ---
+   apiVersion: cert-manager.io/v1alpha2
+   kind: Certificate
+   metadata:
+     name: cockroachdb-ca
+     namespace: my-app
+   spec:
+     secretName: cockroachdb-ca
+     commonName: CockroachDB CA
+     organization:
+     - CockroachDB
+     isCA: true
+     issuerRef:
+       name: selfsigning-issuer
+       kind: ClusterIssuer
+     usages:
+     - client auth
+     - server auth
+     - digital signature
+     - key encipherment
+   ---
+   apiVersion: cert-manager.io/v1alpha2
+   kind: Issuer
+   metadata:
+     name: cockroachdb-issuer
+     namespace: my-app
+   spec:
+     ca:
+       secretName: cockroachdb-ca
+   ---
+   apiVersion: cert-manager.io/v1alpha2
+   kind: Certificate
+   metadata:
+     name: cockroachdb-root
+     namespace: my-app
+   spec:
+     secretName: cockroachdb-root
+     issuerRef:
+       name: cockroachdb-issuer
+       kind: Issuer
+     commonName: root
+     organization:
+     - Cockroach
+     usages:
+     - client auth
+   ---
+   apiVersion: cert-manager.io/v1alpha2
+   kind: Certificate
+   metadata:
+     name: cockroachdb-node
+     namespace: my-app
+   spec:
+     secretName: cockroachdb-node
+     issuerRef:
+       name: cockroachdb-issuer
+       kind: Issuer
+     commonName: node
+     organization:
+     - Cockroach
+     ipAddresses:
+     - 127.0.0.1
+     - '::'
+     dnsNames:
+     - localhost
+     - cockroachdb
+     - cockroachdb.my-app
+     - cockroachdb.my-app.svc.cluster.local
+     - "*.cockroachdb"
+     - "*.cockroachdb.my-app"
+     - "*.cockroachdb.my-app.svc.cluster.local"
+     usages:
+     - client auth
+     - server auth
+   EOF
+   ```
+3. Install the cockroachdb helm chart in namespace `my-app`:
+   ```sh
+   helm install \
+   --namespace my-app \
+   --set tls.enabled=true \
+   --set tls.certs.provided=true \
+   --set tls.certs.tlsSecret=true \
+   cockroachdb stable/cockroachdb
+   ```
 
 
 ## Upgrading the cluster
@@ -461,3 +567,4 @@ Note, that if you are running in secure mode (`tls.enabled` is `yes`/`true`) and
 [1]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 [2]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
 [3]: https://cert-manager.io/
+[4]: https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm
