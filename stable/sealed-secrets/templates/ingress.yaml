@@ -9,6 +9,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}

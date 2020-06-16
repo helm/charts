@@ -16,5 +16,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "sealed-secrets.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ template "sealed-secrets.namespace" . }}
 {{- end }}
