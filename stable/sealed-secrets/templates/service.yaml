@@ -14,6 +14,7 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
+      name: http
   selector:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
   type: ClusterIP
