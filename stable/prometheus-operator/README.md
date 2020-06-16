@@ -174,6 +174,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `global.rbac.pspAnnotations` | Add annotations to the PSP configurations | `{}` |
 | `kubeTargetVersionOverride` | Provide a target gitVersion of K8S, in case .Capabilites.KubeVersion is not available (e.g. `helm template`) |`""`|
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
+| `namespaceOverride` | Override the deployment namespace | `""` (`Release.Namespace`) |
 | `kubeTargetVersionOverride` | Provide a k8s version |`""`|
 
 ### Prometheus Operator
@@ -456,6 +457,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.ingress.hosts` | Ingress accepted hostnames for Grafana| `[]` |
 | `grafana.ingress.labels` | Custom labels for Grafana Ingress | `{}` |
 | `grafana.ingress.tls` | Ingress TLS configuration for Grafana | `[]` |
+| `grafana.namespaceOverride` | Override the deployment namespace of grafana | `""` (`Release.Namespace`) |
 | `grafana.rbac.pspUseAppArmor` | Enforce AppArmor in created PodSecurityPolicy (requires rbac.pspEnabled) | `true` |
 | `grafana.service.portName` | Allow to customize Grafana service portname. Will be used by servicemonitor as well | `service` |
 | `grafana.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the grafana instance. | `` |
@@ -479,6 +481,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `coreDns.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `coreDns.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping CoreDns. | `` |
 | `coreDns.serviceMonitor.relabelings` | The `relabel_configs` for scraping CoreDNS. | `` |
+| `kube-state-metrics.namespaceOverride` | Override the deployment namespace of kube-state-metrics | `""` (`Release.Namespace`) |
 | `kube-state-metrics.podSecurityPolicy.enabled` | Create pod security policy resource for kube-state-metrics. | `true` |
 | `kube-state-metrics.rbac.create` | Create RBAC components in kube-state-metrics. See `global.rbac.create` | `true` |
 | `kubeApiServer.enabled` | Deploy `serviceMonitor` to scrape the Kubernetes API server | `true` |
@@ -569,6 +572,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `nodeExporter.serviceMonitor.metricRelabelings` | Metric relablings for the `prometheus-node-exporter` ServiceMonitor | `[]` |
 | `nodeExporter.serviceMonitor.relabelings` | The `relabel_configs` for scraping the `prometheus-node-exporter`. | `` |
 | `prometheus-node-exporter.extraArgs` | Additional arguments for the node exporter container | `["--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)", "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"]` |
+| `prometheus-node-exporter.namespaceOverride` | Override the deployment namespace of node exporter | `""` (`Release.Namespace`) |
 | `prometheus-node-exporter.podLabels` | Additional labels for pods in the DaemonSet | `{"jobLabel":"node-exporter"}` |
 
 
