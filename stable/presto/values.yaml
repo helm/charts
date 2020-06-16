@@ -21,8 +21,10 @@ server:
       g1:
         heapRegionSize: "32M"
   catalog:
-    secretName: ## provide secret name to populate the catalog folder
-    data: ## provide properties file contents to populate the catalog folder
+    # Provide secret name to populate the catalog folder
+    secretName:
+    # Use inline properties file contents to populate the catalog folder
+    data:
 
 image:
   repository: prestosql/presto
