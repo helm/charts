@@ -227,6 +227,9 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+{{- end }}
 {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
