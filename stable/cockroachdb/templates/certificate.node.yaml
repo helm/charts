@@ -1,0 +1,39 @@
+{{- if and .Values.tls.enabled .Values.tls.certs.certManager }}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-node
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  duration: 8760h
+  renewBefore: 168h
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  keySize: 2048
+  keyAlgorithm: rsa
+  commonName: node
+  organization:
+    - Cockroach
+  dnsNames:
+    - "localhost"
+    - "127.0.0.1"
+    - {{ printf "%s-public" (include "cockroachdb.fullname" .) | quote }}
+    - {{ printf "%s-public.%s" (include "cockroachdb.fullname" .) .Release.Namespace | quote }}
+    - {{ printf "%s-public.%s.svc.%s" (include "cockroachdb.fullname" .) .Release.Namespace .Values.clusterDomain | quote }}
+    - {{ printf "*.%s" (include "cockroachdb.fullname" .) | quote }}
+    - {{ printf "*.%s.%s" (include "cockroachdb.fullname" .) .Release.Namespace | quote }}
+    - {{ printf "*.%s.%s.svc.%s" (include "cockroachdb.fullname" .) .Release.Namespace .Values.clusterDomain | quote }}
+  secretName: {{ .Values.tls.certs.nodeSecret }}
+  issuerRef: {{- toYaml .Values.tls.certs.certManagerIssuer | nindent 4 }}
+{{- end }}

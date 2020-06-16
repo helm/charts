@@ -1,0 +1,29 @@
+{{- if and .Values.tls.enabled .Values.tls.certs.certManager }}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ template "cockroachdb.fullname" . }}-root-client
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    helm.sh/chart: {{ template "cockroachdb.chart" . }}
+    app.kubernetes.io/name: {{ template "cockroachdb.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  duration: 672h
+  renewBefore: 48h
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  keySize: 2048
+  keyAlgorithm: rsa
+  commonName: root
+  organization:
+    - Cockroach
+  secretName: {{ .Values.tls.certs.clientRootSecret }}
+  issuerRef: {{- toYaml .Values.tls.certs.certManagerIssuer | nindent 4 }}
+{{- end }}

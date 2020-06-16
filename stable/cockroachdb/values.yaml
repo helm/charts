@@ -328,6 +328,15 @@ tls:
     # Enable if the secret is a dedicated TLS.
     # TLS secrets are created by cert-mananger, for example.
     tlsSecret: no
+    # Use cert-manager to issue certificates for mTLS.
+    certManager: no
+    # Specify an Issuer or a ClusterIssuer to use, when issuing
+    # node and client certificates. The values correspond to the
+    # issuerRef specified in the certificate.
+    certManagerIssuer:
+      group: cert-manager.io
+      kind: Issuer
+      name: cockroachdb
 
   init:
     # Image to use for requesting TLS certificates.
