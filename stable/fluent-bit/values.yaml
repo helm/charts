@@ -50,6 +50,7 @@ priorityClassName: ""
 
 backend:
   type: forward
+  match: "*"
   forward:
     host: fluentd
     port: 24284

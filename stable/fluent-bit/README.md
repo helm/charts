@@ -31,6 +31,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | -----------------------    | ---------------------------------- | ----------------------- |
 | **Backend Selection**      |
 | `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
+| **Backend Match**          |
+| `backend.match`            | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | **Forward Backend**        |
 | `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
 | `backend.forward.port`     | TCP Port of the target service | `24284` |
