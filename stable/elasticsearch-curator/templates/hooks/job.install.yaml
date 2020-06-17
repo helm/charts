@@ -53,7 +53,7 @@ spec:
           command:
 {{ toYaml $.Values.command | indent 12 }}
 {{- end }}
-{{- if .Values.dryrun }}
+{{- if $.Values.dryrun }}
           args: [ "--dry-run", "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
 {{- else }}
           args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
