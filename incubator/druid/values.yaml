@@ -6,6 +6,9 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+configMap:
+  enabled: true
+
 configVars:
   DRUID_XMX: 1g
   DRUID_XMS: 1g
@@ -33,6 +36,7 @@ gCloudStorage:
   secretName: google-cloud-key
 
 broker:
+  enabled: true
   name: broker
   replicaCount: 1
   port: 8082
@@ -72,6 +76,7 @@ broker:
   podAnnotations: {}
 
 coordinator:
+  enabled: true
   name: coordinator
   replicaCount: 1
   port: 8081
@@ -79,6 +84,7 @@ coordinator:
 
   config:
     JAVA_OPTS: "-Xms1G -Xmx1G"
+    # druid_monitoring_monitors: '["org.apache.druid.server.metrics.TaskCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -142,6 +148,7 @@ overlord:
   podAnnotations: {}
 
 historical:
+  enabled: true
   name: historical
   replicaCount: 1
   port: 8083
@@ -199,6 +206,7 @@ historical:
     type: RollingUpdate
 
 middleManager:
+  enabled: true
   name: middle-manager
   replicaCount: 1
   port: 8091
