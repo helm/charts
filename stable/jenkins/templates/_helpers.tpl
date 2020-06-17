@@ -74,11 +74,11 @@ Returns configuration as code default config
 jenkins:
 {{- if eq .Values.master.enableXmlConfig false }}
   {{- $configScripts := toYaml .Values.master.JCasC.configScripts }}
-  {{- if not (contains "authorizationStrategy:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.authorizationStrategy) (not (contains "authorizationStrategy:" $configScripts)) }}
   authorizationStrategy:
     {{- tpl .Values.master.JCasC.authorizationStrategy . | nindent 4 }}
   {{- end }}
-  {{- if not (contains "securityRealm:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.securityRealm) (not (contains "securityRealm:" $configScripts)) }}
   securityRealm:
     {{- tpl .Values.master.JCasC.securityRealm . | nindent 4 }}
   {{- end }}
@@ -171,7 +171,9 @@ Returns kubernetes pod template configuration as code
   - name: "{{ .Values.agent.sideContainerName }}"
     alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
     args: "{{ .Values.agent.args | replace "$" "^$" }}"
+    {{- if .Values.agent.command }}
     command: {{ .Values.agent.command }}
+    {{- end }}
     envVars:
     - containerEnvVar:
         key: "JENKINS_URL"
@@ -190,8 +192,10 @@ Returns kubernetes pod template configuration as code
     resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
     resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
+    runAsUser: {{ .Values.agent.runAsUser }}
+    runAsGroup: {{ .Values.agent.runAsGroup }}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
-    workingDir: "/home/jenkins"
+    workingDir: {{ .Values.agent.workingDir }}
 {{- if .Values.agent.envVars }}
   envVars:
   {{- range $index, $var := .Values.agent.envVars }}
@@ -243,7 +247,7 @@ Returns kubernetes pod template configuration as code
   yaml: |-
     {{- tpl (trim .Values.agent.yamlTemplate) . | nindent 4 }}
 {{- end }}
-  yamlMergeStrategy: "override"
+  yamlMergeStrategy: {{ .Values.agent.yamlMergeStrategy }}
 {{- end -}}
 
 {{/*
@@ -275,7 +279,7 @@ Returns kubernetes pod template xml configuration
     <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
   {{- end }}
   {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
-      <{{ $key }}>{{ $value }}</{{ $key }}>
+      <{{ $key }}>{{ if kindIs "string" $value }}{{ tpl $value $ }}{{ else }}{{ $value }}{{ end }}</{{ $key }}>
   {{- end }}{{- end }}
   {{- if (eq $volume.type "PVC") }}
     </org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
@@ -298,7 +302,7 @@ Returns kubernetes pod template xml configuration
       <privileged>false</privileged>
 {{- end }}
       <alwaysPullImage>{{ .Values.agent.alwaysPullImage }}</alwaysPullImage>
-      <workingDir>/home/jenkins</workingDir>
+      <workingDir>{{ .Values.agent.workingDir }}</workingDir>
       <command>{{ .Values.agent.command }}</command>
       <args>{{ .Values.agent.args }}</args>
       <ttyEnabled>{{ .Values.agent.TTYEnabled }}</ttyEnabled>

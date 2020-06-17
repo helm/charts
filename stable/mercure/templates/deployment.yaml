@@ -15,6 +15,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "mercure.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -35,11 +38,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -54,6 +57,26 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: allowAnonymous
+            - name: SUBSCRIPTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: subscriptions
+            - name: METRICS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metrics
+            - name: METRICS_LOGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metricsLogin
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: metricsPassword
             - name: CORS_ALLOWED_ORIGINS
               valueFrom:
                 configMapKeyRef:
@@ -114,6 +137,16 @@ spec:
                 configMapKeyRef:
                   name: {{ include "mercure.fullname" . }}
                   key: writeTimeout
+            - name: DISPATCH_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: dispatchTimeout
+            - name: COMPRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "mercure.fullname" . }}
+                  key: compress
             - name: USE_FORWARDED_HEADERS
               valueFrom:
                 configMapKeyRef:

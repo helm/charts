@@ -2,8 +2,11 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.6
+  tag: v1.9.7
   pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+# - name: "image-pull-secret"
 
 # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
 # will be automatically sharded across <.Values.replicas> pods using the built-in
@@ -66,6 +69,7 @@ podSecurityPolicy:
 
 securityContext:
   enabled: true
+  runAsGroup: 65534
   runAsUser: 65534
   fsGroup: 65534
 
