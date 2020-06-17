@@ -5,4 +5,8 @@ metadata:
 type: Opaque
 data:
   nginx.conf: |-
+{{- if .Values.nginxConfOverride }}
+{{ tpl .Values.nginxConfOverride . | indent 4 }}
+{{- else }}
 {{ .Files.Get "files/nginx/nginx.conf" | indent 4 }}
+{{- end }}
