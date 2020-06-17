@@ -41,7 +41,7 @@ hooks:
   install: false
   upgrade: false
 
-# run curator in dry-run mode
+# run curator in dry-run mode (works for cronjob and for hooks)
 dryrun: false
 
 command: ["/curator/curator"]
