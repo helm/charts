@@ -19,13 +19,21 @@ spec:
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
+      {{- if .Values.serviceAccount.halyardName }}
+      serviceAccountName: {{ .Values.serviceAccount.halyardName }}
+      {{- else }}
+      serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
+      {{- end }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
       restartPolicy: OnFailure
       volumes:
-      {{- if .Values.kubeConfig.enabled }}
+      {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
       - name: kube-config
         secret:
           secretName: {{ .Values.kubeConfig.secretName }}
@@ -116,7 +124,7 @@ spec:
         - name: s3-secrets
           mountPath: /opt/s3
         {{- end }}
-        {{- if .Values.kubeConfig.enabled }}
+        {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
         - name: kube-config
           mountPath: /opt/kube
         {{- end }}
