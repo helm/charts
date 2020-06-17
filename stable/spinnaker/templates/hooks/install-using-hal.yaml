@@ -19,6 +19,14 @@ spec:
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
+      {{- if .Values.serviceAccount.halyardName }}
+      serviceAccountName: {{ .Values.serviceAccount.halyardName }}
+      {{- else }}
+      serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
+      {{- end }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
