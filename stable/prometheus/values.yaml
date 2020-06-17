@@ -398,7 +398,6 @@ kubeStateMetrics:
 ##
 # kube-state-metrics:
 
-
 nodeExporter:
   ## If false, node-exporter will not be installed
   ##
