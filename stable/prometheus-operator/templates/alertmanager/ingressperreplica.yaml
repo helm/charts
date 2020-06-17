@@ -17,7 +17,7 @@ items:
     {{ end -}}
     metadata:
       name: {{ include "prometheus-operator.fullname" $ }}-alertmanager-{{ $i }}
-      namespace: {{ template "prometheus-operator.namespace" . }}
+      namespace: {{ template "prometheus-operator.namespace" $ }}
       labels:
         app: {{ include "prometheus-operator.name" $ }}-alertmanager
 {{ include "prometheus-operator.labels" $ | indent 8 }}
