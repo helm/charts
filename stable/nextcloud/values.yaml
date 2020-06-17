@@ -331,6 +331,15 @@ readinessProbe:
   failureThreshold: 3
   successThreshold: 1
 
+## Enable pod autoscaling using HorizontalPodAutoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+##
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
+
 nodeSelector: {}
 
 tolerations: []

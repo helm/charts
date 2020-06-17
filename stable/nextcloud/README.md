@@ -144,6 +144,10 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `readinessProbe.timeoutSeconds`                              | When the probe times out                                | `5`                                         |
 | `readinessProbe.failureThreshold`                            | Minimum consecutive failures for the probe              | `3`                                         |
 | `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                         |
+| `hpa.enabled`                                                | Boolean to create a HorizontalPodAutoscaler             | `false`                                     |
+| `hpa.cputhreshold`                                           | CPU threshold percent for the HorizontalPodAutoscale    | `60`                                        |
+| `hpa.minPods`                                                | Min. pods for the Nextcloud HorizontalPodAutoscaler     | `1`                                         |
+| `hpa.maxPods`                                                | Max. pods for the Nextcloud HorizontalPodAutoscaler     | `10`                                        |
 | `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                     |
 | `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                     |
 
