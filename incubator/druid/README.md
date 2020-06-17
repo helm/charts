@@ -1,6 +1,6 @@
 # Apache Druid
 
-[Apache Druid (incubating)](http://druid.io/) is a high performance analytics data store for event-driven data.
+[Apache Druid](https://druid.apache.org/) is a high performance real-time analytics database.
 
 ## Install Chart
 

@@ -164,8 +164,8 @@ kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  secretName: my-kubeconfig
-  secretKey: config
+  # secretName: my-kubeconfig
+  # secretKey: config
   # Use this when you want to configure halyard to reference a kubeconfig from s3
   # This allows you to keep your kubeconfig in an encrypted s3 bucket
   # For more info visit:

@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.6
+  tag: v1.9.7
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
