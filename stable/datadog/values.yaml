@@ -540,6 +540,14 @@ clusterAgent:
   #
   useHostNetwork:  # true
 
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
+
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the cluster-agent container
   #
@@ -790,6 +798,14 @@ agents:
   #
   useHostNetwork:  # true
 
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
+
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the DaemonSet's Pods
   #
@@ -962,6 +978,14 @@ clusterChecksRunner:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
+
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
 
   ## @param nodeSelector - object - optional
   ## Allow the ClusterChecks Deployment to schedule on selected nodes
