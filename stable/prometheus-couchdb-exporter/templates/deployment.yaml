@@ -36,6 +36,21 @@ spec:
           {{- if .Values.couchdb.password }}
             - "-couchdb.password={{ .Values.couchdb.password }}"
           {{- end }}
+
+          {{- if .Values.secretName }}
+          env:
+            - name: COUCHDB.USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: adminUsername
+            - name: COUCHDB.PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: adminPassword
+          {{- end }}
+
           ports:
             - name: http
               containerPort: 9984
