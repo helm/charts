@@ -198,6 +198,14 @@ ingress:
   enabled: false
   hostname: sentry.local
 
+  ## Extra paths to prepend to every host configuration. This is useful when configuring custom actions with
+  ## [AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions).
+  extraPaths: []
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+
   ## Ingress annotations
   ##
   annotations: {}
