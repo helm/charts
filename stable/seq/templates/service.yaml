@@ -18,6 +18,12 @@ spec:
       targetPort: ingestion
       protocol: TCP
       name: ingestion
+{{- if .Values.gelf.enabled }}
+    - port: {{ .Values.gelf.service.port }}
+      targetPort: gelf
+      protocol: {{ .Values.gelf.service.protocol }}
+      name: gelf
+{{- end }}
   selector:
     app: {{ template "seq.name" . }}
     release: {{ .Release.Name }}
