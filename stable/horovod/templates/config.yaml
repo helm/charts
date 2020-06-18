@@ -1,9 +1,7 @@
 {{- $workerNum := .Values.worker.number -}}
-{{- $name := include "horovod.fullname" . }}
-{{- $slots := 1 }}
-{{- if index .Values.resources "nvidia.com/gpu" }}
-{{- $slots := index .Values.resources "nvidia.com/gpu" }}
-{{- end }}
+{{- $name := include "horovod.fullname" . -}}
+{{- $requests := .Values.resources.requests | default dict -}}
+{{- $slots := index $requests "nvidia.com/gpu" | default 1 -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -122,7 +120,7 @@ data:
 
      if [ -n "$SSHPORT" ]; then
         echo "Port $SSHPORT" > /root/.ssh/config
-        sed -i "s/^Port.*/Port $SSHPORT /g" /etc/ssh/sshd_config
+        sed -i "s/^#\?Port.*/Port $SSHPORT/g" /etc/ssh/sshd_config
      fi
      echo "StrictHostKeyChecking no" >> /root/.ssh/config
 

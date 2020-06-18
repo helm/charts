@@ -97,11 +97,13 @@ master:
     repository: uber/horovod
     tag: 0.12.1-tf1.8.0-py3.5
   args:
-    - "mpirun -np 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow_mnist.py'"
+    - "mpirun -np 3 -x PATH -x LD_LIBRARY_PATH --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow2_synthetic_benchmark.py'"
 EOF
 ```
 
-> notice: the difference is that you should set `useHostNetwork` as true, then set another ssh port rather than `22`
+> NOTE:
+>   - When you should set `useHostNetwork` as true, set ssh port to something other than `22`
+>   - Also, you need the flags `-x PATH -x LD_LIBRARY_PATH` to ensure CUDA libraries can be loaded by the workers.
 
 ## Installing the Chart
 
@@ -144,17 +146,22 @@ chart and their default values.
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `useHostNetwork`  | Host network    | `false` |
+| `useHostNetwork` | Host network | `false` |
+| `useHostPID` | Host PID | `false` |
+| `annotations`| Pod annotations | `{}` |
+| `capabilities` | Pod security capabilities | `{}` |
+| `resources` | Pod resource requests & limits| `{}`|
 | `ssh.port` | The ssh port | `22` |
 | `ssh.useSecrets` | Determine if using the secrets for ssh | `false` |
-| `worker.number`|  The worker's number | `5` |
-| `worker.image.repository` | horovod worker image | `uber/horovod` |
-| `worker.image.pullPolicy` | `pullPolicy` for the worker | `IfNotPresent` |
-| `worker.image.tag` | `tag` for the worker | `0.12.1-tf1.8.0-py3.5` |
-| `resources`| pod resource requests & limits| `{}`|
+| `worker.number`|  The worker's number | `3` |
+| `worker.privileged`| Privileged worker | `false` |
+| `worker.image.repository` | horovod worker image | `horovod/horovod` |
+| `worker.image.pullPolicy` | `pullPolicy` for the worker | `Always` |
+| `worker.image.tag` | `tag` for the worker | `0.19.3-tf2.1.0-torch-mxnet1.6.0-py3.6-gpu` |
 | `worker.env` | worker's environment variables | `{}` |
-| `master.image.repository` | horovod master image | `uber/horovod` |
-| `master.image.tag` | `tag` for the master | `0.12.1-tf1.8.0-py3.5` |
-| `master.image.pullPolicy` | image pullPolicy for the master image| `IfNotPresent` |
+| `master.privileged`|  Privileged master | `false` |
+| `master.image.repository` | horovod master image | `horovod/horovod` |
+| `master.image.tag` | `tag` for the master | `0.19.3-tf2.1.0-torch-mxnet1.6.0-py3.6-gpu` |
+| `master.image.pullPolicy` | image pullPolicy for the master image| `Always` |
 | `master.args` | master's args | `{}` |
 | `master.env` | master's environment variables | `{}` |

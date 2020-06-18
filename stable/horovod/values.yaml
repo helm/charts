@@ -5,6 +5,8 @@
 useHostNetwork: false
 useHostPID: false
 
+annotations: {}
+capabilities: {}
 resources: {}
   # limits:
   #   nvidia.com/gpu: 1
@@ -14,25 +16,25 @@ resources: {}
 ssh:
   port: 22
   useSecrets: false
-#  hostKey: |-
-#    -----BEGIN RSA PRIVATE KEY-----
-#    YourPrivateKey
-#    -----END RSA PRIVATE KEY-----
-#  hostKeyPub: |-
-#    ssh-rsa YourPublicKey
+  # hostKey: |-
+  #   -----BEGIN RSA PRIVATE KEY-----
+  #   YourPrivateKey
+  #   -----END RSA PRIVATE KEY-----
+  # hostKeyPub: |-
+  #   ssh-rsa YourPublicKey
 
 worker:
   number: 3
   podManagementPolicy: Parallel
   image:
-    repository: uber/horovod
-    tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
+    repository: horovod/horovod
+    tag: 0.19.3-tf2.1.0-torch-mxnet1.6.0-py3.6-gpu
+    pullPolicy: Always
 
 master:
   image:
-    repository: uber/horovod
-    tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
-  # args:
-  #  - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"
+    repository: horovod/horovod
+    tag: 0.19.3-tf2.1.0-torch-mxnet1.6.0-py3.6-gpu
+    pullPolicy: Always
+    # args:
+    # - "mpirun -np 3 -x PATH -x LD_LIBRARY_PATH --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow2_synthetic_benchmark.py'"

@@ -16,6 +16,8 @@ spec:
         app: {{ template "horovod.name" . }}
         release: {{ .Release.Name }}
         role: master
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       {{- if .Values.useHostNetwork }}
       hostNetwork: {{ .Values.useHostNetwork }}
@@ -70,10 +72,12 @@ spec:
            value: "{{ $value }}"
        {{- end }}
        {{- end }}
-{{- if .Values.master.privileged }}
         securityContext:
+{{- if .Values.master.privileged }}
           privileged: true
 {{- end }}
+          capabilities:
+{{ toYaml .Values.capabilities | indent 12 }}
         ports:
         - containerPort: {{ .Values.ssh.port }}
         volumeMounts:
