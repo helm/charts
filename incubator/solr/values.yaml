@@ -80,6 +80,7 @@ podDisruptionBudget:
 
 # Configuration for the solr PVC
 volumeClaimTemplates:
+  enabled: true
   storageClassName: ""
   storageSize: "20Gi"
   accessModes:

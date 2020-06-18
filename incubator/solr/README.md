@@ -48,6 +48,7 @@ The following table shows the configuration options for the Solr helm chart:
 | `logLevel`                                    | The log level of the solr pods  | `INFO` |
 | `podDisruptionBudget`                         | The pod disruption budget for the Solr statefulset | `{"maxUnavailable": 1}`                                                                   |
 | `schedulerName`                               | The name of the k8s scheduler (other than default)  | ` nil`       |
+| `volumeClaimTemplates.enabled`       | Enable persistence using PVC | `true`                                                             |
 | `volumeClaimTemplates.storageClassName`       | The name of the storage class for the Solr PVC | ``                                                             |
 | `volumeClaimTemplates.storageSize`            | The size of the PVC | `20Gi`                                                                |
 | `volumeClaimTemplates.accessModes`            | The access mode of the PVC| `[ "ReadWriteOnce" ]`                                                       |

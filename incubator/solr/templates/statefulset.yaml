@@ -65,6 +65,10 @@ spec:
               - key: solr-init.sh
                 path: solr-init.sh
 {{- end }}
+{{- if not .Values.volumeClaimTemplates.enabled }}
+        - name: {{ include "solr.pvc-name" . }}
+          emptyDir: {}
+{{- end }}
       initContainers:
         - name: check-zk
           image: busybox:latest
@@ -217,6 +221,7 @@ spec:
             - name: "keystore-volume"
               mountPath: "/etc/ssl/keystores"
 {{ end }}
+{{- if .Values.volumeClaimTemplates.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "solr.pvc-name" . }}
@@ -231,3 +236,4 @@ spec:
         resources:
           requests:
             storage: {{ .Values.volumeClaimTemplates.storageSize }}
+{{- end }}
