@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.10
+
+* Introduce dnsConfig helm values for the different containers
+
 ## 2.3.9
 * Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
 
