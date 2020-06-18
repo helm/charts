@@ -61,6 +61,7 @@ The following table lists the configurable parameters and their default values.
 | `couchdb.databases`    | comma separated databases to monitor                | `_all_dbs`                              |
 | `couchdb.username`     | username for couchdb                                |                                         |
 | `couchdb.password`     | password for couchdb                                |                                         |
+| `secretName`           | secret to pull adminUsername and adminPassword      |                                         |
 
 
 For more information please refer to the [couchdb-prometheus-exporter]https://github.com/gesellix/couchdb-prometheus-exporter) documentation.
