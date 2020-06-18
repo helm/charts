@@ -1,6 +1,12 @@
 OpenEBS
 =======
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. The source for the OpenEBS Charts is moved to [OpenEBS Charts GitHub project](https://github.com/openebs/charts). The chart is hosted at https://hub.helm.sh/charts?q=openebs.
+
+
+
 [OpenEBS](https://github.com/openebs/openebs) is an open source storage platform that provides persistent and containerized block storage for DevOps and container environments.
 
 OpenEBS can be deployed on any Kubernetes cluster - either in cloud, on-premise or developer laptop (minikube). OpenEBS itself is deployed as just another container on your cluster, and enables storage services that can be designated on a per pod, application, cluster or container level.
