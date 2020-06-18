@@ -175,6 +175,12 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  # Use this to limit the namespaces this kubernetes account will access.
+  # Note, if you use nameSpaces, omittedNameSpaces will not be used.
+  # Note, the casing of the nameSpace variable here.
+  # nameSpaces:
+  # - namespace1
+  # - namespace2
   omittedNameSpaces:
   - kube-system
   - kube-public
