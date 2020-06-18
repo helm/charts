@@ -26,6 +26,7 @@ spec:
       {{- if .Values.podAnnotations }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/cert-secret: {{ include (print $.Template.BasePath "/cert-secret.yaml") . | sha256sum }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
