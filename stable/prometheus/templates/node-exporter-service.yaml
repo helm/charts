@@ -39,7 +39,7 @@ spec:
     {{- else }}
       port: {{ .Values.nodeExporter.service.servicePort }}
       protocol: TCP
-      targetPort: 9100
+      targetPort: {{ .Values.nodeExporter.service.containerPort}}
     {{- end }}
   selector:
     {{- include "prometheus.nodeExporter.matchLabels" . | nindent 4 }}

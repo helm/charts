@@ -60,7 +60,7 @@ spec:
               {{- if .Values.nodeExporter.hostNetwork }}
               containerPort: {{ .Values.nodeExporter.service.hostPort }}
               {{- else }}
-              containerPort: 9100
+              containerPort: {{ .Values.nodeExporter.service.containerPort }}
               {{- end }}
               hostPort: {{ .Values.nodeExporter.service.hostPort }}
           resources:

@@ -234,6 +234,7 @@ Parameter | Description | Default
 `nodeExporter.service.hostPort` | node-exporter service host port | `9100`
 `nodeExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`nodeExporter.service.containerPort` | node-exporter container port | `9100`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
 `nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
 `podSecurityPolicy.enabled` | If true, create & use pod security policies resources | `false`

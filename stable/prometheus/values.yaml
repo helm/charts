@@ -528,6 +528,7 @@ nodeExporter:
     ##
     externalIPs: []
 
+    containerPort: 9100
     hostPort: 9100
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
