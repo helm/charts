@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "prometheus-couchdb-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    prometheus.io/port: "9984"
+    prometheus.io/scrape: "true"
 spec:
   type: {{ .Values.service.type }}
   ports:
