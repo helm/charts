@@ -2,7 +2,7 @@
 
 image:
   repository: apache/druid
-  tag: 0.18.0
+  tag: 0.18.1
   pullPolicy: IfNotPresent
   pullSecrets: []
 
