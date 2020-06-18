@@ -18,7 +18,7 @@ replicaCount: 1
 
 image:
   repository: gesellix/couchdb-prometheus-exporter
-  tag: 16
+  tag: v27.2.0
   pullPolicy: IfNotPresent
 
 service:
