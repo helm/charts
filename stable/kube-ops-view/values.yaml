@@ -12,6 +12,7 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 8080
+  # loadBalancerIP:
 resources:
   limits:
     cpu: 100m

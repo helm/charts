@@ -24,3 +24,6 @@ spec:
     protocol: TCP
   selector:
     app.kubernetes.io/name: {{ include "kube-ops-view.name" . }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
