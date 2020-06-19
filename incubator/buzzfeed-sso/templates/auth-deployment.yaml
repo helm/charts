@@ -101,6 +101,8 @@ spec:
             - name: PROVIDER_GOOGLE_GOOGLE_CREDENTIALS
               value: /creds/sso-serviceaccount.json
           {{- end }}
+            - name: PROVIDER_GOOGLE_GROUPCACHE_INTERVAL_REFRESH
+              value: 10m
             - name: PROVIDER_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
