@@ -61,6 +61,9 @@ spec:
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
       initContainers:
         - name: copy-config
           image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
