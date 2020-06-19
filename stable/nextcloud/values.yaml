@@ -345,3 +345,30 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+
+  # The metrics exporter needs to know how you serve Nextcloud either http or https
+  https: false
+  timeout: 5s
+
+  image:
+    repository: xperimental/nextcloud-exporter
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+
+  ## Metrics exporter pod Annotation and Labels
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9205"
+
+  # podLabels: {}
