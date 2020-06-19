@@ -75,6 +75,11 @@ busyboxImage:
 ##
 annotations: {}
 
+## Extra env variables and envFrom
+extraEnv: []
+
+envFrom: []
+
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
