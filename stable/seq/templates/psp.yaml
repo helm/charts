@@ -23,7 +23,7 @@ spec:
   # but we can provide it for defense in depth.
   requiredDropCapabilities:
     - ALL
-  # Allow core volume typ.
+  # Allow core volume types.
   volumes:
     - 'secret'
     - 'persistentVolumeClaim'

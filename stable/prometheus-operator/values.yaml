@@ -6,6 +6,10 @@
 ##
 nameOverride: ""
 
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
 ## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
 ##
 kubeTargetVersionOverride: ""
@@ -106,6 +110,7 @@ alertmanager:
   serviceAccount:
     create: true
     name: ""
+    annotations: {}
 
   ## Configure pod disruption budgets for Alertmanager
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
@@ -168,6 +173,8 @@ alertmanager:
   #         *Details:*
   #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
   #           {{ end }}
+  #       {{ end }}
+  #       {{ end }}
 
   ingress:
     enabled: false
@@ -473,6 +480,7 @@ alertmanager:
 ##
 grafana:
   enabled: true
+  namespaceOverride: ""
 
   ## Deploy default dashboards.
   ##
@@ -538,7 +546,7 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
-  ## Configure additional grafana datasources
+  ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
   additionalDataSources: []
   # - name: prometheus-sample
@@ -551,7 +559,7 @@ grafana:
   #       tlsSkipVerify: true
   #   orgId: 1
   #   type: prometheus
-  #   url: https://prometheus.svc:9090
+  #   url: https://{{ printf "%s-prometheus.svc" .Release.Name }}:9090
   #   version: 1
 
   ## Passed to grafana subchart and used by servicemonitor below
@@ -645,6 +653,11 @@ kubelet:
     ##
     probes: true
 
+    ## Enable scraping /metrics/resource from kubelet's service
+    ##
+    resource: true
+    # From kubernetes 1.18, /metrics/resource/v1alpha1 renamed to /metrics/resource
+    resourcePath: "/metrics/resource/v1alpha1"
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
@@ -687,6 +700,16 @@ kubelet:
     #   action: replace
 
     probesRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
+
+    resourceRelabelings:
       - sourceLabels: [__metrics_path__]
         targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
@@ -1039,6 +1062,7 @@ kubeStateMetrics:
 ## Configuration for kube-state-metrics subchart
 ##
 kube-state-metrics:
+  namespaceOverride: ""
   rbac:
     create: true
   podSecurityPolicy:
@@ -1084,6 +1108,7 @@ nodeExporter:
 ## Configuration for prometheus-node-exporter subchart
 ##
 prometheus-node-exporter:
+  namespaceOverride: ""
   podLabels:
     ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
     ##

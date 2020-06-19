@@ -21,6 +21,7 @@ prometheus:
     additionalLabels: {}
     namespace: ""
 
+    relabelings: []
     scrapeTimeout: 10s
 
 ## Customize the updateStrategy if set
