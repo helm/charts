@@ -50,8 +50,8 @@ priorityClassName: ""
 
 backend:
   type: forward
-  match: "*"
   forward:
+    match: "*"
     host: fluentd
     port: 24284
     tls: "off"
@@ -59,6 +59,7 @@ backend:
     tls_debug: 1
     shared_key:
   es:
+    match: "*"
     host: elasticsearch
     port: 9200
     # Elastic Index Name
@@ -81,6 +82,7 @@ backend:
     # TLS debugging levels = 1-4
     tls_debug: 1
   splunk:
+    match: "*"
     host: 127.0.0.1
     port: 8088
     token: ""
@@ -89,12 +91,14 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
-  stackdriver: {}
+  stackdriver:
+    match: "*"
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
   http:
+    match: "*"
     host: 127.0.0.1
     port: 80
     uri: "/"

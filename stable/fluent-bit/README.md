@@ -31,9 +31,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | -----------------------    | ---------------------------------- | ----------------------- |
 | **Backend Selection**      |
 | `backend.type`             | Set the backend to which Fluent-Bit should flush the information it gathers | `forward` |
-| **Backend Match**          |
-| `backend.match`            | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | **Forward Backend**        |
+| `backend.forward.match`    | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
 | `backend.forward.port`     | TCP Port of the target service | `24284` |
 | `backend.forward.shared_key`       | A key string known by the remote Fluentd used for authorization. | `` |
@@ -41,6 +40,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.forward.tls_verify`       | Force certificate validation  | `on` |
 | `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **ElasticSearch Backend**  |
+| `backend.es.match`         | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **HTTP Backend**              |
+| `backend.http.match`          | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
@@ -75,6 +76,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.tls_verify`       | Force certificate validation  | `on` |
 | `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **Splunk Backend**              |
+| `backend.splunk.match`          | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
 | `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
 | `backend.splunk.token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |
@@ -84,6 +86,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Stackdriver Backend**              |
+| `backend.stackdriver.match`          | Set the backend match tag Fluent-Bit makes use of to gather information  | `*` |
 | `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
 | `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
 | `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |

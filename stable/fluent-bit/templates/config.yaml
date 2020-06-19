@@ -105,12 +105,12 @@ data:
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
-        Match {{ .Values.backend.match }}   
+        Match *
         Path /tmp/fluent-bit.log
 {{ else if eq .Values.backend.type "forward" }}
     [OUTPUT]
         Name          forward
-        Match {{ .Values.backend.match }}
+        Match         {{ .Values.backend.forward.match }}
         Host          {{ .Values.backend.forward.host }}
         Port          {{ .Values.backend.forward.port }}
         Retry_Limit False
@@ -129,7 +129,7 @@ data:
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
-        Match {{ .Values.backend.match }}
+        Match {{ .Values.backend.es.match }}
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
         Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
@@ -171,7 +171,7 @@ data:
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk
-        Match {{ .Values.backend.match }}
+        Match {{ .Values.backend.splunk.match }}
         Host  {{ .Values.backend.splunk.host }}
         Port  {{ .Values.backend.splunk.port }}
         Splunk_Token  {{ .Values.backend.splunk.token }}
@@ -183,7 +183,7 @@ data:
 {{ else if eq .Values.backend.type "stackdriver" }}
     [OUTPUT]
         Name  stackdriver
-        Match {{ .Values.backend.match }}
+        Match {{ .Values.backend.stackdriver.match }}
         resource global
 {{- if .Values.backend.stackdriver.google_service_credentials }}
         google_service_credentials /secure/google_service_credentials.json
@@ -194,7 +194,7 @@ data:
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
-        Match {{ .Values.backend.match }}
+        Match {{ .Values.backend.http.match }}
         Host {{ .Values.backend.http.host }}
         Port {{ .Values.backend.http.port }}
         URI {{ .Values.backend.http.uri }}
