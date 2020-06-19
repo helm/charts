@@ -28,3 +28,4 @@ rundeck.env | The rundeck environment variables that you would want to set | Def
 rundeck.sshSecrets | A reference to the Kubernetes Secret that contains the ssh keys. | ""
 rundeck.awsCredentialsSecret | A reference to the Kubernetes Secret that contains the aws credentials. | ""
 rundeck.awsVolumeId | A Volume ID from a pre-existent AWS EBS volume to persist Rundeck data from /home/rundeck/server/data path. | "" 
+nginxConfOverride | An optional multi-line value that can replace the default nginx.conf. | ""
