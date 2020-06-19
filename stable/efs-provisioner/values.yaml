@@ -25,6 +25,11 @@ busyboxImage:
   tag: 1.27
   pullPolicy: IfNotPresent
 
+## Extra env variables and envFrom
+extraEnv: []
+
+envFrom: []
+
 ## Deployment annotations
 ##
 annotations: {}
