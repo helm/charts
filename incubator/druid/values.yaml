@@ -7,8 +7,11 @@ image:
   pullSecrets: []
 
 configMap:
+  ## If false, configMap will not be applied
+  ##
   enabled: true
 
+## Define the key value pairs in the configmap
 configVars:
   DRUID_XMX: 1g
   DRUID_XMS: 1g
@@ -36,6 +39,8 @@ gCloudStorage:
   secretName: google-cloud-key
 
 broker:
+  ## If false, broker will not be installed
+  ##
   enabled: true
   name: broker
   replicaCount: 1
@@ -44,7 +49,7 @@ broker:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -76,6 +81,8 @@ broker:
   podAnnotations: {}
 
 coordinator:
+  ## If false, coordinator will not be installed
+  ##
   enabled: true
   name: coordinator
   replicaCount: 1
@@ -116,6 +123,8 @@ coordinator:
   podAnnotations: {}
 
 overlord:
+  ## If true, the separate overlord will be installed
+  ##
   enabled: false
   name: overlord
   replicaCount: 1
@@ -148,6 +157,8 @@ overlord:
   podAnnotations: {}
 
 historical:
+  ## If false, historical will not be installed
+  ##
   enabled: true
   name: historical
   replicaCount: 1
@@ -156,7 +167,7 @@ historical:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -206,6 +217,8 @@ historical:
     type: RollingUpdate
 
 middleManager:
+  ## If false, middleManager will not be installed
+  ##
   enabled: true
   name: middle-manager
   replicaCount: 1
@@ -282,6 +295,8 @@ middleManager:
     type: RollingUpdate
 
 router:
+  ## If false, router will not be installed
+  ##
   enabled: true
   name: router
   replicaCount: 1
