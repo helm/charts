@@ -348,9 +348,6 @@ zookeeper:
   env:
     ## The JVM heap size to allocate to Zookeeper
     ZK_HEAP_SIZE: "512M"
-  ## Configure Zookeeper persistence
-  persistence:
-    enabled: true
   ## Configure Zookeeper headless
   headless:
     publishNotReadyAddresses: true
