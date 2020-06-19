@@ -21,6 +21,14 @@ spec:
     interval: {{ .Values.serviceMonitor.interval }}
     {{- end }}
     honorLabels: {{ .Values.serviceMonitor.honorLabels }}
+{{- if .Values.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.relabelings | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       chart: {{ template "stackdriver-exporter.chart" . }}
