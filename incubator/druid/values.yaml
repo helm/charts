@@ -376,9 +376,5 @@ postgresql:
   postgresqlUsername: druid
   postgresqlPassword: druid
   postgresqlDatabase: druid
-  persistence:
-    enabled: true
-  service:
-    port: 5432
 
 # Secrets
