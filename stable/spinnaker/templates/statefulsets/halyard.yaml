@@ -68,7 +68,7 @@ spec:
       - name: halyard-home
         emptyDir: {}
       {{- end }}
-      {{- if .Values.kubeConfig.enabled }}
+      {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
       - name: kube-config
         secret:
           secretName: {{ .Values.kubeConfig.secretName }}
@@ -166,7 +166,7 @@ spec:
         - name: s3-secrets
           mountPath: /opt/s3
         {{- end }}
-        {{- if .Values.kubeConfig.enabled }}
+        {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
         - name: kube-config
           mountPath: /opt/kube
         {{- end }}

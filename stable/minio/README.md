@@ -1,9 +1,11 @@
 MinIO
 =====
 
-[MinIO](https://min.io) is a distributed object storage service for high performance, high scale data infrastructures. It is a drop in replacement for AWS S3 in your own environment. It uses erasure coding to provide highly resilient storage that can tolerate failures of upto n/2 nodes. It runs on cloud, container, kubernetes and bare-metal environments. It is simple enough to be deployed in seconds, and can scale to 100s of peta bytes. MinIO is suitable for storing objects such as photos, videos, log files, backups, VM and container images.
+[MinIO](https://min.io) is a High Performance Object Storage released under Apache License v2.0. It is API compatible with Amazon S3 cloud storage service. Use MinIO to build high performance infrastructure for machine learning, analytics and application data workloads.
 
 MinIO supports [distributed mode](https://docs.minio.io/docs/distributed-minio-quickstart-guide). In distributed mode, you can pool multiple drives (even on different machines) into a single object storage server.
+
+For more detailed documentation please visit [here](https://docs.minio.io/)
 
 Introduction
 ------------
@@ -66,6 +68,12 @@ Assuming your release is named as `my-release`, delete it using the command:
 $ helm delete my-release
 ```
 
+or
+
+```bash
+$ helm uninstall my-release
+```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 Upgrading the Chart
@@ -95,10 +103,11 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `nameOverride`                            | Provide a name in place of `minio`                                                                                                      | `""`                                       |
 | `fullnameOverride`                        | Provide a name to substitute for the full names of resources                                                                            | `""`                                       |
 | `image.repository`                        | Image repository                                                                                                                        | `minio/minio`                              |
-| `image.tag`                               | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).                                             | `RELEASE.2020-04-28T23-56-56Z`             |
+| `image.tag`                               | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).                                             | `RELEASE.2020-06-14T18-32-17Z`             |
 | `image.pullPolicy`                        | Image pull policy                                                                                                                       | `IfNotPresent`                             |
+| `imagePullSecrets`                        | List of container registry secrets                                                                                                      | `[]`                                       |
 | `mcImage.repository`                      | Client image repository                                                                                                                 | `minio/mc`                                 |
-| `mcImage.tag`                             | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).                                                   | `RELEASE.2020-04-25T00-43-23Z`             |
+| `mcImage.tag`                             | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).                                                   | `RELEASE.2020-05-28T23-43-36Z`             |
 | `mcImage.pullPolicy`                      | mc Image pull policy                                                                                                                    | `IfNotPresent`                             |
 | `ingress.enabled`                         | Enables Ingress                                                                                                                         | `false`                                    |
 | `ingress.labels     `                     | Ingress labels                                                                                                                          | `{}`                                       |
@@ -125,12 +134,12 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `serviceAccount.create`                   | Toggle creation of new service account                                                                                                  | `true`                                     |
 | `serviceAccount.name`                     | Name of service account to create and/or use                                                                                            | `""`                                       |
 | `persistence.enabled`                     | Use persistent volume to store data                                                                                                     | `true`                                     |
-| `persistence.size`                        | Size of persistent volume claim                                                                                                         | `10Gi`                                     |
+| `persistence.size`                        | Size of persistent volume claim                                                                                                         | `500Gi`                                    |
 | `persistence.existingClaim`               | Use an existing PVC to persist data                                                                                                     | `nil`                                      |
 | `persistence.storageClass`                | Storage class name of PVC                                                                                                               | `nil`                                      |
 | `persistence.accessMode`                  | ReadWriteOnce or ReadOnly                                                                                                               | `ReadWriteOnce`                            |
 | `persistence.subPath`                     | Mount a sub directory of the persistent volume if set                                                                                   | `""`                                       |
-| `resources`                               | CPU/Memory resource requests/limits                                                                                                     | Memory: `256Mi`, CPU: `100m`               |
+| `resources`                               | Memory resource requests                                                                                                                | Memory: `4Gi`                              |
 | `priorityClassName`                       | Pod priority settings                                                                                                                   | `""`                                       |
 | `securityContext.enabled`                 | Enable to run containers as non-root. NOTE: if `persistence.enabled=false` then securityContext will be automatically disabled          | `true`                                     |
 | `securityContext.runAsUser`               | User id of the user for the container                                                                                                   | `1000`                                     |
@@ -144,13 +153,13 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `tls.enabled`                             | Enable TLS for MinIO server                                                                                                             | `false`                                    |
 | `tls.certSecret`                          | Kubernetes Secret with `public.crt` and `private.key` files.                                                                            | `""`                                       |
 | `livenessProbe.initialDelaySeconds`       | Delay before liveness probe is initiated                                                                                                | `5`                                        |
-| `livenessProbe.periodSeconds`             | How often to perform the probe                                                                                                          | `30`                                       |
+| `livenessProbe.periodSeconds`             | How often to perform the probe                                                                                                          | `5`                                        |
 | `livenessProbe.timeoutSeconds`            | When the probe times out                                                                                                                | `1`                                        |
 | `livenessProbe.successThreshold`          | Minimum consecutive successes for the probe to be considered successful after having failed.                                            | `1`                                        |
-| `livenessProbe.failureThreshold`          | Minimum consecutive failures for the probe to be considered failed after having succeeded.                                              | `3`                                        |
-| `readinessProbe.initialDelaySeconds`      | Delay before readiness probe is initiated                                                                                               | `5`                                        |
-| `readinessProbe.periodSeconds`            | How often to perform the probe                                                                                                          | `15`                                       |
-| `readinessProbe.timeoutSeconds`           | When the probe times out                                                                                                                | `1`                                        |
+| `livenessProbe.failureThreshold`          | Minimum consecutive failures for the probe to be considered failed after having succeeded.                                              | `1`                                        |
+| `readinessProbe.initialDelaySeconds`      | Delay before readiness probe is initiated                                                                                               | `60`                                       |
+| `readinessProbe.periodSeconds`            | How often to perform the probe                                                                                                          | `5`                                        |
+| `readinessProbe.timeoutSeconds`           | When the probe times out (should be 1s higher than your `MINIO_API_READY_DEADLINE` timeout                                              | `6`                                        |
 | `readinessProbe.successThreshold`         | Minimum consecutive successes for the probe to be considered successful after having failed.                                            | `1`                                        |
 | `readinessProbe.failureThreshold`         | Minimum consecutive failures for the probe to be considered failed after having succeeded.                                              | `3`                                        |
 | `defaultBucket.enabled`                   | If set to true, a bucket will be created after MinIO install                                                                            | `false`                                    |
@@ -176,7 +185,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `nasgateway.replicas`                     | Number of NAS gateway instances to be run in parallel on a PV                                                                           | `4`                                        |
 | `b2gateway.enabled`                       | Use MinIO as a [Backblaze B2 gateway](https://github.com/minio/minio/blob/master/docs/gateway/b2.md)                                    | `false`                                    |
 | `b2gateway.replicas`                      | Number of b2 gateway instances to run in parallel                                                                                       | `4`                                        |
-| `environment`                             | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_BROWSER: "on"`                      |
+| `environment`                             | Set MinIO server relevant environment variables in `values.yaml` file. MinIO containers will be passed these variables when they start. | `MINIO_API_READY_DEADLINE: "5s"`           |
 | `metrics.serviceMonitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                                                                     | `false`                                    |
 | `metrics.serviceMonitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                                   | `{}`                                       |
 | `metrics.serviceMonitor.namespace`        | Optional namespace in which to create ServiceMonitor                                                                                    | `nil`                                      |
@@ -194,7 +203,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 
 ```bash
 $ helm install --name my-release \
-  --set persistence.size=100Gi \
+  --set persistence.size=1Ti \
     stable/minio
 ```
 

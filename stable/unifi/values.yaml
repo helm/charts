@@ -117,6 +117,15 @@ controllerService:
   # loadBalancerSourceRanges: []
   ## Set the externalTrafficPolicy in the Service to either Cluster or Local
   # externalTrafficPolicy: Cluster
+  ##
+  # Ingress settings only for the controller
+  ingress:
+    enabled: false
+    annotations: {}
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
 
 stunService:
   type: NodePort

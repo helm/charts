@@ -459,6 +459,8 @@ agent:
   imagePullSecretName:
   componentName: "jenkins-slave"
   privileged: false
+  runAsUser:
+  runAsGroup:
   resources:
     requests:
       cpu: "512m"

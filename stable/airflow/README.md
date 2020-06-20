@@ -51,7 +51,7 @@ There are many ways to deploy this chart, but here are some starting points for 
 
 | Name | File | Description |
 | --- | --- | --- |
-| (CeleryExecutor) Minimal | [examples/minikube/custom-values.yaml](examples/minikube/custom-values.yaml) | a __non-production__ starting point | 
+| (CeleryExecutor) Minimal | [examples/minikube/custom-values.yaml](examples/minikube/custom-values.yaml) | a __non-production__ starting point |
 | (CeleryExecutor) Google Cloud | [examples/google-gke/custom-values.yaml](examples/google-gke/custom-values.yaml) | a __production__ starting point for GKE on Google Cloud |
 
 ## Airflow-Configs
@@ -104,7 +104,7 @@ scheduler:
         }
 ```
 
-__NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods. 
+__NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
 __WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
 
@@ -121,7 +121,7 @@ scheduler:
 
 ### Airflow-Configs/Pools
 
-We expose the `scheduler.pools` value to allow specifying [Airflow Variables](https://airflow.apache.org/docs/stable/concepts.html#pools) at deployment time, these pools will be automatically imported by the Airflow scheduler when it starts up.
+We expose the `scheduler.pools` value to allow specifying [Airflow Pools](https://airflow.apache.org/docs/stable/concepts.html#pools) at deployment time, these pools will be automatically imported by the Airflow scheduler when it starts up.
 
 For example, to create a pool called `example`:
 ```yaml
@@ -204,8 +204,8 @@ When customizing this, please note:
 We use a Kubernetes StatefulSet for the Celery workers, this allows the webserver to requests logs from each workers individually, with a fixed DNS name.
 
 Celery workers can be scaled using the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
-To enable autoscaling, you must set `workers.autoscaling.enabled=true`, then provide `workers.autoscaling.maxReplicas`, and `workers.replicas` for the minimum amount. 
-Make sure to set a resource request in `workers.resources`, and `dags.git.gitSync.resources`, otherwise worker pods will not scale. 
+To enable autoscaling, you must set `workers.autoscaling.enabled=true`, then provide `workers.autoscaling.maxReplicas`, and `workers.replicas` for the minimum amount.
+Make sure to set a resource request in `workers.resources`, and `dags.git.gitSync.resources`, otherwise worker pods will not scale.
 (For git-sync, `64Mi` should be enough.)
 
 Assume every task a worker executes consumes approximately `200Mi` memory, that means memory is a good metric for utilisation monitoring.
@@ -248,7 +248,7 @@ dags:
           memory: "64Mi"
 ```
 
-__NOTE:__ With this config if a worker consumes `80%` of `2Gi` (which will happen if it runs 9-10 tasks at the same time), an autoscale event will be triggered, and a new worker will be added. 
+__NOTE:__ With this config if a worker consumes `80%` of `2Gi` (which will happen if it runs 9-10 tasks at the same time), an autoscale event will be triggered, and a new worker will be added.
 If you have many tasks in a queue, Kubernetes will keep adding workers until maxReplicas reached, in this case `16`.
 
 ### Kubernetes-Configs/Worker-Secrets
@@ -487,11 +487,11 @@ dags:
 
 #### Option 2a -- Single PVC for DAGs & Logs
 
-You may want to store DAGs and logs on the same volume and configure Airflow to use subdirectories for them. 
+You may want to store DAGs and logs on the same volume and configure Airflow to use subdirectories for them.
 One reason is that mounting the same volume multiple times with different subPaths can cause problems in Kubernetes, e.g. one of the mounts gets stuck during container initialisation.
 
 Here's an approach that achieves this:
-* Configure `airflow.extraVolume` and `airflow.extraVolumeMount` to put a volume at `/opt/airflow/efs` 
+* Configure `airflow.extraVolume` and `airflow.extraVolumeMount` to put a volume at `/opt/airflow/efs`
 * Configure `dags.persistence.enabled` and `logs.persistence.enabled` to be `false`
 * Configure `dags.path` to be `/opt/airflow/efs/dags`
 * Configure `logs.path` to be `/opt/airflow/efs/logs`
