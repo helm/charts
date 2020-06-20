@@ -10,7 +10,7 @@ image:
 deployment:
   replicaCount: 1
   annotations: {}
-  rolloutStrategy: 
+  rolloutStrategy:
     type: RollingUpdate
     # Recreate can help when using persistent volumes
     # type: Recreate
@@ -50,7 +50,7 @@ persistence:
   # Set claim.create:true  to have the helm chart manage the creation of a new PVC for this deployment
   claim:
     create: false
-    # storageClass: 
+    # storageClass:
     # accessMode: ReadWriteOnce
     # size: 10G
 
