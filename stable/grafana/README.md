@@ -71,7 +71,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
-| `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
+| `ingress.hosts`                           | Ingress accepted hostnames                    | `["chart-example.local"]`                                                    |
 | `ingress.extraPaths`                      | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                                    |
 | `ingress.tls`                             | Ingress TLS configuration                     | `[]`                                                    |
 | `resources`                               | CPU/Memory resource requests/limits           | `{}`                                                    |

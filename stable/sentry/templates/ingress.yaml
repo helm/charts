@@ -20,6 +20,12 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
+          {{- range .Values.ingress.extraPaths }}
+          - path: {{ .path | quote }}
+            backend:
+              serviceName: {{ .backend.serviceName }}
+              servicePort: {{ .backend.servicePort}}
+          {{- end }}
           - path: {{ default "/" .Values.ingress.path | quote }}
             backend:
               serviceName: {{ template "sentry.fullname" . }}

@@ -36,9 +36,9 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
-| `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
+| `skipInitialization`                | If `true` skip replica set initialization during bootstrapping            | `false`                                             |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
-| `updateStrategy`                    | Update strategy                                                   | `nil`                                               |
+| `updateStrategy`                    | Update strategy                                                           | `nil`                                               |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
 | `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
+| `serviceAccount`                    | Name of a ServiceAccount to be created and applied to StatefulSet pods. Won't be created by default.  | ``                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
 | `statefulSetAnnotations`            | Annotations to be added to MongoDB statefulSet                            | `{}`                                                |
 | `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
