@@ -112,7 +112,7 @@ parsers:
   enabled: false
   ## List the respective parsers in key: value format per entry
   ## Regex required fields are name and regex. JSON and Logfmt required field
-  ## is name.
+  ## is name, and can optionally take extraEntries analagous to json below.
   regex: []
   logfmt: []
   ##  json parser config can be defined by providing an extraEntries field.
