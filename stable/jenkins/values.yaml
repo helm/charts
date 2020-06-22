@@ -113,7 +113,7 @@ master:
   # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
   jenkinsRef: "/usr/share/jenkins/ref"
   # If empty, Recreate when persistence.enabled is true and RollingUpdate when persistence.enabled is false.
-  deploymentStrategy:
+  deploymentStrategy: ""
   rollingUpdate: {}
   # Ignored if Persistence is enabled
   # maxSurge: 1
