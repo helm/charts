@@ -132,3 +132,8 @@ collectors:
 ## Override the deployment namespace
 ##
 namespaceOverride: ""
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""
