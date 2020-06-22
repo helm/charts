@@ -1,4 +1,5 @@
 {{- if .Values.ingressGateway.enabled -}}
+{{- $serviceName := include "ipfs.fullname" . -}}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -16,16 +17,16 @@ spec:
   rules:
           {{- range .Values.ingressGateway.hosts }}
           {{- $url := splitList "/" . }}
-    - host: {{ first $url }}
+    - host: {{ first $url | quote }}
       http:
         paths:
           - path: /{{ rest $url | join "/" }}
             backend:
-              serviceName: {{ include "ipfs.fullname" . }}
+              serviceName: {{ $serviceName }}
               servicePort: 8080
         {{- end -}}
         {{- if .Values.ingressGateway.tls }}
   tls:
-        {{ toYaml .Values.ingressGateway.tls | indent 4 }}
+{{ toYaml .Values.ingressGateway.tls | indent 4 }}
         {{- end -}}
         {{- end -}}
