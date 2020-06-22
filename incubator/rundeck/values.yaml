@@ -2,12 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 image:
   repository: rundeck/rundeck
-  tag: 3.0.16
+  tag: 3.2.7
   pullPolicy: IfNotPresent
+
+deployment:
+  replicaCount: 1
+  annotations: {}
+  rolloutStrategy:
+    type: RollingUpdate
+    # Recreate can help when using persistent volumes
+    # type: Recreate
 
 rundeck:
   adminUser: "admin:admin,user,admin,architect,deploy,build"
@@ -26,7 +32,6 @@ rundeck:
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
   # sshSecrets: "ssh-secret"
   awsCredentialsSecret: ""
-  awsVolumeId: ""
 
 nameOverride: ""
 fullnameOverride: ""
@@ -34,6 +39,30 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 80
+
+persistence:
+  enabled: false
+  # Set existingClaim to the name of an existing PVC to reuse a volume managed outside this helm chart
+  # existingClaim:
+  # If deployed on AWS you can optionally specify an existing EBS volume by ID
+  # awsVolumeId:
+
+  # Set claim.create:true  to have the helm chart manage the creation of a new PVC for this deployment
+  claim:
+    create: false
+    # storageClass:
+    # accessMode: ReadWriteOnce
+    # size: 10G
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  annotations: {}
+    # AWS IRSA annotation
+    # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/rundeck
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 ingress:
   enabled: false
