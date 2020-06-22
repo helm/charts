@@ -15,7 +15,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
-    {{- if .Values.tls.certs.provided }}
+    {{- if or .Values.tls.certs.provided .Values.tls.certs.certManager }}
     verbs: ["get"]
     {{- else }}
     verbs: ["create", "get"]

@@ -41,18 +41,18 @@ spec:
       annotations: {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
-    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided)) }}
+    {{- if or .Values.image.credentials (and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided) (not .Values.tls.certs.certManager)) }}
       imagePullSecrets:
       {{- if .Values.image.credentials }}
         - name: {{ template "cockroachdb.fullname" . }}.db.registry
       {{- end }}
-      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided) }}
+      {{- if and .Values.tls.enabled .Values.tls.init.image.credentials (not .Values.tls.certs.provided) (not .Values.tls.certs.certManager) }}
         - name: {{ template "cockroachdb.fullname" . }}.init-certs.registry
       {{- end }}
     {{- end }}
     {{- if .Values.tls.enabled }}
       serviceAccountName: {{ template "cockroachdb.tls.serviceAccount.name" . }}
-      {{- if not .Values.tls.certs.provided }}
+      {{- if and (not .Values.tls.certs.provided) (not .Values.tls.certs.certManager) }}
       initContainers:
         # The init-certs container sends a CSR (certificate signing request) to
         # the Kubernetes cluster.
@@ -270,8 +270,8 @@ spec:
         {{- end }}
       {{- if .Values.tls.enabled }}
         - name: certs
-          {{- if .Values.tls.certs.provided }}
-          {{- if .Values.tls.certs.tlsSecret }}
+          {{- if or .Values.tls.certs.provided .Values.tls.certs.certManager }}
+          {{- if or .Values.tls.certs.tlsSecret .Values.tls.certs.certManager }}
           projected:
             sources:
             - secret:

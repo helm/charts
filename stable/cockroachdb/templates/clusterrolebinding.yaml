@@ -1,4 +1,4 @@
-{{- if and .Values.tls.enabled (not .Values.tls.certs.provided) }}
+{{- if and .Values.tls.enabled (not .Values.tls.certs.provided) (not .Values.tls.certs.certManager) }}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

@@ -15,10 +15,10 @@ spec:
   imagePullSecrets:
     - name: {{ template "cockroachdb.fullname" . }}.db.registry
 {{- end }}
-  {{- if .Values.tls.certs.provided }}
+  {{- if or .Values.tls.certs.provided .Values.tls.certs.certManager}}
   volumes:
     - name: client-certs
-      {{- if .Values.tls.certs.tlsSecret }}
+      {{- if or .Values.tls.certs.certManager .Values.tls.certs.tlsSecret }}
       projected:
         sources:
         - secret:
@@ -43,7 +43,7 @@ spec:
     - name: client-test
       image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
       imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-      {{- if .Values.tls.certs.provided }}
+      {{- if or .Values.tls.certs.provided .Values.tls.certs.certManager }}
       volumeMounts:
       - name: client-certs
         mountPath: /cockroach-certs
@@ -51,7 +51,7 @@ spec:
       command:
         - /cockroach/cockroach
         - sql
-        {{- if .Values.tls.certs.provided }}
+        {{- if or .Values.tls.certs.provided .Values.tls.certs.certManager }}
         - --certs-dir
         - /cockroach-certs
         {{- else }}
