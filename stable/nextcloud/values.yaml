@@ -352,6 +352,7 @@ affinity: {}
 metrics:
   enabled: false
 
+  replicaCount: 1
   # The metrics exporter needs to know how you serve Nextcloud either http or https
   https: false
   timeout: 5s
@@ -367,15 +368,16 @@ metrics:
   # resources: {}
 
   ## Metrics exporter pod Annotation and Labels
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9205"
+  # podAnnotations: {}
 
   # podLabels: {}
+
   service:
     type: ClusterIP
     ## Use serviceLoadBalancerIP to request a specific static IP,
     ## otherwise leave blank
     # loadBalancerIP:
-    annotations: {}
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9205"
     labels: {}

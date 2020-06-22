@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: metrics
 spec:
-  replicas: 1
+  replicas: {{ .Values.metrics.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "nextcloud.name" . }}
