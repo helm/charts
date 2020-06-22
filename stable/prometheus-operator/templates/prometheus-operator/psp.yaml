@@ -27,7 +27,7 @@ spec:
     - 'secret'
     - 'downwardAPI'
     - 'persistentVolumeClaim'
-  hostNetwork: false
+  hostNetwork: {{ .Values.prometheusOperator.hostNetwork }}
   hostIPC: false
   hostPID: false
   runAsUser:
