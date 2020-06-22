@@ -528,7 +528,7 @@ grafana:
     dashboards:
       enabled: true
       label: grafana_dashboard
-      
+
       ## Annotations for Grafana dashboard configmaps
       ##
       annotations: {}
