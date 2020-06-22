@@ -23,7 +23,12 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: {{ if .Values.persistence.enabled }}Recreate{{ else }}RollingUpdate
+    {{- if .Values.master.deploymentStrategy }}
+    type: {{ .Values.master.deploymentStrategy }}
+    {{- else }}
+    type: {{ if .Values.persistence.enabled }}Recreate{{ else }}RollingUpdate{{ end }}
+    {{- end }}
+    {{- if eq "RollingUpdate" .Values.master.deploymentStrategy }}
     rollingUpdate:
 {{ toYaml .Values.master.rollingUpdate | indent 6 }}
     {{- end }}

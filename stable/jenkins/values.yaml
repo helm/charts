@@ -112,6 +112,8 @@ master:
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
   jenkinsRef: "/usr/share/jenkins/ref"
+  # If empty, Recreate when persistence.enabled is true and RollingUpdate when persistence.enabled is false.
+  deploymentStrategy:
   rollingUpdate: {}
   # Ignored if Persistence is enabled
   # maxSurge: 1
@@ -349,9 +351,9 @@ master:
   terminationGracePeriodSeconds:
 
   tolerations: []
-  # Leverage a priorityClass to ensure your pods survive resource shortages
+  # Leverage a priorityClassName to ensure your pods survive resource shortages
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-  # priorityClass: system-cluster-critical
+  # priorityClassName: system-cluster-critical
   podAnnotations: {}
   # Add deployment annotation
   deploymentAnnotations: {}

@@ -68,7 +68,7 @@ master:
 #### Migration steps
 
 Migration instructions heavily depend on your current setup.
-So think of the list below more as a general guideline of what should be done. 
+So think of the list below more as a general guideline of what should be done.
 
 - Ensure that the Jenkins image you are using contains a user with id 1000 and a group with the same id.
   That's the case for `jenkins/jenkins:lts` image, which the chart uses by default
@@ -150,6 +150,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.admin.passwordKey`        | The key in the existing admin secret containing the password. | `jenkins-admin-password` |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
+| `master.deploymentStrategy`       | If empty, Recreate when persistence.enabled is true and RollingUpdate when persistence.enabled is false. | Not set |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
 | `master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}`|
 | `master.initContainerEnv`         | Environment variables for Init Container                                 | Not set |
