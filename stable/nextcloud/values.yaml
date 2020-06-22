@@ -358,7 +358,7 @@ metrics:
 
   image:
     repository: xperimental/nextcloud-exporter
-    tag: latest
+    tag: v0.3.0
     pullPolicy: IfNotPresent
 
   ## Metrics exporter resource requests and limits
@@ -372,3 +372,10 @@ metrics:
     prometheus.io/port: "9205"
 
   # podLabels: {}
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations: {}
+    labels: {}
