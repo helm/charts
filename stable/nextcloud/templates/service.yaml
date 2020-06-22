@@ -21,4 +21,5 @@ spec:
     nodePort: {{ default "" .Values.service.nodePort}}
     {{- end }}
   selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/name: {{ include "nextcloud.name" . }}
