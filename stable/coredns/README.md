@@ -55,6 +55,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `resources.requests.cpu`                | Container requested CPU                                                               | `100m`                                                      |
 | `resources.requests.memory`             | Container requested memory                                                            | `128Mi`                                                     |
 | `serviceType`                           | Kubernetes Service type                                                               | `ClusterIP`                                                 |
+| `prometheus.service.enabled`            | Set this to `true` to create Service for Prometheus metrics                           | `false`                                                     |
+| `prometheus.service.annotations`        | Annotations to add to the metrics Service                                             | `{prometheus.io/scrape: "true", prometheus.io/port: "9153"}`|
 | `prometheus.monitor.enabled`            | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`                                                     |
 | `prometheus.monitor.additionalLabels`   | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | {}                                                          |
 | `prometheus.monitor.namespace`          | Selector to select which namespaces the Endpoints objects are discovered from.        | `""`                                                        |
@@ -73,12 +75,18 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector`                          | Node labels for pod assignment                                                        | {}                                                          |
 | `tolerations`                           | Tolerations for pod assignment                                                        | []                                                          |
 | `zoneFiles`                             | Configure custom Zone files                                                           | []                                                          |
+| `extraVolumes`                          | Optional array of volumes to create                                                   | []                                                          |
+| `extraVolumeMounts`                     | Optional array of volumes to mount inside the CoreDNS container                       | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
 | `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
 | `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
+| `autoscaler.min`                        | Min size of replicaCount                                                              | 0                                                           |
+| `autoscaler.max`                        | Max size of replicaCount                                                              | 0  (aka no max)                                             |
+| `autoscaler.includeUnschedulableNodes`  | Should the replicas scale based on the total number or only schedulable nodes         | `false`                                                     |
+| `autoscaler.preventSinglePointFailure`  | If true does not allow single points of failure to form                               | `true`                                                      |
 | `autoscaler.image.repository`           | The image repository to pull autoscaler from                                          | k8s.gcr.io/cluster-proportional-autoscaler-amd64            |
 | `autoscaler.image.tag`                  | The image tag to pull autoscaler from                                                 | `1.7.1`                                                     |
 | `autoscaler.image.pullPolicy`           | Image pull policy for the autoscaler                                                  | IfNotPresent                                                |

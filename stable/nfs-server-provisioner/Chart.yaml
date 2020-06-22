@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 2.3.0
 description: nfs-server-provisioner is an out-of-tree dynamic provisioner for Kubernetes. You can use it to quickly & easily deploy shared storage that works almost anywhere.
 name: nfs-server-provisioner
-version: 1.0.0
+version: 1.1.1
 maintainers:
 - name: kiall
   email: kiall@macinnes.ie

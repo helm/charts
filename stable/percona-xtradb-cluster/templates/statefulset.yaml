@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "percona-xtradb-cluster.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "percona-xtradb-cluster.fullname" . }}

@@ -41,11 +41,6 @@ ingress:
   #      log_not_found off;
   #      access_log off;
   #    }
-  #    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
-  #      try_files $uri /index.php$request_uri;
-  #      # Optional: Don't log access to other assets
-  #      access_log off;
-  #    }
   #    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
   #      deny all;
   #    }
@@ -130,6 +125,16 @@ nextcloud:
   #        )
   #      );
 
+  ## Strategy used to replace old pods
+  ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  strategy:
+    type: Recreate
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 1
+    #   maxUnavailable: 0
+
   ##
   ## Extra environment variables
   extraEnv:
@@ -138,6 +143,18 @@ nextcloud:
   #      secretKeyRef:
   #        name: nextcloud
   #        key: secret_key
+
+  # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
+  # to NextCloud pods in Kubernetes. This can then be configured in External Storage
+  extraVolumes:
+  #  - name: nfs
+  #    nfs:
+  #      server: "10.0.0.1"
+  #      path: "/nextcloud_data"
+  #      readOnly: false
+  extraVolumeMounts:
+  #  - name: nfs
+  #    mountPath: "/legacy_data"
 
 nginx:
   ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
@@ -179,6 +196,13 @@ externalDatabase:
 
   ## Database name
   database: nextcloud
+
+  ## Use a existing secret
+  existingSecret:
+    enabled: false
+    # secretName: nameofsecret
+    # usernameKey: username
+    # passwordKey: password
 
 ##
 ## MariaDB chart configuration
@@ -251,6 +275,7 @@ service:
   type: ClusterIP
   port: 8080
   loadBalancerIP: nil
+  nodePort: nil
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -305,6 +330,15 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 3
   successThreshold: 1
+
+## Enable pod autoscaling using HorizontalPodAutoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+##
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
 
 nodeSelector: {}
 

@@ -2,7 +2,7 @@
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
-apiVersion: apps/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ $fullName }}-proxy
@@ -61,10 +61,20 @@ spec:
                 secretKeyRef:
                   name: {{ $proxySecret }}
                   key: proxy-cookie-secret
-            - name: EMAIL_DOMAIN
+            {{- if .Values.proxy.defaultAllowedEmailDomains }}
+            {{- if (eq "-" .Values.proxy.defaultAllowedEmailDomains) }}
+            - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
+              value: ""
+            {{- else }}
+            - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
+              value: {{ .Values.proxy.defaultAllowedEmailDomains | quote }}
+            {{- end }}
+            {{- else }}
+            - name: DEFAULT_ALLOWED_EMAIL_DOMAINS
               value: {{ .Values.emailDomain | quote }}
+            {{- end }}
             {{- if .Values.whitelistedEmails }}
-            - name: EMAIL_ADDRESSES
+            - name: DEFAULT_ALLOWED_EMAIL_ADDRESSES
               value: {{ .Values.whitelistedEmails }}
             {{- end }}
             - name: UPSTREAM_CONFIGS
