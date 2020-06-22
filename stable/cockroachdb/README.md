@@ -136,8 +136,6 @@ By enabling `tls.certs.tlsSecret` the tls secrets are projected on to the correc
 If you wish to supply certificates with [cert-manager][3], set
 
 * `tls.certs.certManager` to `yes`/`true`
-* `tls.certs.tlsSecret` to `yes`/`true`
-* `tls.certs.provided` to `yes`/`true`
 * `tls.certs.certManagerIssuer` to an IssuerRef (as they appear in certificate resources) pointing to a clusterIssuer or issuer, you have set up in the cluster
 
 Example issuer:
