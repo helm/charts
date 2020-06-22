@@ -9,7 +9,7 @@ NOTE: The change log until version 0.4.10 is auto generated based on git commits
 
 ## 0.8.1
 
-Add secrets checksum annotation to deployment (#22448)
+Add secrets checksum annotation to deployment (#22449)
 
 ## 0.8.0
 
