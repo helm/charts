@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.14
+
+* Allow overriding the `command` to run in the cluster-agent container
+
 ## 2.3.13
 
 * Use two distinct health endpoints for liveness and readiness probes.

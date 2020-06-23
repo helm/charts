@@ -399,6 +399,11 @@ clusterAgent:
     pullSecrets:
     #   - name: "<REG_SECRET>"
 
+  ## @param command - array - optional
+  ## Command to run in the Cluster Agent container
+  #
+  command:  # []
+
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
   ## It is a preshared key between the node agents and the cluster agent
