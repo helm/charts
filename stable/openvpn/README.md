@@ -108,6 +108,7 @@ Parameter | Description | Default
 `openvpn.dhcpOptionDomain`           | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.serverConf`                 | Lines appended to the end of the server configuration file (optional)| `nil`
 `openvpn.clientConf`                 | Lines appended into the client configuration file (optional)         | `nil`
+`openvpn.clientConfServer`           | Replace the IP of the node/service with this String (e.g. hostname)  | `nil`
 `openvpn.redirectGateway`            | Redirect all client traffic through VPN                              | `true`
 `openvpn.useCrl`                     | Use/generate a certificate revocation list (crl.pem)                 | `false`
 `openvpn.taKey`                      | Use/generate a ta.key file for hardening security                    | `false`
