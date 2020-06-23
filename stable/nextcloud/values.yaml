@@ -52,6 +52,10 @@ ingress:
   #      hosts:
   #        - nextcloud.kube.home
   labels: {}
+  hosts:
+  - host: "{{ .Values.nextcloud.host }}"
+    paths:
+      - /
 
 
 # Allow configuration of lifecycle hooks

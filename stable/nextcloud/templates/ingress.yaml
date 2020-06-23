@@ -17,12 +17,17 @@ metadata:
 {{- end }}
 spec:
   rules:
-  - host: {{ .Values.nextcloud.host }}
+  {{- range .Values.ingress.hosts }}
+  - host: {{ tpl (.host) $ | quote }}
     http:
       paths:
-      - backend:
-          serviceName: {{ template "nextcloud.fullname" . }}
-          servicePort: {{ .Values.service.port }}
+      {{- range .paths }}
+        - path: {{ . }}
+          backend:
+            serviceName: {{ template "nextcloud.fullname" $ }}
+            servicePort: {{ $.Values.service.port }}
+      {{- end }}
+  {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
