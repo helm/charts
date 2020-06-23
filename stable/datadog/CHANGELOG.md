@@ -1,6 +1,15 @@
 # Datadog changelog
 
+## 2.3.11
+
+* Bump the default version of the agent docker images
+
+## 2.3.10
+
+* Add dnsConfig options to all containers
+
 ## 2.3.9
+
 * Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
 
 ## 2.3.8

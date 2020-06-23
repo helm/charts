@@ -385,7 +385,7 @@ clusterAgent:
     ## @param tag - string - required
     ## Define the Cluster-Agent version to use.
     #
-    tag: 1.5.2
+    tag: 1.6.0
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -599,7 +599,7 @@ agents:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: 7.19.0
+    tag: 7.20.2
 
     ## @param doNotCheckTag - boolean - optional
     ## By default, the version passed in agents.image.tag is checked
@@ -908,7 +908,7 @@ clusterChecksRunner:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: 7.19.0
+    tag: 7.20.2
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
