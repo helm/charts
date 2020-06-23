@@ -75,6 +75,11 @@ busyboxImage:
 ##
 annotations: {}
 
+## Extra env variables and envFrom
+extraEnv: []
+
+envFrom: []
+
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
@@ -108,6 +113,11 @@ rbac:
 ##
 podAnnotations: {}
   # iam.amazonaws.com/role: efs-provisioner-role
+
+## Labels to be added to deployment
+##
+podLabels: {}
+  # environment: production
 
 ## Node labels for pod assignment
 ##

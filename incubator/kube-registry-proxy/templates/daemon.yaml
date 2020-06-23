@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "kube-registry-proxy.fullname" . }}
@@ -7,6 +7,9 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "kube-registry-proxy.fullname" . }}
   template:
     metadata:
       name: {{ template "kube-registry-proxy.fullname" . }}

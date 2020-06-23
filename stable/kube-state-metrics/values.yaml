@@ -2,8 +2,11 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.5
+  tag: v1.9.7
   pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+# - name: "image-pull-secret"
 
 # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
 # will be automatically sharded across <.Values.replicas> pods using the built-in
@@ -62,9 +65,11 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+  additionalVolumes: []
 
 securityContext:
   enabled: true
+  runAsGroup: 65534
   runAsUser: 65534
   fsGroup: 65534
 
@@ -118,7 +123,7 @@ collectors:
   statefulsets: true
   storageclasses: true
   validatingwebhookconfigurations: true
-  verticalpodautoscalers: true
+  verticalpodautoscalers: false
   volumeattachments: true
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
@@ -127,3 +132,8 @@ collectors:
 ## Override the deployment namespace
 ##
 namespaceOverride: ""
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""

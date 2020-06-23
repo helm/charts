@@ -54,6 +54,7 @@ spec:
         - name: ssh-secrets
           secret:
             secretName: {{ .Values.agent.security.ssh.secretName }}
+            defaultMode: {{ .Values.agent.security.ssh.defaultMode | default 256 }}
       {{- end }}
       {{- if .Values.agent.initContainers }}
       initContainers:

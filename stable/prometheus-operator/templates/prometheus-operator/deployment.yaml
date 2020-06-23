@@ -1,9 +1,10 @@
+{{- $namespace := printf "%s" (include "prometheus-operator.namespace" .) }}
 {{- if .Values.prometheusOperator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -34,7 +35,9 @@ spec:
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
           imagePullPolicy: "{{ .Values.prometheusOperator.image.pullPolicy }}"
           args:
-            - --manage-crds={{ $.Values.prometheusOperator.manageCrds }}
+          {{- if semverCompare "< v0.39.0" .Values.prometheusOperator.image.tag }}
+            - --manage-crds={{ .Values.prometheusOperator.manageCrds }}
+          {{- end }}
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}
@@ -50,7 +53,7 @@ spec:
           {{- with $.Values.prometheusOperator.namespaces }}
           {{ $ns := .additional }}
           {{- if .releaseNamespace }}
-          {{- $ns = append $ns $.Release.Namespace }}
+          {{- $ns = append $ns $namespace }}
           {{- end }}
             - --namespaces={{ $ns | join "," }}
           {{- end }}
@@ -104,6 +107,10 @@ spec:
 {{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
+{{- if .Values.prometheusOperator.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

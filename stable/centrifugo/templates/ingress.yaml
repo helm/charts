@@ -5,15 +5,13 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "centrifugo.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ include "centrifugo.chart" . }}
-    app: {{ include "centrifugo.name" . }}
+    {{- include "centrifugo.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   rules:
     {{- range $host := .Values.ingress.hosts }}

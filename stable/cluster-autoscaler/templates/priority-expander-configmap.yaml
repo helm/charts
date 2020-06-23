@@ -1,0 +1,13 @@
+{{- if hasKey .Values.extraArgs "expander" }}
+{{- if and (.Values.expanderPriorities) (eq .Values.extraArgs.expander "priority") -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-autoscaler-priority-expander
+  labels:
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
+data:
+  priorities: |-
+{{ .Values.expanderPriorities | indent 4 }}
+{{- end -}}
+{{- end -}}
