@@ -6,10 +6,7 @@ kind: ClusterRole
 metadata:
   name: {{ template "metallb.fullname" . }}:controller
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 rules:
 - apiGroups: [""]
   resources: ["services"]
@@ -26,10 +23,7 @@ kind: ClusterRole
 metadata:
   name: {{ template "metallb.fullname" . }}:speaker
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 rules:
 - apiGroups: [""]
   resources: ["services", "endpoints", "nodes"]
@@ -49,10 +43,7 @@ kind: Role
 metadata:
   name: {{ template "metallb.fullname" . }}-config-watcher
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
@@ -65,10 +56,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ template "metallb.fullname" . }}:controller
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "metallb.controllerServiceAccountName" . }}
@@ -83,10 +71,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ template "metallb.fullname" . }}:speaker
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "metallb.speakerServiceAccountName" . }}
@@ -101,10 +86,7 @@ kind: RoleBinding
 metadata:
   name: {{ template "metallb.fullname" . }}-config-watcher
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "metallb.controllerServiceAccountName" . }}

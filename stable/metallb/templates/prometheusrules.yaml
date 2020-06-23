@@ -4,10 +4,7 @@ kind: PrometheusRule
 metadata:
   name: {{ template "metallb.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
 spec:
   groups:
   - name: {{ template "metallb.fullname" . }}.rules

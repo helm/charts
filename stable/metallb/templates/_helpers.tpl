@@ -63,3 +63,20 @@ Create the name of the settings ConfigMap to use.
     {{ .Values.existingConfigMap }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Common labels for the metallb chart
+*/}}
+{{- define "metallb.labels" -}}
+heritage: {{ .Release.Service | quote }}
+chart: {{ template "metallb.chart" . }}
+{{ template "metallb.selectorLabels" . }}
+{{- end -}}
+
+{{/*
+Common selector labels for the metallb chart
+*/}}
+{{- define "metallb.selectorLabels" -}}
+release: {{ .Release.Name | quote }}
+app: {{ template "metallb.name" . }}
+{{- end -}}

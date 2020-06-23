@@ -3,24 +3,17 @@ kind: DaemonSet
 metadata:
   name: {{ template "metallb.fullname" . }}-speaker
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
     component: speaker
 spec:
   selector:
     matchLabels:
-      app: {{ template "metallb.name" . }}
+      {{- include "metallb.selectorLabels" . | nindent 6 }}
       component: speaker
-      release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: {{ template "metallb.chart" . }}
-        app: {{ template "metallb.name" . }}
+        {{- include "metallb.labels" . | nindent 8 }}
         component: speaker
 {{- if .Values.prometheus.scrapeAnnotations }}
       annotations:

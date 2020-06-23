@@ -4,17 +4,13 @@ kind: Service
 metadata:
   name: {{ template "metallb.fullname" . }}-controller-metrics
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
     jobLabel: {{ .Values.prometheus.serviceMonitor.jobLabel }}
     component: controller
 spec:
   type: ClusterIP
   selector:
-    app: {{ template "metallb.name" . }}
-    release: {{ .Release.Name | quote }}
+    {{- include "metallb.selectorLabels" . | nindent 4 }}
     component: controller
   ports:
   - name: metrics
@@ -27,17 +23,13 @@ kind: Service
 metadata:
   name: {{ template "metallb.fullname" . }}-speaker-metrics
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
     jobLabel: {{ .Values.prometheus.serviceMonitor.jobLabel }}
     component: speaker
 spec:
   type: ClusterIP
   selector:
-    app: {{ template "metallb.name" . }}
-    release: {{ .Release.Name | quote }}
+    {{- include "metallb.selectorLabels" . | nindent 4 }}
     component: speaker
   ports:
   - name: metrics

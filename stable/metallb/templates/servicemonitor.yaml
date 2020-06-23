@@ -4,17 +4,13 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "metallb.fullname" . }}-controller
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
     component: controller
 spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
-      app: {{ template "metallb.name" . }}
-      release: {{ .Release.Name | quote }}
+      {{- include "metallb.selectorLabels" . | nindent 6 }}
       component: controller
   namespaceSelector:
     matchNames:
@@ -38,17 +34,13 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "metallb.fullname" . }}-speaker
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "metallb.chart" . }}
-    app: {{ template "metallb.name" . }}
+    {{- include "metallb.labels" . | nindent 4 }}
     component: speaker
 spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
-      app: {{ template "metallb.name" . }}
-      release: {{ .Release.Name | quote }}
+      {{- include "metallb.selectorLabels" . | nindent 6 }}
       component: speaker
   namespaceSelector:
     matchNames:
