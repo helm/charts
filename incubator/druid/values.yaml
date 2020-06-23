@@ -23,6 +23,8 @@ configVars:
   druid_indexer_runner_javaOptsArray: '["-server", "-Xmx1g", "-Xms1g", "-XX:MaxDirectMemorySize=3g", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
   druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '268435456'
   druid_storage_type: local
+  druid_indexer_logs_type: file
+  druid_indexer_logs_directory: /opt/data/indexing-logs
   druid_emitter: noop
   druid_emitter_logging_logLevel: debug
   druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
