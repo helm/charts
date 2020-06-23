@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.1.0
+
+Add support to set `runAsUser` and `runAsGroup` for `agent`.
+
 ## 2.0.1
 
 Only render authorizationStrategy and securityRealm when values are set.

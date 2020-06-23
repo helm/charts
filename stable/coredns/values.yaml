@@ -20,6 +20,11 @@ resources:
 serviceType: "ClusterIP"
 
 prometheus:
+  service:
+    enabled: false
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9153"
   monitor:
     enabled: false
     additionalLabels: {}

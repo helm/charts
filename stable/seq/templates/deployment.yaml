@@ -38,14 +38,14 @@ spec:
             - name: ui
               containerPort: 80
               protocol: TCP
-          {{- if .Values.podSecurityPolicy.create }}
+{{- if .Values.podSecurityPolicy.create }}
           securityContext:
             runAsUser: 0
             capabilities:
               add:
                 - NET_BIND_SERVICE
-          {{- end }}
-          {{- if .Values.livenessProbe.enabled }}
+{{- end }}
+{{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /
@@ -55,8 +55,8 @@ spec:
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          {{- end }}
-          {{- if .Values.readinessProbe.enabled }}
+{{- end }}
+{{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /
@@ -66,22 +66,45 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          {{- end }}
-          {{- if .Values.startupProbe.enabled }}
+{{- end }}
+{{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /
               port: ui
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds }}
-          {{- end }}
+{{- end }}
           volumeMounts:
           - name: seq-data
             mountPath: {{ .Values.persistence.path }}
             subPath: {{ .Values.persistence.subPath }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
+{{- if .Values.gelf.enabled }}
+        - name: {{ .Chart.Name }}-gelf
+          image: "{{ .Values.gelf.image.repository }}:{{ .Values.gelf.image.tag }}"
+          imagePullPolicy: {{ .Values.gelf.image.pullPolicy }}
+          env:
+            - name: "SEQ_ADDRESS"
+              value: "http://{{ template "seq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.ingestion.service.port }}"
+            - name: "SEQ_API_KEY"
+              value: "{{ .Values.gelf.apiKey }}"
+            - name: "GELF_ADDRESS"
+              value: "{{ .Values.gelf.service.protocol | lower }}://0.0.0.0:12201"
+            - name: "GELF_ENABLE_DIAGNOSTICS"
+              value: "True"
+          ports:
+            - name: gelf
+              containerPort: 12201
+              protocol: {{ .Values.gelf.service.protocol }}
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+{{- end }}
+{{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -96,9 +119,9 @@ spec:
       serviceAccountName: "{{ template "seq.serviceAccountName" . }}"
       volumes:
       - name: seq-data
-      {{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "seq.fullname" .) }}
-      {{- else }}
+{{- else }}
         emptyDir: {}
-      {{- end -}}
+{{- end -}}
