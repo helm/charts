@@ -70,9 +70,14 @@
     - name: DD_DOGSTATSD_SOCKET
       value: {{ .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
-    {{- if and .Values.datadog.clusterChecks.enabled (not .Values.clusterChecksRunner.enabled) }}
+    {{- if .Values.datadog.clusterChecks.enabled }}
+    {{- if .Values.clusterChecksRunner.enabled }}
+    - name: DD_EXTRA_CONFIG_PROVIDERS
+      value: "endpointschecks"
+    {{ else }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks endpointschecks"
+    {{- end }}
     {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: SYSTEM_PROBE_CONFIG_SYSPROBE_SOCKET
