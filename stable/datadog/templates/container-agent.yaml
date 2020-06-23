@@ -150,4 +150,6 @@
 {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.agent.livenessProbe | indent 4 }}
+  readinessProbe:
+{{ toYaml .Values.agents.containers.agent.readinessProbe | indent 4 }}
 {{- end -}}
