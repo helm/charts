@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.13
+
+* Use two distinct health endpoints for liveness and readiness probes.
+
 ## 2.3.12
 
 * Fix endpoints checks scheduling between agent and cluster check runners

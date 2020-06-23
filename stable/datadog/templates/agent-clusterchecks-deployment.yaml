@@ -103,20 +103,10 @@ spec:
         {{- end }}
         resources:
 {{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
-{{- if .Values.clusterChecksRunner.livenessProbe }}
         livenessProbe:
 {{ toYaml .Values.clusterChecksRunner.livenessProbe | indent 10 }}
-{{- else }}
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5555
-          initialDelaySeconds: 15
-          periodSeconds: 15
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
-{{- end }}
+        readinessProbe:
+{{ toYaml .Values.clusterChecksRunner.readinessProbe | indent 10 }}
       affinity:
 {{- if .Values.clusterChecksRunner.affinity }}
 {{ toYaml .Values.clusterChecksRunner.affinity | indent 8 }}

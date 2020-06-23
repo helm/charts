@@ -490,9 +490,9 @@ clusterAgent:
   #
   affinity:  # {}
 
-  ## @param healthPort - integer - optional - default: 8080
+  ## @param healthPort - integer - optional - default: 5555
   ## Port number use the cluster-agent to server healthz endpoint
-  healthPort: 8080
+  healthPort: 5555
 
   ## @param livenessProbe - object - required
   ## Override the agent's liveness probe logic from the default:
@@ -501,18 +501,28 @@ clusterAgent:
   #
   livenessProbe:
     httpGet:
-      port: 5000
-      path: /metrics
+      port: 5555
+      path: /live
       scheme: HTTP
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param readinessProbe - object - required
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   readinessProbe:
     httpGet:
-      port: 5000
-      path: /metrics
+      port: 5555
+      path: /ready
       scheme: HTTP
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param strategy - string - required
   ## Allow the Cluster Agent deployment to perform a rolling update on helm update
@@ -668,7 +678,22 @@ agents:
       #
       livenessProbe:
         httpGet:
-          path: /health
+          path: /live
+          port: 5555
+        initialDelaySeconds: 15
+        periodSeconds: 15
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 6
+
+      ## @param readinessProbe - object - required
+      ## Override the agent's readiness probe logic from the default:
+      ## In case of issues with the probe, you can disable it with the
+      ## following values, to allow easier investigating:
+      #
+      readinessProbe:
+        httpGet:
+          path: /ready
           port: 5555
         initialDelaySeconds: 15
         periodSeconds: 15
@@ -999,14 +1024,41 @@ clusterChecksRunner:
   #
   tolerations:  # []
 
-  ## @param livenessProbe - object - optional
-  ## Override the agent's liveness probe logic from the default:
+  ## @param livenessProbe - object - required
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  livenessProbe:
+  # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+  #
+  livenessProbe:
+    httpGet:
+      path: /live
+      port: 5555
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
+
+  ## @param readinessProbe - object - required
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  #
+  # readinessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+  #
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 5555
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
