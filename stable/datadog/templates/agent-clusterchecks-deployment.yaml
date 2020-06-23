@@ -36,6 +36,9 @@ spec:
       containers:
       - name: agent
         image: "{{ .Values.clusterChecksRunner.image.repository }}:{{ .Values.clusterChecksRunner.image.tag }}"
+        command: ["bash", "-c"]
+        args:
+          - rm -rf /etc/datadog-agent/conf.d && touch /etc/datadog-agent/datadog.yaml && exec agent run
         imagePullPolicy: {{ .Values.clusterChecksRunner.image.pullPolicy }}
         env:
           - name: DD_API_KEY
@@ -43,8 +46,22 @@ spec:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+          - name: KUBERNETES
+            value: "yes"
+          {{- if .Values.datadog.site }}
+          - name: DD_SITE
+            value: {{ .Values.datadog.site | quote }}
+          {{- end }}
+          {{- if .Values.datadog.dd_url }}
+          - name: DD_DD_URL
+            value: {{ .Values.datadog.dd_url | quote }}
+          {{- end }}
+          {{- if .Values.datadog.logLevel }}
+          - name: DD_LOG_LEVEL
+            value: {{ .Values.datadog.logLevel | quote }}
+          {{- end }}
           - name: DD_EXTRA_CONFIG_PROVIDERS
-            value: "clusterchecks endpointschecks"
+            value: "clusterchecks"
           - name: DD_HEALTH_PORT
             value: "5555"
           # Cluster checks
@@ -57,13 +74,24 @@ spec:
                 key: token
           - name: DD_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
+          # Safely run alongside the daemonset
+          - name: DD_ENABLE_METADATA_COLLECTION
+            value: "false"
+          # Expose CLC stats
+          - name: DD_CLC_RUNNER_ENABLED
+            value: "true"
+          - name: DD_CLC_RUNNER_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           # Remove unused features
+          - name: DD_USE_DOGSTATSD
+            value: "false"
           - name: DD_PROCESS_AGENT_ENABLED
             value: "false"
           - name: DD_LOGS_ENABLED
             value: "false"
-          # Safely run alongside the daemonset
-          - name: DD_ENABLE_METADATA_COLLECTION
+          - name: DD_APM_ENABLED
             value: "false"
           - name: DD_HOSTNAME
             valueFrom:
@@ -75,9 +103,6 @@ spec:
         {{- end }}
         resources:
 {{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
-        volumeMounts:
-          - {name: s6-run, mountPath: /var/run/s6}
-          - {name: remove-corechecks, mountPath: /etc/datadog-agent/conf.d}
 {{- if .Values.clusterChecksRunner.livenessProbe }}
         livenessProbe:
 {{ toYaml .Values.clusterChecksRunner.livenessProbe | indent 10 }}
@@ -92,9 +117,6 @@ spec:
           successThreshold: 1
           failureThreshold: 6
 {{- end }}
-      volumes:
-        - {name: s6-run, emptyDir: {}}
-        - {name: remove-corechecks, emptyDir: {}}
       affinity:
 {{- if .Values.clusterChecksRunner.affinity }}
 {{ toYaml .Values.clusterChecksRunner.affinity | indent 8 }}

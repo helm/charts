@@ -1,5 +1,10 @@
 # Datadog changelog
 
+## 2.3.12
+
+* Fix endpoints checks scheduling between agent and cluster check runners
+* Cluster Check Runner now runs without s6 (similar to other agents)
+
 ## 2.3.11
 
 * Bump the default version of the agent docker images
