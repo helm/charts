@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.18.1
 description: Apache Druid is a high performance real-time analytics database.
 name: druid
-version: 0.2.3
+version: 0.2.4
 home: https://druid.apache.org/
 icon: https://druid.apache.org/img/druid_nav.png
 maintainers:
