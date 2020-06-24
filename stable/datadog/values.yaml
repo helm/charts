@@ -361,6 +361,16 @@ datadog:
     #
     apparmor: unconfined
 
+    ## @param enableTCPQueueLength - boolean - optional
+    ## Enable the TCP queue length eBPF-based check
+    #
+    enableTCPQueueLength: false
+
+    ## @param enableOOMKill - boolean - optional
+    ## Enable the OOM kill eBPF-based check
+    #
+    enableOOMKill: false
+
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements

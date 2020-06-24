@@ -21,8 +21,14 @@
     - name: sysprobe-config
       mountPath: /etc/datadog-agent
     - name: sysprobe-socket-dir
-      mountPath: /opt/datadog-agent/run
+      mountPath: /var/run/sysprobe
     - name: procdir
       mountPath: /host/proc
+      readOnly: true
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: src
+      mountPath: /usr/src
       readOnly: true
 {{- end -}}

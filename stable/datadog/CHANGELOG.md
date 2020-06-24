@@ -1,5 +1,11 @@
 # Datadog changelog
 
+## 2.3.15
+
+* Mount kernel headers in system-probe container
+* Fix the mount of the `system-probe` socket in core agent
+* Add parameters to enable eBPF based checks
+
 ## 2.3.14
 
 * Allow overriding the `command` to run in the cluster-agent container
