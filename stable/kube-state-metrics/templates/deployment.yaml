@@ -42,6 +42,7 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
     {{- if .Values.priorityClassName }}
@@ -171,6 +172,10 @@ spec:
 {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
 {{- end }}
 {{- if .Values.affinity }}
       affinity:

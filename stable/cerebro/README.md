@@ -42,14 +42,16 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|-------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                  | `1`                                       |
 | `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull               | `0.8.5`                                   |
+| `image.tag`                         | The image tag to pull               | `0.9.0`                                   |
 | `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
 | `image.pullSecrets`                 | Specify image pull secrets          | `nil` (does not add image pull secrets to deployed pods) |
 | `init.image.repository`             | The image to run                    | `docker.io/busybox`                       |
 | `init.image.tag`                    | The image tag to pull               | `musl`                                    |
 | `init.image.pullPolicy`             | Image pull policy                   | `IfNotPresent`                            |
 | `deployment.annotations`            | Annotations for deployment          | `{}`                                      |
+| `deployment.podAnnotations`         | Additional pod annotations          | `{}`                                      |
 | `deployment.labels`                 | Additional labels for deployment    | `{}`                                      |
+| `deployment.podLabels`              | Additional pod labels               | `{}`                                      |
 | `deployment.livenessProbe.enabled`  | Enable livenessProbe                | `true`                                    |
 | `deployment.readinessProbe.enabled` | Enable readinessProbe               | `true`                                    |
 | `service.type`                      | Type of Service                     | `ClusterIP`                               |
@@ -62,6 +64,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `resources.limits.memory`           | Memory resource limits              |                                           |
 | `ingress`                           | Settings for ingress                | `{}`                                      |
 | `ingress.labels`                    | Labels to add to the ingress        | `{}`                                      |
+| `priorityClassName`                 | priorityClassName                   | `nil`                                     |
 | `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
 | `tolerations`                       | Settings for toleration             | `{}`                                      |
 | `affinity`                          | Settings for affinity               | `{}`                                      |

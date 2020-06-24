@@ -15,6 +15,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "fluentd-cloudwatch.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:

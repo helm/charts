@@ -10,6 +10,8 @@ logLevel: 4
 
 metricsRelistInterval: 1m
 
+listenPort: 6443
+
 nodeSelector: {}
 
 priorityClassName: ""
@@ -18,6 +20,7 @@ priorityClassName: ""
 prometheus:
   url: http://prometheus.default.svc
   port: 9090
+  path: ""
 
 replicas: 1
 

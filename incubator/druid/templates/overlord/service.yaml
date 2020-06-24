@@ -1,3 +1,4 @@
+{{- if .Values.overlord.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -19,3 +20,4 @@ spec:
     app: {{ include "druid.name" . }}
     release: {{ .Release.Name }}
     component: {{ .Values.overlord.name }}
+{{- end }}

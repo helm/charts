@@ -8,7 +8,7 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   scaleTargetRef:
@@ -18,16 +18,16 @@ spec:
   minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
   metrics:
-{{- with .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: {{ . }}
-{{- end }}
 {{- with .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
+        targetAverageUtilization: {{ . }}
+{{- end }}
+{{- with .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
         targetAverageUtilization: {{ . }}
 {{- end }}
 {{- end }}

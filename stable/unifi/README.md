@@ -69,6 +69,12 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `controllerService.loadBalancerIP`              | `{}`                         | Loadbalance IP for the Unifi Controller                                                                                |
 | `controllerService.loadBalancerSourceRanges`    | None                         | List of IP CIDRs allowed access to load balancer (if supported)                                                        |
 | `controllerService.externalTrafficPolicy`       | `Cluster`                    | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                |
+| `controllerService.ingress.enabled`             | `false`                      | Enables Ingress for the controller                                                                                     |
+| `controllerService.ingress.annotations`         | `{}`                         | Ingress annotations for the controller                                                                                 |
+| `controllerService.ingress.labels`              | `{}`                         | Custom labels for the controller                                                                                       |
+| `controllerService.ingress.path`                | `/`                          | Ingress path for the controller                                                                                        |
+| `controllerService.ingress.hosts`               | `chart-example.local`        | Ingress accepted hostnames for the controller                                                                          |
+| `controllerService.ingress.tls`                 | `[]`                         | Ingress TLS configuration for the controller                                                                           |
 | `stunService.type`                              | `NodePort`                   | Kubernetes service type for the Unifi STUN                                                                             |
 | `stunService.port`                              | `3478`                       | Kubernetes UDP port where the Unifi STUN is exposed                                                                    |
 | `stunService.annotations`                       | `{}`                         | Service annotations for the Unifi STUN                                                                                 |
@@ -100,6 +106,11 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `runAsRoot`                                     | `false`                      | Run the controller as UID0 (root user); if set to false, will give container SETFCAP instead                           |
 | `UID`                                           | `999`                        | Run the controller as user UID                                                                                         |
 | `GID`                                           | `999`                        | Run the controller as group GID                                                                                        |
+| `customCert.enabled`                            | `false`                      | Define whether you are using s custom certificate                                                                      |
+| `customCert.isChain`                            | `false`                      | If you are using a Let's Encrypt certificate which already includes the full chain set this to `true`                  |
+| `customCert.certName`                           | `tls.crt`                    | Name of the the certificate file in `<unifi-data>/cert`                                                                |
+| `customCert.keyName`                            | `tls.key`                    | Name of the the private key file in `<unifi-data>/cert`                                                                |
+| `customCert.secretName`                         | `unifi-tls`                  | Name of the the k8s tls secret where the certificate and its key are stored.                                           |
 | `mongodb.enabled`                               | `false`                      | Use external MongoDB for data storage                                                                                  |
 | `mongodb.dbUri`                                 | `mongodb://mongo/unifi`      | external MongoDB URI                                                                                                   |
 | `mongodb.statDbUri`                             | `mongodb://mongo/unifi_stat` | external MongoDB statdb URI                                                                                            |
@@ -107,7 +118,10 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `persistence.enabled`                           | `true`                       | Use persistent volume to store data                                                                                    |
 | `persistence.size`                              | `5Gi`                        | Size of persistent volume claim                                                                                        |
 | `persistence.existingClaim`                     | `nil`                        | Use an existing PVC to persist data                                                                                    |
+| `persistence.subPath`                           | ``                           | Store data in a subdirectory of PV instead of at the root directory                                                    |
 | `persistence.storageClass`                      | `-`                          | Type of persistent volume claim                                                                                        |
+| `extraVolumes`                                  | `[]`                         | Additional volumes to be used by extraVolumeMounts                                                                     |
+| `extraVolumeMounts`                             | `[]`                         | Additional volume mounts to be mounted in unifi container                                                              |
 | `persistence.accessModes`                       | `[]`                         | Persistence access modes                                                                                               |
 | `extraConfigFiles`                              | `{}`                         | Dictionary containing files mounted to `/configmap` inside the pod (See [values.yaml](values.yaml) for examples)       |
 | `extraJvmOpts`                                  | `[]`                         | List of additional JVM options, e.g. `["-Dlog4j.configurationFile=file:/configmap/log4j2.xml"]`                        |

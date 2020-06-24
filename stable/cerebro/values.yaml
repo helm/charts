@@ -8,13 +8,15 @@ image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.5
+  tag: 0.9.0
   pullPolicy: IfNotPresent
 
 deployment:
-  # additionals labels
+  # additional labels
   labels: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   livenessProbe:
     enabled: true
   readinessProbe:
@@ -44,6 +46,8 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1000
   runAsGroup: 1000
+
+priorityClassName: ""
 
 resources: {}
 

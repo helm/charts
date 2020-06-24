@@ -28,6 +28,7 @@ spec:
         app: {{ template "elastalert.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ include "elastalert.serviceAccountName" . }}
       containers:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,8 +54,24 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-{{- if .Values.optEnv }}
         env:
+{{- if .Values.elasticsearch.credentialsSecret }}
+{{- if .Values.elasticsearch.credentialsSecretUsernameKey }}
+          - name: ES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretUsernameKey }}
+{{- end }}
+{{- if .Values.elasticsearch.credentialsSecretPasswordKey }}
+          - name: ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretPasswordKey }}
+{{- end }}
+{{- end }}
+{{- if .Values.optEnv }}
 {{ .Values.optEnv | toYaml | indent 10}}
 {{- end }}
       restartPolicy: Always
@@ -86,5 +103,5 @@ spec:
 {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
-{{- end }} 
+{{- end }}
 {{- end }}

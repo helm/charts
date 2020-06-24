@@ -3,9 +3,6 @@
 schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
 serviceAccountName: {{ template "grafana.serviceAccountName" . }}
-{{- if .Values.schedulerName }}
-schedulerName: "{{ .Values.schedulerName }}"
-{{- end }}
 {{- if .Values.securityContext }}
 securityContext:
 {{ toYaml .Values.securityContext | indent 2 }}
@@ -22,7 +19,7 @@ initContainers:
     imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
     securityContext:
       runAsUser: 0
-    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }}", "/var/lib/grafana"]
     resources:
 {{ toYaml .Values.initChownData.resources | indent 6 }}
     volumeMounts:
@@ -38,6 +35,8 @@ initContainers:
     imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
     command: ["/bin/sh"]
     args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
+    resources:
+{{ toYaml .Values.downloadDashboards.resources | indent 6 }}
     env:
 {{- range $key, $value := .Values.downloadDashboards.env }}
       - name: "{{ $key }}"
@@ -60,7 +59,7 @@ initContainers:
 {{- end }}
 {{- if .Values.sidecar.datasources.enabled }}
   - name: {{ template "grafana.name" . }}-sc-datasources
-    image: "{{ .Values.sidecar.image }}"
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
       - name: METHOD
@@ -97,7 +96,7 @@ imagePullSecrets:
 containers:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: {{ template "grafana.name" . }}-sc-dashboard
-    image: "{{ .Values.sidecar.image }}"
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
       - name: METHOD
@@ -200,6 +199,7 @@ containers:
       - name: {{ .name }}
         mountPath: {{ .mountPath }}
         readOnly: {{ .readOnly }}
+        subPath: {{ .subPath | default "" }}
     {{- end }}
     {{- range .Values.extraVolumeMounts }}
       - name: {{ .name }}
@@ -264,7 +264,7 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
-          name: {{ .Values.envFromSecret }}
+          name: {{ tpl .Values.envFromSecret . }}
     {{- end }}
     {{- if .Values.envRenderSecret }}
     envFrom:
@@ -366,4 +366,7 @@ volumes:
   - name: {{ .name }}
     emptyDir: {}
 {{- end -}}
+{{- if .Values.extraContainerVolumes }}
+{{ toYaml .Values.extraContainerVolumes | indent 2 }}
+{{- end }}
 {{- end }}

@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | Parameter                         | Description                                             | Default                                          |
 | --------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
 | `image`                           | Image                                                   | `synadia/prometheus-nats-exporter`               |
-| `imageTag`                        | Image tag                                               | `0.6.0`                                          |
+| `imageTag`                        | Image tag                                               | `0.6.2`                                          |
 | `imagePullPolicy`                 | Image pull policy                                       | `IfNotPresent`                                   |
 | `service.type`                    | Service type                                            | `ClusterIP`                                      |
 | `service.port`                    | The service port                                        | `80`                                             |
@@ -58,6 +58,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `config.metrics.routez`           | NATS routez metrics                                     | `true`                                           |
 | `config.metrics.serverz`          | NATS serverz metrics                                    | `true`                                           |
 | `config.metrics.subz`             | NATS subz metrics                                       | `true`                                           |
+| `config.metrics.gatewayz          | NATS gatewayz metrics                                   | `true`                                           |
 | `tolerations`                     | Add tolerations                                         | `[]`                                             |
 | `nodeSelector`                    | node labels for pod assignment                          | `{}`                                             |
 | `affinity`                        | node/pod affinities                                     | `{}`                                             |

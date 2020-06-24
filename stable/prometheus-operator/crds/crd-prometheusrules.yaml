@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.35/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -38,12 +38,16 @@ spec:
             groups:
               description: Content of Prometheus rule file
               items:
-                description: RuleGroup is a list of sequentially evaluated recording
-                  and alerting rules.
+                description: 'RuleGroup is a list of sequentially evaluated recording
+                  and alerting rules. Note: PartialResponseStrategy is only used by
+                  ThanosRuler and will be ignored by Prometheus instances.  Valid
+                  values for this field are ''warn'' or ''abort''.  More info: https://github.com/thanos-io/thanos/blob/master/docs/components/rule.md#partial-response'
                 properties:
                   interval:
                     type: string
                   name:
+                    type: string
+                  partial_response_strategy:
                     type: string
                   rules:
                     items:
@@ -86,9 +90,3 @@ spec:
   - name: v1
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

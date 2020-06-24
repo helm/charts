@@ -163,8 +163,8 @@ spec:
         - redis-server
         args:
         - /data/conf/redis.conf
-        env:
         {{- if .Values.auth }}
+        env:
         - name: AUTH
           valueFrom:
             secretKeyRef:

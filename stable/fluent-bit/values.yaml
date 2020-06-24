@@ -7,10 +7,16 @@ image:
     repository: fluent/fluent-bit
     tag: 1.3.7
   pullPolicy: Always
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -170,6 +176,8 @@ extraEntries:
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
+  service: |-
+#     # >=1 additional Key/Value entrie(s) for existing Service section
 # WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -202,6 +210,19 @@ hostNetwork: false
 # Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
 dnsPolicy: ClusterFirst
 
+# Optional field that allows more control on the DNS settings for the pod.
+# Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
@@ -227,6 +248,8 @@ input:
     parser: docker
     path: /var/log/containers/*.log
     ignore_older: ""
+    dockerMode: false
+    dockerModeFlush: 4
   systemd:
     enabled: false
     filters:

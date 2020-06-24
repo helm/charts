@@ -1,56 +1,60 @@
-apiVersion: "apps/v1beta2"
+apiVersion: "apps/v1"
 kind: StatefulSet
 metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
 spec:
+  podManagementPolicy: Parallel
   serviceName: {{ template "neo4j.fullname" . }}
   replicas: {{ .Values.core.numberOfServers }}
   selector:
     matchLabels:
-      release: {{ .Release.Name | quote }}
-      app: {{ template "neo4j.name" . }}
-      component: core
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "neo4j.name" . }}
+      app.kubernetes.io/component: core
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        app: {{ template "neo4j.name" . }}
-        component: core
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app.kubernetes.io/name: {{ template "neo4j.name" . }}
+        app.kubernetes.io/component: core
     spec:
       containers:
       - name: {{ template "neo4j.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        # Most pod config is factored into a different configMap, which is user overrideable.
+        envFrom:
+          - configMapRef:
+              {{- if .Values.core.configMap }}
+              name: "{{ .Values.core.configMap }}"
+              {{- else }}
+              name: {{ template "neo4j.coreConfig.fullname" . }}
+              {{- end }}          
         env:
-          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
-            value: "{{ .Values.acceptLicenseAgreement }}"
-          - name: NEO4J_dbms_mode
-            value: CORE
-          - name: NUMBER_OF_CORES
-            value: "{{ .Values.core.numberOfServers }}"
-          - name: AUTH_ENABLED
-            value: "{{ .Values.authEnabled }}"
-          - name: NEO4J_causal__clustering_discovery__type
-            value: DNS
-          - name: NEO4J_causal__clustering_initial__discovery__members
-            value: "{{ template "neo4j.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:5000"
           {{- if .Values.authEnabled }}
           - name: NEO4J_SECRETS_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ template "neo4j.secrets.fullname" . }}
                 key: neo4j-password
-          {{- end }}
-{{- if .Values.core.extraVars }}
-{{ toYaml .Values.core.extraVars | indent 10 }}
-{{- end }}
+          {{- end }}      
         command:
           - "/bin/bash"
           - "-c"
           - |
-            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            # Making this host the default address, so that advertised addresses are over-rideable
+            # by custom configmaps if specified.
+            export HOST=$(hostname -f)
+            export NEO4J_causal__clustering_discovery__advertised__address=${NEO4J_causal__clustering_discovery__advertised__address:-$HOST}
+            export NEO4J_dbms_default__advertised__address=${NEO4J_dbms_default__advertised__address:-$HOST}
+            export NEO4J_dbms_connector_bolt_advertised__address=${NEO4J_dbms_connector_bolt_advertised__address:-$HOST}
+            export NEO4J_dbms_connector_http_advertised__address=${NEO4J_dbms_connector_http_advertised__address:-$HOST}
+            export NEO4J_dbms_connector_https_advertised__address=${NEO4J_dbms_connector_https_advertised__address:-$HOST}
+            
+            # These settings are *not* overrideable, because they must match the initial_discovery_members
+            # In the Neo4j node config, otherwise Neo4j's akka layer will reject connections.
             export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):5000
             export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
             export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
@@ -61,6 +65,7 @@ spec:
               export NEO4J_AUTH="none"
             fi
 
+            echo "Starting Neo4j CORE on $HOST"
             exec /docker-entrypoint.sh "neo4j"
         ports:
         - containerPort: 5000
@@ -81,6 +86,15 @@ spec:
           {{- end }}
         - name: plugins
           mountPath: /plugins
+        readinessProbe:
+          tcpSocket:
+            port: 7687
+          initialDelaySeconds: 30
+          periodSeconds: 3
+        livenessProbe:
+          initialDelaySeconds: 60
+          tcpSocket:
+            port: 7687
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}

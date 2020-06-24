@@ -4,7 +4,7 @@
 {{- $authSecret := .Values.auth.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 {{- $authDomain := .Values.auth.domain -}}
-apiVersion: apps/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ $fullName }}-auth
@@ -100,6 +100,8 @@ spec:
               value: {{ .adminEmail | quote }}
             - name: PROVIDER_GOOGLE_GOOGLE_CREDENTIALS
               value: /creds/sso-serviceaccount.json
+            - name: PROVIDER_GOOGLE_GROUPCACHE_INTERVAL_REFRESH
+              value: 10m
           {{- end }}
             - name: PROVIDER_GOOGLE_CLIENT_ID
               valueFrom:

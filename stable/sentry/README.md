@@ -4,6 +4,17 @@
 
 _This helm chart is **not** official nor maintained by Sentry itself._
 
+
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline), another repository has taken over the chart [here](https://github.com/sentry-kubernetes/charts)*
+
+Note: this repository supports Sentry 10.
+
+Please make PRs / Issues here from now on.
+
+----------------------------------------
+
 ## TL;DR;
 
 ```console
@@ -138,8 +149,10 @@ Parameter                                            | Description              
 `service.loadBalancerSourceRanges`                   | Allow list for the load balancer                                                                           | `nil`
 `ingress.enabled`                                    | Enable ingress controller resource                                                                         | `false`
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
+`ingress.labels`                                     | Ingress labels                                                                                             | `{}`
 `ingress.hostname`                                   | URL to address your Sentry installation                                                                    | `sentry.local`
 `ingress.path`                                       | path to address your Sentry installation                                                                   | `/`
+`ingress.extraPaths`                                 | Ingress extra paths to prepend to every host configuration.                                                | `[]`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `sentry`
@@ -168,6 +181,7 @@ Parameter                                            | Description              
 `filestore.gcs.bucketName`                           | The name of the GCS bucket                                                                                 | `nil`
 `filestore.s3.accessKey`                             | S3 access key                                                                                              | `nil`
 `filestore.s3.secretKey`                             | S3 secret key                                                                                              | `nil`
+`filestore.s3.existingSecret`                        | Name of existing secret to use for the S3 keys                                                             | `nil`
 `filestore.s3.bucketName`                            | The name of the S3 bucket                                                                                  | `nil`
 `filestore.s3.endpointUrl`                           | The endpoint url of the S3 (using for "MinIO S3 Backend")                                                  | `nil`
 `filestore.s3.signature_version`                     | S3 signature version (optional)                                                                            | `nil`
@@ -192,6 +206,8 @@ Parameter                                            | Description              
 `metrics.serviceMonitor.interval`                    | How frequently to scrape metrics (use by default, falling back to Prometheus' default)                     | `nil`
 `metrics.serviceMonitor.selector`                    | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `hooks.affinity`                                     | Affinity settings for hooks pods                                                                           | `{}`
+`hooks.tolerations`                                  | Toleration labels for hook pod assignment                                                                  | `[]`
+`hooks.dbInit.enabled`                               | Boolean to enable the dbInit job using a hook                                                              | `true`
 `hooks.dbInit.resources.limits`                      | Hook job resource limits                                                                                   | `{memory: 3200Mi}`
 `hooks.dbInit.resources.requests`                    | Hook job resource requests                                                                                 | `{memory: 3000Mi}`
 `serviceAccount.name`                                | name of the ServiceAccount to be used by access-controlled resources | autogenerated

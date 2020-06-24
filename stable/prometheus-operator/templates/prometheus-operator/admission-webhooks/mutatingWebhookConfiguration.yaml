@@ -25,7 +25,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: {{ $.Release.Namespace }}
+        namespace: {{ template "prometheus-operator.namespace" . }}
         name: {{ template "prometheus-operator.operator.fullname" $ }}
         path: /admission-prometheusrules/mutate
 {{- end }}
