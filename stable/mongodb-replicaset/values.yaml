@@ -77,6 +77,8 @@ metrics:
     enabled: true
     runAsUser: 1001
 
+serviceAccount: ""
+
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 

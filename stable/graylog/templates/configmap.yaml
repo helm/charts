@@ -10,7 +10,11 @@ data:
     <Configuration packages="org.graylog2.log4j" shutdownHook="disable">
         <Appenders>
             <Console name="STDOUT" target="SYSTEM_OUT">
+              {{- if .Values.graylog.logInJson }}
+                <JsonLayout eventEOL="true" compact="true"/>
+              {{- else }}
                 <PatternLayout pattern="%d %-7level [%c{1}] - %m - %X%n"/>
+              {{- end }}
             </Console>
             <RollingFile name="rolling-file" fileName="/usr/share/graylog/log/server.log" filePattern="/usr/share/graylog/log/server.log.%i.gz">
                 <PatternLayout>
