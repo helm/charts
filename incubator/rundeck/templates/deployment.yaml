@@ -3,13 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "rundeck.fullname" . }}
   labels: {{ include "rundeck.labels" . | indent 4 }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   strategy:
-    {{- with .Values.deployment.annotations }}
-    annotations:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+    {{- toYaml .Values.deployment.strategy | nindent 4 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "rundeck.name" . }}

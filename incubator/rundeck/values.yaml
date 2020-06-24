@@ -10,7 +10,7 @@ image:
 deployment:
   replicaCount: 1
   annotations: {}
-  rolloutStrategy:
+  strategy:
     type: RollingUpdate
     # Recreate can help when using persistent volumes
     # type: Recreate

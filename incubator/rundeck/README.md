@@ -16,7 +16,7 @@ Parameter | Description | Default
 --------- | ----------- | -------
 deployment.replicaCount | How many replicas to run. Rundeck can really only work with one. | 1
 deployment.annotations | You can pass annotations inside deployment.spec.template.metadata.annotations. Useful for KIAM/Kube2IAM and others for example. | {}
-deployment.rolloutStrategy | Sets the K8s rollout strategy for the Rundeck deployment | { type: RollingUpdate }
+deployment.strategy | Sets the K8s rollout strategy for the Rundeck deployment | { type: RollingUpdate }
 image.repository | Name of the image to run, without the tag. | [rundeck/rundeck](https://github.com/rundeck/rundeck)
 image.tag | The image tag to use. | 3.2.7
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
