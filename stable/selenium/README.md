@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.servicePort` | The port the hub Service listens on | `4444` |
 | `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
+| `hub.podLabels` | Additionals labels to the hub pod | `{}`|
 | `hub.securityContext` |	SecurityContext on the hub pod |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 400 mb | `-Xmx400m` |
@@ -94,6 +95,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
 | `chrome.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
+| `chrome.podLabels` | Additional labels on the chrome pods | `{}` |
 | `chrome.securityContext` |	SecurityContext on the chrome pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
@@ -124,6 +126,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
 | `chromeDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
+| `chromeDebug.podLabels` | Additional labels on the Chrome debug pods | `{}` |
 | `chromeDebug.securityContext` |	SecurityContext on the Chrome debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -154,6 +157,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
 | `firefox.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
+| `firefox.podLabels` | Additional labels on the firefox pods | `{}` |
 | `firefox.securityContext` |	SecurityContext on the firefox pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -182,6 +186,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
 | `firefoxDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
+| `firefoxDebug.podLabels` | Additional labels on the firefox debug pods | `{}` |
 | `firefoxDebug.securityContext` |	SecurityContext on the firefox debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
