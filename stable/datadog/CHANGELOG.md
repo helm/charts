@@ -1,11 +1,39 @@
 # Datadog changelog
 
-## 2.3.10
+## 2.3.16
 
 * Add parameter `clusterChecksRunner.rbac.serviceAccountAnnotations` for specifying annotations for dedicated ServiceAccount for Cluster Checks runners.
 * Add parameters `clusterChecksRunner.volumes` and `clusterChecksRunner.volumeMounts` that can be used for providing a secret backend to Cluster Checks runners.
 
+## 2.3.15
+
+* Mount kernel headers in system-probe container
+* Fix the mount of the `system-probe` socket in core agent
+* Add parameters to enable eBPF based checks
+
+## 2.3.14
+
+* Allow overriding the `command` to run in the cluster-agent container
+
+## 2.3.13
+
+* Use two distinct health endpoints for liveness and readiness probes.
+
+## 2.3.12
+
+* Fix endpoints checks scheduling between agent and cluster check runners
+* Cluster Check Runner now runs without s6 (similar to other agents)
+
+## 2.3.11
+
+* Bump the default version of the agent docker images
+
+## 2.3.10
+
+* Add dnsConfig options to all containers
+
 ## 2.3.9
+
 * Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
 
 ## 2.3.8

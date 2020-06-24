@@ -124,6 +124,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
+| `prometheus.path`               | Custom path to append to the prometheus URL                                     | ``                                          |
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
