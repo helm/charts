@@ -9,7 +9,7 @@ description: Centralized service for maintaining configuration information, nami
 icon: https://zookeeper.apache.org/images/zookeeper_small.gif
 sources:
 - https://github.com/apache/zookeeper
-- https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
+- https://github.com/helm/charts/tree/master/incubator/zookeeper
 maintainers:
 - name: lachie83
   email: lachlan.evenson@microsoft.com
