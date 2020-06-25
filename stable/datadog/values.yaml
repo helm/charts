@@ -980,6 +980,11 @@ clusterChecksRunner:
     #
     dedicated: false
 
+    ## @param serviceAccountAnnotations - object - required
+    ## Annotations to add to the ServiceAccount if clusterChecksRunner.rbac.dedicated is true
+    #
+    serviceAccountAnnotations: {}
+
     ## @param serviceAccountName - string - required
     ## Ignored if clusterChecksRunner.rbac.create is true
     #
@@ -1083,6 +1088,21 @@ clusterChecksRunner:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
 kube-state-metrics:
   rbac:
