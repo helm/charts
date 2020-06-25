@@ -37,6 +37,7 @@ spec:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
   type: "{{ .Values.graylog.input.tcp.service.type }}"
 {{- if eq "LoadBalancer" .Values.graylog.input.tcp.service.type }}
+  externalTrafficPolicy: {{ .Values.graylog.input.tcp.service.externalTrafficPolicy | default "Cluster" }}
   {{- if .Values.graylog.input.tcp.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.graylog.input.tcp.service.loadBalancerIP }}
   {{- end -}}
