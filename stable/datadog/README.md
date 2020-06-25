@@ -131,7 +131,7 @@ datadog:
   # (...)
   logs:
     enabled: true
-    configContainerCollectAll: true
+    containerCollectAll: true
 ```
 
 then upgrade your Datadog Helm chart:
