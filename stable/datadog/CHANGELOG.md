@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.18
+
+* Support arguments in the cluster-agent container `command` value
+
 ## 2.3.17
 
 * grammar edits to datadog helm docs!
