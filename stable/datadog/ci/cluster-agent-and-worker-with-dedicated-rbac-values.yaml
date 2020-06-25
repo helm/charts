@@ -9,13 +9,7 @@ clusterAgent:
 
 clusterChecksRunner:
   enabled: true
-
-  volumes:
-    - name: tmp
-      hostPath:
-        path: /tmp
-
-  volumeMounts:
-    - name: tmp
-      mountPath: /etc/tmp
-      readOnly: true
+  rbac:
+    dedicated: true
+    serviceAccountAnnotations:
+      "eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/datadog-clusterchecker"
