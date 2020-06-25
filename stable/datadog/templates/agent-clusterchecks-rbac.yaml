@@ -32,4 +32,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
   name: {{ template "datadog.fullname" . }}-cluster-checks
+  {{- if .Values.clusterChecksRunner.rbac.serviceAccountAnnotations }}
+  annotations: {{ toYaml .Values.clusterChecksRunner.rbac.serviceAccountAnnotations | nindent 4 }}
+  {{- end }}
 {{- end -}}
