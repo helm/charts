@@ -444,6 +444,9 @@ clusterAgent:
   ## Enable the metricsProvider to be able to scale based on metrics in Datadog
   #
   metricsProvider:
+    ## @param enabled - boolean - required - default: false
+    ## Set this to true to enable Metrics Provider
+    #
     enabled: false
 
     ## @param wpaController - boolean - optional
