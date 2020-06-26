@@ -6,6 +6,12 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+configMap:
+  ## If false, configMap will not be applied
+  ##
+  enabled: true
+
+## Define the key value pairs in the configmap
 configVars:
   DRUID_XMX: 1g
   DRUID_XMS: 1g
@@ -35,6 +41,9 @@ gCloudStorage:
   secretName: google-cloud-key
 
 broker:
+  ## If false, broker will not be installed
+  ##
+  enabled: true
   name: broker
   replicaCount: 1
   port: 8082
@@ -42,7 +51,7 @@ broker:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -74,6 +83,9 @@ broker:
   podAnnotations: {}
 
 coordinator:
+  ## If false, coordinator will not be installed
+  ##
+  enabled: true
   name: coordinator
   replicaCount: 1
   port: 8081
@@ -81,6 +93,7 @@ coordinator:
 
   config:
     JAVA_OPTS: "-Xms1G -Xmx1G"
+    # druid_monitoring_monitors: '["org.apache.druid.server.metrics.TaskCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -112,6 +125,8 @@ coordinator:
   podAnnotations: {}
 
 overlord:
+  ## If true, the separate overlord will be installed
+  ##
   enabled: false
   name: overlord
   replicaCount: 1
@@ -144,6 +159,9 @@ overlord:
   podAnnotations: {}
 
 historical:
+  ## If false, historical will not be installed
+  ##
+  enabled: true
   name: historical
   replicaCount: 1
   port: 8083
@@ -151,7 +169,7 @@ historical:
 
   config:
     JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
-    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor", "org.apache.druid.java.util.metrics.SysMonitor"]'
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
     enabled: false
@@ -201,6 +219,9 @@ historical:
     type: RollingUpdate
 
 middleManager:
+  ## If false, middleManager will not be installed
+  ##
+  enabled: true
   name: middle-manager
   replicaCount: 1
   port: 8091
@@ -276,6 +297,8 @@ middleManager:
     type: RollingUpdate
 
 router:
+  ## If false, router will not be installed
+  ##
   enabled: true
   name: router
   replicaCount: 1
@@ -327,9 +350,6 @@ zookeeper:
   env:
     ## The JVM heap size to allocate to Zookeeper
     ZK_HEAP_SIZE: "512M"
-  ## Configure Zookeeper persistence
-  persistence:
-    enabled: true
   ## Configure Zookeeper headless
   headless:
     publishNotReadyAddresses: true
@@ -358,8 +378,6 @@ postgresql:
   postgresqlUsername: druid
   postgresqlPassword: druid
   postgresqlDatabase: druid
-  persistence:
-    enabled: true
   service:
     port: 5432
 
