@@ -167,6 +167,7 @@ serviceMonitor:
   scrapeTimeout: 10s
   scheme: http
   relabelings: []
+  targetLabels: []
 
 prometheusRule:
   ## If true, a PrometheusRule CRD is created for a prometheus operator
