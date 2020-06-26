@@ -15,7 +15,9 @@ metadata:
   name: {{ template "haproxy-ingress.controller.fullname" . }}-stats
   namespace: {{ .Release.Namespace }}
 spec:
+{{- if .Values.controller.stats.service.clusterIP }}
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
+{{- end }}
 {{- if .Values.controller.stats.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.controller.stats.service.externalIPs | indent 4 }}
