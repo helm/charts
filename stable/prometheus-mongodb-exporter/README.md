@@ -63,4 +63,5 @@ podAnnotations:
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
+| `serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
 | `tolerations` | List of node taints to tolerate  | `[]` |
