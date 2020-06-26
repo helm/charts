@@ -150,6 +150,19 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `hpa.maxPods`                                                | Max. pods for the Nextcloud HorizontalPodAutoscaler     | `10`                                        |
 | `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                     |
 | `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                     |
+| `certificates.customCertificate.certificateSecret`           | Secret containing the certificate and key to add        | `""`                                        |
+| `certificates.customCertificate.chainSecret.name`            | Name of the secret containing the certificate chain     | `""`                                        |
+| `certificates.customCertificate.chainSecret.key`             | Key of the certificate chain file inside the secret     | `""`                                        |
+| `certificates.customCertificate.certificateLocation`         | Location in the container to store the certificate      | `/etc/ssl/certs/ssl-cert-snakeoil.pem`      |
+| `certificates.customCertificate.keyLocation`                 | Location in the container to store the private key      | `/etc/ssl/private/ssl-cert-snakeoil.key`    |
+| `certificates.customCertificate.chainLocation`               | Location in the container to store the cert chain         `/etc/ssl/certs/chain.pem`                  |
+| `certificates.customCA`                                      | List of secrets to import into the trust store          | `[]`                                        |
+| `certificates.image.registry`                                | Container sidecar registry                              | `docker.io`                                 |
+| `certificates.image.repository`                              | Container sidecar image                                 | `alpine`                                    |
+| `certificates.image.tag`                                     | Container sidecar image tag                             | `latest`                                    |
+| `certificates.image.pullPolicy`                              | Container sidecar image pull policy                     | `Always`                                    |
+| `certificates.image.pullSecrets`                             | Container sidecar image pull secrets                    | `image.pullSecrets`                         |
+| `certificates.extraEnvVars`                                  | Container sidecar extra environment variables (proxy)   | `[]`                                        |
 
 > **Note**:
 >
@@ -225,4 +238,53 @@ nextcloud:
           )
         )
       );
+```
+
+## Certificates
+
+### CA Certificates
+Custom CA certificates not included in the base docker image can be added with
+the following configuration. The secret must exist in the same namespace as the
+deployment. Will load all certificates files it finds in the secret.
+
+```yaml
+certificates:
+  customCAs:
+  - secret: my-ca-1
+  - secret: my-ca-2
+```
+
+#### Secret
+Secret can be created with:
+
+```bash
+kubectl create secret generic my-ca-1 --from-file my-ca-1.crt
+```
+
+### TLS Certificate
+A web server TLS Certificate can be injected into the container with the
+following configuration. The certificate will be stored at the location
+specified in the certificateLocation value.
+
+```yaml
+certificates:
+  customCertificate:
+    certificateSecret: my-secret
+    certificateLocation: /ssl/server.pem
+    keyLocation: /ssl/key.pem
+    chainSecret:
+      name: my-cert-chain-secret
+      key: chain.pem
+```
+
+#### Secret
+The certificate tls secret can be created with:
+
+```bash
+kubectl create secret tls my-secret --cert tls.crt --key tls.key
+```
+
+The certificate chain is created with:
+```bash
+kubectl create secret generic my-ca-1 --from-file my-ca-1.crt
 ```

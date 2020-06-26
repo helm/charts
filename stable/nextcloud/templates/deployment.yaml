@@ -38,6 +38,8 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      initContainers:
+      {{- include "certificates.initContainer" . | indent 8 }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -201,6 +203,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+        {{- include "certificates.volumeMount" . | indent 8 }}
         - name: nextcloud-data
           mountPath: /var/www/
           subPath: {{ ternary "root" (printf "%s/%s" .Values.nextcloud.persistence.subPath "root") (empty .Values.nextcloud.persistence.subPath) }}
@@ -321,6 +324,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
+      {{- include "certificates.volumes" . | indent 6 }}
       - name: nextcloud-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
