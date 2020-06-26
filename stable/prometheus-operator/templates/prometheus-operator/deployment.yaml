@@ -107,6 +107,10 @@ spec:
 {{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
+{{- if .Values.prometheusOperator.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
