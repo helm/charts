@@ -80,6 +80,11 @@ spec:
       containers:
       - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+        {{- with .Values.clusterAgent.command }}
+        command: {{ range . }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
 {{ toYaml .Values.clusterAgent.resources | indent 10 }}
