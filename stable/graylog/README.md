@@ -172,6 +172,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.transportEmail.fromEmail`             | Use this as a FROM address                                                                                                                            |                                   |
 | `graylog.config`                               | Add additional server configuration to `graylog.conf` file.                                                                                           |                                   |
 | `graylog.serverFiles`                          | Add additional server files on /etc/graylog/server. This is useful for enable TLS on input                                                            | `{}`                              |
+| `graylog.logInJson`                            | If true, Graylog pods will be configured to log in JSON (one event per line                                                                           | `false`                           |
 | `graylog.journal.deleteBeforeStart`            | Delete all journal files before start Graylog                                                                                                         | `false`                           |
 | `graylog.init.resources`                       | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                              |
 | `graylog.provisioner.enabled`                  | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                           |
@@ -199,11 +200,14 @@ This chart will automatically calculate Java heap size from given `resources.req
 
 You can enable input ports by edit the `input` values. For example, you want to create a GELF input on port `12222`, and `12223` with Cloud LoadBalancer and syslog on UDP port `5410` without load balancer.
 
+In services of `type: LoadBalancer`, the default externalTrafficPolicy is `Cluster`, but may be overridden in order to [preserve the client IP][5] with `Local`.
+
 ```yaml
   input:
     tcp:
       service:
         type: LoadBalancer
+        externalTrafficPolicy: Local
         loadBalancerIP:
       ports:
         - name: gelf1
@@ -318,3 +322,4 @@ Note: All uncommitted logs will be permanently DELETED when this value is true
 [2]: https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions
 [3]: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-pod-that-uses-your-secret
 [4]: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+[5]: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip

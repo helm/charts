@@ -1,0 +1,20 @@
+  
+{{- if and .Values.persistence.enabled .Values.persistence.claim.create }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "rundeck.fullname" . }}
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+  annotations:
+{{- with .Values.persistence.claim }}
+  {{- if .storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .storageClass | quote }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .size | quote }}
+{{- end }}
+{{- end }}

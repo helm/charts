@@ -464,7 +464,9 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.1.151
+  image:
+    repository: kiwigrid/k8s-sidecar
+    tag: 0.1.151
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:

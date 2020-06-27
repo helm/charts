@@ -1,8 +1,10 @@
 apiVersion: v1
-version: 1.10.2
+version: 1.11.1
 name: openebs
-appVersion: 1.10.0
-description: Containerized Storage for Containers
+appVersion: 1.11.0
+# The chart is deprecated and moved. See README.md
+deprecated: true
+description: DEPRECATED Containerized Storage for Containers
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/openebs/icon/color/openebs-icon-color.png
 home: http://www.openebs.io/
 keywords:
@@ -12,8 +14,3 @@ keywords:
   - storage
 sources:
   - https://github.com/openebs/openebs
-maintainers:
-  - name: kmova
-    email: kiran.mova@openebs.io
-  - name: prateekpandey14
-    email: prateek.pandey@openebs.io

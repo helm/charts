@@ -74,11 +74,11 @@ Returns configuration as code default config
 jenkins:
 {{- if eq .Values.master.enableXmlConfig false }}
   {{- $configScripts := toYaml .Values.master.JCasC.configScripts }}
-  {{- if not (contains "authorizationStrategy:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.authorizationStrategy) (not (contains "authorizationStrategy:" $configScripts)) }}
   authorizationStrategy:
     {{- tpl .Values.master.JCasC.authorizationStrategy . | nindent 4 }}
   {{- end }}
-  {{- if not (contains "securityRealm:" $configScripts) }}
+  {{- if and (.Values.master.JCasC.securityRealm) (not (contains "securityRealm:" $configScripts)) }}
   securityRealm:
     {{- tpl .Values.master.JCasC.securityRealm . | nindent 4 }}
   {{- end }}
@@ -171,7 +171,9 @@ Returns kubernetes pod template configuration as code
   - name: "{{ .Values.agent.sideContainerName }}"
     alwaysPullImage: {{ .Values.agent.alwaysPullImage }}
     args: "{{ .Values.agent.args | replace "$" "^$" }}"
+    {{- if .Values.agent.command }}
     command: {{ .Values.agent.command }}
+    {{- end }}
     envVars:
     - containerEnvVar:
         key: "JENKINS_URL"
@@ -190,6 +192,8 @@ Returns kubernetes pod template configuration as code
     resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
     resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
+    runAsUser: {{ .Values.agent.runAsUser }}
+    runAsGroup: {{ .Values.agent.runAsGroup }}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: {{ .Values.agent.workingDir }}
 {{- if .Values.agent.envVars }}

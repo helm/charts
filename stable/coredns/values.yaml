@@ -20,6 +20,11 @@ resources:
 serviceType: "ClusterIP"
 
 prometheus:
+  service:
+    enabled: false
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9153"
   monitor:
     enabled: false
     additionalLabels: {}
@@ -141,6 +146,15 @@ zoneFiles: []
 #      example.com.   IN NS  a.iana-servers.net.
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
+
+# optional array of extra volumes to create
+extraVolumes: []
+# - name: some-volume-name
+#   emptyDir: {}
+# optional array of mount points for extraVolumes
+extraVolumeMounts: []
+# - name: some-volume-name
+#   mountPath: /etc/wherever
 
 # optional array of secrets to mount inside coredns container
 # possible usecase: need for secure connection with etcd backend

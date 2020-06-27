@@ -361,6 +361,16 @@ datadog:
     #
     apparmor: unconfined
 
+    ## @param enableTCPQueueLength - boolean - optional
+    ## Enable the TCP queue length eBPF-based check
+    #
+    enableTCPQueueLength: false
+
+    ## @param enableOOMKill - boolean - optional
+    ## Enable the OOM kill eBPF-based check
+    #
+    enableOOMKill: false
+
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
 ## metrics more cleanly, separates concerns for better rbac, and implements
@@ -385,7 +395,7 @@ clusterAgent:
     ## @param tag - string - required
     ## Define the Cluster-Agent version to use.
     #
-    tag: 1.5.2
+    tag: 1.6.0
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -398,6 +408,11 @@ clusterAgent:
     #
     pullSecrets:
     #   - name: "<REG_SECRET>"
+
+  ## @param command - array - optional
+  ## Command to run in the Cluster Agent container
+  #
+  command:  # []
 
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
@@ -490,9 +505,9 @@ clusterAgent:
   #
   affinity:  # {}
 
-  ## @param healthPort - integer - optional - default: 8080
+  ## @param healthPort - integer - optional - default: 5555
   ## Port number use the cluster-agent to server healthz endpoint
-  healthPort: 8080
+  healthPort: 5555
 
   ## @param livenessProbe - object - required
   ## Override the agent's liveness probe logic from the default:
@@ -501,18 +516,28 @@ clusterAgent:
   #
   livenessProbe:
     httpGet:
-      port: 5000
-      path: /metrics
+      port: 5555
+      path: /live
       scheme: HTTP
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param readinessProbe - object - required
   ## Override the cluster-agent's readiness probe logic from the default:
   #
   readinessProbe:
     httpGet:
-      port: 5000
-      path: /metrics
+      port: 5555
+      path: /ready
       scheme: HTTP
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param strategy - string - required
   ## Allow the Cluster Agent deployment to perform a rolling update on helm update
@@ -539,6 +564,14 @@ clusterAgent:
   ## metrics and traces are accepted from any host able to connect to this host.
   #
   useHostNetwork:  # true
+
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
 
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the cluster-agent container
@@ -591,7 +624,7 @@ agents:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: 7.19.0
+    tag: 7.20.2
 
     ## @param doNotCheckTag - boolean - optional
     ## By default, the version passed in agents.image.tag is checked
@@ -660,7 +693,22 @@ agents:
       #
       livenessProbe:
         httpGet:
-          path: /health
+          path: /live
+          port: 5555
+        initialDelaySeconds: 15
+        periodSeconds: 15
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 6
+
+      ## @param readinessProbe - object - required
+      ## Override the agent's readiness probe logic from the default:
+      ## In case of issues with the probe, you can disable it with the
+      ## following values, to allow easier investigating:
+      #
+      readinessProbe:
+        httpGet:
+          path: /ready
           port: 5555
         initialDelaySeconds: 15
         periodSeconds: 15
@@ -790,6 +838,14 @@ agents:
   #
   useHostNetwork:  # true
 
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
+
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the DaemonSet's Pods
   #
@@ -892,7 +948,7 @@ clusterChecksRunner:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: 7.19.0
+    tag: 7.20.2
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -923,6 +979,11 @@ clusterChecksRunner:
     ## If true, use a dedicated RBAC resource for the cluster checks agent(s)
     #
     dedicated: false
+
+    ## @param serviceAccountAnnotations - object - required
+    ## Annotations to add to the ServiceAccount if clusterChecksRunner.rbac.dedicated is true
+    #
+    serviceAccountAnnotations: {}
 
     ## @param serviceAccountName - string - required
     ## Ignored if clusterChecksRunner.rbac.create is true
@@ -963,6 +1024,14 @@ clusterChecksRunner:
       maxSurge: 1
       maxUnavailable: 0
 
+  ## @param dnsConfig - list of objects - optional
+  ## specify dns configuration options for datadog cluster agent containers e.g ndots
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig:
+  #  options:
+  #  - name: ndots
+  #    value: "1"
+
   ## @param nodeSelector - object - optional
   ## Allow the ClusterChecks Deployment to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -975,14 +1044,41 @@ clusterChecksRunner:
   #
   tolerations:  # []
 
-  ## @param livenessProbe - object - optional
-  ## Override the agent's liveness probe logic from the default:
+  ## @param livenessProbe - object - required
   ## In case of issues with the probe, you can disable it with the
   ## following values, to allow easier investigating:
   #
-  livenessProbe:
+  # livenessProbe:
   #   exec:
   #     command: ["/bin/true"]
+  #
+  livenessProbe:
+    httpGet:
+      path: /live
+      port: 5555
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
+
+  ## @param readinessProbe - object - required
+  ## In case of issues with the probe, you can disable it with the
+  ## following values, to allow easier investigating:
+  #
+  # readinessProbe:
+  #   exec:
+  #     command: ["/bin/true"]
+  #
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 5555
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 6
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
@@ -992,6 +1088,21 @@ clusterChecksRunner:
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
+  ## @param volumes - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumes:
+  #   - hostPath:
+  #       path: <HOST_PATH>
+  #     name: <VOLUME_NAME>
+
+  ## @param volumeMounts - list of objects - optional
+  ## Specify additional volumes to mount in the cluster checks container
+  #
+  volumeMounts:
+  #   - name: <VOLUME_NAME>
+  #     mountPath: <CONTAINER_PATH>
+  #     readOnly: true
 
 kube-state-metrics:
   rbac:
