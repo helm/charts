@@ -16,7 +16,9 @@ image:
 
 service:
   type: LoadBalancer
-  port: 18080
+  port:
+    number: 18080
+    name: http-historyport
   annotations: {}
 
 environment:
