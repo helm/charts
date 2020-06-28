@@ -86,8 +86,10 @@ spec:
           readinessProbe:
             {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           volumeMounts:
+          {{- if .Values.config }}
             - mountPath: /config
               name: config
+          {{- end}}
           {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -101,13 +103,15 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
       volumes:
+{{- if .Values.config }}
         - name: config
-{{- if .Values.secretConfig }}
+          {{- if .Values.secretConfig }}
           secret:
             secretName: {{ template "prometheus-blackbox-exporter.fullname" . }}
-{{- else }}
+          {{- else }}
           configMap:
             name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+          {{- end }}
 {{- end }}
       {{- range .Values.extraConfigmapMounts }}
         - name: {{ .name }}
