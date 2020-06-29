@@ -1,6 +1,18 @@
 # CockroachDB Helm Chart
 
 
+## This Helm chart is deprecated
+
+Given the [deprecation of `stable`](https://github.com/helm/charts#deprecation-timeline), future CockroachDB Helm charts are now located at [cockroachdb/charts](https://github.com/cockroachdb/helm-charts/).
+
+The CockroachDB charts repository is already included in the Hubs. Updated installation instructions are included in the new [source code repository README](https://github.com/cockroachdb/helm-charts/blob/master/README.md).
+
+To update an exisiting _stable_ deployment with a chart hosted in the CockroachDB repository, you can run:
+
+```bash
+$ helm repo add cockroachdb https://charts.cockroachdb.com/
+$ helm upgrade my-release cockroachdb/cockroachdb
+```
 
 
 ## Documentation
