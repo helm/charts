@@ -1,0 +1,54 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "nextcloud.fullname" . }}-metrics
+  labels:
+    app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+    helm.sh/chart: {{ include "nextcloud.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: metrics
+spec:
+  replicas: {{ .Values.metrics.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations: {{- toYaml .Values.metrics.podAnnotations | nindent 8 }}
+      labels:
+        app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: metrics
+      {{- if .Values.metrics.podLabels }}
+{{ toYaml .Values.metrics.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      - name: metrics-exporter
+        image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+        env:
+        - name: NEXTCLOUD_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: nextcloud-username
+        - name: NEXTCLOUD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "nextcloud.fullname" . }}
+              key: nextcloud-password
+        - name: NEXTCLOUD_SERVER
+          value: http{{ if .Values.metrics.https }}s{{ end }}://{{ .Values.nextcloud.host }}
+        - name: NEXTCLOUD_TIMEOUT
+          value: {{ .Values.metrics.timeout }}
+        ports:
+        - name: metrics
+          containerPort: 9205
+        {{- if .Values.metrics.resources }}
+        resources: {{- toYaml .Values.metrics.resources | nindent 10 }}
+        {{- end }}
+{{- end }}
