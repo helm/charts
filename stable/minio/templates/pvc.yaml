@@ -9,6 +9,10 @@ metadata:
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.annotations | indent 4 }}
+{{- end }}
 spec:
 {{- if and .Values.nasgateway.enabled .Values.nasgateway.pv }}
   selector:

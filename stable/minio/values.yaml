@@ -112,6 +112,7 @@ persistence:
   VolumeName: ""
   accessMode: ReadWriteOnce
   size: 500Gi
+  annotations: {}
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).

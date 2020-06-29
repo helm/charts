@@ -206,6 +206,10 @@ spec:
     {{- range $diskId := until $drivesPerNode}}
     - metadata:
         name: export-{{ $diskId }}
+        {{- if $.Values.persistence.annotations }}
+        annotations:
+{{ toYaml $.Values.persistence.annotations | indent 10 }}
+        {{- end }}
       spec:
         accessModes: [ {{ $accessMode | quote }} ]
         {{- if $storageClass }}
@@ -218,6 +222,10 @@ spec:
   {{- else }}
     - metadata:
         name: export
+        {{- if .Values.persistence.annotations }}
+        annotations:
+{{ toYaml .Values.persistence.annotations | indent 10 }}
+        {{- end }}
       spec:
         accessModes: [ {{ $accessMode | quote }} ]
         {{- if $storageClass }}
