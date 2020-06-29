@@ -53,6 +53,7 @@ Parameter | Description | Default
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.useComponentLabel` | Wether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the controller deployment* | `false`
+`controller.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
@@ -191,6 +192,7 @@ Parameter | Description | Default
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.useComponentLabel` | Whether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the defaultBackend deployment* | `false`
+`defaultBackend.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
