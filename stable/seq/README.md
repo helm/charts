@@ -46,7 +46,7 @@ The following table lists the configurable parameters of the Seq chart and their
 | Parameter                            | Description                                                                                           | Default                               |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------|
 | `image.repository`                   | Image repository                                                                                      | `datalust/seq`                        |
-| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `5`                                   |
+| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `2020`                                   |
 | `image.pullPolicy`                   | Image pull policy                                                                                     | `IfNotPresent`                        |
 | `acceptEULA`                         | Accept EULA                                                                                           | `Y`                                   |
 | `baseURI`                            | Base URL for ingress/AAD (see values.yaml)                                                            |                                       |
