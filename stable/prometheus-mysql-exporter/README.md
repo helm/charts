@@ -43,6 +43,8 @@ The following table lists the configurable parameters of the mysql exporter char
 | `image.tag`                            | Image tag                                           | `v0.11.0`                          |
 | `image.pullPolicy`                     | Image pull policy                                   | `IfNotPresent`                     |
 | `service.name`                         | Service name                                        | `mysql-exporter`                   |
+| `service.labels`                       | Additional labels for the service                   | `{}`                               |
+| `service.annotations`                  | Annotations to be added to the service              | `{}`                               |
 | `service.type`                         | Service type                                        | `ClusterIP`                        |
 | `service.externalport`                 | The service port                                    | `9104`                             |
 | `service.internalPort`                 | The target port of the container                    | `9104`                             |
