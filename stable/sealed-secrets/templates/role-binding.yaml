@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}-key-admin
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}
@@ -17,12 +18,13 @@ subjects:
   - apiGroup: ""
     kind: ServiceAccount
     name: {{ template "sealed-secrets.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ template "sealed-secrets.namespace" . }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}-service-proxier
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}

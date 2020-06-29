@@ -32,10 +32,12 @@ prometheus:
     interval: 10s
     # Alternative namespace to install the ServiceMonitor in
     namespace: ""
+    # Labels to add to the service monitor
+    labels: {}
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.7
+  tag: 0.10.9
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.

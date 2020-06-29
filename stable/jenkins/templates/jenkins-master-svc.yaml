@@ -17,16 +17,16 @@ metadata:
 {{ toYaml .Values.master.serviceAnnotations | indent 4 }}
 {{- end }}
 spec:
-  {{if (and (eq .Values.master.serviceType "ClusterIP") (not (empty .Values.master.clusterIP)))}}
+  {{- if (and (eq .Values.master.serviceType "ClusterIP") (not (empty .Values.master.clusterIP))) }}
   clusterIP: {{.Values.master.clusterIP}}
-  {{end}}
+  {{- end }}
   ports:
     - port: {{.Values.master.servicePort}}
       name: http
       targetPort: {{ .Values.master.targetPort }}
-      {{if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort)))}}
+      {{- if (and (eq .Values.master.serviceType "NodePort") (not (empty .Values.master.nodePort))) }}
       nodePort: {{.Values.master.nodePort}}
-      {{end}}
+      {{- end }}
 {{- range $index, $port := .Values.master.extraPorts }}
     - port: {{ $port.port }}
       name: {{ $port.name }}

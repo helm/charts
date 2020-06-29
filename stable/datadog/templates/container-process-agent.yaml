@@ -54,7 +54,7 @@
       readOnly: true
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
-      mountPath: /opt/datadog-agent/run
+      mountPath: /var/run/sysprobe
       readOnly: true
     {{- end }}
     {{- end }}

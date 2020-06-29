@@ -9,7 +9,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubernetes-system-kubelet" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -36,8 +36,7 @@ spec:
       annotations:
         message: '{{`{{`}} $labels.node {{`}}`}} is unreachable and some workloads may be rescheduled.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubenodeunreachable
-      expr: kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} == 1
-      for: 2m
+      expr: (kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} unless ignoring(key,value) kube_node_spec_taint{job="kube-state-metrics",key="ToBeDeletedByClusterAutoscaler"}) == 1
       labels:
         severity: warning
     - alert: KubeletTooManyPods

@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `nextcloud.defaultConfigs.\.apps\.config\.php`               | Default configuration for apps                          | `true`                                      |
 | `nextcloud.defaultConfigs.\.autoconfig\.php`                 | Default auto-configuration for databases                | `true`                                      |
 | `nextcloud.defaultConfigs.\.smtp\.config\.php`               | Default configuration for smtp                          | `true`                                      |
+| `nextcloud.strategy`                                         | specifies the strategy used to replace old Pods by new ones | `type: Recreate`                                      |
 | `nextcloud.extraEnv`                                         | specify additional environment variables                | `{}`                                        |
 | `nextcloud.extraVolumes`                                     | specify additional volumes for the NextCloud pod        | `{}`                                        |
 | `nextcloud.extraVolumeMounts`                                | specify additional volume mounts for the NextCloud pod  | `{}`                                        |
@@ -143,6 +144,10 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `readinessProbe.timeoutSeconds`                              | When the probe times out                                | `5`                                         |
 | `readinessProbe.failureThreshold`                            | Minimum consecutive failures for the probe              | `3`                                         |
 | `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                         |
+| `hpa.enabled`                                                | Boolean to create a HorizontalPodAutoscaler             | `false`                                     |
+| `hpa.cputhreshold`                                           | CPU threshold percent for the HorizontalPodAutoscale    | `60`                                        |
+| `hpa.minPods`                                                | Min. pods for the Nextcloud HorizontalPodAutoscaler     | `1`                                         |
+| `hpa.maxPods`                                                | Max. pods for the Nextcloud HorizontalPodAutoscaler     | `10`                                        |
 | `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                     |
 | `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                     |
 

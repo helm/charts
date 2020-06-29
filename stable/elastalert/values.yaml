@@ -47,6 +47,12 @@ elasticsearch:
   username: ""
   # Password if authenticating to ES with basic auth
   password: ""
+  # Specifies an existing secret to be used for the ES username/password
+  credentialsSecret: ""
+  # The key in elasticsearch.credentialsSecret that stores the ES password
+  credentialsSecretUsernameKey: ""
+  # The key in elasticsearch.credentialsSecret that stores the ES username
+  credentialsSecretPasswordKey: ""
   # whether or not to verify TLS certificates
   verifyCerts: "True"
   # Enable certificate based authentication

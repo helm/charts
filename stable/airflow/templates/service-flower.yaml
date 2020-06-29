@@ -1,36 +1,36 @@
-{{- if .Values.flower.enabled -}}
+{{- if .Values.flower.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "airflow.fullname" . }}-flower
+  name: {{ include "airflow.fullname" . }}-flower
   labels:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: flower
-    chart: {{ template "airflow.chart" . }}
+    chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
   {{- if .Values.flower.service.annotations }}
-{{ toYaml .Values.flower.service.annotations | trim | indent 4 }}
+    {{- toYaml .Values.flower.service.annotations | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.flower.service.type | default "ClusterIP" }}
+  type: {{ .Values.flower.service.type }}
   selector:
-    app: {{ template "airflow.name" . }}
+    app: {{ include "airflow.labels.app" . }}
     component: flower
     release: {{ .Release.Name }}
   ports:
     - name: flower
       protocol: TCP
-      port: {{ .Values.flower.service.externalPort | default 5555 }}
+      port: {{ .Values.flower.service.externalPort }}
       targetPort: 5555
-{{- if eq .Values.flower.service.type "LoadBalancer" }}
-{{- if .Values.flower.service.loadBalancerIP }}
+  {{- if eq .Values.flower.service.type "LoadBalancer" }}
+  {{- if .Values.flower.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.flower.service.loadBalancerIP | quote }}
-{{- end }}
-{{- if .Values.flower.service.loadBalancerSourceRanges }}
+  {{- end }}
+  {{- if .Values.flower.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.flower.service.loadBalancerSourceRanges | indent 4 }}
-{{- end }}
-{{- end }}
+    {{- toYaml .Values.flower.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- end }}
 {{- end }}

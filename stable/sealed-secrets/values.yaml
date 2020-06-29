@@ -12,6 +12,9 @@ controller:
   # controller.create: `true` if Sealed Secrets controller should be created
   create: true
 
+# namespace: Namespace to deploy the controller.
+namespace: ""
+
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
   create: true
@@ -50,6 +53,8 @@ networkPolicy: false
 securityContext:
   # securityContext.runAsUser defines under which user the operator Pod and its containers/processes run.
   runAsUser: 1001
+  # securityContext.fsGroup defines the filesystem group
+  fsGroup: 65534
 
 podAnnotations: {}
 

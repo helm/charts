@@ -25,6 +25,11 @@ busyboxImage:
   tag: 1.27
   pullPolicy: IfNotPresent
 
+## Extra env variables and envFrom
+extraEnv: []
+
+envFrom: []
+
 ## Deployment annotations
 ##
 annotations: {}
@@ -68,6 +73,11 @@ serviceAccount:
 ##
 podAnnotations: {}
   # iam.amazonaws.com/role: efs-provisioner-role
+
+## Labels to be added to deployment
+##
+podLabels: {}
+  # environment: production
 
 ## Node labels for pod assignment
 ##

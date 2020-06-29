@@ -28,7 +28,7 @@ data:
       <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
 {{ .Values.master.authorizationStrategy | indent 6 }}
 {{ .Values.master.securityRealm | indent 6 }}
-      <disableRememberMe>false</disableRememberMe>
+      <disableRememberMe>{{ .Values.master.disableRememberMe }}</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
       <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
@@ -45,6 +45,7 @@ data:
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
+          <defaultsProviderTemplate>{{ .Values.master.slaveDefaultsProviderTemplate }}</defaultsProviderTemplate>
           <templates>
 {{- if .Values.agent.enabled }}
   {{- include "jenkins.xml.podTemplate" . | nindent 12 }}
@@ -66,17 +67,25 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ template "jenkins.master.slaveKubernetesNamespace" . }}</namespace>
-{{- if .Values.master.slaveKubernetesNamespace }}
+{{- if .Values.master.slaveJenkinsUrl }}
+          <jenkinsUrl>{{ tpl .Values.master.slaveJenkinsUrl . }}</jenkinsUrl>
+{{- else if .Values.master.slaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}</jenkinsUrl>
+{{- end }}
+
+{{- if .Values.master.slaveJenkinsTunnel }}
+          <jenkinsTunnel>{{ tpl .Values.master.slaveJenkinsTunnel . }}</jenkinsTunnel>
+{{- else if .Values.master.slaveKubernetesNamespace }}
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{ template "jenkins.namespace" . }}:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
+{{- else }}
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.master.slaveListenerPort }}</jenkinsTunnel>
 {{- end }}
           <containerCap>{{ .Values.agent.containerCap }}</containerCap>
           <retentionTimeout>5</retentionTimeout>
-          <connectTimeout>0</connectTimeout>
-          <readTimeout>0</readTimeout>
+          <connectTimeout>{{ .Values.master.slaveConnectTimeout }}</connectTimeout>
+          <readTimeout>{{ .Values.master.slaveReadTimeout }}</readTimeout>
           <podLabels>
             <org.csanchez.jenkins.plugins.kubernetes.PodLabel>
               <key>jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}</key>
@@ -247,9 +256,21 @@ data:
 {{- end }}
   plugins.txt: |-
 {{- if .Values.master.installPlugins }}
-{{- range $index, $val := .Values.master.installPlugins }}
-{{ $val | indent 4 }}
-{{- end }}
+  {{- range $installPlugin := .Values.master.installPlugins }}
+    {{- $installPlugin | nindent 4 }}
+  {{- end }}
+  {{- range $addlPlugin := .Values.master.additionalPlugins }}
+    {{- /* duplicate plugin check */}}
+    {{- range $installPlugin := $.Values.master.installPlugins }}
+      {{- if eq (splitList ":" $addlPlugin | first) (splitList ":" $installPlugin | first) }}
+        {{- $message := print "[PLUGIN CONFLICT] master.additionalPlugins contains '" $addlPlugin "'" }}
+        {{- $message := print $message " but master.installPlugins already contains '" $installPlugin "'." }}
+        {{- $message := print $message " Override master.installPlugins to use '" $addlPlugin "' plugin." }}
+        {{- fail $message }}
+      {{- end }}
+    {{- end }}
+    {{- $addlPlugin | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{ else }}
 {{ include "override_config_map" . }}

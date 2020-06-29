@@ -44,6 +44,10 @@ spec:
 {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       dnsPolicy: {{ .Values.dnsPolicy }}
+{{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit

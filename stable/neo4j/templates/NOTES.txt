@@ -29,4 +29,10 @@ If you didn't set a password, one will be auto generated.
 You can find the base64 encoded version of the password by running the following command:
 
 kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml
+
+===================== NOTICE ==========================
+This chart has now been deprecated, replaced by 
+https://github.com/neo4j-contrib/neo4j-helm
+=======================================================
+
 {{- end}}

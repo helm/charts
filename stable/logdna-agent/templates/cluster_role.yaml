@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.logdna.name }}
+  labels:
+    app.kubernetes.io/name: {{ template "logdna.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: {{ template "logdna.chart" . }}
+rules:
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get","list","create","watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list","watch"]

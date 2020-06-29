@@ -6,6 +6,10 @@
 ##
 nameOverride: ""
 
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
 ## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
 ##
 kubeTargetVersionOverride: ""
@@ -31,6 +35,7 @@ defaultRules:
     k8s: true
     kubeApiserver: true
     kubeApiserverError: true
+    kubeApiserverSlos: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -105,6 +110,7 @@ alertmanager:
   serviceAccount:
     create: true
     name: ""
+    annotations: {}
 
   ## Configure pod disruption budgets for Alertmanager
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
@@ -167,6 +173,8 @@ alertmanager:
   #         *Details:*
   #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
   #           {{ end }}
+  #       {{ end }}
+  #       {{ end }}
 
   ingress:
     enabled: false
@@ -441,6 +449,7 @@ alertmanager:
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ##
     securityContext:
+      runAsGroup: 2000
       runAsNonRoot: true
       runAsUser: 1000
       fsGroup: 2000
@@ -471,6 +480,7 @@ alertmanager:
 ##
 grafana:
   enabled: true
+  namespaceOverride: ""
 
   ## Deploy default dashboards.
   ##
@@ -536,7 +546,7 @@ grafana:
   #   configMap: certs-configmap
   #   readOnly: true
 
-  ## Configure additional grafana datasources
+  ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
   additionalDataSources: []
   # - name: prometheus-sample
@@ -549,7 +559,7 @@ grafana:
   #       tlsSkipVerify: true
   #   orgId: 1
   #   type: prometheus
-  #   url: https://prometheus.svc:9090
+  #   url: https://{{ printf "%s-prometheus.svc" .Release.Name }}:9090
   #   version: 1
 
   ## Passed to grafana subchart and used by servicemonitor below
@@ -639,9 +649,32 @@ kubelet:
     ##
     cAdvisor: true
 
+    ## Enable scraping /metrics/probes from kubelet's service
+    ##
+    probes: true
+
+    ## Enable scraping /metrics/resource from kubelet's service
+    ##
+    resource: true
+    # From kubernetes 1.18, /metrics/resource/v1alpha1 renamed to /metrics/resource
+    resourcePath: "/metrics/resource/v1alpha1"
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
+    # - sourceLabels: [__name__, image]
+    #   separator: ;
+    #   regex: container_([a-z_]+);
+    #   replacement: $1
+    #   action: drop
+    # - sourceLabels: [__name__]
+    #   separator: ;
+    #   regex: container_(network_tcp_usage_total|network_udp_usage_total|tasks_state|cpu_load_average_10s)
+    #   replacement: $1
+    #   action: drop
+
+    ## Metric relabellings to apply to samples before ingestion
+    ##
+    probesMetricRelabelings: []
     # - sourceLabels: [__name__, image]
     #   separator: ;
     #   regex: container_([a-z_]+);
@@ -657,6 +690,26 @@ kubelet:
     #   metrics_path is required to match upstream rules and charts
     ##
     cAdvisorRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
+
+    probesRelabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: metrics_path
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
+
+    resourceRelabelings:
       - sourceLabels: [__metrics_path__]
         targetLabel: metrics_path
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
@@ -1009,6 +1062,7 @@ kubeStateMetrics:
 ## Configuration for kube-state-metrics subchart
 ##
 kube-state-metrics:
+  namespaceOverride: ""
   rbac:
     create: true
   podSecurityPolicy:
@@ -1054,6 +1108,7 @@ nodeExporter:
 ## Configuration for prometheus-node-exporter subchart
 ##
 prometheus-node-exporter:
+  namespaceOverride: ""
   podLabels:
     ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
     ##
@@ -1068,6 +1123,7 @@ prometheusOperator:
   enabled: true
 
   # If true prometheus operator will create and update its CRDs on startup
+  # Only for prometheusOperator.image.tag < v0.39.0
   manageCrds: true
 
   tlsProxy:
@@ -1091,7 +1147,7 @@ prometheusOperator:
       enabled: true
       image:
         repository: jettech/kube-webhook-certgen
-        tag: v1.2.0
+        tag: v1.2.1
         pullPolicy: IfNotPresent
       resources: {}
       ## Provide a priority class name to the webhook patching job
@@ -1224,6 +1280,11 @@ prometheusOperator:
   #   cpu: 100m
   #   memory: 100Mi
 
+  # Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico),
+  # because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working
+  ##
+  hostNetwork: false
+
   ## Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -1253,6 +1314,8 @@ prometheusOperator:
     #         - e2e-az2
 
   securityContext:
+    fsGroup: 65534
+    runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 65534
 
@@ -1507,7 +1570,7 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.17.2
+      tag: v2.18.1
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1748,6 +1811,11 @@ prometheus:
     #          storage: 50Gi
     #    selector: {}
 
+    # Additional volumes on the output StatefulSet definition.
+    volumes: []
+    # Additional VolumeMounts on the output StatefulSet definition.
+    volumeMounts: []
+
     ## AdditionalScrapeConfigs allows specifying additional Prometheus scrape configurations. Scrape configurations
     ## are appended to the configurations generated by the Prometheus Operator. Job configurations must have the form
     ## as specified in the official Prometheus documentation:
@@ -1826,6 +1894,7 @@ prometheus:
     ## https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
     ##
     securityContext:
+      runAsGroup: 2000
       runAsNonRoot: true
       runAsUser: 1000
       fsGroup: 2000
