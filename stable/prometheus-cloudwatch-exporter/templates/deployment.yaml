@@ -21,6 +21,7 @@ spec:
       annotations:
         {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
