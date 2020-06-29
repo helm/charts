@@ -292,6 +292,14 @@ halyard:
     iam.amazonaws.com/role: <role_arn>
 ```
 
+### Set custom annotations for the halyard serviceaccount
+
+```yaml
+serviceAccount:
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: <role_arn>
+```
+
 ### Set environment variables on the halyard pod
 
 ```yaml

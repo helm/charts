@@ -1,3 +1,6 @@
+podSecurityContext: {}
+  # fsGroup: 2000
+
 priorityClassOverprovision:
   name: overprovisioning
   value: -1
