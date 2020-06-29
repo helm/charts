@@ -1,4 +1,4 @@
-{{- if .Values.prometheusRule.enabled }}
+{{- if and .Values.prometheusRule.enabled .Values.prometheusRule.rules }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -18,6 +18,6 @@ spec:
   {{- with .Values.prometheusRule.rules }}
   groups:
     - name: {{ template "prometheus-blackbox-exporter.name" $ }}
-      rules: {{ tpl (toYaml .) $ | nindent 8 }}
+      rules: {{ toYaml . | nindent 8 }}
   {{- end }}
 {{- end }}
