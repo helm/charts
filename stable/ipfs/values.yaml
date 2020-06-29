@@ -64,6 +64,6 @@ persistence:
 
 nonPersistentVolumeType:
   emptyDir: {}
-  #hostPath:
-  #  path: /ipfs/directory
-  #  type: Directory
+  # hostPath:
+  #   path: /ipfs/directory
+  #   type: Directory
