@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: {{ .Values.controllerType }}
 metadata:
   name: {{ template "ipfs.fullname" . }}
   labels:
@@ -82,5 +82,5 @@ spec:
   {{- else }}
       volumes:
         - name: ipfs-storage
-          emptyDir: {}
+{{ toYaml .Values.nonPersistentVolumeType | indent 10 }}
   {{- end }}

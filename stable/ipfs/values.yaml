@@ -2,6 +2,9 @@ replicaCount: 1
 
 image: ipfs/go-ipfs:v0.4.22
 
+# supported controllers are statefulsets and daemonsets
+controllerType: StatefulSet
+
 service:
   type: ClusterIP
 
@@ -58,3 +61,9 @@ persistence:
   size: "8Gi"
   accessModes:
     - ReadWriteOnce
+
+nonPersistentVolumeType:
+  emptyDir: {}
+  #hostPath:
+  #  path: /ipfs/directory
+  #  type: Directory
