@@ -74,6 +74,7 @@ securityContext:
   runAsUser: 10000
 
 service:
+  labels: {}
   annotations: {}
   port: 9216
   type: ClusterIP
