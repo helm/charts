@@ -75,8 +75,6 @@ spec:
       dnsConfig:
 {{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
       {{- end }}
-      imagePullSecrets:
-{{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       containers:
       - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
