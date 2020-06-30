@@ -34,9 +34,7 @@ service:
 # clusterIP: ""
 # loadBalancerIP: ""
 # externalTrafficPolicy: ""
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9153"
+  annotations: {}
 
 serviceAccount:
   create: false
