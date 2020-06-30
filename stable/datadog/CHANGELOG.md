@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.20
+
+* Remove duplicate `imagePullSecrets` key in the cluster agent deployment.
+
 ## 2.3.19
 
 * Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
