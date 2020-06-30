@@ -5,10 +5,34 @@
 master:
   ## The number of pods in the master deployment
   replicaCount: 1
+  # resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   requests:
+  #     memory: 512Mi
+  #     cpu: 400m
+  #   limits:
+  #     memory: 1024Mi
+  #     cpu: 800m
+  jvmOpts: ""
 
 server:
   ## The number of pods in the server deployment
   replicaCount: 3
+  # resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #   requests:
+  #     memory: 768Mi
+  #     cpu: 1000m
+  #   limits:
+  #     memory: 1024Mi
+  #     cpu: 1200m
+  jvmOpts: ""
 
 image:
   ## Specify an imagePullPolicy

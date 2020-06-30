@@ -16,6 +16,17 @@ To install the chart with the release name jmeter:
 $ helm install --name distributed-jmeter stable/distributed-jmeter
 ```
 
+## Configuration
+
+The following table lists the configurable parameters of the Distributed JMeter chart and their default values.
+
+| Parameter                  | Description                                     | Default                                                    |
+| -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
+| `master.resources`                          | CPU/Memory resource requests/limits             | `{}`                                    |
+| `master.jvmOpts`                   | Master additional JVM options                 |                                                            |
+| `server.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
+| `server.jvmOpts`                   | Server additional JVM options                 |                                                            |
+
 ## Deploying different versions of JMeter
 The default [image](https://hub.docker.com/r/pedrocesarti/jmeter-docker/) allows you to run JMeter in all versions available.
 

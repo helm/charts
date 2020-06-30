@@ -32,3 +32,9 @@ spec:
           ports:
             - containerPort: 50000
             - containerPort: 1099
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+          env:
+            - name: JVM_OPTS
+              value: {{ .Values.server.jvmOpts | quote }}
+
