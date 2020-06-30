@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.19
+
+* Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
+
 ## 2.3.18
 
 * Support arguments in the cluster-agent container `command` value
