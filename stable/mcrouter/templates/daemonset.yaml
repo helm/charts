@@ -1,21 +1,20 @@
 {{- if eq .Values.controller "daemonset" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
+    {{- include "labels" . | nindent 4 }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        {{- include "selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: {{ template "fullname" . }}

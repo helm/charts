@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -14,4 +11,4 @@ spec:
     port: {{ .Values.mcrouterCommandParams.port }}
     targetPort: mcrouter-port
   selector:
-    app: {{ template "fullname" . }}
+    {{- include "selectorLabels" . | nindent 4 }}

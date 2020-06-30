@@ -3,10 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "labels" . | nindent 4 }}
 data:
   config.json: |-
 {{- if .Values.mcrouterCommandParams.configFile }}{{ range .Files.Lines .Values.mcrouterCommandParams.configFile }}

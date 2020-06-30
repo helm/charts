@@ -1,25 +1,22 @@
 {{- if eq .Values.controller "statefulset" }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "labels" . | nindent 4 }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
   serviceName: {{ template "fullname" . }}
   replicas: {{ .Values.statefulset.replicas }}
+  selector:
+    matchLabels:
+      {{- include "selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        {{- include "selectorLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:
@@ -28,8 +25,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "fullname" . }}
-                release: {{ .Release.Name | quote }}
+                {{- include "selectorLabels" . | nindent 16 }}
         {{- else if eq .Values.statefulset.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -37,8 +33,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "fullname" . }}
-                  release: {{ .Release.Name | quote }}
+                  {{- include "selectorLabels" . | nindent 18 }}
         {{- end }}
       containers:
       - name: {{ template "fullname" . }}
