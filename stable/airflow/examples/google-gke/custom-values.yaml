@@ -421,11 +421,11 @@ redis:
 
   ## the name of a pre-created secret containing the redis password
   ##
-  existingSecret: "airflow-cluster1-redis-password"
+  existingSecret: "airflow-cluster1-password"
 
   ## the key in `redis.existingSecret` containing the password string
   ##
-  existingSecretKey: "redis-password"
+  existingSecretKey: "password"
 
   ## configs for redis cluster mode
   ##

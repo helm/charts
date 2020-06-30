@@ -174,9 +174,9 @@ This chart exposes 2 endpoints on the Ingress:
 
 #### Custom Paths:
 
-This chart enables you to add various paths to the ingress. 
+This chart enables you to add various paths to the ingress.
 It includes two values for you to customize these paths, `precedingPaths` and `succeedingPaths`, which are before and after the default path to `Service/airflow-web`.
-A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one. 
+A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one.
 
 You would set the values of `precedingPaths` as the following:
 ```yaml
@@ -195,7 +195,7 @@ For example, with a url-prefix of `/airflow/`:
 
 
 When customizing this, please note:
-- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value. 
+- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value.
 - Flower requires a URL rewrite mechanism in front of it.
   For specifics on this, see the comments of `flower.urlPrefix` inside `values.yaml`.
 
@@ -307,7 +307,7 @@ __NOTE:__ these work with any pip package that you can install with the `pip ins
 
 ### Kubernetes-Configs/Additional-Manifests
 
-It is possible to add additional manifests into a deployment, to extend the chart. 
+It is possible to add additional manifests into a deployment, to extend the chart.
 One of the reason is to deploy a manifest specific to a cloud provider.
 
 For example, adding a `BackendConfig` on GKE:
@@ -328,7 +328,7 @@ extraManifests:
 
 If the value `scheduler.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
 
-If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
+If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).
 This is rarely necessary but can be so under certain conditions if your synced DAGs include custom database hooks that prevent `initdb` from running successfully.
 For example, if they have dependencies on variables that won't be present yet.
 The initdb initcontainer will retry up to 5 times before giving up.
@@ -342,7 +342,7 @@ For a real production deployment, it's a good idea to create secure credentials 
 For example, from the command line, run:
 ```bash
 kubectl create secret generic airflow-postgresql --from-literal=postgresql-password=$(openssl rand -base64 13)
-kubectl create secret generic airflow-redis --from-literal=redis-password=$(openssl rand -base64 13)
+kubectl create secret generic airflow-redis --from-literal=password=$(openssl rand -base64 13)
 ```
 
 Next, you can use those secrets with your `values.yaml`:
@@ -423,7 +423,7 @@ __NOTE:__ it is also possible to persist logs by mounting a `PersistentVolume` t
 ### Other/Service-Monitor
 
 The service monitor is something introduced by the [CoresOS Prometheus Operator](https://github.com/coreos/prometheus-operator).
-To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. 
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image.
 A good one is [epoch8/airflow-exporter](https://github.com/epoch8/airflow-exporter), which exposes dag and task based metrics from Airflow.
 For more information: see the `serviceMonitor` section of `values.yaml`.
 
@@ -468,7 +468,7 @@ However, if you want to implicitly trust all repo host signatures set `dags.git.
 In this method you store your DAGs in a Kubernetes Persistent Volume Claim (PVC), and use some external system to ensure this volume has your latest DAGs.
 For example, you could use your CI/CD pipeline system to preform a sync as changes are pushed to a git repo.
 
-Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared. 
+Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared.
 To share a PVC with multiple Pods, the PVC needs to have `accessMode` set to `ReadOnlyMany` or `ReadWriteMany` (Note: different StorageClass support different [access modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 If you are using Kubernetes on a public cloud, a persistent volume controller is likely built in:
 [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html),
@@ -680,7 +680,7 @@ __Airflow Redis (Internal) Values:__
 | `redis.enabled` | if the `stable/redis` chart is used | `true` |
 | `redis.password` | the redis password | `airflow` |
 | `redis.existingSecret` | the name of a pre-created secret containing the redis password | `""` |
-| `redis.existingSecretKey` | the key in `redis.existingSecret` containing the password string | `redis-password` |
+| `redis.existingSecretKey` | the key in `redis.existingSecret` containing the password string | `password` |
 | `redis.cluster.*` | configs for redis cluster mode | `<see values.yaml>` |
 | `redis.master.*` | configs for the redis master | `<see values.yaml>` |
 | `redis.slave.*` | configs for the redis slaves | `<see values.yaml>` |
@@ -693,7 +693,7 @@ __Airflow Redis (External) Values:__
 | `externalRedis.port` | the port of the external redis | `6379` |
 | `externalRedis.databaseNumber` | the database number to use within the the external redis | `1` |
 | `externalRedis.passwordSecret` | the name of a pre-created secret containing the external redis password | `""` |
-| `externalRedis.passwordSecretKey` | the name of a pre-created secret containing the external redis password | `redis-password` |
+| `externalRedis.passwordSecretKey` | the name of a pre-created secret containing the external redis password | `password` |
 
 __Airflow Prometheus Values:__
 

@@ -151,7 +151,7 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
   valueFrom:
     secretKeyRef:
       name: {{ include "airflow.redis.fullname" . }}
-      key: redis-password
+      key: password
 {{- end }}
 {{- else if (eq .Values.airflow.executor "CeleryExecutor") }}
 {{- if .Values.externalRedis.passwordSecret }}
