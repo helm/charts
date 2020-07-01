@@ -88,7 +88,7 @@ openvpn:
   # OVPN_K8S_SVC_SUBNET:
   # Set default route which openvpn figures basing on network routes inside openvpn pod
   DEFAULT_ROUTE_ENABLED: true
-  
+
   additionalConfigs:
     enabled: false
     # Additional routes to add to openvpn.conf:
