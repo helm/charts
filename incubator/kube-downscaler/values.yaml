@@ -16,7 +16,6 @@ namespace:
 downscaleResources:
   - deployments
   - statefulsets
-  - namespaces
 
 # List of namespaces to be excluded from the downscaler
 excludedNamespaces: []
