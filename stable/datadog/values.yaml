@@ -378,7 +378,7 @@ datadog:
     ## This requires processAgent.enabled and clusterAgent.enabled to be set to true
     ## ref: TODO - add doc link
     #
-    enabled: true
+    enabled: false
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
