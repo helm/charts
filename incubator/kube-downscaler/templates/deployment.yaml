@@ -40,12 +40,12 @@ spec:
           {{- if .Values.debug.enable }}
           - --debug
           {{- end }}
-          - --include-resources="{{- join "," .Values.downscaleResources }}"
+          - --include-resources={{- join "," .Values.downscaleResources }}
           {{- if .Values.excludedNamespaces }}
-          - --exclude-namespaces="{{- join "," .Values.excludedNamespaces }}"
+          - --exclude-namespaces={{- join "," .Values.excludedNamespaces }}
           {{- end }}
           {{- if .Values.excludedDeployments }}
-          - --exclude-deployments="{{- join "," .Values.excludedDeployments }}"
+          - --exclude-deployments={{- join "," .Values.excludedDeployments }}
           {{- end }}
 {{- with .Values.extraArgs }}
 {{ toYaml . | indent 10 }}

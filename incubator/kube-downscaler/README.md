@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the kube-downscaler ch
 | `securityContext`         | SecurityContext to apply to the downscaler pod                                                       | `{}`                                      |
 | `rbac.create`             | If true, create & use RBAC resources                                                                 | `true`                                    |
 | `rbac.serviceAccountName` | ServiceAccount downscaler will use (ignored if rbac.create=true)                                     | `default`                                 |
-| `downscaleResources`      | Resources the downscaler is allowed to manage                                                        | `[deployments, statefulsets, namespaces]` |
+| `downscaleResources`      | Resources the downscaler is allowed to manage                                                        | `[deployments, statefulsets]`             |
 | `excludedDeployments`     | Deployments to exclude from the downscaler                                                           | `[]`                                      |
 | `excludedNamespaces`      | Namespaces to exclude from the downscaler                                                            | `[]`                                      |
 | `extraArgs`               | Add extra args to docker command                                                                     | `[]`                                      |
