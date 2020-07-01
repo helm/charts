@@ -47,7 +47,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                               | Description                                                                           | Default                                                     |
 |:----------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
 | `image.repository`                      | The image repository to pull from                                                     | coredns/coredns                                             |
-| `image.tag`                             | The image tag to pull from                                                            | `v1.6.9`                                                    |
+| `image.tag`                             | The image tag to pull from                                                            | `v1.7.0`                                                    |
 | `image.pullPolicy`                      | Image pull policy                                                                     | IfNotPresent                                                |
 | `replicaCount`                          | Number of replicas                                                                    | 1                                                           |
 | `resources.limits.cpu`                  | Container maximum CPU                                                                 | `100m`                                                      |
@@ -62,8 +62,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `prometheus.monitor.namespace`          | Selector to select which namespaces the Endpoints objects are discovered from.        | `""`                                                        |
 | `service.clusterIP`                     | IP address to assign to service                                                       | `""`                                                        |
 | `service.loadBalancerIP`                | IP address to assign to load balancer (if supported)                                  | `""`                                                        |
-| `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | `[]`                                                        |
-| `service.annotations`                   | Annotations to add to service                                                         | `{prometheus.io/scrape: "true", prometheus.io/port: "9153"}`|
+| `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | []                                                          |
+| `service.annotations`                   | Annotations to add to service                                                         | {}                                                          |
 | `serviceAccount.create`                 | If true, create & use serviceAccount                                                  | false                                                       |
 | `serviceAccount.name`                   | If not set & create is true, use template fullname                                    |                                                             |
 | `rbac.create`                           | If true, create & use RBAC resources                                                  | true                                                        |
