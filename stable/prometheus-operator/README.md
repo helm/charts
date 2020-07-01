@@ -155,6 +155,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
 | `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
 | `defaultRules.rules.kubeApiserverSlos` | Create Api Server SLOs default rules| `true` |
+| `defaultRules.rules.kubelet` | Create kubelet default rules | `true` |
+| `defaultRules.rules.kubePrometheusGeneral` | Create general default rules | `true` |
 | `defaultRules.rules.kubePrometheusNodeAlerting` | Create Node Alerting default rules| `true` |
 | `defaultRules.rules.kubePrometheusNodeRecording` | Create Node Recording default rules| `true` |
 | `defaultRules.rules.kubeScheduler` | Create Kubernetes Scheduler default rules| `true` |
@@ -163,6 +165,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.kubernetesResources` | Create Kubernetes Resources  default rules| `true` |
 | `defaultRules.rules.kubernetesStorage` | Create Kubernetes Storage  default rules| `true` |
 | `defaultRules.rules.kubernetesSystem` | Create Kubernetes System  default rules| `true` |
+| `defaultRules.rules.kubeStateMetrics` | Create kube-state-metrics default rules | `true` |
 | `defaultRules.rules.network` | Create networking default rules | `true` |
 | `defaultRules.rules.node` | Create Node default rules | `true` |
 | `defaultRules.rules.prometheus` | Create Prometheus  default rules| `true` |

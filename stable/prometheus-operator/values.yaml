@@ -36,6 +36,8 @@ defaultRules:
     kubeApiserver: true
     kubeApiserverError: true
     kubeApiserverSlos: true
+    kubelet: true
+    kubePrometheusGeneral: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -44,6 +46,7 @@ defaultRules:
     kubernetesStorage: true
     kubernetesSystem: true
     kubeScheduler: true
+    kubeStateMetrics: true
     network: true
     node: true
     prometheus: true
