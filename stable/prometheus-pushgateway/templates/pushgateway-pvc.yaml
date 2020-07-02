@@ -10,6 +10,7 @@ metadata:
   labels:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.persistentVolumeLabels) .  }}
   name: {{ template "prometheus-pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 4 }}

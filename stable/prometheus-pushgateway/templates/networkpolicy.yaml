@@ -9,6 +9,7 @@ metadata:
 {{- else -}}
 {{- fail "One of `allowAll` or `customSelectors` must be specified." }}
 {{- end }}
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:

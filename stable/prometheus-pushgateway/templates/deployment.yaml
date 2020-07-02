@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:

@@ -3,6 +3,7 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:

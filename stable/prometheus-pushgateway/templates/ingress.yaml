@@ -19,6 +19,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   name: {{ template "prometheus-pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
     {{- range $host := .Values.ingress.hosts }}

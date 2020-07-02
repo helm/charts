@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
 {{ .Values.serviceAnnotations | toYaml | indent 4 }}
   labels:
