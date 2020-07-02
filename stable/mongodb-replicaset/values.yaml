@@ -198,3 +198,12 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+# Startup probe, will only be added since Kubernetes v1.16 or higher
+# When you have a lot of collections/indices, MongoDB need some time to start
+startupProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 60
+  periodSeconds: 10
+  successThreshold: 2
