@@ -23,7 +23,7 @@ server:
 
 image:
   repository: prestosql/presto
-  tag: 329
+  tag: 337
   pullPolicy: IfNotPresent
   securityContext:
     runAsUser: 1000
