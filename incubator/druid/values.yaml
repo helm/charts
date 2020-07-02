@@ -71,10 +71,10 @@ broker:
   resources: {}
     # limits:
     #   cpu: 1
-    #   memory: 8Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 4Gi
+    #   memory: 512Mi
 
   nodeSelector: {}
 
@@ -115,7 +115,7 @@ coordinator:
   resources: {}
     # limits:
     #   cpu: 500m
-    #   memory: 2Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
     #   memory: 512Mi
@@ -179,6 +179,7 @@ historical:
     druid_processing_numMergeBuffers: 2
     druid_processing_numThreads: 1
     # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+    # druid_segmentCache_locations: '[{"path":"/var/druid/segment-cache","maxSize":300000000000}]'
 
   ingress:
     enabled: false
@@ -209,15 +210,14 @@ historical:
 
   resources: {}
     # limits:
-    #   cpu: 1
-    #   memory: 8Gi
+    #   cpu: 2
+    #   memory: 2Gi
     # requests:
-    #   cpu: 250m
-    #   memory: 4Gi
+    #   cpu: 500m
+    #   memory: 512Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
-  #   example: master-foo
 
   podDisruptionBudget:
     enabled: false
@@ -290,10 +290,10 @@ middleManager:
   resources: {}
     # limits:
     #   cpu: 500m
-    #   memory: 2Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+    #   memory: 256Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
@@ -335,11 +335,11 @@ router:
 
   resources: {}
     # limits:
-    #   cpu: 500m
-    #   memory: 2Gi
-    # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
   nodeSelector: {}
 
