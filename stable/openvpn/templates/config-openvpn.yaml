@@ -216,7 +216,6 @@ data:
       push "route {{ .Values.openvpn.OVPN_K8S_SVC_NETWORK }} {{ .Values.openvpn.OVPN_K8S_SVC_SUBNET }}"
 {{ end }}
 
-# Add any additional routes if specified:
 {{ if .Values.openvpn.additionalConfigs.enabled }}
   {{ range .Values.openvpn.additionalConfigs.routes }}
       push "{{ . }}"
