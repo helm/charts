@@ -13,28 +13,25 @@ configMap:
 
 ## Define the key value pairs in the configmap
 configVars:
-  DRUID_XMX: 1g
-  DRUID_XMS: 1g
-  DRUID_MAXNEWSIZE: 250m
-  DRUID_NEWSIZE: 250m
-  DRUID_MAXDIRECTMEMORYSIZE: 10000m
+  ## DRUID env vars. ref: https://github.com/apache/druid/blob/master/distribution/docker/druid.sh#L29
+  # DRUID_LOG_LEVEL: "warn"
+  # DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
   DRUID_USE_CONTAINER_IP: "true"
-  druid_processing_numThreads: "3"
+
+  ## Druid Common Configurations. ref: https://druid.apache.org/docs/latest/configuration/index.html#common-configurations
   druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage"]'
   druid_metadata_storage_type: postgresql
   druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
   druid_metadata_storage_connector_user: druid
   druid_metadata_storage_connector_password: druid
-  druid_coordinator_balancer_strategy: cachingCost
-  druid_indexer_runner_javaOptsArray: '["-server", "-Xmx1g", "-Xms1g", "-XX:MaxDirectMemorySize=3g", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
-  druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '268435456'
   druid_storage_type: local
   druid_indexer_logs_type: file
   druid_indexer_logs_directory: /opt/data/indexing-logs
+
+  ## Druid Emitting Metrics. ref: https://druid.apache.org/docs/latest/configuration/index.html#emitting-metrics
   druid_emitter: noop
   druid_emitter_logging_logLevel: debug
   druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
-  DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
 
 gCloudStorage:
   enabled: false
@@ -50,7 +47,12 @@ broker:
   serviceType: ClusterIP
 
   config:
-    JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+    DRUID_XMX: 512m
+    DRUID_XMS: 512m
+    DRUID_MAXDIRECTMEMORYSIZE: 400m
+    druid_processing_buffer_sizeBytes: '50000000'
+    druid_processing_numMergeBuffers: 2
+    druid_processing_numThreads: 1
     # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
 
   ingress:
@@ -69,10 +71,10 @@ broker:
   resources: {}
     # limits:
     #   cpu: 1
-    #   memory: 8Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 4Gi
+    #   memory: 512Mi
 
   nodeSelector: {}
 
@@ -92,7 +94,9 @@ coordinator:
   serviceType: ClusterIP
 
   config:
-    JAVA_OPTS: "-Xms1G -Xmx1G"
+    DRUID_XMX: 256m
+    DRUID_XMS: 256m
+    druid_coordinator_balancer_strategy: cachingCost
     # druid_monitoring_monitors: '["org.apache.druid.server.metrics.TaskCountStatsMonitor"]'
 
   ingress:
@@ -111,7 +115,7 @@ coordinator:
   resources: {}
     # limits:
     #   cpu: 500m
-    #   memory: 2Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
     #   memory: 512Mi
@@ -168,8 +172,14 @@ historical:
   serviceType: ClusterIP
 
   config:
-    JAVA_OPTS: "-Xms2G -Xmx2G -XX:MaxDirectMemorySize=8g"
+    DRUID_XMX: 512m
+    DRUID_XMS: 512m
+    DRUID_MAXDIRECTMEMORYSIZE: 400m
+    druid_processing_buffer_sizeBytes: '50000000'
+    druid_processing_numMergeBuffers: 2
+    druid_processing_numThreads: 1
     # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+    # druid_segmentCache_locations: '[{"path":"/var/druid/segment-cache","maxSize":300000000000}]'
 
   ingress:
     enabled: false
@@ -200,15 +210,14 @@ historical:
 
   resources: {}
     # limits:
-    #   cpu: 1
-    #   memory: 8Gi
+    #   cpu: 2
+    #   memory: 2Gi
     # requests:
-    #   cpu: 250m
-    #   memory: 4Gi
+    #   cpu: 500m
+    #   memory: 512Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
-  #   example: master-foo
 
   podDisruptionBudget:
     enabled: false
@@ -228,8 +237,10 @@ middleManager:
   serviceType: ClusterIP
 
   config:
-    JAVA_OPTS: "-Xms1G -Xmx1G"
-    # druid_monitoring_monitors: '["org.apache.druid.java.util.metrics.SysMonitor"]'
+    DRUID_XMX: 64m
+    DRUID_XMS: 64m
+    druid_indexer_runner_javaOptsArray: '["-server", "--Xms256m", "-Xmx256m", "-XX:MaxDirectMemorySize=300m", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-XX:+ExitOnOutOfMemoryError", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
+    druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '25000000'
 
   autoscaling:
     enabled: false
@@ -279,14 +290,13 @@ middleManager:
   resources: {}
     # limits:
     #   cpu: 500m
-    #   memory: 2Gi
+    #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+    #   memory: 256Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
-  #   example: master-foo
 
   podDisruptionBudget:
     enabled: false
@@ -306,7 +316,9 @@ router:
   serviceType: ClusterIP
 
   config:
-    JAVA_OPTS: "-Xms1G -Xmx1G"
+    DRUID_XMX: 128m
+    DRUID_XMS: 128m
+    DRUID_MAXDIRECTMEMORYSIZE: 128m
 
   ingress:
     enabled: false
@@ -323,11 +335,11 @@ router:
 
   resources: {}
     # limits:
-    #   cpu: 500m
-    #   memory: 2Gi
-    # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
   nodeSelector: {}
 
