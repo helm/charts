@@ -37,8 +37,8 @@ data:
     io.prestosql={{ .Values.server.log.presto.level }}
 
   health_check.sh: |
-    #!/bin/bash 
-    curl --silent {{ template "presto.fullname" . }}:{{ .Values.server.config.http.port }}/v1/node | tr "," "\n" | grep --silent $(hostname -i)
+    #!/bin/bash
+    curl -H 'X-Presto-User: healthCheck' --silent {{ template "presto.fullname" . }}:{{ .Values.server.config.http.port }}/v1/node | tr "," "\n" | grep --silent $(hostname -i)
 
 ---
 {{- end }}
