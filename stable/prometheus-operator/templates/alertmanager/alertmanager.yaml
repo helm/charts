@@ -103,5 +103,12 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
   additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumes }}
+  volumes: {{.Values.alertmanager.alertmanagerSpec.volumes }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumeMounts }}
+  volumeMounts: {{.Values.alertmanager.alertmanagerSpec.volumeMounts }}
+{{- end }}
   portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}
+
