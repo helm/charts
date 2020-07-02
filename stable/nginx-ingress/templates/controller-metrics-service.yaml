@@ -42,6 +42,6 @@ spec:
   selector:
     app: {{ template "nginx-ingress.name" . }}
     release: {{ template "nginx-ingress.releaseLabel" . }}
-    app.kubernetes.io/component: controller
+    {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
   type: "{{ .Values.controller.metrics.service.type }}"
 {{- end }}

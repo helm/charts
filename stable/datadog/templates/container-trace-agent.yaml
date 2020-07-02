@@ -25,7 +25,7 @@
       value: "true"
     - name: DD_APM_RECEIVER_PORT
       value: {{ .Values.datadog.apm.port | quote }}
-  {{- if .Values.datadog.apm.useSocketVolume -}}
+  {{- if .Values.datadog.apm.useSocketVolume }}
     - name: DD_APM_RECEIVER_SOCKET
       value: {{ .Values.datadog.apm.socketPath | quote }}
   {{- end }}

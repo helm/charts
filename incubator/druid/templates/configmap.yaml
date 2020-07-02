@@ -1,3 +1,4 @@
+{{- if .Values.configMap.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -28,4 +29,5 @@ data:
 {{- end }}
 {{- if .Values.gCloudStorage.enabled }}
   GOOGLE_APPLICATION_CREDENTIALS: /var/secrets/google/key.json
+{{- end }}
 {{- end }}

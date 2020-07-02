@@ -7,7 +7,8 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ template "nginx-ingress.releaseLabel" . }}
-    app.kubernetes.io/component: controller
+    {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
+
     {{- if .Values.controller.deploymentLabels }}
 {{ toYaml .Values.controller.deploymentLabels | indent 4 }}
     {{- end }}
@@ -20,7 +21,7 @@ spec:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.useComponentLabel }}
-      app.kubernetes.io/component: controller
+      {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
     {{- end }}
 {{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
@@ -41,7 +42,7 @@ spec:
         app: {{ template "nginx-ingress.name" . }}
         release: {{ template "nginx-ingress.releaseLabel" . }}
         component: "{{ .Values.controller.name }}"
-        app.kubernetes.io/component: controller
+        {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
