@@ -4,12 +4,15 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/google-containers/fluentd-elasticsearch
-  tag: v2.4.0
+  repository: quay.io/fluentd_elasticsearch/fluentd
+  tag: v3.0.4
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
   #   - secret2
+
+useStatefulSet: false
+replicaCount: 1
 
 output:
   host: elasticsearch-client.default.svc.cluster.local
@@ -41,6 +44,7 @@ extraEnvVars:
 
 plugins:
   enabled: false
+  runCommand: "/entrypoint.sh"
   pluginsList: []
 
 service:
@@ -178,6 +182,7 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  annotations: {}
 
 ## Persist data to a persistent volume
 persistence:

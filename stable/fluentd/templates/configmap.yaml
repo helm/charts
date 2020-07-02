@@ -33,5 +33,5 @@ data:
   {{- range $plugin := .Values.plugins.pluginsList }}
     fluent-gem install {{ $plugin }}
   {{- end }}
-    exec /run.sh
+    exec {{ .Values.plugins.runCommand }}
 {{- end }}
