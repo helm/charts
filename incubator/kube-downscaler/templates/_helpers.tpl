@@ -29,3 +29,14 @@ Create chart name and version as used by the chart label.
 {{- define "kube-downscaler.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "kube-downscaler.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "kube-downscaler.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

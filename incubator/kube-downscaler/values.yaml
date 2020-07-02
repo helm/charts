@@ -31,13 +31,22 @@ interval: 60
 rbac:
   # If true, create & use RBAC resources
   create: true
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+
+serviceAccount:
+  # If true, create & use a ServiceAccount
+  create: true
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # Custom annotations for the ServiceAccount. Ignored if serviceAccount.create is false.
+  annotations: {}
 
 image:
   repository: hjacobs/kube-downscaler
   tag: 20.5.0
   pullPolicy: IfNotPresent
+
+# Names of imagePullSecrets to use.
+imagePullSecretsNames: []
 
 resources:
   limits: {}
