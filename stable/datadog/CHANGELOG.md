@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.21
+
+* Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
 ## 2.3.19
 
 * Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
