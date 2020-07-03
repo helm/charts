@@ -47,7 +47,11 @@
 {{- end }}
 {{- range $value := .Values.datadog.env }}
 - name: {{ $value.name }}
+  {{- if $value.value }}
   value: {{ $value.value | quote }}
+  {{- else if $value.valueFrom }}
+  valueFrom: {{ toYaml $value.valueFrom | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- if .Values.datadog.acInclude }}
 - name: DD_AC_INCLUDE
