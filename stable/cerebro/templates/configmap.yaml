@@ -20,6 +20,15 @@ data:
     {{- else }}
     play.ws.ssl.loose.acceptAnyCertificate = true
     {{- end }}
+    {{- if .Values.config.tlsCaCert }}
+    play.ws.ssl {
+      trustManager = {
+        stores = [
+          { type = "PEM", path = {{ .Values.config.tlsCaCert | quote }} }
+        ]
+      }
+    }
+    {{- end }}
 
     basePath = {{ .Values.config.basePath | quote }}
 
