@@ -408,7 +408,7 @@ clusterAgent:
     ## @param tag - string - required
     ## Define the Cluster-Agent version to use.
     #
-    tag: 1.6.0
+    tag: 1.7.0
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -464,8 +464,15 @@ clusterAgent:
 
     ## @param wpaController - boolean - optional
     ## Enable informer and controller of the watermark pod autoscaler
+    ## NOTE: You need to install the `WatermarkPodAutoscaler` CRD before
     #
     wpaController: false
+
+    ## @param useDatadogMetrics - boolean - optional
+    ## Enable usage of DatadogMetric CRD to autoscale on arbitrary Datadog queries
+    ## NOTE: You need to install the `DatadogMetric` CRD before
+    #
+    useDatadogMetrics: false
 
     ## Configuration for the service for the cluster-agent metrics server
     #
