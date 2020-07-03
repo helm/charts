@@ -47,7 +47,7 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext:  #
+  securityContext: {}
   #   seLinuxOptions:
   #     user: system_u
   #     role: system_r
@@ -101,7 +101,7 @@ datadog:
   ## @param nodeLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Node Labels to Datadog Tags.
   #
-  nodeLabelsAsTags:
+  nodeLabelsAsTags: {}
   #   beta.kubernetes.io/instance-type: aws-instance-type
   #   kubernetes.io/role: kube_role
   #   <KUBERNETES_NODE_LABEL>: <DATADOG_TAG_KEY>
@@ -109,7 +109,7 @@ datadog:
   ## @param podLabelsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Labels to Datadog Tags.
   #
-  podLabelsAsTags:
+  podLabelsAsTags: {}
   #   app: kube_app
   #   release: helm_release
   #   <KUBERNETES_LABEL>: <DATADOG_TAG_KEY>
@@ -117,7 +117,7 @@ datadog:
   ## @param podAnnotationsAsTags - list of key:value strings - optional
   ## Provide a mapping of Kubernetes Annotations to Datadog Tags
   #
-  podAnnotationsAsTags:
+  podAnnotationsAsTags: {}
   #   iam.amazonaws.com/role: kube_iamrole
   #   <KUBERNETES_ANNOTATIONS>: <DATADOG_TAG_KEY>
 
@@ -126,7 +126,7 @@ datadog:
   ##
   ## Learn more about tagging: https://docs.datadoghq.com/tagging/
   #
-  tags:
+  tags: []
   #   - "<KEY_1>:<VALUE_1>"
   #   - "<KEY_2>:<VALUE_2>"
 
@@ -261,7 +261,7 @@ datadog:
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   #
-  env:
+  env: []
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
@@ -289,7 +289,7 @@ datadog:
   ## Each key becomes a file in /checks.d
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   #
-  checksd:
+  checksd: {}
   #   service.py: |-
 
   ## @param dockerSocketPath - string - optional
@@ -406,13 +406,13 @@ clusterAgent:
     ## It is possible to specify docker registry credentials
     ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
     #
-    pullSecrets:
+    pullSecrets: []
     #   - name: "<REG_SECRET>"
 
   ## @param command - array - optional
   ## Command to run in the Cluster Agent container
   #
-  command:  # []
+  command: []
 
   ## @param token - string - required
   ## This needs to be at least 32 characters a-zA-z
@@ -497,13 +497,13 @@ clusterAgent:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
-  nodeSelector:  # {}
+  nodeSelector: {}
 
   ## @param affinity - object - optional
-  ## Allow the Cluster Agent Deployment to schedule using affnity rules
+  ## Allow the Cluster Agent Deployment to schedule using affinity rules
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   #
-  affinity:  # {}
+  affinity: {}
 
   ## @param healthPort - integer - optional - default: 5555
   ## Port number use the cluster-agent to server healthz endpoint
@@ -552,7 +552,7 @@ clusterAgent:
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the cluster-agents's pod(s)
   #
-  podAnnotations:
+  podAnnotations: {}
   #   key: "value"
 
   ## @param useHostNetwork - boolean - optional
@@ -568,7 +568,7 @@ clusterAgent:
   ## @param dnsConfig - list of objects - optional
   ## specify dns configuration options for datadog cluster agent containers e.g ndots
   ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
-  dnsConfig:
+  dnsConfig: {}
   #  options:
   #  - name: ndots
   #    value: "1"
@@ -576,7 +576,7 @@ clusterAgent:
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the cluster-agent container
   #
-  volumes:
+  volumes: []
   #   - hostPath:
   #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
@@ -584,14 +584,15 @@ clusterAgent:
   ## @param volumeMounts - list of objects - optional
   ## Specify additional volumes to mount in the cluster-agent container
   #
-  volumeMounts:
+  volumeMounts: []
   #   - name: <VOLUME_NAME>
   #     mountPath: <CONTAINER_PATH>
   #     readOnly: true
+
   ## @param datadog-cluster.yaml - object - optional
   ## Specify custom contents for the datadog cluster agent config (datadog-cluster.yaml).
   #
-  datadog_cluster_yaml:  # {}
+  datadog_cluster_yaml: {}
 
   ## @param createPodDisruptionBudget - boolean - optional
   ## Specify the pod disruption budget to apply to the cluster agents
@@ -644,7 +645,7 @@ agents:
     ## It is possible to specify docker registry credentials
     ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
     #
-    pullSecrets:
+    pullSecrets: []
     #   - name: "<REG_SECRET>"
 
   ## @param rbac - object - required
@@ -666,7 +667,7 @@ agents:
       ## @param env - list - required
       ## Additional environment variables for the agent container.
       #
-      env:
+      env: []
 
       ## @param logLevel - string - optional
       ## Set logging verbosity, valid log levels are:
@@ -720,7 +721,7 @@ agents:
       ## @param env - list - required
       ## Additional environment variables for the process-agent container.
       #
-      env:
+      env: []
 
       ## @param logLevel - string - optional
       ## Set logging verbosity, valid log levels are:
@@ -780,7 +781,7 @@ agents:
       ## @param env - list - required
       ## Additional environment variables for the system-probe container.
       #
-      env:
+      env: []
 
       ## @param logLevel - string - optional
       ## Set logging verbosity, valid log levels are:
@@ -815,7 +816,7 @@ agents:
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
   #
-  volumes:
+  volumes: []
   #   - hostPath:
   #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
@@ -823,7 +824,7 @@ agents:
   ## @param volumeMounts - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
   #
-  volumeMounts:
+  volumeMounts: []
   #   - name: <VOLUME_NAME>
   #     mountPath: <CONTAINER_PATH>
   #     readOnly: true
@@ -841,7 +842,7 @@ agents:
   ## @param dnsConfig - list of objects - optional
   ## specify dns configuration options for datadog cluster agent containers e.g ndots
   ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
-  dnsConfig:
+  dnsConfig: {}
   #  options:
   #  - name: ndots
   #    value: "1"
@@ -849,25 +850,25 @@ agents:
   ## @param podAnnotations - list of key:value strings - optional
   ## Annotations to add to the DaemonSet's Pods
   #
-  podAnnotations:
+  podAnnotations: {}
   #   <POD_ANNOTATION>: '[{"key": "<KEY>", "value": "<VALUE>"}]'
 
   ## @param tolerations - array - optional
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   #
-  tolerations:  # []
+  tolerations: []
 
   ## @param nodeSelector - object - optional
   ## Allow the DaemonSet to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
-  nodeSelector:  # {}
+  nodeSelector: {}
 
   ## @param affinity - object - optional
   ## Allow the DaemonSet to schedule using affinity rules
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   #
-  affinity:  # {}
+  affinity: {}
 
   ## @param updateStrategy - string - optional
   ## Allow the DaemonSet to perform a rolling update on helm update
@@ -886,7 +887,7 @@ agents:
   ## @param podLabels - object - optional
   ## Sets podLabels if defined.
   #
-  podLabels:  # {}
+  podLabels: {}
 
   ## @param useConfigMap - boolean - optional
   ## Configures a configmap to provide the agent configuration
@@ -900,7 +901,7 @@ agents:
   ## ref: https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml
   ## Note the `agent.useConfigMap` needs to be set to `true` for this parameter to be taken into account.
   #
-  customAgentConfig:
+  customAgentConfig: {}
   #   # Autodiscovery for Kubernetes
   #   listeners:
   #     - name: kubelet
@@ -959,7 +960,7 @@ clusterChecksRunner:
     ## It is possible to specify docker registry credentials
     ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
     #
-    pullSecrets:
+    pullSecrets: []
     #   - name: "<REG_SECRET>"
 
   ## @param createPodDisruptionBudget - boolean - optional
@@ -1012,7 +1013,7 @@ clusterChecksRunner:
   ## By default, ClusterChecks Deployment Pods are forced to run on different Nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   #
-  affinity:  # {}
+  affinity: {}
 
   ## @param strategy - string - optional
   ## Allow the ClusterChecks deployment to perform a rolling update on helm update
@@ -1027,7 +1028,7 @@ clusterChecksRunner:
   ## @param dnsConfig - list of objects - optional
   ## specify dns configuration options for datadog cluster agent containers e.g ndots
   ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
-  dnsConfig:
+  dnsConfig: {}
   #  options:
   #  - name: ndots
   #    value: "1"
@@ -1036,13 +1037,13 @@ clusterChecksRunner:
   ## Allow the ClusterChecks Deployment to schedule on selected nodes
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
-  nodeSelector:  # {}
+  nodeSelector: {}
 
   ## @param tolerations - array - required
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations:  # []
+  tolerations: []
 
   ## @param livenessProbe - object - required
   ## In case of issues with the probe, you can disable it with the
@@ -1084,14 +1085,14 @@ clusterChecksRunner:
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   #
-  env:
+  env: []
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
   ## @param volumes - list of objects - optional
   ## Specify additional volumes to mount in the cluster checks container
   #
-  volumes:
+  volumes: []
   #   - hostPath:
   #       path: <HOST_PATH>
   #     name: <VOLUME_NAME>
@@ -1099,7 +1100,7 @@ clusterChecksRunner:
   ## @param volumeMounts - list of objects - optional
   ## Specify additional volumes to mount in the cluster checks container
   #
-  volumeMounts:
+  volumeMounts: []
   #   - name: <VOLUME_NAME>
   #     mountPath: <CONTAINER_PATH>
   #     readOnly: true
