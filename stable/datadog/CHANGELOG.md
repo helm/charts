@@ -1,5 +1,11 @@
 # Datadog changelog
 
+## 2.3.22
+
+* Remove duplicate imagePullSecrets
+* Fix DataDog location to useConfigMap in docs
+* Adding explanation for metricsProvider.enabled
+
 ## 2.3.21
 
 * Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
