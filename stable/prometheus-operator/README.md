@@ -197,8 +197,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
-| `prometheusOperator.configmapReloadImage.repository` | Repository for configmapReload image | `quay.io/coreos/configmap-reload` |
-| `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.0.1` |
+| `prometheusOperator.configmapReloadImage.repository` | Repository for configmapReload image | `docker.io/jimmidyson/configmap-reload` |
+| `prometheusOperator.configmapReloadImage.tag` | Tag for configmapReload image | `v0.3.0` |
 | `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources. Regardless of value of this, Helm v3+ will install the CRDs if those are not present already. Use `--skip-crds` with `helm install` if you want to skip CRD creation | `true` |
 | `prometheusOperator.namespaces` |  Namespaces to scope the interaction of the Prometheus Operator and the apiserver (allow list). This is mutually exclusive with `denyNamespaces`. Setting this to an empty object will disable the configuration | `{}` |
 | `prometheusOperator.namespaces.releaseNamespace` | Include the release namespace | `false` |

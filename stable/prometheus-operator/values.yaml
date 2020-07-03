@@ -1332,8 +1332,8 @@ prometheusOperator:
   ## Configmap-reload image to use for reloading configmaps
   ##
   configmapReloadImage:
-    repository: quay.io/coreos/configmap-reload
-    tag: v0.0.1
+    repository: docker.io/jimmidyson/configmap-reload
+    tag: v0.3.0
 
   ## Prometheus-config-reloader image to use for config and rule reloading
   ##
