@@ -13,6 +13,10 @@ spec:
       app: {{ template "schema-registry.name" . }}
       release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
+  {{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -29,6 +33,9 @@ spec:
       {{- end }}
       {{- end }}
     spec:
+    {{- if .Values.priorityClass.enabled }}
+      priorityClassName: {{ template "schema-registry.priorityClass.name" . | quote }}
+    {{- end }}
     {{- if .Values.sasl.scram.enabled }}
       initContainers:
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
@@ -161,6 +168,18 @@ spec:
             readOnly: true
             {{- end }}
           {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       volumes:
       {{- if .Values.sasl.scram.enabled }}
       - name: jaasconfig

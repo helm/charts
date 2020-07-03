@@ -1,0 +1,20 @@
+{{- if and .Values.priorityClass.enabled .Values.priorityClass.create }}
+{{- if .Capabilities.APIVersions.Has "scheduling.k8s.io/v1" }}
+apiVersion: scheduling.k8s.io/v1
+{{- else if .Capabilities.APIVersions.Has "scheduling.k8s.io/v1beta1" }}
+apiVersion: scheduling.k8s.io/v1beta1
+{{- else }}
+apiVersion: scheduling.k8s.io/v1alpha1
+{{- end }}
+kind: PriorityClass
+metadata:
+  name: {{ template "schema-registry.priorityClass.name" . | quote }}
+  labels:
+    app: {{ template "cp-schema-registry.name" . }}
+    chart: {{ template "cp-schema-registry.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+value: {{ .Values.priorityClass.value }}
+globalDefault: {{ .Values.priorityClass.globalDefault }}
+description: {{ .Values.priorityClass.description | quote }}
+{{- end }}

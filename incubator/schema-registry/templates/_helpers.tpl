@@ -46,3 +46,14 @@ Default GroupId to Release Name but allow it to be overridden
 {{- .Release.Name -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Use deafault or custom PriorityClass name
+*/}}
+{{- define "schema-registry.priorityClass.name" -}}
+{{- if .Values.priorityClass.nameOverride -}}
+{{- .Values.priorityClass.nameOverride -}}
+{{- else -}}
+{{ template "schema-registry.fullname" . }}
+{{- end -}}
+{{- end -}}

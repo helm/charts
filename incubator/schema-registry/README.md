@@ -65,6 +65,16 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `imageTag` | The `SchemaRegistry` image tag | `5.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
+| `updateStrategy` | Specifies the strategy used to replace old Pods by new ones. | `{}` |
+| `priorityClass.enabled` | Defines whether to use or not `PriorityClass` on this chart | `false` |
+| `priorityClass.nameOverride` | Name of the priority class to use on the Schema registry PODs and when `priorityClass.create: true` the name of the resource created. Defaults `schema-registry.fullname` template on `_helpers.tpl` file. | `""` |
+| `priorityClass.create` | Flag to create the `PriorityClass` as part of the Helm release. [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/) | `false` |
+| `priorityClass.value` | [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/) | `100` |
+| `priorityClass.globalDefault` | [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/) | `false` |
+| `priorityClass.description` | [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/) | `""` |
+| `podDisruptionBudget.enabled` | [Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) | `false` |
+| `podDisruptionBudget.maxUnavailable` | [Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) | `1` |
+| `podDisruptionBudget.minAvailable` | [Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) | `nil` |
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
 | `podAnnotations` | Pod annotations. | ` ` |
 | `kafkaOpts` | Additional Java arguments to pass to Kafka. | ` ` |
@@ -78,6 +88,9 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `sasl.scram.zookeeperClientUser` | the sasl scram user to use to authenticate to zookeeper | `zookeeper-client` |
 | `sasl.scram.zookeeperClientPassword` | the sasl scram password to use to authenticate to zookeeper | `zookeeper-password` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
+| `nodeSelector` | Dictionary containing key-value-pairs to match labels on nodes. When defined pods will only be scheduled on nodes, that have each of the indicated key-value pairs as labels. Further information can be found in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) | `{}` |
+| `tolerations`| Array containing taint references. When defined, pods can run on nodes, which would otherwise deny scheduling. Further information can be found in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) | `{}` |
+| `affinity`| Dictionay to configure affinity and anti-affinity for Schema Registry PODs. Further information can be found in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) | `{}` |
 | `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
 | `service.annotations` | Additional annotations for the service | `{}` |
 | `service.labels` | Additional labels for the service | `{}` |
