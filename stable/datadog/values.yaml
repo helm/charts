@@ -492,6 +492,18 @@ clusterAgent:
   #
   env: []
 
+  ## @param admissionController - object - required
+  ## Enable the admissionController to be able to inject APM/Dogstatsd config
+  ## and standard tags (env, service, version) automatically into your pods
+  #
+  admissionController:
+    enabled: false
+
+    ## @param mutateUnlabelled - boolean - optional
+    ## Enable injecting config without having the pod label 'admission.datadoghq.com/enabled="true"'
+    #
+    mutateUnlabelled: false
+
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
   ## Each key will become a file in /conf.d
