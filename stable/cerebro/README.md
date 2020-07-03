@@ -75,7 +75,10 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `config.hosts`                      | A list of known hosts               | `[]`                                      |
 | `config.secret`                     | Secret used to sign session cookies | `(random alphanumeric 64 length string)`  |
 | `config.tlsVerify`                  | Validate Elasticsearch cert         | `true`                                    |
+| `config.tlsCaCert`                  | CA cert to use for cert validation  | `See values.yaml`                         |
 | `securityContext`                   | Security context for pod            | `See values.yaml`                         |
+| `volumes`                           | Volumes defintion                   | `See values.yaml`                         |
+| `volumemounts`                      | Volume mount defintion              | `See values.yaml`                         |
 
 
 
