@@ -26,7 +26,6 @@ configVars:
   druid_metadata_storage_connector_password: druid
   druid_storage_type: local
   druid_indexer_logs_type: file
-  druid_indexer_logs_directory: /opt/data/indexing-logs
 
   ## Druid Emitting Metrics. ref: https://druid.apache.org/docs/latest/configuration/index.html#emitting-metrics
   druid_emitter: noop
