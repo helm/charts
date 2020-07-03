@@ -24,7 +24,11 @@
     {{- end }}
   {{- range $value := .Values.agents.containers.processAgent.env }}
     - name: {{ $value.name }}
+      {{- if $value.value }}
       value: {{ $value.value | quote }}
+      {{- else if $value.valueFrom }}
+      valueFrom: {{ toYaml $value.valueFrom | nindent 8 }}
+      {{- end }}
   {{- end }}
   volumeMounts:
     - name: config

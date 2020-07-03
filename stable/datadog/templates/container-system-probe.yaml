@@ -11,7 +11,11 @@
       value: {{ .Values.agents.containers.systemProbe.logLevel | default .Values.datadog.logLevel | quote }}
   {{- range $value := .Values.agents.containers.systemProbe.env }}
     - name: {{ $value.name }}
+      {{- if $value.value }}
       value: {{ $value.value | quote }}
+      {{- else if $value.valueFrom }}
+      valueFrom: {{ toYaml $value.valueFrom | nindent 8 }}
+      {{- end }}
   {{- end }}
   resources:
 {{ toYaml .Values.agents.containers.systemProbe.resources | indent 4 }}
