@@ -12,6 +12,8 @@ https://github.com/kiwigrid/k8s-sidecar
 
 Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
 
+## 2.1.2 updated README
+
 ## 2.1.1 update credentials-binding plugin to 1.23
 
 ## 2.1.0
