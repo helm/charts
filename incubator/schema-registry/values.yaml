@@ -66,19 +66,19 @@ affinity: {}
 #     podAffinityTerm:
 #       labelSelector:
 #         matchExpressions:
-#         - key: strimzi.io/name
+#         - key: app
 #           operator: In
 #           values:
-#           - msk-analytics-connect
+#           - <schema-registry `app` label value>
 #       topologyKey: "kubernetes.io/hostname"
 #   - weight: 50
 #     podAffinityTerm:
 #       labelSelector:
 #         matchExpressions:
-#         - key: strimzi.io/name
+#         - key: app
 #           operator: In
 #           values:
-#           - msk-analytics-connect
+#           - <schema-registry `app` label value>
 #       topologyKey: "failure-domain.beta.kubernetes.io/zone"
 
 ## Configure Schema Registry PODs priotrity class
