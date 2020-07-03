@@ -2,10 +2,10 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "cp-schema-registry.fullname" . }}
+  name: {{ template "schema-registry.fullname" . }}
   labels:
-    app: {{ template "cp-schema-registry.name" . }}
-    chart: {{ template "cp-schema-registry.chart" . }}
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -17,6 +17,6 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ template "cp-schema-registry.name" . }}
+      app: {{ template "schema-registry.name" . }}
       release: {{ .Release.Name }}
 {{- end }}

@@ -10,8 +10,8 @@ kind: PriorityClass
 metadata:
   name: {{ template "schema-registry.priorityClass.name" . | quote }}
   labels:
-    app: {{ template "cp-schema-registry.name" . }}
-    chart: {{ template "cp-schema-registry.chart" . }}
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 value: {{ .Values.priorityClass.value }}
