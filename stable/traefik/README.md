@@ -182,6 +182,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kvprovider.etcd.useAPIV3`             | Use V3 or use V2 API of ETCD                                                                                                 | `false`                                           |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
+| `dashboard.basePath`                   | BasePath for the Traefik dashboard URI.                                                                                      | None                                              |
 | `dashboard.serviceType`                | ServiceType for the Traefik dashboard Service                                                                                | `ClusterIP`                                       |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
 | `dashboard.ingress.annotations`        | Annotations for the Traefik dashboard Ingress definition, specified as a map                                                 | None                                              |
@@ -285,6 +286,19 @@ installing the chart. For example:
 
 ```bash
 $ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
+```
+
+The below configuration in the YAML file will set the basePath for the Traefik dashboard URI.
+The `PathPrefixStrip` rule-type is required for routing the request when `dashboard.basePath` is used.
+Refer the docs for more [path matcher guidelines](https://docs.traefik.io/v1.7/basics/#path-matcher-usage-guidelines).
+
+```yaml
+dashboard:
+    enabled: true
+    basePath: "/traefik"
+    ingress:
+        annotations:
+            traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
 ```
 
 ### Clustering / High Availability

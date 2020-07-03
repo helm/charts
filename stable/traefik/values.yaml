@@ -360,6 +360,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  # basePath: "/traefik"
   # serviceType: ClusterIP
   service: {}
     # annotations:
