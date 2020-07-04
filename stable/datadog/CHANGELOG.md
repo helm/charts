@@ -1,5 +1,47 @@
 # Datadog changelog
 
+## 2.3.22
+
+* Remove duplicate imagePullSecrets
+* Fix DataDog location to useConfigMap in docs
+* Adding explanation for metricsProvider.enabled
+
+## 2.3.21
+
+* Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
+## 2.3.19
+
+* Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
+
+## 2.3.18
+
+* Support arguments in the cluster-agent container `command` value
+
+## 2.3.17
+
+* grammar edits to datadog helm docs!
+* Typo in log config
+
+## 2.3.16
+
+* Add parameter `clusterChecksRunner.rbac.serviceAccountAnnotations` for specifying annotations for dedicated ServiceAccount for Cluster Checks runners.
+* Add parameters `clusterChecksRunner.volumes` and `clusterChecksRunner.volumeMounts` that can be used for providing a secret backend to Cluster Checks runners.
+
+## 2.3.15
+
+* Mount kernel headers in system-probe container
+* Fix the mount of the `system-probe` socket in core agent
+* Add parameters to enable eBPF based checks
+
+## 2.3.14
+
+* Allow overriding the `command` to run in the cluster-agent container
+
+## 2.3.13
+
+* Use two distinct health endpoints for liveness and readiness probes.
+
 ## 2.3.12
 
 * Fix endpoints checks scheduling between agent and cluster check runners

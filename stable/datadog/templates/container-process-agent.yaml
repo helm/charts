@@ -54,8 +54,11 @@
       readOnly: true
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
-      mountPath: /opt/datadog-agent/run
+      mountPath: /var/run/sysprobe
       readOnly: true
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
     {{- end }}
     {{- end }}
 {{- end -}}
