@@ -1353,7 +1353,7 @@ prometheusOperator:
   ##
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
-    tag: v1.12.1
+    tag: v1.16.12
     pullPolicy: IfNotPresent
 
 ## Deploy a Prometheus instance
