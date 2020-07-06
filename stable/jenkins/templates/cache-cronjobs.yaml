@@ -1,12 +1,26 @@
-{{- if and .Values.persistence.enabled .Values.persistence.cache.clearJob.cronSchedule }}
-{{- range $index, $volume := .Values.persistence.cache.volumes }}
-{{- if eq $volume.type "PVC" }}
-{{- $claimName := tpl ($volume.claimName | required "claimName is required") $ }}
+{{- $deDup :=  dict }}
+{{- /* deduplication logic to ensure one one cache PVC is created per unique componentName */}}
+{{- if .Values.agent.enabled }}
+  {{- if and .Values.agent.cache.enabled .Values.agent.cache.clear.enabled }}
+    {{- $_ := set $deDup (tpl (.Values.agent.cache.componentName | required "cache componentName is required") $) .Values.agent.cache }}
+  {{- end }}
+  {{- if .Values.additionalAgents }}
+    {{- $agent := .Values.agent }}
+    {{- range $name, $additionalAgent := .Values.additionalAgents }}
+      {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
+      {{- $additionalAgent := merge $additionalAgent $agent }}
+      {{- if and $additionalAgent.cache.enabled $additionalAgent.cache.clear.enabled }}
+        {{- $_ := set $deDup (tpl ($additionalAgent.cache.componentName | required "cache componentName is required") $) $additionalAgent.cache }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- /* render unique list of cache PVCs */}}
+  {{- range $name, $agentcache := $deDup }}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ $claimName }}-clear-cache-job
+  name: {{ tpl ($agentcache.clear.componentName | required "cache clear componentName is required") $ }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" $ }}'
     "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
@@ -17,7 +31,7 @@ spec:
   concurrencyPolicy : "Forbid"
   failedJobsHistoryLimit : 5
   successfulJobsHistoryLimit: 5
-  schedule: "{{ $.Values.persistence.cache.clearJob.cronSchedule }}"
+  schedule: "{{ $agentcache.clear.schedule }}"
   jobTemplate:
     spec:
       backoffLimit: 6
@@ -33,12 +47,12 @@ spec:
           volumes:
           - name: cache-volume
             persistentVolumeClaim:
-              claimName: {{ $claimName }}
+              claimName: {{ tpl ($agentcache.componentName | required "cache componentName is required") $ }}
           containers:
-          - name: {{ $claimName }}-clear-cache-job
-            image: "docker-registry.default.svc:5000/{{ $.Values.persistence.cache.clearJob.image }}:{{ $.Values.persistence.cache.clearJob.tag }}"
+          - name: {{ tpl ($agentcache.clear.componentName | required "cache clear componentName is required") $ }}
+            image: "docker-registry.default.svc:5000/{{ $agentcache.clear.image }}:{{ $agentcache.clear.tag }}"
             volumeMounts:
-            - mountPath: "/tmp/cache" 
+            - mountPath: {{ tpl ($agentcache.mountPath | required "cache mountPath is required") $ }}
               name: cache-volume
             resources:
               limits:
@@ -51,13 +65,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              echo "Remove files from {{ $claimName }} cache and confirm"
-              echo "rm -rf /tmp/cache/*"
-              rm -rf /tmp/cache/*
-              echo "ls -A /tmp/cache/ and return 1 if not empty"
-              [ "$(ls -A /tmp/cache/)" ] && exit 1
-              echo "Clear cache job completed"      
+              cd {{ tpl ($agentcache.mountPath | required "cache mountPath is required") $ }}
+              {{- tpl $agentcache.clear.command $ | nindent 14 }}
           restartPolicy: OnFailure
-{{- end }}
-{{- end }}
-{{- end }}
+  {{- end }}
+{{- end -}}

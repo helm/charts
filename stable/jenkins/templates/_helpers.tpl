@@ -225,8 +225,14 @@ Returns kubernetes pod template configuration as code
   showRawYaml: true
   serviceAccount: "{{ include "jenkins.serviceAccountAgentName" . }}"
   slaveConnectTimeoutStr: "{{ .Values.agent.slaveConnectTimeout }}"
-{{- if .Values.agent.volumes }}
+{{- if or .Values.agent.volumes .Values.agent.cache.enabled }}
   volumes:
+  {{- if .Values.agent.cache.enabled }}
+    - persistentVolumeClaim:
+        claimName: {{ tpl .Values.agent.cache.componentName . }}
+        mountPath: {{ tpl .Values.agent.cache.mountPath . }}
+        readOnly: false
+  {{- end }}
   {{- range $index, $volume := .Values.agent.volumes }}
     -{{- if (eq $volume.type "ConfigMap") }} configMapVolume:
      {{- else if (eq $volume.type "EmptyDir") }} emptyDirVolume:
@@ -272,6 +278,13 @@ Returns kubernetes pod template xml configuration
     {{- end }}</nodeSelector>
     <nodeUsageMode>NORMAL</nodeUsageMode>
   <volumes>
+  {{- if .Values.agent.cache.enabled }}
+    <persistentVolumeClaim>
+        <claimName>{{ tpl .Values.agent.cache.componentName . }}</claimName>
+        <mountPath>{{ tpl .Values.agent.cache.mountPath . }}</mountPath>
+        <readOnly>false</readOnly>
+    </persistentVolumeClaim>
+  {{- end }}
 {{- range $index, $volume := .Values.agent.volumes }}
   {{- if (eq $volume.type "PVC") }}
     <org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>

@@ -1,11 +1,26 @@
-{{- if .Values.persistence.enabled }}
-{{- range $index, $volume := .Values.persistence.cache.volumes }}
-{{- if eq $volume.type "PVC" }}
+{{- $deDup :=  dict }}
+{{- /* deduplication logic to ensure one one cache PVC is created per unique componentName */}}
+{{- if .Values.agent.enabled }}
+  {{- if .Values.agent.cache.enabled }}
+    {{- $_ := set $deDup (tpl (.Values.agent.cache.componentName | required "cache componentName is required") $) .Values.agent.cache }}
+  {{- end }}
+  {{- if .Values.additionalAgents }}
+    {{- $agent := .Values.agent }}
+    {{- range $name, $additionalAgent := .Values.additionalAgents }}
+      {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
+      {{- $additionalAgent := merge $additionalAgent $agent }}
+      {{- if $additionalAgent.cache.enabled }}
+        {{- $_ := set $deDup (tpl ($additionalAgent.cache.componentName | required "cache componentName is required") $) $additionalAgent.cache }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- /* render unique list of cache PVCs */}}
+  {{- range $name, $agentcache := $deDup }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ tpl ($volume.claimName | required "claimName is required") $ }}
+  name: {{ tpl ($agentcache.componentName | required "cache componentName is required") $ }}
   annotations:
     "helm.sh/resource-policy": delete
   labels:
@@ -16,11 +31,10 @@ metadata:
     "app.kubernetes.io/component": "{{ $.Values.master.componentName }}"
 spec:
   accessModes:
-  - ReadWriteMany
+    - "ReadWriteMany"
   resources:
     requests:
-      storage: {{ $volume.size | required "size is required" }}
-  storageClassName: {{ $volume.storageClassName | default "" }}
-{{- end }}
-{{- end }}
+      storage: {{ $agentcache.size | required "size is required" }}
+  storageClassName: {{ $agentcache.storageClass | default "" }}
+  {{- end }}
 {{- end }}

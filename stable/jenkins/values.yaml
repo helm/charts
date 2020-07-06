@@ -480,6 +480,23 @@ agent:
   # Controls how agent pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
   podRetention: "Never"
+  # create a cache for this agent, the chart will create a PVC as per componentName
+  # and storageClass, if defined.
+  cache:
+    enabled: false
+    componentName: "{{ .Release.Name }}-cache"
+    mountPath: ""
+    size: "4Gi"
+    # storageClass:
+    # The clear section defines a job to clear agent caches, its recommended to enable this
+    # and clear the cache when builds are least likely to prevent security issues
+    clear:
+      enabled: false
+      componentName: "{{ .Release.Name }}-clear-cache"
+      schedule: "0 0 * * SUN"
+      image: "maorfr/kube-tasks"
+      tag: "0.2.0"
+      command: "kube-tasks execute --command 'rm -rf'"
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, PVC, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
@@ -570,6 +587,15 @@ agent:
   #          resourceRequestMemory: "512Mi"
   #          resourceLimitCpu: "1"
   #          resourceLimitMemory: "1024Mi"
+  #      cache:
+  #        componentName: "{{ .Release.Name }}-maven-cache"
+  #        mountPath: "/home/jenkins/agent/.m2/repository"
+  #        clear:
+  #          componentName: "{{ .Release.Name }}-clear-maven-cache"
+  #          schedule: "0 2 * * WED"
+  #          image: "maven"
+  #          tag: "3.6.3-openjdk-11"
+  #          command: "mvn dependency:purge-local-repository -DsnapshotOnly=true"
   #      volumes:
   #        - persistentVolumeClaim:
   #            claimName: "{{ .Release.Name }}-maven-cache"
@@ -586,6 +612,17 @@ additionalAgents: {}
 #    # sideContainerName: jnlp
 #    image: jenkins/jnlp-agent-maven
 #    tag: latest
+#    cache:
+#      enabled: true
+#      componentName: "{{ .Release.Name }}-maven-cache"
+#      mountPath: "/home/jenkins/agent/.m2/repository"
+#      clear:
+#        enabled: true
+#        componentName: "{{ .Release.Name }}-clear-maven-cache"
+#        schedule: "0 2 * * WED"
+#        image: "maven"
+#        tag: "3.6.3-openjdk-11"
+#        command: "mvn dependency:purge-local-repository -DsnapshotOnly=true"
 #    volumes:
 #    - type: PVC
 #      claimName: "{{ .Release.Name }}-maven-cache"
@@ -625,26 +662,6 @@ persistence:
   #  - mountPath: /var/nothing
   #    name: nothing
   #    readOnly: true
-
-  ## values for development caches to speed builds
-  cache:
-    ## Create arbitrary PVC's for caches
-    volumes: []
-    # volumes:
-    #   - type: PVC
-    #     claimName: "{{ .Release.Name }}-maven-cache"
-    #     size: "4Gi"
-    #     storageClassName:
-    ## Details of job to clear caches on a periodic basis
-    clearJob:
-      ## Cron schedule to clear caches on a periodic basis
-      ## set to null or "" for disabling periodic cache clearing
-      ## default cron clear schedule is every Sunday at 00:00 EST
-      cronSchedule: "0 0 * * SUN"
-      ## image for the container on which cache PVC's are mounted and cleared
-      image: "alpine"
-      ## tag for the container on which cache PVC's are mounted and cleared
-      tag: "3.7"
 
 networkPolicy:
   # Enable creation of NetworkPolicy resources.

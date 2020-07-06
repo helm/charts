@@ -392,8 +392,10 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
-| `agent.runAsUser`          | Configure container user                        | Not set                |
-| `agent.runAsGroup`         | Configure container group                       | Not set                |
+| `agent.cache`              | Defining Cache volumes                          | `{}`                   |
+| `agent.volumes`            | Additional volumes                              | `[]`                   |
+| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
+| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
@@ -428,6 +430,31 @@ agent:
 ```
 
 The supported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `PVC`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
+
+#### Defining Caches for your agent pods
+
+Its possible to define a set of cache volumes that will be mounted by agent pods for caching libraries and other artifacts for build. The cache will be created as a new `PVC` by the chart. This is automatically mounted on the agent in the `mountPath` defined by using kubernetes pod templates. Along with the cache, a `CronJob` can be defined under the `clear` section to perform cache activies, including clearing old libraries, on a periodic basis. The `CronJob` is required both to prevent unused libraries from accumulating over time and to avoid security issues.
+
+The cache is defined in the format below:
+
+```
+  cache:
+    enabled: false
+    componentName: "{{ .Release.Name }}-cache"
+    mountPath: ""
+    size: "4Gi"
+    storageClass: ""
+    # The clear section defines a job to clear agent caches, its recommended to enable this
+    # and clear the cache when builds are least likely to prevent security issues
+    clear:
+      enabled: false
+      componentName: "{{ .Release.Name }}-clear-cache"
+      schedule: "0 0 * * SUN"
+      image: "maorfr/kube-tasks"
+      tag: "0.2.0"
+      command: "kube-tasks execute --command 'rm -rf'"
+
+```
 
 ## NetworkPolicy
 
@@ -493,21 +520,17 @@ It is possible to mount several volumes using `persistence.volumes` and `persist
 
 ### Persistence Values
 
-| Parameter                                 | Description                     | Default         |
-| ----------------------------------------- | ------------------------------- | --------------- |
-| `persistence.enabled`                     | Enable the use of a Jenkins PVC | `true`          |
-| `persistence.existingClaim`               | Provide the name of a PVC       | `nil`           |
-| `persistence.storageClass`                | Storage class for the PVC       | `nil`           |
-| `persistence.annotations`                 | Annotations for the PVC         | `{}`            |
-| `persistence.accessMode`                  | The PVC access mode             | `ReadWriteOnce` |
-| `persistence.size`                        | The size of the PVC             | `8Gi`           |
-| `persistence.subPath`                     | SubPath for jenkins-home mount  | `nil`           |
-| `persistence.volumes`                     | Additional volumes              | `nil`           |
-| `persistence.mounts`                      | Additional mounts               | `nil`           |
-| `persistence.cache.volumes`               | List of volumes, created if PVCs| `[]`            |
-| `persistence.cache.clearJob.cronSchedule` | Cron string for schedule        | `0 0 * * SUN`   |
-| `persistence.cache.clearJob.image`        | Image to run cache clear job    | `alpine`        |
-| `persistence.cache.clearJob.tag`          | Image ta to run cache clear job | `3.7`           |
+| Parameter                   | Description                     | Default         |
+| --------------------------- | ------------------------------- | --------------- |
+| `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
+| `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
+| `persistence.storageClass`  | Storage class for the PVC       | `nil`           |
+| `persistence.annotations`   | Annotations for the PVC         | `{}`            |
+| `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
+| `persistence.size`          | The size of the PVC             | `8Gi`           |
+| `persistence.subPath`       | SubPath for jenkins-home mount  | `nil`           |
+| `persistence.volumes`       | Additional volumes              | `nil`           |
+| `persistence.mounts`        | Additional mounts               | `nil`           |
 
 #### Existing PersistentVolumeClaim
 
@@ -531,49 +554,6 @@ If set to a dash (`-`, as in `persistence.storageClass=-`), the dynamic provisio
 
 If the storage class is set to null or left undefined (`persistence.storageClass=`),
 the default provisioner is used (gp2 on AWS, standard on GKE, AWS & OpenStack).
-
-#### Persistence Cache Values
-
-Its possible to define a set of volumes that will be mounted by agent pods for caching 
-libraries and other artifacts for build. Each volume of type `PVC` in this list will be created
-by the chart along with a `CronJob` to clear the cache (delete all files) on a periodic basis.
-
-A volume is defined in the format below:
-
-```
-  volumes:
-  - type: PVC
-    claimName: "{{ .Release.Name }}-maven-cache"
-    size: "4Gi"
-    storageClassName:
-```
-
-These volumes can be mounted in agents under `additionalAgents` and `podTemplates` sections as
-per the code snippets below:
-
-```  
-  podTemplates: 
-    maven: |
-      - name: maven
-...
-        volumes:
-          - persistentVolumeClaim: 
-              claimName: "{{ .Release.Name }}-maven-cache"
-              mountPath: /home/jenkins/agent/.m2/repository
-              readOnly: false
-```
-
-```
-additionalAgents: {}
-  maven:
-    podName: maven
-...
-    volumes:
-    - type: PVC
-      claimName: "{{ .Release.Name }}-maven-cache"
-      mountPath: /home/jenkins/agent/.m2/repository
-      readOnly: false
-```
 
 ## Configuration as Code
 Jenkins Configuration as Code is now a standard component in the Jenkins project.  Add a key under configScripts for each configuration area, where each corresponds to a plugin or section of the UI.  The keys (prior to | character) are just labels, and can be any value.  They are only used to give the section a meaningful name.  The only restriction is they must conform to RFC 1123 definition of a DNS label, so may only contain lowercase letters, numbers, and hyphens.  Each key will become the name of a configuration yaml file on the master in /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin during Jenkins startup.  The lines after each | become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials, etc.  Best reference is the Documentation link here: https://<jenkins_url>/configuration-as-code.  The example below creates ldap settings:

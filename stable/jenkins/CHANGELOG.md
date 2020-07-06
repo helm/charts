@@ -5,11 +5,30 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
-## 2.0.1 persistence.cache section to define volumes to be mounted by agents
+## 2.3.0 cache section under agent to define volumes for caching build artifacts
 
-Added the ability under `persistence.cache` to define cache volumes
-Volumes of type `PVC` are created by the chart and cleared on a schedule
-The README contains more details for this update and how to mount these agent volumes
+Added the definitions under `agent` to define `cache` volumes.
+Volumes of type `PVC` are created by the chart and cleared on a schedule defined under the `clear` section.
+The README contains more details for this change.
+
+## 2.2.0 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
+Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
+
+## 2.1.2 updated README
+
+## 2.1.1 update credentials-binding plugin to 1.23
+
+## 2.1.0
+
+Add support to set `runAsUser` and `runAsGroup` for `agent`.
+
+## 2.0.1
+
+Only render authorizationStrategy and securityRealm when values are set.
 
 ## 2.0.0 Configuration as Code now default + container does not run as root anymore
 
