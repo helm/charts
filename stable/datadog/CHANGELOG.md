@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.24
+
+* Allow enabling Orchestrator Explorer data collection from the process-agent
+
 ## 2.3.23
 
 * Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
