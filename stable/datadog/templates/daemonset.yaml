@@ -41,9 +41,10 @@ spec:
 {{ toYaml .Values.agents.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.datadog.securityContext }}
+      {{- if and .Values.datadog.securityContext .Values.datadog.securityContext.seLinuxOptions }}
       securityContext:
-{{ toYaml .Values.datadog.securityContext | indent 8 }}
+        seLinuxOptions:
+{{ toYaml .Values.datadog.securityContext.seLinuxOptions | indent 10 }}
       {{- end }}
       {{- if .Values.agents.useHostNetwork }}
       hostNetwork: {{ .Values.agents.useHostNetwork }}
