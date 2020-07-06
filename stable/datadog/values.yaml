@@ -47,13 +47,13 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext: {}
-  #   type: MustRunAs
-  #   seLinuxOptions:
-  #     user: system_u
-  #     role: system_r
-  #     type: spc_t
-  #     level: s0
+  securityContext:
+    rule: MustRunAs
+    seLinuxOptions:
+      user: "system_u"
+      role: "system_r"
+      type: "spc_t"
+      level: "s0"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
@@ -694,7 +694,7 @@ agents:
     privileged: false
 
     ## @param capabilites - list - optional
-    ## Allow capabilites
+    ## Allowed capabilites
     #
     capabilites:
     - SYS_ADMIN
@@ -704,7 +704,7 @@ agents:
     - IPC_LOCK
 
     ## @param volumes - list - optional
-    ## Allow volumes types
+    ## Allowed volumes types
     #
     volumes:
     - configMap
@@ -714,13 +714,14 @@ agents:
     - secret
 
     ## @param seccompProfiles - list - optional
-    ## Allow seccomp profiles
+    ## Allowed seccomp profiles
     #
     seccompProfiles:
-    - "*"
+    - "runtime/default"
+    - "localhost/system-probe"
 
     ## @param apparmorProfiles - list - optional
-    ## Allow apparmor profiles
+    ## Allowed apparmor profiles
     #
     apparmorProfiles:
     - "runtime/default"

@@ -24,16 +24,7 @@ volumes:
 # Use the `spc_t` selinux type to access the
 # docker/cri socket + proc and cgroup stats
 seLinuxContext:
-{{- if .Values.datadog.securityContext }}
 {{ toYaml .Values.datadog.securityContext | indent 2 }}
-{{- else }}
-  type: MustRunAs
-  seLinuxOptions:
-    user: "system_u"
-    role: "system_r"
-    type: "spc_t"
-    level: "s0"
-{{- end }}
 # system-probe requires some specific seccomp and capabilities
 seccompProfiles:
 {{ toYaml .Values.agents.podSecurity.seccompProfiles | indent 2 }}
@@ -44,7 +35,7 @@ allowedCapabilities:
 #
 allowHostDirVolumePlugin: true
 allowHostIPC: false
-allowPrivilegedContainer: false
+allowPrivilegedContainer: {{ .Values.agents.podSecurity.privileged }}
 allowedFlexVolumes: []
 defaultAddCapabilities: []
 fsGroup:
