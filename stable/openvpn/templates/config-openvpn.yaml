@@ -54,7 +54,12 @@ data:
       EASY_RSA_LOC="/etc/openvpn/certs"
       cd $EASY_RSA_LOC
       MY_IP_ADDR="$2"
-      ./easyrsa build-client-full $1 nopass
+      if echo $* | grep -e "--protect" -q
+        then
+          ./easyrsa build-client-full $1
+        else
+          ./easyrsa build-client-full $1 nopass
+      fi
       cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
       client
       nobind
