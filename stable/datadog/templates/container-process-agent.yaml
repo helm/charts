@@ -22,6 +22,15 @@
     - name: DD_SYSTEM_PROBE_ENABLED
       value: {{ .Values.datadog.systemProbe.enabled | quote }}
     {{- end }}
+    {{- if .Values.datadog.orchestratorExplorer.enabled }}
+    - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+      value: "true"
+    - name: DD_ORCHESTRATOR_CLUSTER_ID
+      valueFrom:
+        configMapKeyRef:
+          name: datadog-cluster-id
+          key: id
+    {{- end }}
   {{- range $value := .Values.agents.containers.processAgent.env }}
     - name: {{ $value.name }}
       value: {{ $value.value | quote }}
