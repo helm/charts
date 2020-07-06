@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.25
+
+* Use directly .env var YAML block for all agents (was already the case for Cluster Agent)
+
 ## 2.3.24
 
 * Allow enabling Orchestrator Explorer data collection from the process-agent
