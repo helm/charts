@@ -51,9 +51,5 @@ Default GroupId to Release Name but allow it to be overridden
 Use deafault or custom PriorityClass name
 */}}
 {{- define "schema-registry.priorityClass.name" -}}
-{{- if .Values.priorityClass.nameOverride -}}
-{{- .Values.priorityClass.nameOverride -}}
-{{- else -}}
-{{ include "schema-registry.fullname" . }}
-{{- end -}}
+{{- .Values.priorityClass.nameOverride | default (include "schema-registry.fullname" .) -}}
 {{- end -}}

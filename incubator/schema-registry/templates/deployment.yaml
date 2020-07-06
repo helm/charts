@@ -34,7 +34,7 @@ spec:
       {{- end }}
     spec:
     {{- if .Values.priorityClass.enabled }}
-      priorityClassName: {{ template "schema-registry.priorityClass.name" . | quote }}
+      priorityClassName: {{ template "schema-registry.priorityClass.name" . }}
     {{- end }}
     {{- if .Values.sasl.scram.enabled }}
       initContainers:

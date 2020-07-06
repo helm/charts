@@ -8,7 +8,7 @@ apiVersion: scheduling.k8s.io/v1alpha1
 {{- end }}
 kind: PriorityClass
 metadata:
-  name: {{ template "schema-registry.priorityClass.name" . | quote }}
+  name: {{ template "schema-registry.priorityClass.name" . }}
   labels:
     app: {{ template "schema-registry.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
