@@ -31,10 +31,9 @@
           name: datadog-cluster-id
           key: id
     {{- end }}
-  {{- range $value := .Values.agents.containers.processAgent.env }}
-    - name: {{ $value.name }}
-      value: {{ $value.value | quote }}
-  {{- end }}
+{{- if .Values.agents.containers.processAgent.env }}
+{{ toYaml .Values.agents.containers.processAgent.env | indent 4 }}
+{{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}

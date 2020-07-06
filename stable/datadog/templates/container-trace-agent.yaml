@@ -29,10 +29,9 @@
     - name: DD_APM_RECEIVER_SOCKET
       value: {{ .Values.datadog.apm.socketPath | quote }}
   {{- end }}
-  {{- range $value := .Values.agents.containers.traceAgent.env }}
-    - name: {{ $value.name }}
-      value: {{ $value.value | quote }}
-  {{- end }}
+{{- if .Values.agents.containers.traceAgent.env }}
+{{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
+{{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}
