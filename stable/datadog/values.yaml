@@ -47,12 +47,13 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext: {}
-  #   seLinuxOptions:
-  #     user: system_u
-  #     role: system_r
-  #     type: spc_t
-  #     level: s0
+  securityContext:
+    rule: MustRunAs
+    seLinuxOptions:
+      user: "system_u"
+      role: "system_r"
+      type: "spc_t"
+      level: "s0"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
@@ -172,30 +173,30 @@ datadog:
     ## WARNING: Make sure that hosts using this are properly firewalled otherwise
     ## metrics and traces are accepted from any host able to connect to this host.
     #
-    useHostPort:  # true
+    useHostPort: false
 
     ## @param useHostPID - boolean - optional
     ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
     ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
     #
-    useHostPID:  # true
+    useHostPID: false
 
     ## @param nonLocalTraffic - boolean - optional - default: false
     ## Enable this to make each node accept non-local statsd traffic.
     ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
     #
-    nonLocalTraffic:  # false
+    nonLocalTraffic: false
 
   ## @param collectEvents - boolean - optional - default: false
   ## Enables this to start event collection from the kubernetes API
   ## ref: https://docs.datadoghq.com/agent/kubernetes/event_collection/
   #
-  collectEvents:  # false
+  collectEvents: false
 
   ## @param leaderElection - boolean - optional - default: false
   ## Enables leader election mechanism for event collection.
   #
-  leaderElection:  # false
+  leaderElection: false
 
   ## @param leaderLeaseDuration - integer - optional - default: 60
   ## Set the lease time for leader election in second.
@@ -216,7 +217,7 @@ datadog:
     ## Enable this to allow log collection for all containers.
     ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
     #
-    containerCollectAll:  # false
+    containerCollectAll: false
 
     ## @param containerUseFiles - boolean - optional - default: true
     ## Collect logs from files in /var/log/pods instead of using container runtime API.
@@ -665,6 +666,66 @@ agents:
     #
     serviceAccountName: default
 
+  ## @param podSecurity - object - optional
+  ## Provide Daemonset PodSecurityPolicy configuration
+  podSecurity:
+
+    ## @param podSecurityPolicy - object - required
+    ## Provide Daemonset PodSecurityPolicy configuration
+    podSecurityPolicy:
+
+      ## @param created - boolean - optional
+      ## If true, create a PodSecurityPolicy resource for Agent pods
+      #
+      create: false
+
+    ## @param securityContextConstraints - object - required
+    ## Provide Daemonset securityContextConstraints configuration
+    securityContextConstraints:
+
+      ## @param created - boolean - optional
+      ## If true, create a SecurityContextConstraints resource for Agent pods
+      #
+      create: false
+
+    ## @param privileged - boolean - optional
+    ## If true, Allow to run privileged containers
+    #
+    privileged: false
+
+    ## @param capabilites - list - optional
+    ## Allowed capabilites
+    #
+    capabilites:
+    - SYS_ADMIN
+    - SYS_RESOURCE
+    - SYS_PTRACE
+    - NET_ADMIN
+    - IPC_LOCK
+
+    ## @param volumes - list - optional
+    ## Allowed volumes types
+    #
+    volumes:
+    - configMap
+    - downwardAPI
+    - emptyDir
+    - hostPath
+    - secret
+
+    ## @param seccompProfiles - list - optional
+    ## Allowed seccomp profiles
+    #
+    seccompProfiles:
+    - "runtime/default"
+    - "localhost/system-probe"
+
+    ## @param apparmorProfiles - list - optional
+    ## Allowed apparmor profiles
+    #
+    apparmorProfiles:
+    - "runtime/default"
+
   containers:
     agent:
       ## @param env - list - required
@@ -840,7 +901,7 @@ agents:
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces are accepted from any host able to connect to this host.
   #
-  useHostNetwork:  # true
+  useHostNetwork: false
 
   ## @param dnsConfig - list of objects - optional
   ## specify dns configuration options for datadog cluster agent containers e.g ndots
