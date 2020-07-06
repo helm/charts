@@ -477,7 +477,7 @@ clusterAgent:
       type: ClusterIP
       ## @param port - int - optional
       ##
-      port: 443
+      port: 8443
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
