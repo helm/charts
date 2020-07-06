@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.23
+
+* Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
+
 ## 2.3.22
 
 * Remove duplicate imagePullSecrets
