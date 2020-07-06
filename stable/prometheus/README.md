@@ -339,6 +339,16 @@ Parameter | Description | Default
 `server.statefulSet.headless.gRPC.enabled` | If true, open a second port on the service for gRPC | `false`
 `server.statefulSet.headless.gRPC.servicePort` | Prometheus service gRPC port, (ignored if `server.service.gRPC.enabled` is not `true`) | `10901`
 `server.statefulSet.headless.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
+`server.readinessProbeInitialDelay` | the initial delay for the Prometheus server readiness probe | `30`
+`server.readinessProbePeriodSeconds` | how often (in seconds) to perform the Prometheus server readiness probe | `5`
+`server.readinessProbeTimeout` | the timeout for the Prometheus server readiness probe | `30`
+`server.readinessProbeFailureThreshold` | the failure threshold for the Prometheus server readiness probe | `3`
+`server.readinessProbeSuccessThreshold` | the success threshold for the Prometheus server readiness probe | `1`
+`server.livenessProbeInitialDelay` | the initial delay for the Prometheus server liveness probe | `30`
+`server.livenessProbePeriodSeconds` | how often (in seconds) to perform the Prometheus server liveness probe | `15`
+`server.livenessProbeTimeout` | the timeout for the Prometheus server liveness probe  | `30`
+`server.livenessProbeFailureThreshold` | the failure threshold for the Prometheus server liveness probe | `3`
+`server.livenessProbeSuccessThreshold` | the success threshold for the Prometheus server liveness probe | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
 `server.verticalAutoscaler.enabled` | If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs) | `false`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
