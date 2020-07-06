@@ -308,6 +308,8 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # How many connection-related errors to retry on
+      reqRetryConnect: 10
       # env:
       #   - name: REQ_TIMEOUT
       #     value: "30"
