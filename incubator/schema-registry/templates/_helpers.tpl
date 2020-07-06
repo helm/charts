@@ -54,6 +54,6 @@ Use deafault or custom PriorityClass name
 {{- if .Values.priorityClass.nameOverride -}}
 {{- .Values.priorityClass.nameOverride -}}
 {{- else -}}
-{{ template "schema-registry.fullname" . }}
+{{ include "schema-registry.fullname" . }}
 {{- end -}}
 {{- end -}}
