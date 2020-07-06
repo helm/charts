@@ -12,6 +12,17 @@ namespace:
   # Deployment will query all namespaces if left empty:
   active_in: ''
 
+# The resources kinds kube-downscaler is allowed to manage
+downscaleResources:
+  - deployments
+  - statefulsets
+
+# List of namespaces to be excluded from the downscaler
+excludedNamespaces: []
+
+# List of deployments to be excluded from the downscaler
+excludedDeployments: []
+
 # Default is 1 minute.
 interval: 60
 

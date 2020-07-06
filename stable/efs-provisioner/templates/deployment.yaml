@@ -13,6 +13,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ template "efs-provisioner.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "efs-provisioner.name" . }}
     env: {{ .Values.global.deployEnv }}
