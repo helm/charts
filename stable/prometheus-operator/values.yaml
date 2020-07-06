@@ -36,6 +36,8 @@ defaultRules:
     kubeApiserver: true
     kubeApiserverError: true
     kubeApiserverSlos: true
+    kubelet: true
+    kubePrometheusGeneral: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
     kubernetesAbsent: true
@@ -44,6 +46,7 @@ defaultRules:
     kubernetesStorage: true
     kubernetesSystem: true
     kubeScheduler: true
+    kubeStateMetrics: true
     network: true
     node: true
     prometheus: true
@@ -1329,8 +1332,8 @@ prometheusOperator:
   ## Configmap-reload image to use for reloading configmaps
   ##
   configmapReloadImage:
-    repository: quay.io/coreos/configmap-reload
-    tag: v0.0.1
+    repository: docker.io/jimmidyson/configmap-reload
+    tag: v0.3.0
 
   ## Prometheus-config-reloader image to use for config and rule reloading
   ##
@@ -1350,7 +1353,7 @@ prometheusOperator:
   ##
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
-    tag: v1.12.1
+    tag: v1.16.12
     pullPolicy: IfNotPresent
 
 ## Deploy a Prometheus instance
