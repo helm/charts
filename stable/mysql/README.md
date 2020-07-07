@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
 | `extraVolumeMounts`                          | Additional volumeMounts as a string to be passed to the `tpl` function                       |                                                      |
 | `extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function                    |                                                      |
+| `extraEnvVars`                               | Additional environment variables as a string to be passed to the `tpl` function              |                                                      |
 | `mysqlRootPassword`                          | Password for the `root` user. Ignored if existing secret is provided                         | Random 10 characters                                 |
 | `mysqlUser`                                  | Username of new user to create.                                                              | `nil`                                                |
 | `mysqlPassword`                              | Password for the new user. Ignored if existing secret is provided                            | Random 10 characters                                 |
