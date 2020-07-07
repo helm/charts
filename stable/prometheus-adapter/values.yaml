@@ -20,6 +20,7 @@ priorityClassName: ""
 prometheus:
   url: http://prometheus.default.svc
   port: 9090
+  path: ""
 
 replicas: 1
 

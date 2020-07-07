@@ -18,7 +18,7 @@ initContainers:
 
 server:
   image: springcloud/spring-cloud-dataflow-server
-  version: 2.4.0.RELEASE
+  version: 2.5.1.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   trustCerts: false
@@ -36,11 +36,18 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
+  containerConfiguration: {}
+  #  container:
+  #    registry-configurations:
+  #      default:
+  #        registry-host: registry-1.docker.io
+  #        authorization-type: dockeroauth2
 
 skipper:
   enabled: true
   image: springcloud/spring-cloud-skipper-server
-  version: 2.3.0.RELEASE
+  version: 2.4.1.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: default
   trustCerts: false
@@ -56,6 +63,7 @@ skipper:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+  extraEnv: {}
 
 deployer:
   resourceLimits:

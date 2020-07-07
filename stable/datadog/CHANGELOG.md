@@ -1,5 +1,127 @@
 # Datadog changelog
 
+## 2.3.26
+
+* fix PodSecurityContext configuration
+
+## 2.3.25
+
+* Use directly .env var YAML block for all agents (was already the case for Cluster Agent)
+
+## 2.3.24
+
+* Allow enabling Orchestrator Explorer data collection from the process-agent
+
+## 2.3.23
+
+* Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
+
+## 2.3.22
+
+* Remove duplicate imagePullSecrets
+* Fix DataDog location to useConfigMap in docs
+* Adding explanation for metricsProvider.enabled
+
+## 2.3.21
+
+* Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
+## 2.3.19
+
+* Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
+
+## 2.3.18
+
+* Support arguments in the cluster-agent container `command` value
+
+## 2.3.17
+
+* grammar edits to datadog helm docs!
+* Typo in log config
+
+## 2.3.16
+
+* Add parameter `clusterChecksRunner.rbac.serviceAccountAnnotations` for specifying annotations for dedicated ServiceAccount for Cluster Checks runners.
+* Add parameters `clusterChecksRunner.volumes` and `clusterChecksRunner.volumeMounts` that can be used for providing a secret backend to Cluster Checks runners.
+
+## 2.3.15
+
+* Mount kernel headers in system-probe container
+* Fix the mount of the `system-probe` socket in core agent
+* Add parameters to enable eBPF based checks
+
+## 2.3.14
+
+* Allow overriding the `command` to run in the cluster-agent container
+
+## 2.3.13
+
+* Use two distinct health endpoints for liveness and readiness probes.
+
+## 2.3.12
+
+* Fix endpoints checks scheduling between agent and cluster check runners
+* Cluster Check Runner now runs without s6 (similar to other agents)
+
+## 2.3.11
+
+* Bump the default version of the agent docker images
+
+## 2.3.10
+
+* Add dnsConfig options to all containers
+
+## 2.3.9
+
+* Add `clusterAgent.podLabels` variable to add labels to the Cluster Agent Pod(s)
+
+## 2.3.8
+
+* Fix templating errors when `clusterAgent.datadog_cluster_yaml` is being used.
+
+## 2.3.7
+
+* Fix an agent warning at startup because of a deprecated parameter
+
+## 2.3.6
+
+* Add `affinity` parameter in `values.yaml` for cluster agent deployment
+
+## 2.3.5
+
+* Add `DD_AC_INCLUDE` and `DD_AC_EXCLUDE` to all containers
+* Add "Unix Domain Socket" support in trace-agent
+* Add new parameter to specify the dogstatsd socket path on the host
+* Fix typos in values.yaml
+* Update "tags:" example in values.yaml
+* Add "rate_limit_queries_*" in the datadog.cluster-agent prometheus check configuration
+
+## 2.3.4
+
+* Fix default values in `values.yaml` to prevent warnings with Helm 2.x
+
+## 2.3.3
+
+* Allow pre-release versions as docker image tag
+
+## 2.3.2
+
+* Update the DCA RBAC to allow it to create events in the HPA
+
+## 2.3.1
+
+* Update the example for `datadog.securityContext`
+
+## 2.3.0
+
+* Mount the directory containing the CRI socket instead of the socket itself
+  This is to handle the cases where the docker daemon is restarted.
+  In this case, the docker daemon will recreate its docker socket and,
+  if the container bind-mounted directly the socket, the container would
+  still have access to the old socket instead of the one of the new docker
+  daemon.
+  ⚠ This version of the chart requires an agent image 7.19.0 or more recent
+
 ## 2.2.12
 
 * Adding resources for `system-probe` init container
@@ -122,7 +244,6 @@ config to this environment variable.
 
 * Fix templating error when `agents.useConfigMap` is set to true.
 * Add DD\_APM\_ENABLED environment variable to trace agent container.
-
 
 ## 2.0.2
 

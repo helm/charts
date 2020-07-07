@@ -2,11 +2,45 @@ master:
   overwritePluginsFromImage: false
   runAsUser: 0
   fsGroup: 1000
+  JCasC:
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: true
+    securityRealm: |-
+      ldap:
+        configurations:
+          - server: ldap.acme.com
+            rootDN: dc=acme,dc=uk
+            managerPasswordSecret: ${LDAP_PASSWORD}
+            groupMembershipStrategy:
+              fromUserRecord:
+                attributeName: "memberOf"
+  additionalPlugins:
+    - ldap:1.24
+persistence:
+  enabled: false
+
 agent:
   resources:
     limits:
       cpu: "1"
       memory: "2048Mi"
+  envVars:
+    - name: HOME
+      value: /home/jenkins
+    - name: PATH
+      value: /usr/local/bin
+  nodeSelector:
+    "app.kubernetes.io/component": "{{ .Values.agent.componentName }}"
+  yamlTemplate: |-
+    apiVersion: v1
+    kind: Pod
+    spec:
+      tolerations:
+        - key: "app.kubernetes.io/component"
+          operator: "Equal"
+          value: "{{ .Values.agent.componentName }}"
+          effect: "NoSchedule"
   additionalAgents:
     maven:
       podName: maven

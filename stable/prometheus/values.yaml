@@ -419,7 +419,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.18.1
+    tag: v1.0.1
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
@@ -545,12 +545,15 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.16.0
+    tag: v2.19.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
   ##
   priorityClassName: ""
+
+  # EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links.
+  enableServiceLinks: true
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -835,6 +838,11 @@ server:
       annotations: {}
       labels: {}
       servicePort: 80
+      ## Enable gRPC port on service to allow auto discovery with thanos-querier
+      gRPC:
+        enabled: false
+        servicePort: 10901
+        # nodePort: 10901
 
   ## Prometheus server readiness and liveness probe initial delay and timeout
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -931,7 +939,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v1.0.1
+    tag: v1.2.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
@@ -1538,3 +1546,6 @@ networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
   enabled: false
+
+# Force namespace of namespaced resources
+forceNamespace: null

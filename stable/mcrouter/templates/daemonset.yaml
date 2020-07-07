@@ -1,5 +1,5 @@
 {{- if eq .Values.controller "daemonset" }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "daemonset.apiVersion" . }}
 kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
@@ -10,6 +10,9 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
