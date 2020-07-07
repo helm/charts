@@ -60,6 +60,11 @@ extraInitContainers: |
   #   image: busybox
   #   command: ['do', 'something']
 
+## A string to add extra environment variables
+# extraEnvVars: |
+#   - name: EXTRA_VAR
+#     value: "extra"
+
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
