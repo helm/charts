@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the LogDNA Agent chart
 Parameter | Description | Default
 --- | --- | ---
 `daemonset.tolerations` | List of node taints to tolerate | `[]`
+`daemonset.affinity` | Affinity settings for pods | `{}`
 `daemonset.updateStrategy` | Optionally set an update strategy on the daemonset. | None
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `logdna.key` | LogDNA Ingestion Key (Required) | None

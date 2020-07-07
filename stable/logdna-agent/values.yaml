@@ -22,6 +22,7 @@ daemonset:
   # updateStrategy:
   #   type: "RollingUpdate"
   tolerations: []
+  affinity: {}
 
 priorityClassName: ""
 

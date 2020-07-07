@@ -111,4 +111,6 @@ spec:
 {{- end }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
 {{- end -}}
