@@ -13,8 +13,10 @@ busybox:
 
 testFramework:
   enabled: true
-  image: "dduportal/bats"
-  tag: "1.1.0"
+  image: "bats/bats"
+  tag: "1.2.1"
+  imagePullPolicy: IfNotPresent
+  securityContext: {}
 
 ## Specify password for root user
 ##
