@@ -3,8 +3,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Override the deployment namespace
-global:
-#  namespaceOverride: ""
+global: {}
+# global:
+#   namespaceOverride: ""
 
 replicas: 3
 port: 27017
@@ -198,3 +199,7 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+# Enables/disables the headless client service
+clientService:
+  enabled: true
