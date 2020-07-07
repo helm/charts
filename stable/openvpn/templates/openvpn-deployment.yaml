@@ -28,6 +28,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "openvpn.serviceAccountName" . }}
 {{- if .Values.ipForwardInitContainer }}
       initContainers:
         - args:

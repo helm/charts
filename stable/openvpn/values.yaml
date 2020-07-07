@@ -1,6 +1,17 @@
 # Default values for openvpn.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+rbac:
+  create: true
+  pspEnabled: true
+  pspUseAppArmor: true
+
 replicaCount: 1
 
 updateStrategy: {}

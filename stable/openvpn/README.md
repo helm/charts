@@ -70,6 +70,12 @@ and can be overwritten via the helm `--set` flag.
 
 Parameter | Description | Default
 ---                                  | ---                                                                  | ---
+`serviceAccount.create`              | Whether to create a service account or not                           | `true`
+`serviceAccount.name`                | Override the name of the service account                             | `""` (full name)
+`serviceAccount.annotations`         | ServiceAccount annotations                                           | `{}`
+`rbac.create`                        | Create and use RBAC resources                                        | `true`
+`rbac.pspEnabled`                    | Create PodSecurityPolicy                                             | `true`
+`rbac.pspUseAppArmor`                | Enforce AppArmor in created PodSecurityPolicy                        | `true`
 `replicaCount`                       | amount of parallel openvpn replicas to be started                    | `1`
 `updateStrategy`                     | update strategy for deployment                                       | `{}`
 `image.repository`                   | `openvpn` image repository                                           | `jfelten/openvpn-docker`

@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "openvpn.fullname" . }}
+  labels:
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if or .Values.rbac.pspEnabled }}
+rules:
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [{{ template "openvpn.fullname" . }}]
+{{- else }}
+rules: []
+{{- end }}
+{{- end }}
