@@ -37,7 +37,7 @@ spec:
     - name: {{ .Release.Name }}-test
       image: "{{ .Values.testFramework.image }}:{{ .Values.testFramework.tag }}"
       imagePullPolicy: "{{ .Values.testFramework.imagePullPolicy}}"
-      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
         name: tests
