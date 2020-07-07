@@ -49,12 +49,14 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `args`                                       | Additional arguments to pass to the MySQL container.                                         | `[]`                                                 |
 | `initContainer.resources`                    | initContainer resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
-| `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
+| `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.30`                                             |
 | `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
-| `busybox.tag`                                | `busybox` image tag.                                                                         | `1.29.3`                                             |
+| `busybox.tag`                                | `busybox` image tag.                                                                         | `1.32`                                               |
 | `testFramework.enabled`                      | `test-framework` switch.                                                                     | `true`                                               |
-| `testFramework.image`                        | `test-framework` image repository.                                                           | `dduportal/bats`                                     |
-| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `0.4.0`                                              |
+| `testFramework.image`                        | `test-framework` image repository.                                                           | `bats/bats`                                          |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `1.2.1`                                              |
+| `testFramework.imagePullPolicy`              | `test-framework` image pull policy.                                                          | `IfNotPresent`                                       |
+| `testFramework.securityContext`              | `test-framework` securityContext                                                             | `{}`                                                 |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
