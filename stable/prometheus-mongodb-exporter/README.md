@@ -53,6 +53,7 @@ podAnnotations:
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
+| `service.labels` | Additional labels for the service definition | `{}` |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
@@ -63,4 +64,5 @@ podAnnotations:
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
+| `serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
 | `tolerations` | List of node taints to tolerate  | `[]` |

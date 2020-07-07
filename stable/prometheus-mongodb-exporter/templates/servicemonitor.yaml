@@ -26,5 +26,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{- range .Values.serviceMonitor.targetLabels }}
+    - {{ . }}
+{{- end }}
+{{- end }}
 {{- end }}
 
