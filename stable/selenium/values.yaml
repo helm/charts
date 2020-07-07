@@ -93,6 +93,8 @@ hub:
 
   ## Configure annotations on the hub pod
   podAnnotations: {}
+  ## Configure labels on the hub pod
+  podLabels: {}
 
   ## The type of service to create
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
@@ -181,6 +183,8 @@ chrome:
 
   ## Configure annotations on the chrome pods
   podAnnotations: {}
+  ## Configure Labels on the chrome pods
+  podLabels: {}
 
   # Configure security context on the chrome pods
   # securityContext:
@@ -286,6 +290,8 @@ chromeDebug:
 
   ## Configure annotations on the chrome debug pods
   podAnnotations: {}
+  ## Configure labels on the chrome debug pods
+  podLabels: {}
 
   # Configure security context on the chrome debug pods
   # securityContext:
@@ -390,6 +396,8 @@ firefox:
 
   ## Configure annotations on the firefox pods
   podAnnotations: {}
+  ## Configure labels on the firefox pods
+  podLabels: {}
 
   # Configure security context on the firefox pods
   # securityContext:
@@ -481,6 +489,8 @@ firefoxDebug:
 
   ## Configure annotations on the firefox debug pods
   podAnnotations: {}
+  ## Configure labels on the firefox debug pods
+  podLabels: {}
 
   # Configure security context on the firefox debug pods
   # securityContext:

@@ -17,6 +17,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.firefox.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
       {{- if .Values.firefox.podAnnotations }}
       annotations:
 {{ toYaml .Values.firefox.podAnnotations | indent 8 }}
