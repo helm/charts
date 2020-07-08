@@ -169,6 +169,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
+| `revisionHistoryLimit`                    | Number of ReplicaSets to retain in history    | `10`                                                    |
 
 ### Example ingress with path
 

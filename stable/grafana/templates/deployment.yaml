@@ -15,6 +15,7 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "grafana.selectorLabels" . | nindent 6 }}
