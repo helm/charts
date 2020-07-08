@@ -42,6 +42,12 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.image.command }}
+        command: {{ .Values.image.command | nindent 10 }}
+        {{- end -}}
+        {{- if .Values.image.args }}
+        args: {{ .Values.image.args | nindent 10 }}
+        {{- end -}}
         {{- if .Values.lifecycle }}
         lifecycle:
         {{-   if .Values.lifecycle.postStartCommand }}
