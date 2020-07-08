@@ -1031,6 +1031,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 6,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1129,6 +1130,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 7,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1227,6 +1229,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 8,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1325,6 +1328,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 9,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1423,6 +1427,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 10,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -1521,6 +1526,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 10,
                         "id": 11,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
