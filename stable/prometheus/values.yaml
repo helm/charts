@@ -32,6 +32,11 @@ alertmanager:
   ##
   enabled: true
 
+  ## Use a ClusterRole (and ClusterRoleBinding)
+  ## - If set to false, we define a Role and RoleBinding in the defined namespaces ONLY
+  ## This makes alertmanager work - for users who do not have ClusterAdmin privs, but wants alertmanager to operate on their own namespaces, instead of clusterwide.
+  useClusterRole: true
+
   ## alertmanager container name
   ##
   name: alertmanager
@@ -538,6 +543,21 @@ server:
   ## Prometheus server container name
   ##
   enabled: true
+
+  ## Use a ClusterRole (and ClusterRoleBinding)
+  ## - If set to false - we define a RoleBinding in the defined namespaces ONLY
+  ##
+  ## NB: because we need a Role with nonResourceURL's ("/metrics") - you must get someone with Cluster-admin privileges to define this role for you, before running with this setting enabled.
+  ##     This makes prometheus work - for users who do not have ClusterAdmin privs, but wants prometheus to operate on their own namespaces, instead of clusterwide.
+  ##
+  ## You MUST also set namespaces to the ones you have access to and want monitored by Prometheus.
+  ##
+  # useExistingClusterRoleName: nameofclusterrole
+
+  ## namespaces to monitor (instead of monitoring all - clusterwide). Needed if you want to run without Cluster-admin privileges.
+  # namespaces:
+  #   - yournamespace
+
   name: server
   sidecarContainers:
 
