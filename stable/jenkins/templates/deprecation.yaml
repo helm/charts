@@ -42,7 +42,7 @@
         {{- end }}
 
         {{- if .Values.Master.DeploymentLabels }}
-           {{ fail "`Master.DeploymentLabels` does no longer exist. It has been renamed to `master.deploymentLabels`" }}
+           {{ fail "`Master.DeploymentLabels` does no longer exist. It has been renamed to `master.statefulSetLabels`" }}
         {{- end }}
 
         {{- if .Values.Master.ServiceLabels }}

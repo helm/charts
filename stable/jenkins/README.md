@@ -11,7 +11,6 @@ Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 This chart will do the following:
 
 * 1 x Jenkins Master with port 8080 exposed on an external LoadBalancer
-* All using Kubernetes Deployments
 
 ## Installing the Chart
 
@@ -140,7 +139,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.useSecurity`              | Use basic security                   | `true`                                    |
 | `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
 | `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
-| `master.deploymentLabels`         | Custom Deployment labels             | Not set                                   |
+| `master.statefulSetLabels`        | Custom StatefulSet labels            | Not set                                   |
 | `master.serviceLabels`            | Custom Service labels                | Not set                                   |
 | `master.podLabels`                | Custom Pod labels                    | Not set                                   |
 | `master.adminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin` |

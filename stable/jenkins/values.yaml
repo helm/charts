@@ -112,10 +112,6 @@ master:
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsRef: "/usr/share/cloudbees-jenkins-distribution/ref"
   jenkinsRef: "/usr/share/jenkins/ref"
-  rollingUpdate: {}
-  # Ignored if Persistence is enabled
-  # maxSurge: 1
-  # maxUnavailable: 25%
   resources:
     requests:
       cpu: "50m"
@@ -150,7 +146,7 @@ master:
   # Jenkins master service annotations
   serviceAnnotations: {}
   # Jenkins master custom labels
-  deploymentLabels: {}
+  statefulSetLabels: {}
   #   foo: bar
   #   bar: foo
   # Jenkins master service labels

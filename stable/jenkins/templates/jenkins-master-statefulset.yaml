@@ -3,7 +3,7 @@ apiVersion: apps/v1
 {{- else }}
 apiVersion: apps/v1beta1
 {{- end }}
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "jenkins.fullname" . }}
   namespace: {{ template "jenkins.namespace" . }}
@@ -13,7 +13,7 @@ metadata:
     "app.kubernetes.io/managed-by": "{{ .Release.Service }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
     "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
-    {{- range $key, $val := .Values.master.deploymentLabels }}
+    {{- range $key, $val := .Values.master.statefulSetLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
   {{- if .Values.master.deploymentAnnotations }}
@@ -21,12 +21,8 @@ metadata:
 {{ toYaml .Values.master.deploymentAnnotations | indent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ template "jenkins.fullname" . }}
   replicas: 1
-  strategy:
-    type: {{ if .Values.persistence.enabled }}Recreate{{ else }}RollingUpdate
-    rollingUpdate:
-{{ toYaml .Values.master.rollingUpdate | indent 6 }}
-    {{- end }}
   selector:
     matchLabels:
       "app.kubernetes.io/component": "{{ .Values.master.componentName }}"
