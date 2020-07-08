@@ -16,9 +16,9 @@ metadata:
     {{- range $key, $val := .Values.master.statefulSetLabels }}
     {{ $key }}: {{ $val | quote }}
     {{- end}}
-  {{- if .Values.master.deploymentAnnotations }}
+  {{- if .Values.master.statefulSetAnnotations }}
   annotations:
-{{ toYaml .Values.master.deploymentAnnotations | indent 4 }}
+{{ toYaml .Values.master.statefulSetAnnotations | indent 4 }}
   {{- end }}
 spec:
   serviceName: {{ template "jenkins.fullname" . }}

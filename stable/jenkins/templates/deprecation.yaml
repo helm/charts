@@ -353,4 +353,12 @@
     {{- if .Values.master.JCasC.pluginVersion }}
        {{ fail "master.JCasC.pluginVersion has been deprecated, please use master.installPlugins instead" }}
     {{- end }}
+
+    {{- if .Values.master.deploymentLabels }}
+       {{ fail "`master.deploymentLabels` does no longer exist. It has been renamed to `master.statefulSetLabels`" }}
+    {{- end }}
+
+    {{- if .Values.master.deploymentAnnotations }}
+       {{ fail "`master.deploymentAnnotations` does no longer exist. It has been renamed to `master.statefulSetAnnotations`" }}
+    {{- end }}
 {{- end }}

@@ -239,7 +239,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.terminationGracePeriodSeconds` | Set TerminationGracePeriodSeconds   | Not set                               |
 | `master.tolerations`              | Toleration labels for pod assignment | `[]`                                      |
 | `master.podAnnotations`           | Annotations for master pod           | `{}`                                      |
-| `master.deploymentAnnotations`           | Annotations for master deployment           | `{}`                                      |
+| `master.statefulSetAnnotations`   | Annotations for master StatefulSet   | `{}`                                      |
 | `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
 | `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |
