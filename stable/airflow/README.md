@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
 * [v7.0.X → v7.1.0](UPGRADE.md#v70x--v710)
 * [v6.X.X → v7.0.0](UPGRADE.md#v6xx--v700)
 * [v5.X.X → v6.0.0](UPGRADE.md#v5xx--v600)
@@ -538,7 +539,6 @@ __Airflow Scheduler values:__
 | `scheduler.podLabels` | Pod labels for the scheduler Deployment | `{}` |
 | `scheduler.annotations` | annotations for the scheduler Deployment | `{}` |
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
-| `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
 | `scheduler.variables` | custom airflow variables for the airflow scheduler | `"{}"` |
@@ -608,6 +608,8 @@ __Airflow Flower Values:__
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
+| `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
+| `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |
 | `flower.service.*` | configs for the Service of the flower Pods | `<see values.yaml>` |
 | `flower.initialStartupDelay` | the number of seconds to wait (in bash) before starting the flower container | `0` |
@@ -658,7 +660,7 @@ __Airflow Database (Internal PostgreSQL) Values:__
 | `postgresql.postgresqlUsername` | the postgres user to create | `postgres` |
 | `postgresql.postgresqlPassword` | the postgres user's password | `airflow` |
 | `postgresql.existingSecret` | the name of a pre-created secret containing the postgres password | `""` |
-| `postgresql.existingSecretKey` | the name of a pre-created secret containing the postgres password | `postgresql-password` |
+| `postgresql.existingSecretKey` | the key within `postgresql.passwordSecret` containing the password string | `postgresql-password` |
 | `postgresql.persistence.*` | configs for the PVC of postgresql | `<see values.yaml>` |
 
 __Airflow Database (External) Values:__
@@ -680,7 +682,7 @@ __Airflow Redis (Internal) Values:__
 | `redis.enabled` | if the `stable/redis` chart is used | `true` |
 | `redis.password` | the redis password | `airflow` |
 | `redis.existingSecret` | the name of a pre-created secret containing the redis password | `""` |
-| `redis.existingSecretKey` | the key in `redis.existingSecret` containing the password string | `redis-password` |
+| `redis.existingSecretKey` | the key within `redis.existingSecret` containing the password string | `redis-password` |
 | `redis.cluster.*` | configs for redis cluster mode | `<see values.yaml>` |
 | `redis.master.*` | configs for the redis master | `<see values.yaml>` |
 | `redis.slave.*` | configs for the redis slaves | `<see values.yaml>` |
@@ -693,7 +695,7 @@ __Airflow Redis (External) Values:__
 | `externalRedis.port` | the port of the external redis | `6379` |
 | `externalRedis.databaseNumber` | the database number to use within the the external redis | `1` |
 | `externalRedis.passwordSecret` | the name of a pre-created secret containing the external redis password | `""` |
-| `externalRedis.passwordSecretKey` | the name of a pre-created secret containing the external redis password | `redis-password` |
+| `externalRedis.passwordSecretKey` | the key within `externalRedis.passwordSecret` containing the password string | `redis-password` |
 
 __Airflow Prometheus Values:__
 
