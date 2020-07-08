@@ -101,7 +101,8 @@ spec:
   priorityClassName: {{.Values.alertmanager.alertmanagerSpec.priorityClassName }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
-  additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
+  additionalPeers:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.additionalPeers | indent 4 }}
 {{- end }}
   portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}
