@@ -777,6 +777,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 5,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
