@@ -76,6 +76,9 @@ spec:
    {{- with .Values.omsagent.daemonsetwindows.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
+   {{- with .Values.omsagent.tolerations }}
+   tolerations: {{- toYaml . | nindent 8 }}
+   {{- end }}
    volumes:
     - name: docker-windows-kuberenetes-container-logs
       hostPath:
