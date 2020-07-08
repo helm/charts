@@ -46,7 +46,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the alb-ingress-controller chart and their default values.
 
-<<<<<<< HEAD
 | Parameter                         | Description                                                                                                      | Default                                                                   |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `affinity`                        | Affinity for pod assignment                                                                                      | `{}`                                                                      |
@@ -87,39 +86,6 @@ The following tables lists the configurable parameters of the alb-ingress-contro
 | `tolerations`                     | Controller pod toleration for taints                                                                             | `{}`                                                                      |
 | `volumesMounts`                   | VolumeMounts into the controller pod                                                                             | `[]`                                                                      |
 | `volumes`                         | Volumes the controller pod                                                                                       | `[]`                                                                      |
-=======
-| Parameter                 | Description                                                                                                    | Default                                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `clusterName`             | (REQUIRED) Resources created by the ALB Ingress controller will be prefixed with this string                   | N/A                                                                       |
-| `awsRegion`               | AWS region of k8s cluster, required if ec2metadata is unavailable from controller pod                          | `us-west-2 `                                                              |
-| `autoDiscoverAwsRegion`   | auto discover awsRegion from ec2metadata, omit awsRegion when this set to true                                 | false                                                                     |
-| `awsVpcID`                | AWS VPC ID of k8s cluster, required if ec2metadata is unavailable from controller pod                          | `vpc-xxx`                                                                 |
-| `autoDiscoverAwsVpcID`    | auto discover awsVpcID from ec2metadata, omit awsRegion when this set to true                                  | false                                                                     |
-| `image.repository`        | controller container image repository                                                                          | `894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller` |
-| `image.tag`               | controller container image tag                                                                                 | `v1.1.6`                                                                  |
-| `image.pullPolicy`        | controller container image pull policy                                                                         | `IfNotPresent`                                                            |
-| `enableReadinessProbe`    | enable readinessProbe on controller pod                                                                        | `false`                                                                    |
-| `enableLivenessProbe`     | enable livenessProbe on controller pod                                                                         | `false`                                                                   |
-| `livenessProbeTimeout`     | How long to wait before timeout (in seconds) when checking controller liveness                                |    1                                                                      |
-| `extraEnv`                | map of environment variables to be injected into the controller pod                                            | `{}`                                                                      |
-| `volumesMounts`           | volumeMounts into the controller pod                                                                           | `[]`                                                                      |
-| `volumes`                 | volumes the controller pod                                                                                     | `[]`                                                                      |
-| `nodeSelector`            | node labels for controller pod assignment                                                                      | `{}`                                                                      |
-| `tolerations`             | controller pod toleration for taints                                                                           | `{}`                                                                      |
-| `podAnnotations`          | annotations to be added to controller pod                                                                      | `{}`                                                                      |
-| `podLabels`               | labels to be added to controller pod                                                                           | `{}`                                                                      |
-| `priorityClassName`       | set to ensure your pods survive resource shortages                                                             | `""`                                                                      |
-| `resources`               | controller pod resource requests & limits                                                                      | `{}`                                                                      |
-| `rbac.create`             | If true, create & use RBAC resources                                                                           | `true`                                                                    |
-| `rbac.serviceAccount.name` | existing ServiceAccount to use (ignored if rbac.create=true and rbac.serviceAccount.create=true)              | `default`                                                                 |
-| `rbac.serviceAccount.create` |  If true and rbac.create is also true, a service account will be created                                    | `true`                                                                    |
-| `rbac.serviceAccount.annotations` | Service Account annotations                                                                            | `{}`                                                                      |
-| `securityContext` | set to security context for pod                                                                                        | `{}`                                                                      |
-| `containerSecurityContext` | set to security context for container                                                                         | `{}`                                                                      |
-| `scope.ingressClass`      | If provided, the ALB ingress controller will only act on Ingress resources annotated with this class           | `alb`                                                                     |
-| `scope.singleNamespace`   | If true, the ALB ingress controller will only act on Ingress resources in a single namespace                   | `false` (watch all namespaces)                                            |
-| `scope.watchNamespace`    | If scope.singleNamespace=true, the ALB ingress controller will only act on Ingress resources in this namespace | `""` (namespace of the ALB ingress controller)                            |
->>>>>>> master
 
 ```bash
 helm install incubator/aws-alb-ingress-controller --set clusterName=MyClusterName --set autoDiscoverAwsRegion=true --set autoDiscoverAwsVpcID=true --name my-release --namespace kube-system
