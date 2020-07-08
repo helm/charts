@@ -221,7 +221,7 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
-{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
           startupProbe:
             exec:
               command:
@@ -316,18 +316,16 @@ spec:
                   --test
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
           startupProbe:
             exec:
               command:
-                - mongo
-              {{- if .Values.tls.enabled }}
-                - --ssl
-                - --sslCAFile=/data/configdb/tls.crt
-                - --sslPEMKeyFile=/work-dir/mongo.pem
-              {{- end }}
-                - --eval
-                - "db.adminCommand('ping')"
+                - sh
+                - -c
+                - >-
+                  /bin/mongodb_exporter
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+                  --test
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
