@@ -103,13 +103,19 @@ spec:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
             initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            periodSeconds: {{ .Values.server.readinessProbePeriodSeconds }}
             timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
+            failureThreshold: {{ .Values.server.readinessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.readinessProbeSuccessThreshold }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
             initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            periodSeconds: {{ .Values.server.livenessProbePeriodSeconds }}
             timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
+            failureThreshold: {{ .Values.server.livenessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.livenessProbeSuccessThreshold }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
