@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 | `extraVolumes`                      | Additional volumes to add to the resources                                | `[]`                                                |
+| `clientService.enabled`             | Enables the headless client service                                       | `true`                                              |
 | `global.namespaceOverride`          | Override the deployment namespace                                         | Not set (`Release.Namespace`)                       |
 
 *MongoDB config file*
