@@ -1,5 +1,5 @@
 ## postgres image
-image: postgres:9.6.2
+image: postgres:9.6.18
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
