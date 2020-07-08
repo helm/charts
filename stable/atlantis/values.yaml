@@ -214,6 +214,13 @@ environmentSecrets: []
 #       name: the_k8s_secret_name
 #       key: the_key_of_the_value_in_the_secret
 
+# Optionally specify additional Kubernetes secrets to load environment variables from.
+# All key-value pairs within these secrets will be set as environment variables
+loadEnvFromSecrets: []
+# loadEnvFromSecrets:
+#   - secret_one
+#   - secret_two
+
 # Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}".
 googleServiceAccountSecrets: []
 # googleServiceAccountSecrets:
