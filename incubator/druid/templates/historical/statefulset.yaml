@@ -68,6 +68,8 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
 {{- end }}
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: druid
         args: [ "historical" ]
@@ -97,7 +99,7 @@ spec:
         - containerPort: {{ .Values.historical.port }}
           name: http
         volumeMounts:
-        - mountPath: /var/druid/
+        - mountPath: /opt/druid/var/druid/
           name: data
   {{- if .Values.gCloudStorage.enabled }}
         - name: google-cloud-key
