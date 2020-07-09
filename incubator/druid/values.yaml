@@ -96,7 +96,6 @@ coordinator:
   config:
     DRUID_XMX: 256m
     DRUID_XMS: 256m
-    druid_coordinator_balancer_strategy: cachingCost
     # druid_monitoring_monitors: '["org.apache.druid.server.metrics.TaskCountStatsMonitor"]'
 
   ingress:
