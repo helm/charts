@@ -153,6 +153,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.general` | Create General default rules| `true` |
 | `defaultRules.rules.k8s` | Create K8S default rules| `true` |
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
+| `defaultRules.rules.kubeApiserverAvailability` | Create Api Server Availability default rules| `true` |
 | `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
 | `defaultRules.rules.kubeApiserverSlos` | Create Api Server SLOs default rules| `true` |
 | `defaultRules.rules.kubelet` | Create kubelet default rules | `true` |

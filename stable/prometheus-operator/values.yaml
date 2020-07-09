@@ -34,6 +34,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverAvailability: true
     kubeApiserverError: true
     kubeApiserverSlos: true
     kubelet: true
