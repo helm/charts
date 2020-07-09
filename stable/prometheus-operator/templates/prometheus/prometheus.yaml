@@ -206,6 +206,11 @@ spec:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
     key: additional-scrape-configs.yaml
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.enabled }}
+  additionalScrapeConfigs:
+    name: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.SecretName }}
+    key: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.SecretKey }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
   additionalAlertManagerConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
