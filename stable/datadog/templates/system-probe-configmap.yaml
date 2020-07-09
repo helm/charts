@@ -20,6 +20,7 @@ data:
       bpf_debug: {{ $.Values.datadog.systemProbe.bpfDebug }}
       enable_tcp_queue_length: {{ $.Values.datadog.systemProbe.enableTCPQueueLength }}
       enable_oom_kill: {{ $.Values.datadog.systemProbe.enableOOMKill }}
+      collect_dns_stats: {{ $.Values.datadog.systemProbe.collectDNSStats }}
 
 {{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
 ---

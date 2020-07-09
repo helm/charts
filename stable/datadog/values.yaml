@@ -372,6 +372,11 @@ datadog:
     #
     enableOOMKill: false
 
+    ## @param collectDNSStats - boolean - optional
+    ## Enable DNS stat collection
+    #
+    collectDNSStats: false
+
   orchestratorExplorer:
     ## @param enabled - boolean - required
     ## Set this to true to enable the orchestrator explorer.
