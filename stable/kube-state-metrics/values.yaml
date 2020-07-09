@@ -129,7 +129,7 @@ collectors:
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
 
-##if set to false - Run without Cluster-admin privilegs needed - ONLY works if namespace is also set
+## if set to false - Run without Cluster-admin privilegs needed - ONLY works if namespace is also set
 useClusterRole: true
 
 ## Override the deployment namespace
