@@ -93,6 +93,9 @@ spec:
           - name: extra-config
             mountPath: /home/rundeck/extra/
         {{- end }}
+        {{- if .Values.volumeMounts }}
+          {{- toYaml .Values.volumeMounts | nindent 10}}
+        {{- end }}
           ports:
             - name: rundeck
               containerPort: 4440
@@ -156,6 +159,13 @@ spec:
           secret:
             secretName: {{ .Values.rundeck.extraConfigSecret}}
         {{- end }}
+      {{- if .Values.volumes }}
+        {{- toYaml .Values.volumes | nindent 8}}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+        {{- toYaml .Values.initContainers | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
