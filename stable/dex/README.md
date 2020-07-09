@@ -110,6 +110,7 @@ Parameters introduced starting from v2
 | `readinessProbe.periodSeconds` | How often (in seconds) to perform the probe  |  `10` |
 | `readinessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
 | `readinessProbe.failureThreshold` | Times to perform probe before marking the container `Unready` |  `3` |
+| `imagePullSecrets` | Allows to run containers based on images in private registries. |  `{}` |
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.
