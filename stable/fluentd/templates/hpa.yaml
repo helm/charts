@@ -11,7 +11,11 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
+ {{- if and (.Values.useStatefulSet) }}
     kind: StatefulSet
+ {{- else}}
+    kind: Deployment
+ {{- end}}
     name: {{ include "fluentd.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}

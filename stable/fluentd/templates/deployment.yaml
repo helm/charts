@@ -1,4 +1,4 @@
-{{- $statefulSet := or (.Values.autoscaling.enabled) (.Values.useStatefulSet) -}}
+{{- $statefulSet := (.Values.useStatefulSet) -}}
 apiVersion: apps/v1
 {{- if $statefulSet }}
 kind: StatefulSet
