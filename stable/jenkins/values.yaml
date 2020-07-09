@@ -228,7 +228,7 @@ master:
     - kubernetes:1.25.7
     - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.22
+    - credentials-binding:1.23
     - git:4.2.2
     - configuration-as-code:1.41
 
@@ -308,6 +308,8 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # How many connection-related errors to retry on
+      reqRetryConnect: 10
       # env:
       #   - name: REQ_TIMEOUT
       #     value: "30"
@@ -618,6 +620,7 @@ networkPolicy:
   # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
   internalAgents:
     allowed: true
+    podLabels: {}
     namespaceLabels: {}
       # project: myproject
   externalAgents: {}

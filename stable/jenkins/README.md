@@ -220,6 +220,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `true`                                                      |
 | `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.144`           |
+| `master.sidecars.configAutoReload.reqRetryConnect` | How many connection-related errors to retry on  | `10`          |
 | `master.sidecars.configAutoReload.env` | Environment variables for the Jenkins Config as Code auto-reload container  | Not set |
 | `master.sidecars.other`           | Configures additional sidecar container(s) for Jenkins master | `[]`             |
 | `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
@@ -264,6 +265,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `networkPolicy.enabled`           | Enable creation of NetworkPolicy resources. | `false`                            |
 | `networkPolicy.apiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                    |
 | `networkPolicy.internalAgents.allowed`           | Allow internal agents (from the same cluster) to connect to master. Agent pods would be filtered based on PodLabels. | `false`                            |
+| `networkPolicy.internalAgents.podLabels`           | A map of labels (keys/values) that agents pods must have to be able to connect to master. | `{}`                            |
 | `networkPolicy.internalAgents.namespaceLabels`           | A map of labels (keys/values) that agents namespaces must have to be able to connect to master. | `{}`                            |
 | `networkPolicy.externalAgents.ipCIDR`           | The IP range from which external agents are allowed to connect to master. | ``                            |
 | `networkPolicy.externalAgents.except`           | A list of IP sub-ranges to be excluded from the whitelisted IP range. | `[]`                            |
@@ -302,7 +304,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.podName`            | Agent Pod base name                             | Not set                |
 | `agent.idleMinutes`        | Allows the Pod to remain active for reuse       | 0                      |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
-| `agent.yamlMergeStrategy   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
+| `agent.yamlMergeStrategy`  | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
 | `agent.podTemplates`       | Configures extra pod templates for the default kubernetes cloud | `{}`   |
 | `agent.workingDir`         | Configure working directory for default agent   | `/home/jenkins`        |

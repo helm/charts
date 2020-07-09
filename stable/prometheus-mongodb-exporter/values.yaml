@@ -74,6 +74,7 @@ securityContext:
   runAsUser: 10000
 
 service:
+  labels: {}
   annotations: {}
   port: 9216
   type: ClusterIP
@@ -90,5 +91,6 @@ serviceMonitor:
   scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
+  targetLabels: []
 
 tolerations: []

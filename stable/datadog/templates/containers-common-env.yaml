@@ -45,9 +45,8 @@
 - name: DD_DD_URL
   value: {{ .Values.datadog.dd_url | quote }}
 {{- end }}
-{{- range $value := .Values.datadog.env }}
-- name: {{ $value.name }}
-  value: {{ $value.value | quote }}
+{{- if .Values.datadog.env  }}
+{{ toYaml .Values.datadog.env }}
 {{- end }}
 {{- if .Values.datadog.acInclude }}
 - name: DD_AC_INCLUDE

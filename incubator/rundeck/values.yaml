@@ -30,8 +30,24 @@ rundeck:
     # RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION: ${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION}
     # RUNDECK_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
+    # RUNDECK_TOKENS_FILE: /home/rundeck/extra/tokens.properties
+
+  # Name of the secret containing SSH files to mount under ~/.ssh
   # sshSecrets: "ssh-secret"
-  awsCredentialsSecret: ""
+
+  # Name of secret containing to mount under ~/.aws/
+  # awsConfigSecret: "aws-secret"
+
+  # Name of secret to mount under ~/.kube/
+  # kubeConfigSecret: "kube-secret"
+
+  # Name of secret containing additional sensitive Runtime environment variables (eg: RUNDECK_DATABASE_PASSWORD)
+  # See https://hub.docker.com/r/rundeck/rundeck/
+  # envSecret: "env-secret"
+
+  # Name of secret containing additional files to mount into Rundeck's ~/extra directory.
+  # This can be useful for populating a file you reference with RUNDECK_TOKENS_FILE above.
+  # extraConfigSecret: "extra-secret"
 
 nameOverride: ""
 fullnameOverride: ""

@@ -1,3 +1,6 @@
+This chart is deprecated! It has been moved to the kured repository.
+See https://github.com/weaveworks/kured/tree/master/charts/kured for details.
+
 Kured will check for /var/run/reboot-required, and reboot nodes when needed.
 
 See https://github.com/weaveworks/kured/ for details.

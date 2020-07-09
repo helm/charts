@@ -5,6 +5,21 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.3.0
+
+Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled
+
+## 2.2.0 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
+Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
+
+## 2.1.2 updated README
+
+## 2.1.1 update credentials-binding plugin to 1.23
+
 ## 2.1.0
 
 Add support to set `runAsUser` and `runAsGroup` for `agent`.

@@ -25,6 +25,9 @@ spec:
       - podSelector:
           matchLabels:
             "jenkins/{{ .Release.Name }}-{{ .Values.agent.componentName }}": "true"
+            {{- range $k,$v:= .Values.networkPolicy.internalAgents.podLabels }}
+            {{ $k }}: {{ $v }}
+            {{- end }}
         {{- if .Values.networkPolicy.internalAgents.namespaceLabels }}
         namespaceSelector:
           matchLabels:

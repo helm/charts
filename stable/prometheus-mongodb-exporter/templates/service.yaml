@@ -7,6 +7,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-mongodb-exporter.chart" . }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
   annotations:
     {{- toYaml .Values.service.annotations | nindent 4 }}
 spec:

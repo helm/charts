@@ -1,5 +1,35 @@
 # Datadog changelog
 
+## 2.3.26
+
+* fix PodSecurityContext configuration
+
+## 2.3.25
+
+* Use directly .env var YAML block for all agents (was already the case for Cluster Agent)
+
+## 2.3.24
+
+* Allow enabling Orchestrator Explorer data collection from the process-agent
+
+## 2.3.23
+
+* Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
+
+## 2.3.22
+
+* Remove duplicate imagePullSecrets
+* Fix DataDog location to useConfigMap in docs
+* Adding explanation for metricsProvider.enabled
+
+## 2.3.21
+
+* Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
+## 2.3.19
+
+* Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.
+
 ## 2.3.18
 
 * Support arguments in the cluster-agent container `command` value
