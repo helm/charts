@@ -10,7 +10,7 @@ metadata:
   annotations:
 {{ toYaml .Values.prometheus.thanosIngress.annotations | indent 4 }}
 {{- end }}
-  name: thanos-gateway-{{ .Release.Name }}
+  name: {{ template "prometheus-operator.fullname" . }}-thanos-gateway
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
