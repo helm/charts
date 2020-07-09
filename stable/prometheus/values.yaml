@@ -1558,7 +1558,7 @@ extraScrapeConfigs:
 
 # Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
 # useful in H/A prometheus with different external labels but the same alerts
-alertRelabelConfigs:
+alertRelabelConfigs: {} 
   # alert_relabel_configs:
   # - source_labels: [dc]
   #   regex: (.+)\d+
