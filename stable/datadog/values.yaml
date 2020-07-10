@@ -260,7 +260,7 @@ datadog:
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
-  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
+  ## ref: https://docs.datadoghq.com/agent/docker/?tab=standard#environment-variables
   #
   env: []
   #   - name: <ENV_VAR_NAME>
@@ -477,7 +477,14 @@ clusterAgent:
       type: ClusterIP
       ## @param port - int - optional
       ##
-      port: 443
+      port: 8443
+
+  ## @param env - list of object - optional
+  ## The Cluster-Agent supports many additional environment variables that can
+  ## be passed literally.
+  ## ref: https://docs.datadoghq.com/agent/cluster_agent/commands/#cluster-agent-options
+  #
+  env: []
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
