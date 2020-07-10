@@ -8,8 +8,10 @@ https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "etcd" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -26,7 +28,6 @@ data:
         "editable": true,
         "gnetId": null,
         "hideControls": false,
-        "id": 6,
         "links": [],
         "refresh": "10s",
         "rows": [
@@ -1109,6 +1110,7 @@ data:
         },
         "timezone": "browser",
         "title": "etcd",
+        "uid": "c2f4e12cdf69feb95caa41a5a1b423d9",
         "version": 215
     }
 {{- end }}

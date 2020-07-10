@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install stable/prometheus
+helm install stable/prometheus
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [Prometheus](https://prometheus.io/) deployment on a [Ku
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/prometheus
+helm install --name my-release stable/prometheus
 ```
 
 The command deploys Prometheus on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -33,7 +33,7 @@ The command deploys Prometheus on the Kubernetes cluster in the default configur
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -58,34 +58,34 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
 1. Update the `prometheus-old` release. Disable scraping on every component besides the prometheus server, similar to the configuration below:
 
-	```
-	alertmanager:
-	  enabled: false
-	alertmanagerFiles:
-	  alertmanager.yml: ""
-	kubeStateMetrics:
-	  enabled: false
-	nodeExporter:
-	  enabled: false
-	pushgateway:
-	  enabled: false
-	server:
-	  extraArgs:
-	    storage.local.retention: 720h
-	serverFiles:
-	  alerts: ""
-	  prometheus.yml: ""
-	  rules: ""
-	```
+  ```yaml
+  alertmanager:
+    enabled: false
+  alertmanagerFiles:
+    alertmanager.yml: ""
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  pushgateway:
+    enabled: false
+  server:
+    extraArgs:
+      storage.local.retention: 720h
+  serverFiles:
+    alerts: ""
+    prometheus.yml: ""
+    rules: ""
+  ```
 
 1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
-   ```
-	  prometheus.yml:
-	    ...
-	    remote_read:
-	    - url: http://prometheus-old/api/v1/read
-	    ...
+   ```yaml
+    prometheus.yml:
+      ...
+      remote_read:
+      - url: http://prometheus-old/api/v1/read
+      ...
    ```
 
    Old data will be available when you query the new prometheus instance.
@@ -103,7 +103,7 @@ and [kubernetes_sd_config](https://prometheus.io/docs/prometheus/latest/configur
 
 In order to get prometheus to scrape pods, you must add annotations to the the pods as below:
 
-```
+```yaml
 metadata:
   annotations:
     prometheus.io/scrape: "true"
@@ -127,7 +127,7 @@ Parameter | Description | Default
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.20.0`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.21.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
 `alertmanager.baseURL` | The external url at which the server can be accessed | `"http://localhost:9093"`
@@ -209,7 +209,7 @@ Parameter | Description | Default
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
-`nodeExporter.image.tag` | node-exporter container image tag | `v0.18.1`
+`nodeExporter.image.tag` | node-exporter container image tag | `v1.0.1`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraInitContainers` | Init containers to launch alongside the node-exporter | `[]`
@@ -240,7 +240,7 @@ Parameter | Description | Default
 `pushgateway.enabled` | If true, create pushgateway | `true`
 `pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
-`pushgateway.image.tag` | pushgateway container image tag | `v1.0.1`
+`pushgateway.image.tag` | pushgateway container image tag | `v1.2.0`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
 `pushgateway.extraInitContainers` | Init containers to launch alongside the pushgateway | `[]`
@@ -280,7 +280,7 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.18.1`
+`server.image.tag` | Prometheus server container image tag | `v2.19.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
@@ -291,7 +291,7 @@ Parameter | Description | Default
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraFlags` | Additional Prometheus server container flags | `["web.enable-lifecycle"]`
 `server.extraInitContainers` | Init containers to launch alongside the server | `[]`
-`server.prefixURL` | The prefix slug at which the server can be accessed | ``
+`server.prefixURL` | The prefix slug at which the server can be accessed |``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.env` | Prometheus server environment variables | `[]`
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
@@ -336,6 +336,19 @@ Parameter | Description | Default
 `server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
 `server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
+`server.statefulSet.headless.gRPC.enabled` | If true, open a second port on the service for gRPC | `false`
+`server.statefulSet.headless.gRPC.servicePort` | Prometheus service gRPC port, (ignored if `server.service.gRPC.enabled` is not `true`) | `10901`
+`server.statefulSet.headless.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
+`server.readinessProbeInitialDelay` | the initial delay for the Prometheus server readiness probe | `30`
+`server.readinessProbePeriodSeconds` | how often (in seconds) to perform the Prometheus server readiness probe | `5`
+`server.readinessProbeTimeout` | the timeout for the Prometheus server readiness probe | `30`
+`server.readinessProbeFailureThreshold` | the failure threshold for the Prometheus server readiness probe | `3`
+`server.readinessProbeSuccessThreshold` | the success threshold for the Prometheus server readiness probe | `1`
+`server.livenessProbeInitialDelay` | the initial delay for the Prometheus server liveness probe | `30`
+`server.livenessProbePeriodSeconds` | how often (in seconds) to perform the Prometheus server liveness probe | `15`
+`server.livenessProbeTimeout` | the timeout for the Prometheus server liveness probe  | `30`
+`server.livenessProbeFailureThreshold` | the failure threshold for the Prometheus server liveness probe | `3`
+`server.livenessProbeSuccessThreshold` | the success threshold for the Prometheus server liveness probe | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
 `server.verticalAutoscaler.enabled` | If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs) | `false`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
@@ -383,14 +396,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/prometheus --name my-release \
+helm install stable/prometheus --name my-release \
     --set server.terminationGracePeriodSeconds=360
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/prometheus --name my-release -f values.yaml
+helm install stable/prometheus --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -417,10 +430,11 @@ serverFiles:
 ```
 
 ```console
-$ helm install stable/prometheus --name my-release -f values.yaml -f service1-alert.yaml -f service2-alert.yaml
+helm install stable/prometheus --name my-release -f values.yaml -f service1-alert.yaml -f service2-alert.yaml
 ```
 
 ### RBAC Configuration
+
 Roles and RoleBindings resources will be created automatically for `server` service.
 
 To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `serviceAccounts.{{ component }}.create` to `false` and `serviceAccounts.{{ component }}.name` to the name of a pre-existing service account.
@@ -428,11 +442,13 @@ To manually setup RBAC you need to set the parameter `rbac.create=false` and spe
 > **Tip**: You can refer to the default `*-clusterrole.yaml` and `*-clusterrolebinding.yaml` files in [templates](templates/) to customize your own.
 
 ### ConfigMap Files
+
 AlertManager is configured through [alertmanager.yml](https://prometheus.io/docs/alerting/configuration/). This file (and any others listed in `alertmanagerFiles`) will be mounted into the `alertmanager` pod.
 
 Prometheus is configured through [prometheus.yml](https://prometheus.io/docs/operating/configuration/). This file (and any others listed in `serverFiles`) will be mounted into the `server` pod.
 
 ### Ingress TLS
+
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:

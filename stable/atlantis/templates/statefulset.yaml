@@ -111,6 +111,13 @@ spec:
           ports:
           - name: atlantis
             containerPort: 4141
+          {{- if .Values.loadEnvFromSecrets }}
+          envFrom:
+          {{- range .Values.loadEnvFromSecrets }}
+            - secretRef:
+                name: {{ . }}
+          {{- end }}
+          {{- end }}
           env:
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}

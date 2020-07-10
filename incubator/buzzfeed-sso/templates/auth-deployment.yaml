@@ -1,4 +1,4 @@
-{{- if and (or .Values.auth.customSecret .Values.auth.secret) (or .Values.provider.google.customSecret .Values.provider.google.secret) (ne .Values.auth.domain "<your_auth_domain>") -}}
+{{- if and .Values.auth.enabled (and (or .Values.auth.customSecret .Values.auth.secret) (or .Values.provider.google.customSecret .Values.provider.google.secret) (ne .Values.auth.domain "<your_auth_domain>")) -}}
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $googleSecret := .Values.provider.google.customSecret | default (printf "%s-google" ($fullName)) -}}
 {{- $authSecret := .Values.auth.customSecret | default ($fullName) -}}
@@ -34,7 +34,7 @@ spec:
         component: {{ $name }}-auth
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.provider.google }}
+    {{- if .Values.provider.google.secret.serviceAccount }}
       volumes:
         - name: google-service-account
           secret:
@@ -100,6 +100,8 @@ spec:
               value: {{ .adminEmail | quote }}
             - name: PROVIDER_GOOGLE_GOOGLE_CREDENTIALS
               value: /creds/sso-serviceaccount.json
+            - name: PROVIDER_GOOGLE_GROUPCACHE_INTERVAL_REFRESH
+              value: 10m
           {{- end }}
             - name: PROVIDER_GOOGLE_CLIENT_ID
               valueFrom:

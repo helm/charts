@@ -121,7 +121,8 @@ data:
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file {{ template "spinnaker.kubeconfig" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
                 {{ if not $.Values.kubeConfig.checkPermissionsOnStartup }}--check-permissions-on-startup false{{ end }} \
-                --omit-namespaces={{ template "omittedNameSpaces" $ }} \
+                {{ if $.Values.kubeConfig.nameSpaces }}--namespaces={{ template "nameSpaces" $ }}{{ end }} \
+                {{ if not $.Values.kubeConfig.nameSpaces }}--omit-namespaces={{ template "omittedNameSpaces" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.omittedKinds }}--omit-kinds={{ template "omittedKinds" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.kinds }}--kinds={{ template "k8sKinds" $ }}{{ end }} \
                 --provider-version v2

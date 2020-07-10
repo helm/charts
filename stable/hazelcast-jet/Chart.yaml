@@ -7,7 +7,7 @@ name: hazelcast-jet
 # The hazelcast-jet chart is deprecated and no longer maintained. For details deprecation,
 # including how to un-deprecate a chart see the PROCESSES.md file.
 deprecated: true
-version: 1.6.1
+version: 1.6.2
 keywords:
   - hazelcast
   - jet

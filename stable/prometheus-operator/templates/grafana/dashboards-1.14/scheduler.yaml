@@ -8,8 +8,10 @@ https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "scheduler" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -149,6 +151,7 @@ data:
                             "min": false,
                             "rightSide": true,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": true
                         },
@@ -261,6 +264,7 @@ data:
                             "min": false,
                             "rightSide": true,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": true
                         },
@@ -386,6 +390,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -498,6 +503,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -602,6 +608,7 @@ data:
                             "min": false,
                             "rightSide": true,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": true
                         },
@@ -706,6 +713,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -797,6 +805,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -888,6 +897,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -1048,7 +1058,7 @@ data:
                 "30d"
             ]
         },
-        "timezone": "",
+        "timezone": "UTC",
         "title": "Kubernetes / Scheduler",
         "uid": "2e6b6a3b4bddf1427b3a55aa1311c656",
         "version": 0
