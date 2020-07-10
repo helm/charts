@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.28
+
+* fix daemonset template generation if `datadog.securityContext` is set to `nil`
+
 ## 2.3.27
 
 * add systemProbe.collectDNSStats option
