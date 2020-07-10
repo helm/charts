@@ -143,6 +143,9 @@ service:
 ## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
 ingress:
   enabled: false
   labels: {}

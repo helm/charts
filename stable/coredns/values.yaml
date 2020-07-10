@@ -4,7 +4,7 @@
 
 image:
   repository: coredns/coredns
-  tag: "1.6.9"
+  tag: "1.7.0"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -20,6 +20,11 @@ resources:
 serviceType: "ClusterIP"
 
 prometheus:
+  service:
+    enabled: false
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9153"
   monitor:
     enabled: false
     additionalLabels: {}
@@ -29,9 +34,7 @@ service:
 # clusterIP: ""
 # loadBalancerIP: ""
 # externalTrafficPolicy: ""
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9153"
+  annotations: {}
 
 serviceAccount:
   create: false

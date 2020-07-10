@@ -123,6 +123,9 @@ spec:
         - name: TZ
           value: {{ .Values.timezone }}
         {{- end }}
+        {{- if .Values.extraEnvVars }}
+{{ tpl .Values.extraEnvVars . | indent 8 }}
+        {{- end }}
         ports:
         - name: mysql
           containerPort: 3306

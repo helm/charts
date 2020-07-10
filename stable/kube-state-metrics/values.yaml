@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.6
+  tag: v1.9.7
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -132,3 +132,8 @@ collectors:
 ## Override the deployment namespace
 ##
 namespaceOverride: ""
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""

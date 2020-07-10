@@ -1,3 +1,4 @@
+{{- if .Values.broker.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -71,3 +72,4 @@ spec:
       imagePullSecrets:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- end }}

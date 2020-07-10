@@ -55,6 +55,7 @@ Parameter | Description | Default
 `rootDomain` | the parent domain used for protecting your backends | REQUIRED
 `whitelistedEmails` | comma-seperated list of emails which should be whitelisted | OPTIONAL
 `cluster` | the cluster name for SSO | `dev`
+`auth.enabled` | enable auth component | `true`
 `auth.annotations` | extra annotations for auth pods | `{}`
 `auth.domain` | the auth domain used for OAuth callbacks | REQUIRED
 `auth.extraEnv` | extra auth env vars | `[]`
@@ -69,6 +70,7 @@ Parameter | Description | Default
 `auth.ingressPath` | auth ingress path. | `/`
 `auth.tls` | tls configuration for central sso auth ingress. | `{}`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
+`proxy.enabled` | enable proxy component | `true`
 `proxy.annotations` | extra annotations for proxy pods | `{}`
 `proxy.providerUrlInternal` | url for split dns deployments |
 `proxy.extraEnv` | extra proxy env vars | `[]`

@@ -14,10 +14,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.port }}
+  - port: {{ .Values.service.port.number }}
     targetPort: historyport
     protocol: TCP
-    name: historyport
+    name: {{ .Values.service.port.name }}
   selector:
     app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

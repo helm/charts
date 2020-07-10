@@ -87,6 +87,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 | `logagent.extraHostVolumeMounts` | Extra mounts                      | `{}`                                      |
 | `serviceAccount.create`          | Create a service account          | `true`                                    |
 | `serviceAccount.name`            | Service account name              | `Nil` Defaults to chart name              |
+| `priorityClassName`              | Priority class name               | `Nil`                                     |
 | `rbac.create`                    | RBAC enabled                      | `true`                                    |
 | `tolerations`                    | Tolerations                       | `[]`                                      |
 | `nodeSelector`                   | Node selector                     | `{}`                                      |
