@@ -45,6 +45,9 @@ data:
         Docker_Mode       On
         Docker_Mode_Flush {{ .Values.input.tail.dockerModeFlush }}
 {{- end }}
+{{- if .Values.input.tail.exclude_path }}
+        Exclude_Path    {{ .Values.input.tail.exclude_path }}
+{{- end }}
 {{- if .Values.input.systemd.enabled }}
     [INPUT]
         Name            systemd
