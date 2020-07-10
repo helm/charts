@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.27
+
+* add systemProbe.collectDNSStats option
+
 ## 2.3.26
 
 * fix PodSecurityContext configuration
