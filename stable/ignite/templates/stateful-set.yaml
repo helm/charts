@@ -26,17 +26,39 @@ spec:
             items:
             - key: ignite-config.xml
               path: default-config.xml
+{{- with .Values.extraVolumes }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- if .Values.extraInitContainers }}
+      initContainers:
+{{- toYaml .Values.extraInitContainers | nindent 6 }}
+{{- end }}
       containers:
+{{- if .Values.extraContainers }}
+{{- toYaml .Values.extraContainers | nindent 6 }}
+{{- end }}
       - name: ignite
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- if .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        {{ end -}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.envVars }}
+        env:
+{{ toYaml .Values.envVars | indent 10 }}
+{{- else }}
 {{- if .Values.env }}
         env:
 {{- range $name, $value := .Values.env }}
         - name: "{{ $name }}"
           value: "{{ $value }}"
 {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.envFrom }}
+        envFrom:
+{{ toYaml .Values.envFrom | indent 10 }}
 {{- end }}
         ports:
         - containerPort: 11211 # JDBC port number.
@@ -55,6 +77,9 @@ spec:
 {{- end }}
         - name: config-volume
           mountPath: /opt/ignite/apache-ignite/config
+{{- with .Values.extraVolumeMounts }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
 {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

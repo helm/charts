@@ -25,6 +25,27 @@ env:
   JVM_OPTS: "-Djava.net.preferIPv4Stack=true"
 peerClassLoadingEnabled: false
 
+## envFrom can be used to pass configmaps or secrets as environment
+# envFrom:
+#   - configMapRef:
+#       name: env-configmap
+#   - secretRef:
+#       name: env-secrets
+
+## Additional init containers to run before the pods.
+## for example, be used to run a sidecar that chown Logs storage .
+extraInitContainers: []
+#  - name: volume-mount-hack
+#    image: busybox
+#    command: ["sh", "-c", "chown -R 1000:1000 logs"]
+
+## Additional containers to run alongside the pods
+## This could, for example, be used to run jmx-exporter
+extraContainers: []
+#  - name: jmxexporter
+#    image: sscaling/jmx-prometheus-exporter
+#    command: ["sh", "-c", "chown -R 1000:1000 logs"]
+
 persistence:
   enabled: false
   persistenceVolume:
@@ -39,6 +60,26 @@ persistence:
     provisionerParameters:
       type: gp2
       fsType: ext4
+
+## extraVolumes and extraVolumeMounts allows you to mount other volumes
+## Example Use Cases:
+##  mount certificates to enable tls
+extraVolumes:
+# - name: ignite-keystore
+#   secret:
+#     defaultMode: 288
+#     secretName: ignite-keystore
+# - name: ignite-trustsore
+#   secret:
+#     defaultMode: 288
+#     secretName: ignite-truststore
+# extraVolumeMounts:
+# - name: ignite-keystore
+#   mountPath: /certs/keystore
+#   readOnly: true
+# - name: ignite-truststore
+#   mountPath: /certs/truststore
+#   readOnly: true
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
