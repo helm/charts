@@ -1,5 +1,11 @@
 # Datadog changelog
 
+## 2.3.29
+
+* Change the default port for the Cluster Agent's External Metrics Provider
+  from 443 to 8443.
+* Document usage of `clusterAgent.env`
+
 ## 2.3.28
 
 * fix daemonset template generation if `datadog.securityContext` is set to `nil`
