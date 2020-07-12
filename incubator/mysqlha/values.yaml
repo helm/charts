@@ -80,6 +80,10 @@ persistence:
   size: 10Gi
   annotations: {}
 
+nodeSelector: {}
+
+tolerations: []
+
 resources:
   requests:
     cpu: 100m

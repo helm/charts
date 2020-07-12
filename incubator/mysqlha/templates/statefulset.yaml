@@ -276,6 +276,16 @@ spec:
           name: {{ template "fullname" . }}
       - name: scripts
         emptyDir: {}
+
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end -}}
+
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
