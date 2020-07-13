@@ -1,9 +1,9 @@
 dependencies:
-- name: mariadb
-  version: 6.x.x
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: mariadb.enabled
-- name: postgresql
-  version: 6.x.x
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: postgresql.enabled
+  - name: mariadb
+    version: 7.x.x
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: mariadb.enabled
+  - name: postgresql
+    version: 8.x.x
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: postgresql.enabled

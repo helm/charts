@@ -17,7 +17,7 @@ unbound:
 # https://github.com/kubernetes/contrib/tree/master/exec-healthz
 healthz:
   image:
-    repository: googlecontainer/exechealthz
+    repository: gcr.io/google-containers/exechealthz
     tag: "1.2"
     pullPolicy: IfNotPresent
 
@@ -28,6 +28,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# clusterIP:
 
 # Controls which IP address ranges unbound will allow queries from.
 # If you want to use unbound as an upstream for kube-dns, or allow other pods

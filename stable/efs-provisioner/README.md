@@ -60,7 +60,7 @@ replicaCount: 1
 revisionHistoryLimit: 10
 image:
   repository: quay.io/external_storage/efs-provisioner
-  tag: v2.2.0-k8s1.12
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   # If specified, use these secrets to access the images
   # pullSecrets:
@@ -74,6 +74,11 @@ busyboxImage:
 ## Deployment annotations
 ##
 annotations: {}
+
+## Extra env variables and envFrom
+extraEnv: []
+
+envFrom: []
 
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
@@ -109,6 +114,11 @@ rbac:
 podAnnotations: {}
   # iam.amazonaws.com/role: efs-provisioner-role
 
+## Labels to be added to deployment
+##
+podLabels: {}
+  # environment: production
+
 ## Node labels for pod assignment
 ##
 nodeSelector: {}
@@ -131,4 +141,10 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# Configure podsecuritypolicy
+# Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: true
+  annotations: {}
 ```

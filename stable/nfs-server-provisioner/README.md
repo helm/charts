@@ -54,14 +54,15 @@ their default values.
 
 | Parameter                      | Description                                                                                                     | Default                                                  |
 |:-------------------------------|:----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
+| `extraArgs` | [Additional command line arguments](https://github.com/kubernetes-incubator/external-storage/blob/master/nfs/docs/deployment.md#arguments) | `{}`
 | `imagePullSecrets`             | Specify image pull secrets                                                                                      | `nil` (does not add image pull secrets to deployed pods) |
 | `image.repository`             | The image repository to pull from                                                                               | `quay.io/kubernetes_incubator/nfs-provisioner`           |
-| `image.tag`                    | The image tag to pull from                                                                                      | `v1.0.8`                                                 |
+| `image.tag`                    | The image tag to pull from                                                                                      | `v2.2.2`                                                 |
 | `image.pullPolicy`             | Image pull policy                                                                                               | `IfNotPresent`                                           |
 | `service.type`                 | service type                                                                                                    | `ClusterIP`                                              |
 | `service.nfsPort`              | TCP port on which the nfs-server-provisioner NFS service is exposed                                                    | `2049`                                                   |
 | `service.mountdPort`           | TCP port on which the nfs-server-provisioner mountd service is exposed                                                 | `20048`                                                  |
-| `service.rpcbindPort`          | TCP port on which the nfs-server-provisioner RPC service is exposed                                                    | `51413`                                                  |
+| `service.rpcbindPort`          | TCP port on which the nfs-server-provisioner RPC service is exposed                                                    | `111`                                                    |
 | `service.nfsNodePort`          | if `service.type` is `NodePort` and this is non-empty, sets the nfs-server-provisioner node port of the NFS service    | `nil`                                                    |
 | `service.mountdNodePort`       | if `service.type` is `NodePort` and this is non-empty, sets the nfs-server-provisioner node port of the mountd service | `nil`                                                    |
 | `service.rpcbindNodePort`      | if `service.type` is `NodePort` and this is non-empty, sets the nfs-server-provisioner node port of the RPC service    | `nil`                                                    |
@@ -75,12 +76,13 @@ their default values.
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
 | `storageClass.allowVolumeExpansion` | Allow base storage PCV to be dynamically resizeable (set to null to disable )                              | `true                                                    |
 | `storageClass.parameters`      | Parameters for StorageClass                                                                                     | `{}`                                                     |
-| `storageClass.mountOptions`    | Mount options for StorageClass                                                                                  | `[ "vers=4.1", "noatime" ]`                              |
+| `storageClass.mountOptions`    | Mount options for StorageClass                                                                                  | `[ "vers=3" ]`                                           |
 | `storageClass.reclaimPolicy`   | ReclaimPolicy field of the class, which can be either Delete or Retain                                          | `Delete`                                                    |
 | `resources`                    | Resource limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
 | `affinity`                     | Map of node/pod affinities                                                                                      | `{}`                                                     |
+| `podSecurityContext`              | Security context settings for nfs-server-provisioner pod (see https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod)                                                        | `{}`                                                     |
 
 ```console
 $ helm install stable/nfs-server-provisioner --name my-release \

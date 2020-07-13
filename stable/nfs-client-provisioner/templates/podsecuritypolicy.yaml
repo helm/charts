@@ -1,5 +1,5 @@
 {{- if .Values.podSecurityPolicy.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "nfs-client-provisioner.fullname" . }}

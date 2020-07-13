@@ -1,4 +1,4 @@
-{{- if .Values.jet.configurationFiles }}
+{{- if or .Values.jet.configurationFiles .Values.jet.yaml }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,4 +13,11 @@ data:
   {{ $key }}: |-
 {{ $val | indent 4}}
 {{- end }}
+  hazelcast.yaml: |-
+    hazelcast:
+{{ toYaml .Values.jet.yaml.hazelcast | indent 5 }}
+{{ $jetYaml := index .Values "jet" "yaml" "hazelcast-jet"}}
+  hazelcast-jet.yaml: |-
+    hazelcast-jet:
+{{ toYaml $jetYaml | indent 5 }}
 {{- end -}}

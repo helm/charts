@@ -3,6 +3,14 @@
 This file documents all notable changes to Ambassador Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v5.0.0
+
+### Breaking changes
+
+**Note** If upgrading an existing helm 2 installation no action is needed, previously installed CRDs will not be modified.
+
+- Helm 3 support for CRDs was added. Specifically, the CRD templates were moved to non-templated files in the `/crds` directory, and to keep Helm 2 support they are globbed from there by `/templates/crds.yaml`. However, because Helm 3 CRDs are not templated, the labels for new installations have necessarily changed
+
 ## v4.0.0
 
 ### Breaking Changes

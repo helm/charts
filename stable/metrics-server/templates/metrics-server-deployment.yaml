@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "metrics-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "metrics-server.name" . }}
     chart: {{ template "metrics-server.chart" . }}
@@ -18,6 +19,9 @@ spec:
       labels:
         app: {{ template "metrics-server.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
       {{- with .Values.podAnnotations }}
       annotations:
       {{- range $key, $value := . }}
@@ -39,6 +43,9 @@ spec:
       hostNetwork: true
 {{- end }}
       containers:
+        {{- if .Values.extraContainers }}
+        {{- ( tpl (toYaml .Values.extraContainers) . ) | nindent 8 }}
+        {{- end }}
         - name: metrics-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

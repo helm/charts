@@ -7,13 +7,14 @@ extraArgs:
 - --collect.database
 - --collect.indexusage
 - --collect.topmetrics
+- --collect.connpoolstats
 
 fullnameOverride: ""
 
 image:
   pullPolicy: IfNotPresent
   repository: ssheehy/mongodb-exporter
-  tag: 0.7.0
+  tag: 0.10.0
 
 imagePullSecrets: []
 
@@ -23,9 +24,14 @@ livenessProbe:
     port: metrics
   initialDelaySeconds: 10
 
-# [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
+# [mongodb[+srv]://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 mongodb:
-  uri:
+  uri: ""
+
+# Name of an externally managed secret (in the same namespace) containing the connection uri as key `mongodb-uri`.
+# If this is provided, the value mongodb.uri is ignored.
+existingSecret:
+  name: ""
 
 nameOverride: ""
 
@@ -68,6 +74,7 @@ securityContext:
   runAsUser: 10000
 
 service:
+  labels: {}
   annotations: {}
   port: 9216
   type: ClusterIP
@@ -84,5 +91,6 @@ serviceMonitor:
   scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
+  targetLabels: []
 
 tolerations: []

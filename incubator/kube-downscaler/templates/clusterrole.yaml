@@ -13,16 +13,17 @@ rules:
       - ""
     resources:
       - pods
+      - namespaces
     verbs:
       - get
       - watch
       - list
   - apiGroups:
-      - extensions
-      - apps
+      - "*"
     resources:
-      - deployments
-      - statefulsets
+      {{- range .Values.downscaleResources }}
+      - {{ . }}
+      {{- end }}
     verbs:
       - get
       - watch

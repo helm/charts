@@ -1,4 +1,8 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: DaemonSet
 metadata:
   name: {{ template "fluentd-cloudwatch.fullname" . }}
@@ -8,6 +12,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluentd-cloudwatch.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -71,6 +79,11 @@ spec:
           readOnly: true
         - name: config
           mountPath: /fluentd/etc
+        - name: config-volume
+          mountPath: /config-volume
+{{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
@@ -87,6 +100,9 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 6 }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}

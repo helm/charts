@@ -127,3 +127,40 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "phpmyadmin.tplValue" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "phpmyadmin.tplValue" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "phpmyadmin.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "phpmyadmin.validateValues.db.ssl" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Validate values of phpMyAdmin - must provide a valid database ssl configuration */}}
+{{- define "phpmyadmin.validateValues.db.ssl" -}}
+{{- if and .Values.db.enableSsl (empty .Values.db.ssl.clientKey) (empty .Values.db.ssl.clientCertificate) (empty .Values.db.ssl.caCertificate) -}}
+phpMyAdmin: db.ssl
+    Invalid database ssl configuration. You enabled SSL for the connection
+    between phpMyAdmin and the database but no key/certificates were provided
+    (--set db.ssl.clientKey="xxxx", --set db.ssl.clientCertificate="yyyy")
+{{- end -}}
+{{- end -}}

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "schema-registry-ui.fullname" . }}
@@ -28,6 +28,14 @@ spec:
             value: "{{ .Values.schemaRegistry.url }}:{{ .Values.schemaRegistry.port }}"
           - name: PROXY
             value: "{{ .Values.schemaRegistry.proxy }}"
+          - name: ALLOW_GLOBAL
+            value: "{{ .Values.schemaRegistry.allowGlobal }}"
+          - name: ALLOW_TRANSITIVE
+            value: "{{ .Values.schemaRegistry.allowTransitive }}"
+          - name: ALLOW_DELETION
+            value: "{{ .Values.schemaRegistry.allowDeletion }}"
+          - name: READONLY_MODE
+            value: "{{ .Values.schemaRegistry.readOnlyMode }}"
           ports:
             - name: http
               containerPort: 8000

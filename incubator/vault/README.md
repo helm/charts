@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
 | `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
+| `vault.podApiAddress`             | Set the `VAULT_API_ADDR` environment variable to the Pod IP Address. This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.| `true`           |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
@@ -75,6 +76,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `service.port`                    | The API port Vault is using              | `8200`                              |
 | `service.clusterExternalPort`     | External cluster port for the service    | `nil`                               |
 | `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
+| `service.additionalSelector`      | Additional selector the Vault service    | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `labels`                          | Extra labels for deployment              | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |

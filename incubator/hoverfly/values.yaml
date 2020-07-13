@@ -20,3 +20,11 @@ hoverflyFlags:
 #   requests:
 #     cpu: 0.1
 #     memory: 100Mi
+openshift:
+  route:
+    admin:
+      enabled: false
+      hostname: ""
+    proxy:
+      enabled: false
+      hostname: ""

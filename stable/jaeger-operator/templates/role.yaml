@@ -45,6 +45,10 @@ rules:
 - apiGroups:
   - extensions
   resources:
+  - replicasets
+  - deployments
+  - daemonsets
+  - statefulsets
   - ingresses
   verbs:
   - "*"
@@ -73,6 +77,21 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterrolebindings
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  - extensions
+  resourceNames:
+  - jaeger-operator
+  resources:
+  - deployments/finalizers
+  verbs:
+  - update
 {{- if .Values.rbac.pspEnabled }}
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']

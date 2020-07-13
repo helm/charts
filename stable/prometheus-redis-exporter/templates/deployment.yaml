@@ -42,6 +42,17 @@ spec:
           env:
             - name: REDIS_ADDR
               value: {{ .Values.redisAddress }}
+          {{- if .Values.auth.enabled }}
+            - name: REDIS_PASSWORD
+            {{- if .Values.auth.secret.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.secret.name }}
+                  key: {{ .Values.auth.secret.key }}
+            {{- else }}
+              value: {{ .Values.auth.redisPassword }}
+            {{- end }}
+          {{- end }}
 {{- if .Values.script }}
             - name: REDIS_EXPORTER_SCRIPT
               value: /script/script.lua
@@ -76,4 +87,12 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}

@@ -72,11 +72,14 @@ Parameter | Description | Default
 `service.annotations` | Annotations on the http service | `{}`
 `service.labels` | Additional labels for the service definition | `{}`
 `env` | Extra environment variables passed to pod | `{}`
+`extraEnvSecrets` | Extra environment variables passed to the pod from k8s secrets - see `values.yaml` for an example | `{}` |
+`envFromSecret` | The name of an existing secret in the same kubernetes namespace which contains values to be added to the environment | `nil`
 `secretMounts` |  list of secrets and their paths to mount inside the pod | `[]`
 `affinity` | Affinity rules | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
+`es.indices_settings` | if true, query settings stats for all indices in the cluster | `true`
 `es.shards` | if true, query stats for shards in the cluster | `true`
 `es.cluster_settings` | if true, query stats for cluster settings | `true`
 `es.snapshots` | if true, query stats for snapshots in the cluster | `true`
@@ -85,6 +88,7 @@ Parameter | Description | Default
 `es.ssl.useExistingSecrets` | If true, certs from secretMounts will be used | `false`
 `es.ssl.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
 `es.ssl.ca.path` | Path of ca pem file which should match a secretMount path |
+`es.ssl.client.enabled` | If true, use SSL client certificates for authentication | `true`
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.pemPath` | Path of client pem file which should match a secretMount path |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
@@ -96,10 +100,12 @@ Parameter | Description | Default
 `serviceMonitor.interval` | Interval at which metrics should be scraped | `10s`
 `serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
 `serviceMonitor.scheme` | Scheme to use for scraping | `http`
+`serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
+`serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
-`prometheusRule.rules` | List of Prometheus rules | `[]`
+`prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -117,3 +123,15 @@ $ helm install --name my-release -f values.yaml stable/elasticsearch-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### To 3.0.0
+
+`prometheusRule.rules` are now processed as Helm template, allowing to set variables in them.
+This means that if a rule contains a {{ $value }}, Helm will try replacing it and probably fail.
+
+You now need to escape the rules (see `values.yaml`) for examples.

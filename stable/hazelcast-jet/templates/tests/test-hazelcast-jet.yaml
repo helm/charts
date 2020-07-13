@@ -19,6 +19,11 @@ spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 1001
+    runAsGroup: 1001
+  {{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+  {{- end }}
   containers:
   - name: "{{ template "hazelcast-jet.fullname" . }}-test"
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -34,6 +39,7 @@ spec:
     securityContext:
       runAsNonRoot: true
       runAsUser: 1001
+      runAsGroup: 1001
       privileged: false
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false

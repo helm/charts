@@ -10,7 +10,7 @@ metadata:
     app: {{ template "rabbitmq.name" . }}
     chart: {{ template "rabbitmq.chart" .  }}
     heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    release: {{ if .Values.metrics.serviceMonitor.release }}"{{ .Values.metrics.serviceMonitor.release }}"{{ else }}"{{ .Release.Name }}"{{ end }}
     {{- if .Values.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.metrics.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}

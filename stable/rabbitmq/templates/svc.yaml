@@ -24,6 +24,9 @@ spec:
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: epmd
     port: 4369
@@ -62,10 +65,13 @@ spec:
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: {{ .Values.metrics.port }}
-    targetPort: 9090
+    targetPort: metrics
     {{- if (eq .Values.service.type "ClusterIP") }}
     nodePort: null
     {{- end }}
+{{- end }}
+{{- if .Values.service.extraPorts }}
+{{ toYaml .Values.service.extraPorts | indent 2 }}
 {{- end }}
   selector:
     app: {{ template "rabbitmq.name" . }}

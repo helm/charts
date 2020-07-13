@@ -1,0 +1,5 @@
+# Testing hooks are generated properly
+
+hooks:
+  install: true
+  upgrade: true

@@ -3,29 +3,33 @@
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
 {{- $extraPaths := .Values.ingress.extraPaths -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
 {{- if .Values.ingress.labels }}
 {{ toYaml .Values.ingress.labels | indent 4 }}
 {{- end }}
-{{- with .Values.ingress.annotations }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
   rules:
+  {{- if .Values.ingress.hosts  }}
   {{- range .Values.ingress.hosts }}
     - host: {{ . }}
       http:
@@ -38,4 +42,14 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $servicePort }}
   {{- end }}
+  {{- else }}
+    - http:
+        paths:
+          - backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $servicePort }}
+          {{- if $ingressPath }}
+            path: {{ $ingressPath }}
+            {{- end }}
+  {{- end -}}
 {{- end }}

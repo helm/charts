@@ -1,4 +1,4 @@
-{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled .Values.prometheus.operator.alerts.enabled }}
+{{ if and .Values.prometheus.operator.enabled .Values.prometheus.operator.alerts.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:

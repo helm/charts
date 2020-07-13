@@ -1,3 +1,57 @@
+### 1.28.0
+* [c19e2c796](https://github.com/kubernetes/charts/commit/c19e2c796): Bump up GoCD Version to 20.5.0
+### 1.27.0
+* [57cd4b264](https://github.com/kubernetes/charts/commit/57cd4b264): Bump up GoCD Version to 20.4.0
+### 1.26.1
+* [7a9cd1bb4](https://github.com/kubernetes/charts/commit/7a9cd1bb4): Updated permissions of files in ~/.ssh directory
+
+### 1.26.0
+* [ec6b96f](https://github.com/kubernetes/charts/commit/ec6b96f): Bump up GoCD Version to 20.3.0
+### 1.25.1
+
+* [b70dd76](https://github.com/kubernetes/charts/commit/b70dd76): Update k8s supported versions to 1.14+.
+
+### 1.25.0
+
+* [21277f47](https://github.com/kubernetes/charts/commit/21277f47): Add docs for ingress
+
+### 1.24.0
+
+* [5b3b6e173](https://github.com/kubernetes/charts/commit/5b3b6e173): Update docs to mention about TLS changes
+* [c10bb1088](https://github.com/kubernetes/charts/commit/c10bb1088): Remove usages of 8154 https port
+
+### 1.23.0
+* [efc2c8c](https://github.com/kubernetes/charts/commit/efc2c8c): Bump up GoCD Version to 20.2.0
+
+### 1.22.1
+* [b856007](https://github.com/kubernetes/charts/commit/b856007): Ingress version api change
+* [e2f27a9](https://github.com/kubernetes/charts/commit/e2f27a9): Quote ingress host
+
+### 1.22.0
+* [bcd9825](https://github.com/kubernetes/charts/commit/bcd9825): Bump up GoCD Version to 20.1.0
+
+### 1.21.0
+* [e4ffdda](https://github.com/kubernetes/charts/commit/e4ffdda): Bump up GoCD Version to 19.12.0
+### 1.20.1
+* [671812f5a](https://github.com/kubernetes/charts/commit/671812f5a): Update OWNERS list
+
+### 1.20.0
+* [83552c9](https://github.com/kubernetes/charts/commit/83552c9): Bump up GoCD Version to 19.11.0
+
+### 1.19.3
+* [afd78ccd8](https://github.com/kubernetes/charts/commit/afd78ccd8): GoCD server sidecar containers
+
+### 1.19.2
+* [cacab5e62](https://github.com/kubernetes/charts/commit/cacab5e62): GoCD agents postStart lifecycle hooks
+
+### 1.19.1
+* [00e10170c](https://github.com/kubernetes/charts/commit/00e10170c): Add support for specifying tolerations on both the GoCD server and agent pods
+
+### 1.19.0
+* [9cfa1b98b](https://github.com/kubernetes/charts/commit/9cfa1b98b): Bump up GoCD Version to 19.10.0
+* [10e7c8e3a](https://github.com/kubernetes/charts/commit/10e7c8e3a): Use latest GoCD APIs in preconfigure script
+* [7cba0ba63](https://github.com/kubernetes/charts/commit/7cba0ba63): Bump up kubernetes elastic agent plugin version to v3.4.0
+
 ### 1.18.2
 * [f8cf63789](https://github.com/kubernetes/charts/commit/f8cf63789): Add information about adding plugins
 
@@ -219,7 +273,7 @@
 
 ### 1.4.0
 
-* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):
   - Bump up GoCD app version to 18.8.0
   - Updated kubernetes elastic agent plugin version to 1.0.2
   - Updated post install script

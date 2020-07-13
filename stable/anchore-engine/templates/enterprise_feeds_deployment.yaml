@@ -22,6 +22,9 @@ spec:
       app: {{ template "anchore-engine.fullname" . }}
       component: {{ $component }}
   replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
   template:
     metadata:
       labels:
@@ -62,8 +65,7 @@ spec:
       - name: "{{ .Chart.Name }}-{{ $component }}"
         image: {{ .Values.anchoreEnterpriseGlobal.image }}
         imagePullPolicy: {{ .Values.anchoreEnterpriseGlobal.imagePullPolicy }}
-        command: ["anchore-enterprise-manager"]
-        args: ["service", "start", "feeds"]
+        args: ["anchore-enterprise-manager", "service", "start", "--no-auto-upgrade", "feeds"]
         ports:
         - containerPort: {{ .Values.anchoreEnterpriseFeeds.service.port }}
           name: feeds-api
@@ -71,7 +73,7 @@ spec:
         - secretRef:
             name: {{ default (include "anchore-engine.fullname" .) .Values.anchoreGlobal.existingSecret }}
         - configMapRef:
-            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}-env
         env:
         {{- with .Values.anchoreGlobal.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -164,7 +166,7 @@ spec:
         {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.anchoreEnterpriseFeeds.nodeSelector | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.anchoreEnterpriseFeeds.affinity }}
       affinity:

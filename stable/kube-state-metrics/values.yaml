@@ -2,8 +2,18 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.8.0
+  tag: v1.9.7
   pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
+# If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
+# will be automatically sharded across <.Values.replicas> pods using the built-in
+# autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding
+# This is an experimental feature and there are no stability guarantees.
+autosharding:
+  enabled: false
 
 replicas: 1
 
@@ -55,9 +65,11 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+  additionalVolumes: []
 
 securityContext:
   enabled: true
+  runAsGroup: 65534
   runAsUser: 65534
   fsGroup: 65534
 
@@ -79,6 +91,9 @@ podAnnotations: {}
 ## Assign a PriorityClassName to pods if set
 # priorityClassName: ""
 
+# Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:
@@ -92,7 +107,9 @@ collectors:
   ingresses: true
   jobs: true
   limitranges: true
+  mutatingwebhookconfigurations: true
   namespaces: true
+  networkpolicies: true
   nodes: true
   persistentvolumeclaims: true
   persistentvolumes: true
@@ -105,7 +122,18 @@ collectors:
   services: true
   statefulsets: true
   storageclasses: true
+  validatingwebhookconfigurations: true
   verticalpodautoscalers: false
+  volumeattachments: true
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
+
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""

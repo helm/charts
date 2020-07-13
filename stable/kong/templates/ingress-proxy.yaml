@@ -8,10 +8,7 @@ kind: Ingress
 metadata:
   name: {{ template "kong.fullname" . }}-proxy
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
   annotations:
     {{- range $key, $value := .Values.proxy.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
@@ -27,7 +24,7 @@ spec:
               servicePort: {{ $servicePort }}
     {{ else -}}
     {{- range $host := .Values.proxy.ingress.hosts }}
-    - host: {{ $host }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: {{ $path }}

@@ -15,6 +15,7 @@ This chart bootstraps a [cloudwatch exporter](http://github.com/prometheus/cloud
 ## Prerequisites
 
 - [kube2iam](../../stable/kube2iam) installed to used the **aws.role** config option otherwise configure **aws.aws_access_key_id** and **aws.aws_secret_access_key** or **aws.secret.name**
+- Or an [IAM Role for service account](https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/) attached to a service account with an annotation. If you run the pod as nobody in `securityContext.runAsUser` then also set `securityContext.fsGroup` to the same value so it will be able to access to the mounted secret.
 
 ## Installing the Chart
 
@@ -51,7 +52,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | Parameter                         | Description                                                             | Default                     |
 | --------------------------------- | ----------------------------------------------------------------------- | --------------------------- |
 | `image.repository`                | Image                                                                   | `prom/cloudwatch-exporter`  |
-| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.5.0` |
+| `image.tag`                       | Image tag                                                               | `cloudwatch_exporter-0.8.0` |
 | `image.pullPolicy`                | Image pull policy                                                       | `IfNotPresent`              |
 | `command`                         | Container entrypoint command                                            | `[]`                        |
 | `service.type`                    | Service type                                                            | `ClusterIP`                 |
@@ -69,6 +70,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `rbac.create`                     | If true, create & use RBAC resources                                    | `false`                     |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                  | `true`                      |
 | `serviceAccount.name`             | Name of the service account.                                            |                             |
+| `serviceAccount.annotations`      | Custom annotations for service  account.                                | `{}`                        |
 | `tolerations`                     | Add tolerations                                                         | `[]`                        |
 | `nodeSelector`                    | node labels for pod assignment                                          | `{}`                        |
 | `affinity`                        | node/pod affinities                                                     | `{}`                        |
@@ -82,6 +84,10 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `serviceMonitor.timeout`          | Timeout after which the scrape is ended                                 |                             |
 | `serviceMonitor.relabelings`      | RelabelConfigs to apply to samples before scraping.                     |                             |
 | `serviceMonitor.metricRelabelings`| MetricRelabelConfigs to apply to samples before ingestion.              |                             |
+| `prometheusRule.enabled`          | Namespace thes PrometheusRule  is installed in                          | `false`                     |
+| `prometheusRule.namespace`        | Use PrometheusRule from prometheus operator                             |                             |
+| `prometheusRule.labels`           | labels for the prometheusRule passed to Prometheus Operator             |                             |
+| `prometheusRule.rules`            | Specify alerting rules in YAML format for PrometheusRule                |                             |
 | `ingress.enabled`                 | Enables Ingress                                                         | `false`                     |
 | `ingress.annotations`             | Ingress annotations                                                     | `{}`                        |
 | `ingress.labels`                  | Custom labels                                                           | `{}`                        |

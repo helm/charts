@@ -1,5 +1,5 @@
 {{ if .Values.elasticsearch.host }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "elastalert.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "elastalert.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
@@ -16,11 +20,15 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         checksum/rules: {{ include (print $.Template.BasePath "/rules.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         name: {{ template "elastalert.fullname" . }}-elastalert
         app: {{ template "elastalert.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ include "elastalert.serviceAccountName" . }}
       containers:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -46,6 +54,26 @@ spec:
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+        env:
+{{- if .Values.elasticsearch.credentialsSecret }}
+{{- if .Values.elasticsearch.credentialsSecretUsernameKey }}
+          - name: ES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretUsernameKey }}
+{{- end }}
+{{- if .Values.elasticsearch.credentialsSecretPasswordKey }}
+          - name: ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.elasticsearch.credentialsSecret }}
+                key: {{ .Values.elasticsearch.credentialsSecretPasswordKey }}
+{{- end }}
+{{- end }}
+{{- if .Values.optEnv }}
+{{ .Values.optEnv | toYaml | indent 10}}
+{{- end }}
       restartPolicy: Always
 {{- if .Values.tolerations }}
       tolerations:
@@ -75,5 +103,5 @@ spec:
 {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
-{{- end }} 
+{{- end }}
 {{- end }}

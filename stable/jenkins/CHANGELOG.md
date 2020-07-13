@@ -3,8 +3,343 @@
 This file documents all notable changes to Jenkins Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
-
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
+
+## 2.3.0
+
+Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled
+
+## 2.2.0 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
+Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
+
+## 2.1.2 updated README
+
+## 2.1.1 update credentials-binding plugin to 1.23
+
+## 2.1.0
+
+Add support to set `runAsUser` and `runAsGroup` for `agent`.
+
+## 2.0.1
+
+Only render authorizationStrategy and securityRealm when values are set.
+
+## 2.0.0 Configuration as Code now default + container does not run as root anymore
+
+The README contains more details for this update.
+Please note that the updated values contain breaking changes.
+
+## 1.27.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.3      | 1.25.7      |
+| workflow-job          | 2.38        | 2.39        |
+| credentials-binding   | 1.21        | 1.22        |
+| configuration-as-code | 1.39        | 1.41        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwigrid/k8s-sidecar:0.1.144`
+
+## 1.26.0
+
+Add support to override `workingDir` for default pod template
+
+## 1.25.0
+
+Add support for installing plugins in addition to the chart's default plugins via `master.additionalPlugins`
+
+## 1.24.0
+
+Allow configuration of yamlMergeStrategy via `agent.yamlMergeStrategy`
+
+## 1.23.2
+
+In the `jenkins.xml.podTemplate` helper function, allow templating of all string values under `agent.volumes` except `type` by rendering them with the `tpl` function
+
+## 1.23.1
+
+Added auto detection for Ingress API version
+
+## 1.23.0
+
+Allow to use an existing secret for the jenkins admin credentials
+
+## 1.22.0
+
+Add support for UI security in the default JCasC via `master.JCasC.securityRealm` and `master.JCasC.authorizationStrategy` which deny anonymous access by default
+
+## 1.21.3
+
+Render `agent.envVars` in kubernetes pod template JCasC
+
+## 1.21.2
+
+Cleanup `agent.yamlTemplate` rendering in kubernetes pod template XML configuration
+
+## 1.21.1
+
+Render `agent.nodeSelector` in the kubernetes pod template JCasC
+
+## 1.21.0
+
+Add support for overriding Ingress paths via `master.ingress.paths`
+
+## 1.20.0
+
+  Add the following options for configuring the Kubernetes plugin.
+
+ - master.slaveDefaultsProviderTemplate
+ - master.slaveJenkinsUrl
+ - master.slaveJenkinsTunnel
+ - master.slaveConnectTimeout
+ - master.slaveReadTimeout
+
+## 1.19.0
+
+Add support for disabling remember me via `master.disableRememberMe`
+Add support for using a different markup formatter via `master.markupFormatter`
+
+## 1.18.1
+
+Add support for executor mode configuraton with `master.executorMode`.
+
+## 1.18.0 Make installation of configuration-as-code plugin explicit
+
+Instead of configuring the configuration-as-code plugin version via
+`master.JCasC.pluginVersion` it is now installed via `master.installPlugins`
+
+## 1.17.2
+
+Allow templating of `serviceAccount.annotations` and `serviceAccountAgent.annotations` by rendering them with the `tpl` function
+
+## 1.17.1
+
+Add support for Persistent Volume Claim (PVC) in `agent.volumes`
+
+## 1.17.0
+
+Render `agent.volumes` in kubernetes pod template JCasC
+
+## 1.16.2
+
+Reverts 1.16.1 as it introduced an error #22047
+
+## 1.16.1
+
+Fixed a bug with master.runAsUser variable due to use wrong type for comparison.
+
+## 1.16.0
+
+Add `master.overwritePluginsFromImage` to allow support for jenkins plugins installed in the master image to persist.
+
+## 1.15.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.1      | 1.25.3      |
+| workflow-job          | 2.36        | 2.38        |
+| git                   | 4.2.0       | 4.2.2       |
+| configuration-as-code | 1.36        | 1.39        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.20` to `kiwigrid/k8s-sidecar:0.1.132`
+
+## 1.14.0
+
+support auto-reload container environment variables configuration
+
+## 1.13.3
+
+Fix wrong indent in tolerations
+
+## 1.13.2
+
+Add support for custom ClusterIP
+
+## 1.13.1
+
+Fix `agent.yamlTemplate` rendering in kubernetes pod template JCasC
+
+## 1.13.0
+
+Add `master.networkPolicy.internalAgents` and `master.networkPolicy.externalAgents` stanzas to fine grained controls over where internal/external agents can connect from. Internal ones are allowed based on pod labels and (optionally) namespaces, and external ones are allowed based on IP ranges.
+
+## 1.12.0 Support additional agents
+
+Add support for easy configuration of additional agents which inherit values from `agent`.
+
+## 1.11.3
+
+Update the kubernetes plugin from 1.24.1 to 1.25.1 and grant 'watch' permission to 'events' which is required since this plugin version.
+
+## 1.11.2 Configure agent.args in values.yaml
+
+## 1.11.1 Support for master.additionalConfig
+
+Fixed a bug with jenkinsHome variable in range block when master.additionalConfig is set - Helm cannot evaluate field Values in type interface {}.
+
+## 1.11.0 Add support for configuring custom pod templates
+
+Add `agent.podTemplates` option for declaring custom pod templates in the default configured kubernetes cloud.
+
+## 1.10.1 Only copy JCasC files if there are any
+
+The chart always tried to copy Configuration as Code configs even if there are none. That resulted in an error which is resolved with this.
+
+## 1.10.0 Remove configuration-as-code-support plugins
+
+In recent version of configuration-as-code-plugin this is no longer necessary.
+
+## 1.9.24
+
+Update JCasC auto-reload docs and remove stale ssh key references from version "1.8.0 JCasC auto reload works without ssh keys"
+
+## 1.9.23 Support jenkinsUriPrefix when JCasC is enabled
+
+Fixed a bug in the configuration as code reload url, where it wouldn't work with a jenkinsUriPrefix set.
+
+## 1.9.22
+
+Add `master.jenkinsHome` and `master.jenkinsRef` options to use docker images derivates from Jenkins
+
+## 1.9.21
+
+Add `master.terminationGracePeriodSeconds` option
+
+## 1.9.20
+
+Update default plugins
+
+- kubernetes:1.24.1
+- workflow-job:2.36
+- workflow-aggregator:2.6
+- credentials-binding:1.21
+- git:4.2.0
+- configuration-as-code:1.36
+
+## 1.9.19
+
+Update docs for Helm 3
+
+## 1.9.18
+
+Make `jenkins-home` attachable to Azure Disks without pvc
+
+```
+ volumes:
+  - name: jenkins-home
+    azureDisk:
+      kind: Managed
+      diskName: myAKSDisk
+      diskURI: /subscriptions/<subscriptionID>/resourceGroups/MC_myAKSCluster_myAKSCluster_eastus/providers/Microsoft.Compute/disks/myAKSDisk
+```
+
+## 1.9.16
+
+Fix PodLabel for NetworkPolicy to work if enabled
+
+## 1.9.14
+
+Properly fix case sense in `Values.master.overwriteConfig` in `config.yaml`
+
+## 1.9.13
+
+Fix case sense in `Values.master.overwriteConfig` in `config.yaml`
+
+## 1.9.12
+
+Scriptapprovals are overwritten when overwriteConfig is enabled
+
+## 1.9.10
+
+Added documentation for `persistence.storageClass`.
+
+## 1.9.9
+Make `master.deploymentAnnotation` configurable.
+
+## 1.9.8
+
+Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins will not cancel&ask k8s for a pod again, while it's on `ContainerCreating`. Useful when you have big images or autoscaling takes some time.
+
+## 1.9.7 Update plugin versions
+
+plugin                | old version | new version
+--------------------- | ----------- | ----------
+kubernetes            | 1.18.2      | 1.21.2
+workflow-job          | 2.33        | 2.36
+credentials-binding   | 1.19        | 1.20
+git                   | 3.11.0      | 4.0.0
+configuration-as-code | 1.27        | 1.32
+
+## 1.9.6
+
+Enables jenkins to use keystore inorder to have native ssl support [#17790](https: https://wiki.jenkins.io/pages/viewpage.action?pageId=135468777)
+
+## 1.9.5 Enable remoting security
+
+`Manage Jenkins` -> `Configure Global Security` -> `Enable Agent → Master Access Control` is now enabled via configuration as code plugin
+
+## 1.9.4 Option to set existing secret with Google Application Default Credentials
+
+Google application credentials are kept in a file, which has to be mounted to a pod. You can set `gcpcredentials` in `existingSecret` as follows:
+
+```
+ existingSecret:
+    jenkins-service-account:
+      gcpcredentials: application_default_credentials.json
+```
+
+Helm template then creates the necessary volume mounts and `GOOGLE_APPLICATION_CREDENTIALS` environmental variable.
+
+## 1.9.3 Fix `JAVA_OPTS` when config auto-reload is enabled
+
+## 1.9.2 Add support for kubernetes-credentials-provider-plugin
+
+[kubernetes-credentials-provider-plugin](https://jenkinsci.github.io/kubernetes-credentials-provider-plugin/) needs permissions to get/watch/list kubernetes secrets in the namespaces where Jenkins is running.
+
+The necessary role binding can be created using `rbac.readSecrets` when `rbac.create` is `true`.
+
+To quote from the plugin documentation:
+
+> Because granting these permissions for secrets is not something that should be done lightly it is highly advised for security reasons that you both create a unique service account to run Jenkins as, and run Jenkins in a unique namespace.
+
+Therefor this is disabled by default.
+
+## 1.9.1 Update kubernetes plugin URL
+
+## 1.9.0 Change default serviceType to ClusterIP
+
+## 1.8.2
+
+Revert fix in `1.7.10` since direct connection is now disabled by default.
+
+## 1.8.1
+
+Add `master.schedulerName` to allow setting a Kubernetes custom scheduler
+
+## 1.8.0 JCasC auto reload works without ssh keys
+
+We make use of the fact that the Jenkins Configuration as Code Plugin can be triggered via http `POST` to `JENKINS_URL/configuration-as-code/reload`and a pre-shared key.
+The sidecar container responsible for reloading config changes is now `kiwigrid/k8s-sidecar:0.1.20` instead of it's fork `shadwell/k8s-sidecar`.
+
+References:
+
+- [Triggering Configuration Reload](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/configurationReload.md)
+- [kiwigrid/k8s-sidecar](https://hub.docker.com/r/kiwigrid/k8s-sidecar)
+
+`master.sidecars.configAutoReload.enabled` now works using `casc.reload.token`
+
+## 1.7.10
+
+Disable direct connection in default configuration (when kubernetes plugin version >= 1.20.2).
+Note: In case direct connection is going to be used `jenkins/jnlp-slave` needs to be version `3.35-5` or newer.
+
+## 1.7.9
+
+Prevented Jenkins Setup Wizard on new installations
 
 ## 1.7.8
 
@@ -16,15 +351,16 @@ Add persistentvolumeclaim permission to the role to support new dynamic pvc work
 
 ## 1.7.6
 
-Updated  `master.slaveKubernetesNamespace` to parse helm templates.
+Updated `master.slaveKubernetesNamespace` to parse helm templates.
 Defined an sensible empty value to the following variables, to silence invalid warnings:
-  - master.extraPorts
-  - master.scriptApproval
-  - master.initScripts
-  - master.JCasC.configScripts
-  - master.sidecars.other
-  - agent.envVars
-  - agent.volumes
+
+- master.extraPorts
+- master.scriptApproval
+- master.initScripts
+- master.JCasC.configScripts
+- master.sidecars.other
+- agent.envVars
+- agent.volumes
 
 ## 1.7.5
 
@@ -47,54 +383,55 @@ Update the default requirements for jenkins-slave to 512Mi which fixes frequentl
 [Jenkins Configuration as Code Plugin](https://github.com/jenkinsci/configuration-as-code-plugin) default configuration can now be enabled via `master.JCasC.defaultConfig`.
 
 JCasC default configuration includes:
-  - Jenkins url
-  - Admin email `master.jenkinsAdminEmail`
-  - crumbIssuer
-  - disableRememberMe: false
-  - mode: NORMAL
-  - numExecutors: {{ .Values.master.numExecutors }}
-  - projectNamingStrategy: "standard"
-  - kubernetes plugin
-    - containerCapStr via `agent.containerCap`
-    - jenkinsTunnel
-    - jenkinsUrl
-    - maxRequestsPerHostStr: "32"
-    - name: "kubernetes"
-    - namespace
-    - serverUrl: "https://kubernetes.default"
-    - template
-      - containers
-        - alwaysPullImage: `agent.alwaysPullImage`
-        - args
-        - command
-        - envVars
-        - image: `agent.image:agent.imageTag`
-        - name: `.agent.sideContainerName`
-        - privileged: `.agent.privileged`
-        - resourceLimitCpu: `agent.resources.limits.cpu`
-        - resourceLimitMemory: `agent.resources.limits.memory`
-        - resourceRequestCpu: `agent.resources.requests.cpu`
-        - resourceRequestMemory: `agent.resources.requests.memory`
-        - ttyEnabled: `agent.TTYEnabled`
-        - workingDir: "/home/jenkins"
-      - idleMinutes: `agent.idleMinutes`
-      - instanceCap: 2147483647
-      - imagePullSecrets:
-        - name: `.agent.imagePullSecretName`
-      - label
-      - name
-      - nodeUsageMode: "NORMAL"
-      - podRetention: `agent.podRetention`
-      - serviceAccount
-      - showRawYaml: true
-      - slaveConnectTimeoutStr: "100"
-      - yaml: `agent.yamlTemplate`
-      - yamlMergeStrategy: "override"
-  - security:
-    - apiToken:
-      - creationOfLegacyTokenEnabled: false
-      - tokenGenerationOnCreationEnabled: false
-      - usageStatisticsEnabled: true
+
+- Jenkins url
+- Admin email `master.jenkinsAdminEmail`
+- crumbIssuer
+- disableRememberMe: false
+- mode: NORMAL
+- numExecutors: {{ .Values.master.numExecutors }}
+- projectNamingStrategy: "standard"
+- kubernetes plugin
+  - containerCapStr via `agent.containerCap`
+  - jenkinsTunnel
+  - jenkinsUrl
+  - maxRequestsPerHostStr: "32"
+  - name: "kubernetes"
+  - namespace
+  - serverUrl: "https://kubernetes.default"
+  - template
+    - containers
+      - alwaysPullImage: `agent.alwaysPullImage`
+      - args
+      - command
+      - envVars
+      - image: `agent.image:agent.imageTag`
+      - name: `.agent.sideContainerName`
+      - privileged: `.agent.privileged`
+      - resourceLimitCpu: `agent.resources.limits.cpu`
+      - resourceLimitMemory: `agent.resources.limits.memory`
+      - resourceRequestCpu: `agent.resources.requests.cpu`
+      - resourceRequestMemory: `agent.resources.requests.memory`
+      - ttyEnabled: `agent.TTYEnabled`
+      - workingDir: "/home/jenkins"
+    - idleMinutes: `agent.idleMinutes`
+    - instanceCap: 2147483647
+    - imagePullSecrets:
+      - name: `.agent.imagePullSecretName`
+    - label
+    - name
+    - nodeUsageMode: "NORMAL"
+    - podRetention: `agent.podRetention`
+    - serviceAccount
+    - showRawYaml: true
+    - slaveConnectTimeoutStr: "100"
+    - yaml: `agent.yamlTemplate`
+    - yamlMergeStrategy: "override"
+- security:
+  - apiToken:
+    - creationOfLegacyTokenEnabled: false
+    - tokenGenerationOnCreationEnabled: false
+    - usageStatisticsEnabled: true
 
 Example `values.yaml` which enables JCasC, it's default config and configAutoReload:
 
@@ -651,8 +988,8 @@ commit: 846b589a9
 
 ## 0.26.1
 
-* fixes #10267 when executed with helm template - otherwise produces an invalid template. (#10403)
-commit: 266f9d839
+- fixes #10267 when executed with helm template - otherwise produces an invalid template. (#10403)
+  commit: 266f9d839
 
 ## 0.26.0
 
@@ -1087,7 +1424,7 @@ commit: 572b36c6d
 ## 0.7.2
 
 - Workflow plugin pin (#1178)
-commit: ac3a0c7bc
+  commit: ac3a0c7bc
 
 ## 0.7.1
 
@@ -1281,7 +1618,7 @@ commit: 2f63fd524
 
 ## 0.1.1
 
-docs(*): update READMEs to reference chart repos (#119)
+docs(\*): update READMEs to reference chart repos (#119)
 commit: c7d1bff05
 
 ## 0.1.0

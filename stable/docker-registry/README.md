@@ -41,6 +41,8 @@ their default values.
 | `service.type`              | service type                                                                               | `ClusterIP`     |
 | `service.clusterIP`         | if `service.type` is `ClusterIP` and this is non-empty, sets the cluster IP of the service | `nil`           |
 | `service.nodePort`          | if `service.type` is `NodePort` and this is non-empty, sets the node port of the service   | `nil`           |
+| `service.loadBalancerIP     | if `service.type` is `LoadBalancer` and this is non-empty, sets the loadBalancerIP of the service | `nil`          |
+| `service.loadBalancerSourceRanges`| if `service.type` is `LoadBalancer` and this is non-empty, sets the loadBalancerSourceRanges of the service | `nil`           |
 | `replicaCount`              | k8s replicas                                                                               | `1`             |
 | `updateStrategy`            | update strategy for deployment                                                             | `{}`            |
 | `podAnnotations`            | Annotations for pod                                                                        | `{}`            |
@@ -66,6 +68,7 @@ their default values.
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
 | `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
+| `affinity`                  | affinity settings                                                                          | `{}`            |
 | `tolerations`               | pod tolerations                                                                            | `[]`            |
 | `ingress.enabled`           | If true, Ingress will be created                                                           | `false`         |
 | `ingress.annotations`       | Ingress annotations                                                                        | `{}`            |
@@ -73,6 +76,8 @@ their default values.
 | `ingress.path`              | Ingress service path                                                                       | `/`             |
 | `ingress.hosts`             | Ingress hostnames                                                                          | `[]`            |
 | `ingress.tls`               | Ingress TLS configuration (YAML)                                                           | `[]`            |
+| `extraVolumeMounts`         | Additional volumeMounts to the registry container                                          | `[]`            |
+| `extraVolumes`              | Additional volumes to the pod                                                              | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

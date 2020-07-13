@@ -5,12 +5,18 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.2.2
+    tag: 1.3.7
   pullPolicy: Always
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 testFramework:
   image: "dduportal/bats"
   tag: "0.4.0"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - name: registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -60,6 +66,7 @@ backend:
     logstash_prefix: kubernetes_cluster
     replace_dots: "On"
     logstash_format: "On"
+    retry_limit: "False"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
@@ -81,6 +88,7 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  stackdriver: {}
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
@@ -97,6 +105,7 @@ backend:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+    # json_date_format: double or iso8601
     headers: []
 
 parsers:
@@ -161,10 +170,14 @@ rawConfig: |-
 extraEntries:
   input: |-
 #     # >=1 additional Key/Value entrie(s) for existing Input section
+  audit: |-
+#     # >=1 additional Key/Value entrie(s) for existing Input section
   filter: |-
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
+  service: |-
+#     # >=1 additional Key/Value entrie(s) for existing Service section
 # WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -197,6 +210,19 @@ hostNetwork: false
 # Consider switching to 'ClusterFirstWithHostNet' when 'hostNetwork' is enabled.
 dnsPolicy: ClusterFirst
 
+# Optional field that allows more control on the DNS settings for the pod.
+# Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+
 ## Node tolerations for fluent-bit scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
@@ -222,6 +248,9 @@ input:
     parser: docker
     path: /var/log/containers/*.log
     ignore_older: ""
+    dockerMode: false
+    dockerModeFlush: 4
+    exclude_path: ""
   systemd:
     enabled: false
     filters:
@@ -231,7 +260,20 @@ input:
         - node-problem-detector.service
     maxEntries: 1000
     readFromTail: true
+    stripUnderscores: false
     tag: host.*
+
+audit:
+  enable: false
+  input:
+    memBufLimit: 35MB
+    parser: docker
+    tag: audit.*
+    path: /var/log/kube-apiserver-audit.log
+    bufferChunkSize: 2MB
+    bufferMaxSize: 10MB
+    skipLongLines: On
+    key: kubernetes-audit
 
 filter:
   kubeURL: https://kubernetes.default.svc:443
@@ -257,6 +299,9 @@ filter:
 # fluentbit.io/exclude: true. If present, discard logs from that pod.
   enableExclude: true
 
+# If true, the filter reads logs coming in Journald format.
+  useJournal: false
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -269,6 +314,8 @@ taildb:
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
+  # Annotations to add to the service account
+  annotations: {}
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:

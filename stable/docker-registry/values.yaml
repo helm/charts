@@ -24,6 +24,8 @@ service:
   # clusterIP:
   port: 5000
   # nodePort:
+  # loadBalancerIP:
+  # loadBalancerSourceRanges:
   annotations: {}
   # foo.io/bar: "true"
 ingress:
@@ -32,7 +34,7 @@ ingress:
   # Used to create an Ingress record.
   hosts:
     - chart-example.local
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   labels: {}
@@ -124,4 +126,22 @@ podDisruptionBudget: {}
 
 nodeSelector: {}
 
+affinity: {}
+
 tolerations: []
+
+extraVolumeMounts: []
+## Additional volumeMounts to the registry container.
+#  - mountPath: /secret-data
+#    name: cloudfront-pem-secret
+#    readOnly: true
+
+extraVolumes: []
+## Additional volumes to the pod.
+#  - name: cloudfront-pem-secret
+#    secret:
+#      secretName: cloudfront-credentials
+#      items:
+#        - key: cloudfront.pem
+#          path: cloudfront.pem
+#          mode: 511

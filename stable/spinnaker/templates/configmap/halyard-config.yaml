@@ -26,6 +26,9 @@ data:
     {{- end }}
 
     $HAL_COMMAND deploy apply
+    {{- if .Values.halyard.additionalInstallParameters }} \
+      {{- .Values.halyard.additionalInstallParameters | join " \\\n" | nindent 6 }}
+    {{- end }}
   clean.sh: |
     export HAL_COMMAND='hal --daemon-endpoint http://{{ template "spinnaker.fullname" . }}-halyard:8064'
     $HAL_COMMAND deploy clean -q
@@ -42,7 +45,7 @@ data:
     echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit \
         --endpoint http://{{ .Release.Name }}-minio:9000 \
         --access-key-id {{ .Values.minio.accessKey }} \
-        --secret-access-key --bucket {{ .Values.minio.bucket }} \
+        --secret-access-key --bucket {{ .Values.minio.defaultBucket.name }} \
         --path-style-access true
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
@@ -58,11 +61,17 @@ data:
       {{- if .Values.s3.endpoint }}
       --endpoint {{ .Values.s3.endpoint }} \
       {{- end }}
+      {{- if .Values.s3.assumeRole }}
+      --assume-role {{ .Values.s3.assumeRole }} \
+      {{- end }}
       {{- if .Values.s3.accessKey }}
       --access-key-id "$(cat /opt/s3/accessKey)" \
       {{- end }}
       {{- if .Values.s3.secretKey }}
       --secret-access-key \
+      {{- end }}
+      {{- range .Values.s3.extraArgs }}
+      {{- . }} \
       {{- end }}
 
     $HAL_COMMAND config storage edit --type s3
@@ -90,16 +99,11 @@ data:
       PROVIDER_COMMAND='add'
     fi
 
-    CREDS=""
-    {{ if $registry.username -}}
-    CREDS+="--username {{ $registry.username }} --password-file /opt/registry/passwords/{{ $registry.name }}"
-    {{ if $registry.email -}}
-    CREDS+=" --email {{ $registry.email }}"
-    {{- end -}}
-    {{- end }}
-
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
-        ${CREDS} {{ if $registry.repositories }} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
+      {{ if $registry.username -}} --username {{ $registry.username }} \
+      {{ if $registry.passwordCommand -}} --password-command "{{ $registry.passwordCommand }}"{{ else -}} --password-file /opt/registry/passwords/{{ $registry.name }}{{- end }} \
+      {{ if $registry.email -}} --email {{ $registry.email }}{{- end -}}{{- end }} \
+      {{ if $registry.repositories -}} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
 
     {{- end }}
 
@@ -117,7 +121,8 @@ data:
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file {{ template "spinnaker.kubeconfig" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.onlySpinnakerManaged.enabled }}--only-spinnaker-managed true{{ end }} \
                 {{ if not $.Values.kubeConfig.checkPermissionsOnStartup }}--check-permissions-on-startup false{{ end }} \
-                --omit-namespaces={{ template "omittedNameSpaces" $ }} \
+                {{ if $.Values.kubeConfig.nameSpaces }}--namespaces={{ template "nameSpaces" $ }}{{ end }} \
+                {{ if not $.Values.kubeConfig.nameSpaces }}--omit-namespaces={{ template "omittedNameSpaces" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.omittedKinds }}--omit-kinds={{ template "omittedKinds" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.kinds }}--kinds={{ template "k8sKinds" $ }}{{ end }} \
                 --provider-version v2

@@ -1,8 +1,8 @@
 # Anchore Engine Helm Chart
 
-This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, Simplequeue, Catalog, Policy Engine, and Analyzer.
+This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally, and executes in a service based architecture utilizing the following Anchore Engine services: External API, SimpleQueue, Catalog, Policy Engine, and Analyzer.
 
-This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, Reporting, & On-premises Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private Dockerhub repository hosting the images. These are not enabled by default.
+This chart can also be used to install the following Anchore Enterprise services: GUI, RBAC, Reporting, Notifications & On-premises Feeds. Enterprise services require a valid Anchore Enterprise License as well as credentials with access to the private DockerHub repository hosting the images. These are not enabled by default.
 
 Each of these services can be scaled and configured independently.
 
@@ -23,11 +23,14 @@ TL;DR - `helm install stable/anchore-engine`
 
 Anchore Engine will take approximately 3 minutes to bootstrap. After the initial bootstrap period, Anchore Engine will begin a vulnerability feed sync. During this time, image analysis will show zero vulnerabilities until the sync is completed. This sync can take multiple hours depending on which feeds are enabled. The following anchore-cli command is available to poll the system and report back when the engine is bootstrapped and the vulnerability feeds are all synced up. `anchore-cli system wait`
 
-The recommended way to install the Anchore Engine Helm Chart is with a customized values file and a custom release name. It is highly recommended to set non-default passwords when deploying, all passwords are set to defaults specified in the chart. It is also recommended to utilize an external database, rather than using the included postgresql chart.
+The recommended way to install the Anchore Engine Helm Chart is with a customized values file and a custom release name. It is highly recommended to set non-default passwords when deploying, all passwords are set to defaults specified in the chart. It is also recommended to utilize an external database, rather then using the included postgresql chart.
 
 Create a new file named `anchore_values.yaml` and add all desired custom values (examples below); then run the following command:
 
-  `helm install --name <release_name> -f anchore_values.yaml stable/anchore-engine`
+  #### Helm v3 installation
+  `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
+
+  `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
 ##### Example anchore_values.yaml - using chart managed PostgreSQL service with custom passwords.
 *Note: Installs with chart managed PostgreSQL database. This is not a guaranteed production ready config.*
@@ -53,8 +56,10 @@ anchoreGlobal:
     * Graphical user interface
     * Customizable UI dashboards
     * On-premises feeds service
-    * Proprietary vulnerability data feed
+    * Proprietary vulnerability data feed (vulnDB, MSRC)
     * Anchore reporting API
+    * Notifications - Slack, GitHub, Jira, etc
+    * Microsoft image vulnerability scanning
 
 ### Enabling Enterprise Services
 Enterprise services require an Anchore Enterprise license, as well as credentials with
@@ -66,17 +71,21 @@ To use this Helm chart with the enterprise services enabled, perform these steps
 
     `kubectl create secret generic anchore-enterprise-license --from-file=license.yaml=<PATH/TO/LICENSE.YAML>`
 
-1. Create a kubernetes secret containing dockerhub credentials with access to the private anchore enterprise repositories.
+1. Create a kubernetes secret containing DockerHub credentials with access to the private anchore enterprise repositories.
 
     `kubectl create secret docker-registry anchore-enterprise-pullcreds --docker-server=docker.io --docker-username=<DOCKERHUB_USER> --docker-password=<DOCKERHUB_PASSWORD> --docker-email=<EMAIL_ADDRESS>`
 
 1. (demo) Install the Helm chart using default values
+    #### Helm v3 installation
+    `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
-    `helm fetch stable/anchore-engine --untar && helm install --name enterprise stable/anchore-engine -f anchore-engine/enterprise_values.yaml`
+    `helm install <release_name> --set anchoreEnterpriseGlobal.enabled=true stable/anchore-engine`
 
-1. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
+2. (production) Install the Helm chart using a custom anchore_values.yaml file - *see examples below*
+    #### Helm v3 installation
+    `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 
-    `helm install --name <release_name> -f /path/to/anchore_values.yaml stable/anchore-engine`
+    `helm install <release_name> -f anchore_values.yaml stable/anchore-engine`
 
 #### Example anchore_values.yaml - installing Anchore Enterprise
 
@@ -198,6 +207,33 @@ anchore-feeds-db:
 anchore-ui-redis:
   password: <PASSWORD>
 ```
+# Chart Updates
+See the anchore-engine [CHANGELOG](https://github.com/anchore/anchore-engine/blob/master/CHANGELOG.md) for updates to anchore engine.
+
+## Upgrading from previous chart versions
+A Helm post-upgrade hook job has been added starting with Chart version 1.6.0 - this job will shut down all previously running Anchore services and perform the Anchore DB upgrade process using a kubernetes job. The upgrade will only be considered successful when this job completes successfully. Performing an update after v1.6.0 will cause the Helm client to block until the upgrade job completes and the new Anchore service pods are started. To view progress of the upgrade process, tail the logs of the upgrade jobs `anchore-engine-upgrade` and `anchore-enterprise-upgrade`. These job resources will be removed upon a successful helm upgrade.
+
+## Chart version 1.6.0
+Changes with this version include:
+  * Anchore database upgrades will now be handled using a helm post-upgrade hook job
+  * Anchore Engine image updated to v0.7.1
+  * Anchore Enterprise updated to v2.3.0 - see [CHANGELOG](https://docs.anchore.com/current/docs/releasenotes/230/)
+  * Enterprise deployments now use the `anchore/enterprise` image for all components
+  * Added GitHub advisory feeds
+  * Added NuGet .NET feeds to Enterprise feed service
+  * Updated resources to provide better minimum requirements baseline (these are still not production ready)
+
+## Chart version 1.5.0
+Changes to the Helm Chart include:
+  * Anchore Engine image updated to v0.7.0
+  * Enterprise deployments now use a different image for core anchore-engine services - .Values.anchoreEnterpriseGlobal.engineImage
+  * Default feed sync timeout increased to 180s
+  * Added a optional configuration for including imagePullSecret on all anchore-engine images - .Values.anchoreGlobal.imagePullSecretName
+
+## Chart version 1.4.0
+The following features were added with this chart version:
+  * Enterprise notifications service
+  * Numerous QOL improvements to the Enterprise UI service
 
 ## Upgrading to Chart version 1.3.0
 The following features were added with this chart version:
@@ -335,11 +371,11 @@ Engine DB Version: 0.0.8
 Engine Code Version: 0.3.0
 ```
 
-## Configuration
+# Configuration
 
 All configurations should be appended to your custom `anchore_values.yaml` file and utilized when installing the chart. While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
-### Exposing the service outside the cluster:
+## Exposing the service outside the cluster:
 
 #### Using Ingress
 

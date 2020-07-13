@@ -1,9 +1,35 @@
 replicaCount: 1
 
-image: ipfs/go-ipfs:v0.4.21
+image: ipfs/go-ipfs:v0.4.22
 
 service:
   type: ClusterIP
+
+ingressApi:
+  enabled: false
+    # hosts:
+    # - ipfs-api.localhost.localdomain
+    # - localhost.localdomain/ipfs-api
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # tls:
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+ingressGateway:
+  enabled: false
+    # hosts:
+    # - ipfs-gateway.localhost.localdomain
+    # - localhost.localdomain/ipfs-gateway
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+    # tls:
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
 
 swarm:
   enabled: false

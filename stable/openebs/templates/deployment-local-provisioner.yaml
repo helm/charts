@@ -33,7 +33,7 @@ spec:
       serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.name" . }}-localpv-provisioner
-        image: "{{ .Values.localprovisioner.image }}:{{ .Values.localprovisioner.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.localprovisioner.image }}:{{ .Values.localprovisioner.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         # OPENEBS_IO_K8S_MASTER enables openebs provisioner to connect to K8s
@@ -54,6 +54,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        # OPENEBS_SERVICE_ACCOUNT provides the service account of this pod as
+        # environment variable
+        - name: OPENEBS_SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
         # OPENEBS_IO_BASE_PATH is the environment variable that provides the
         # default base path on the node where host-path PVs will be provisioned.
         - name: OPENEBS_IO_ENABLE_ANALYTICS
@@ -61,14 +67,21 @@ spec:
         - name: OPENEBS_IO_BASE_PATH
           value: "{{ .Values.localprovisioner.basePath }}"
         - name: OPENEBS_IO_HELPER_IMAGE
-          value: "{{ .Values.localprovisioner.helperImage }}:{{ .Values.localprovisioner.helperImageTag }}"
+          value: "{{ .Values.image.repository }}{{ .Values.helper.image }}:{{ .Values.helper.imageTag }}"
         - name: OPENEBS_IO_INSTALLER_TYPE
           value: "charts-helm"
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can't be used here with pgrep (>15 chars).A regular expression
+        # that matches the entire command name has to specified.
+        # Anchor `^` : matches any string that starts with `provisioner-loc`
+        # `.*`: matches any string that has `provisioner-loc` followed by zero or more char
         livenessProbe:
           exec:
             command:
-            - pgrep
-            - ".*localpv"
+            - sh
+            - -c
+            - test `pgrep -c "^provisioner-loc.*"` = 1
           initialDelaySeconds: {{ .Values.localprovisioner.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.localprovisioner.healthCheck.periodSeconds }}
 {{- if .Values.localprovisioner.nodeSelector }}

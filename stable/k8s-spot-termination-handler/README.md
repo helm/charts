@@ -29,6 +29,7 @@ Parameter | Description | Default
 `image.repository` | container image repository | `kubeaws/kube-spot-termination-notice-handler`
 `image.tag` | container image tag | `1.13.7-1`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
+`imagePullSecrets` | array of imagePullSecrets containing private registry credentials | `[]`
 `noticeUrl` | the URL of EC2 spot instance termination notice endpoint | `http://169.254.169.254/latest/meta-data/spot/termination-time`
 `pollInterval` | the interval in seconds between attempts to poll EC2 metadata API for termination events | `"5"`
 `verbose` | Enable verbose | _not defined_
@@ -49,3 +50,4 @@ Parameter | Description | Default
 `hostNetwork` | controls whether the pod may use the node network namespace | `true`
 `podAnnotations` | annotations to be added to pods | `{}`
 `updateStrategy` | can be either `RollingUpdate` or `OnDelete` | `RollingUpdate`
+`podSecurityContext` | security context applied to the pod | `{}`

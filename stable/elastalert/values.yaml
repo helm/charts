@@ -28,9 +28,13 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.2.1
+  tag: 0.2.4
   pullPolicy: IfNotPresent
+
 resources: {}
+
+# Annotations to be added to pods
+podAnnotations: {}
 
 elasticsearch:
   # elasticsearch endpoint e.g. (svc.namespace||svc)
@@ -43,6 +47,12 @@ elasticsearch:
   username: ""
   # Password if authenticating to ES with basic auth
   password: ""
+  # Specifies an existing secret to be used for the ES username/password
+  credentialsSecret: ""
+  # The key in elasticsearch.credentialsSecret that stores the ES password
+  credentialsSecretUsernameKey: ""
+  # The key in elasticsearch.credentialsSecret that stores the ES username
+  credentialsSecretPasswordKey: ""
   # whether or not to verify TLS certificates
   verifyCerts: "True"
   # Enable certificate based authentication
@@ -63,6 +73,9 @@ elasticsearch:
   #   - name: es-certs
   #     mountPath: /certs
   #     readOnly: true
+
+# Optional env variables for the pod
+optEnv: []
 
 extraConfigOptions: {}
   # # Options to propagate to all rules, e.g. a common slack_webhook_url or kibana_url
@@ -109,6 +122,20 @@ rules: {}
   #   pagerduty:
   #   pagerduty_service_key: dummy
   #   pagerduty_client_name: Elastalert Deadman Switch
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Enable pod security policy
+# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  create: false
 
 # Support using node selectors and tolerations
 # nodeSelector:

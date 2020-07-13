@@ -2,12 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
 data:
 {{- if .Values.plugins }}
   plugins: {{ join "," .Values.plugins }}
@@ -57,15 +54,15 @@ data:
   {{- range $provider, $dashboards := .Values.dashboards }}
     {{- range $key, $value := $dashboards }}
       {{- if (or (hasKey $value "gnetId") (hasKey $value "url")) }}
-    curl -sk \
+    curl -skf \
     --connect-timeout 60 \
     --max-time 60 \
       {{- if not $value.b64content }}
     -H "Accept: application/json" \
     -H "Content-Type: application/json;charset=UTF-8" \
-      {{- end }}
-    {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }}{{- if $value.b64content -}} | base64 -d {{- end -}} \
-    > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+      {{ end }}
+    {{- if $value.url -}}"{{ $value.url }}"{{- else -}}"https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download"{{- end -}}{{ if $value.datasource }} | sed '/-- .* --/! s/"datasource":.*,/"datasource": "{{ $value.datasource }}",/g'{{ end }}{{- if $value.b64content -}} | base64 -d {{- end -}} \
+    > "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
       {{- end -}}
     {{- end }}
   {{- end }}

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "schema-registry.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "schema-registry.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -103,34 +107,9 @@ spec:
               name: jmx
             {{- end }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.servicePort }}
-            {{- if not .Values.livenessProbe }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-            {{- else }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 10}}
-            {{- if .Values.livenessProbe.periodSeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            {{- end }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
-            {{- if .Values.livenessProbe.successThreshold }}
-            successThreshold: {{ .Values.livenessProbe.successThreshold }}
-            {{- end }}
-            {{- if .Values.livenessProbe.failureThreshold }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-            {{- end }}
-            {{- end }}
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.servicePort }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 10}}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 5}}
-            successThreshold: {{ .Values.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+{{ toYaml .Values.readinessProbe | indent 12 }}
           env:
           - name: SCHEMA_REGISTRY_HOST_NAME
             valueFrom:

@@ -16,7 +16,11 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-    - port: service
+    {{- if .Values.tls.enabled }}
+    - port: https
+    {{ else }}
+    - port: http
+    {{- end }}
       path: /minio/prometheus/metrics
       {{- if .Values.metrics.serviceMonitor.interval }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}
@@ -24,9 +28,12 @@ spec:
       {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
       {{- end }}
+      bearerTokenSecret:
+        name: {{ template "minio.fullname" . }}-prometheus
+        key: token
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - {{ .Release.Namespace | quote }}
   selector:
     matchLabels:
       app: {{ include "minio.name" . }}

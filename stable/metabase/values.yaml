@@ -4,10 +4,15 @@
 # NOTE: Should remain 1
 replicaCount: 1
 podAnnotations: {}
+podLabels: {}
 image:
   repository: metabase/metabase
-  tag: v0.32.9
+  tag: v0.35.3
   pullPolicy: IfNotPresent
+
+## String to fully override metabase.fullname template
+##
+# fullnameOverride:
 
 # Config Jetty web server
 listen:
@@ -20,6 +25,11 @@ ssl:
   # keyStore: |-
   #   << JKS KEY STORE >>
   # keyStorePassword: storepass
+jetty:
+#  maxThreads: 254
+#  minThreads: 8
+#  maxQueued: -1
+#  maxIdleTime: 60000
 
 # Backend database
 database:
@@ -34,6 +44,11 @@ database:
   # password:
   ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
   # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+  ## If a secret with the database credentials already exists, use the following values:
+  # existingSecret:
+  # existingSecretUsernameKey:
+  # existingSecretPasswordKey:
+  # existingSecretConnectionURIKey:
 
 password:
   # Changing Metabase password complexity:
@@ -48,12 +63,24 @@ emojiLogging: true
 # javaOpts:
 # pluginsDirectory:
 
+livenessProbe:
+  initialDelaySeconds: 120
+  timeoutSeconds: 30
+  failureThreshold: 6
+
+readinessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 5
+
 service:
   name: metabase
   type: ClusterIP
   externalPort: 80
   internalPort: 3000
-  annotations:
+  # Used to fix NodePort when service.type: NodePort.
+  nodePort:
+  annotations: {}
     # Used to add custom annotations to the Service.
     # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 ingress:
@@ -67,7 +94,7 @@ ingress:
     # Used to add custom labels to the Ingress
     # Useful if for example you have multiple Ingress controllers and want your Ingress controllers to bind to specific Ingresses
     # traffic: internal
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   tls:

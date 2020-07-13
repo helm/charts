@@ -3,6 +3,8 @@ apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
   name: {{ include "mercure.fullname" . }}
+  labels:
+{{ include "mercure.labels" . | indent 4 }}
 spec:
   timeoutSec: {{ .Values.backendConfig.timeoutSec }}
 {{- end }}

@@ -1,3 +1,11 @@
+## Provide a name in place of minio for `app:` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
 ## set kubernetes cluster domain where minio is running
 ##
 clusterDomain: cluster.local
@@ -6,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2019-08-07T01-59-21Z
+  tag: RELEASE.2020-06-14T18-32-17Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -14,7 +22,15 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2019-08-07T23-14-43Z
+  tag: RELEASE.2020-05-28T23-43-36Z
+  pullPolicy: IfNotPresent
+
+## Set default image, imageTag, and imagePullPolicy for the `jq` (the JSON
+## process used to create secret for prometheus ServiceMonitor).
+##
+helmKubectlJqImage:
+  repository: bskim45/helm-kubectl-jq
+  tag: 3.1.0
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -48,10 +64,21 @@ priorityClassName: ""
 existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "/root/.minio/"
-configPathmc: "/root/.mc/"
+certsPath: "/etc/minio/certs/"
+configPathmc: "/etc/minio/mc/"
 mountPath: "/export"
+
+## Override the root directory which the minio server should serve from.
+## If left empty, it defaults to the value of {{ .Values.mountPath }}
+## If defined, it must be a sub-directory of the path specified in {{ .Values.mountPath }}
+bucketRoot: ""
+
+# Number of drives attached to a node
+drivesPerNode: 1
+# Number of MinIO containers running
 replicas: 4
+# Number of expanded MinIO clusters
+zones: 1
 
 ## TLS Settings for Minio
 tls:
@@ -70,7 +97,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
+  existingClaim: ""
 
   ## minio data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -81,10 +108,10 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  # storageClass: standard
-  # VolumeName: ""
+  storageClass: ""
+  VolumeName: ""
   accessMode: ReadWriteOnce
-  size: 10Gi
+  size: 500Gi
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
@@ -100,9 +127,14 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  nodePort: 31311
-  # externalIPs:
+  nodePort: 32000
+
+  ## List of IP addresses at which the Prometheus server service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
   #   - externalIp1
+
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
@@ -111,8 +143,14 @@ service:
 ## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 
+imagePullSecrets: []
+# - name: "image-pull-secret"
+
 ingress:
   enabled: false
+  labels: {}
+    # node-role.kubernetes.io/ingress: platform
+
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -136,6 +174,14 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## Add stateful containers to have security context, if enabled MinIO will run as this
+## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+securityContext:
+  enabled: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
 # Additational pod annotations
 podAnnotations: {}
 
@@ -146,14 +192,15 @@ podLabels: {}
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
   initialDelaySeconds: 5
-  periodSeconds: 30
+  periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
-  failureThreshold: 3
+  failureThreshold: 1
 readinessProbe:
-  initialDelaySeconds: 5
-  periodSeconds: 15
-  timeoutSeconds: 1
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  ## Set this to 1s higher than MINIO_API_READY_DEADLINE
+  timeoutSeconds: 6
   successThreshold: 1
   failureThreshold: 3
 
@@ -162,8 +209,7 @@ readinessProbe:
 ##
 resources:
   requests:
-    memory: 256Mi
-    cpu: 250m
+    memory: 4Gi
 
 ## Create a bucket after minio install
 ##
@@ -187,10 +233,20 @@ buckets: []
   #   policy: none
   #   purge: false
 
+## Additional Annotations for the Kubernetes Batch (make-bucket-job)
+makeBucketJob:
+  annotations:
+
+## Additional Annotations for the Kubernetes Batch (update-prometheus-secret)
+updatePrometheusJob:
+  annotations:
+
 s3gateway:
   enabled: false
   replicas: 4
   serviceEndpoint: ""
+  accessKey: ""
+  secretKey: ""
 
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure
@@ -228,34 +284,29 @@ nasgateway:
   # a label like "pv: <value>", use value here.
   pv: ~
 
+## Use minio as Backblaze B2 gateway
+## https://github.com/minio/minio/blob/master/docs/gateway/b2.md
+b2gateway:
+  enabled: false
+  # Number of parallel instances
+  replicas: 4
+
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed
 environment:
-  ## To disable Minio Browser, set this value to off
-  MINIO_BROWSER: "on"
-  ## To enable virtual-host-style requests, set this value to Minio host domain name.
-  # MINIO_DOMAIN: ""
-  ## Minio Cache settings, refer: https://docs.minio.io/docs/minio-disk-cache-guide.html
-  # MINIO_CACHE_DRIVES: ""
-  # MINIO_CACHE_EXCLUDE: ""
-  # MINIO_CACHE_EXPIRY: ""
-  # MINIO_CACHE_MAXUSE: ""
-  ## Minio WORM setting, refer: https://docs.minio.io/docs/minio-server-configuration-guide.html
-  # MINIO_WORM: ""
-  ## Minio KMS settings, refer: https://docs.minio.io/docs/minio-kms-quickstart-guide.html
-  # MINIO_SSE_VAULT_ENDPOINT: ""
-  # MINIO_SSE_VAULT_APPROLE_ID: ""
-  # MINIO_SSE_VAULT_APPROLE_SECRET: ""
-  # MINIO_SSE_VAULT_KEY_NAME: ""
-  ## Minio Federation settings, refer: https://docs.minio.io/docs/minio-federation-quickstart-guide.html
-  # MINIO_ETCD_ENDPOINTS: ""
-  # MINIO_PUBLIC_IPS: ""
-  # MINIO_DOMAIN: ""
-  ## Add other environment variables relevant to Minio server here. These values will be added to the container(s) as this Chart is deployed
+  MINIO_API_READY_DEADLINE: "5s"
+  ## Please refer for comprehensive list https://docs.minio.io/docs/minio-server-configuration-guide.html
 
 networkPolicy:
   enabled: false
   allowExternal: true
+
+## PodDisruptionBudget settings
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+##
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: 1
 
 ## Specify the service account to use for the Minio pods. If 'create' is set to 'false'
 ## and 'name' is left unspecified, the account 'default' will be used.
@@ -273,3 +324,11 @@ metrics:
     # namespace: monitoring
     # interval: 30s
     # scrapeTimeout: 10s
+
+## ETCD settings: https://github.com/minio/minio/blob/master/docs/sts/etcd.md
+etcd:
+  endpoints: []
+  pathPrefix: ""
+  corednsPathPrefix: ""
+  clientCert: ""
+  clientCertKey: ""

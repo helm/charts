@@ -3,6 +3,159 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.15
+
+### Minor changes
+
+* Use the latest image from Agent (10.0.0) by default.
+
+## v1.7.14
+
+### Minor changes
+
+* Implement a more comprehensive securityContext for running the pod.
+
+## v1.7.13
+
+### Minor changes
+
+* Implement scheduling with affinity and not with nodeSelector on amd64 & linux nodes.
+* Add support for custom annotations on daemonSet.
+
+## v1.7.12
+
+### Minor changes
+
+* Use the latest image from Agent (9.9.1) by default.
+* Use kubernetes.io/arch label on daemonSet to schedule pods only on amd64 nodes.
+* Add a livenessProbe to daemonSet.
+
+## v1.7.11
+
+### Minor changes
+
+* Use app.kubernetes.io labels instead of custom ones
+
+## v1.7.10
+
+### Minor changes
+
+* Use the latest image from Agent (9.9.0) by default.
+
+## v1.7.9
+
+### Minor changes
+
+* Add the SecurityContextConstraints if the security.openshift.io/v1 API is detected.
+
+## v1.7.8
+
+### Minor changes
+
+* Add a image.overrideValue value which is a hack to support
+  RELATED_IMAGE_<identifier> feature in Helm based operators.
+
+## v1.7.7
+
+### Minor changes
+
+* Use the latest image from Agent (9.8.0) by default.
+
+## v1.7.6
+
+### Minor changes
+
+* Use rbac.authorization.k8s.io/v1 instead of the beta1 API.
+* Fix security key duplication when enabling secure and auditLog.
+
+## v1.7.5
+
+### Minor changes
+
+* Use the latest image from Agent (9.7.0) by default.
+
+## v1.7.4
+
+### Minor changes
+
+* Use the latest image from Agent (9.6.1) by default.
+
+## v1.7.3
+
+### Minor changes
+
+* Removed dependency on ebpf.enabled to set environment variables
+
+## v1.7.2
+
+### Minor changes
+
+* Use the latest image from Agent (9.5.0) by default.
+
+## v1.7.1
+
+### Major changes
+
+* Remove the auditLog.clusterIP dependency. Using dynamic backend allows to
+  rely on DNS queries.
+
+## v1.7.0
+
+### Major changes
+
+* Enable Sysdig Secure by default.
+
+## v1.6.0
+
+### Major changes
+
+* Add audit log configuration when deploying the agent.
+
+## v1.5.0
+
+### Major changes
+
+* Add slim configuration for deploying the agent.
+
+### Minor changes
+
+* Mount /etc/modprobe.d from host.
+* Drop permissions to read secrets and configmaps.
+
+## v1.4.25
+
+### Minor changes
+
+* Use the latest image from Agent (0.94.0) by default.
+
+## v1.4.24
+
+### Minor changes
+
+* Use the latest image from Agent (0.93.1) by default.
+
+## v1.4.23
+
+### Minor changes
+
+* Update NOTES.txt to use the newest URL for finding the infrastructure.
+
+## v1.4.22
+
+### Minor changes
+
+* Use the latest image from Agent (0.93.0) by default.
+
+## v1.4.21
+
+* Add 'How to upgrade to last version' to the README
+
+## v1.4.20
+
+### Minor changes
+
+* Fixes compatibility errors introduced in v1.4.19.
+
 ## v1.4.19
 
 ### Minor changes

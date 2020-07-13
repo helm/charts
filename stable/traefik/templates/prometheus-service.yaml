@@ -1,0 +1,47 @@
+{{- if .Values.metrics.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.metrics.prometheus.service.name }}
+  name: {{ .Values.metrics.prometheus.service.name }}
+  {{- else }}
+  name: {{ template "traefik.fullname" . }}-prometheus
+  {{- end }}
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: {{ template "traefik.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.metrics.prometheus.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.metrics.prometheus.service.type }}
+  {{- if .Values.metrics.prometheus.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.metrics.prometheus.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.metrics.prometheus.service.externalIP }}
+  externalIPs:
+    - {{ .Values.metrics.prometheus.service.externalIP }}
+  {{- end }}
+  {{- if .Values.metrics.prometheus.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.metrics.prometheus.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.metrics.prometheus.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.metrics.prometheus.service.externalTrafficPolicy }}
+  {{- end }}
+  selector:
+    app: {{ template "traefik.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+    - port: {{ .Values.metrics.prometheus.service.port }}
+      name: metrics
+      targetPort: metrics
+      {{- if (and (eq .Values.metrics.prometheus.service.type  "NodePort") (not (empty .Values.metrics.prometheus.service.nodePorts )))}}
+      nodePort: {{ .Values.metrics.prometheus.service.nodePort }}
+      {{- end }}
+{{- end }}

@@ -4,15 +4,11 @@ kind: Deployment
 metadata:
   name: {{ template "datadog.fullname" . }}-cluster-agent
   labels:
-    app: "{{ template "datadog.fullname" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 spec:
   replicas: {{ .Values.clusterAgent.replicas }}
   strategy:
@@ -27,22 +23,34 @@ spec:
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 8 }}
+        {{- end }}
       name: {{ template "datadog.fullname" . }}-cluster-agent
       annotations:
-        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.check_names: '["prometheus"]'
-        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.init_configs: '[{}]'
-        ad.datadoghq.com/{{ .Values.clusterAgent.containerName }}.instances: |
+        {{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        checksum/clusteragent-config: {{ tpl (toYaml .Values.clusterAgent.datadog_cluster_yaml) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.clusterAgent.confd }}
+        checksum/confd-config: {{ tpl (toYaml .Values.clusterAgent.confd) . | sha256sum }}
+        {{- end }}
+        ad.datadoghq.com/cluster-agent.check_names: '["prometheus"]'
+        ad.datadoghq.com/cluster-agent.init_configs: '[{}]'
+        ad.datadoghq.com/cluster-agent.instances: |
           [{
             "prometheus_url": "http://%%host%%:5000/metrics",
             "namespace": "datadog.cluster_agent",
             "metrics": [
               "go_goroutines", "go_memstats_*", "process_*",
               "api_requests",
-              "datadog_requests", "external_metrics",
+              "datadog_requests", "external_metrics", "rate_limit_queries_*",
               "cluster_checks_*"
             ]
           }]
@@ -58,9 +66,23 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ if .Values.clusterAgent.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.clusterAgent.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.clusterAgent.useHostNetwork }}
+      hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- if .Values.clusterAgent.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
+      {{- end }}
       containers:
-      - name: {{ .Values.clusterAgent.containerName }}
+      - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+        {{- with .Values.clusterAgent.command }}
+        command: {{ range . }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
 {{ toYaml .Values.clusterAgent.resources | indent 10 }}
@@ -69,34 +91,44 @@ spec:
           name: agentport
           protocol: TCP
         {{- if .Values.clusterAgent.metricsProvider.enabled }}
-        - containerPort: 443
+        - containerPort: {{ .Values.clusterAgent.metricsProvider.service.port }}
           name: metricsapi
           protocol: TCP
         {{- end }}
         env:
+          - name: DD_HEALTH_PORT
+            value: {{ .Values.clusterAgent.healthPort | quote }}
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
+                optional: true
           {{- if .Values.clusterAgent.metricsProvider.enabled }}
-          - name: DD_EXTERNAL_METRICS_PROVIDER_ENABLED
-            value: {{ .Values.clusterAgent.metricsProvider.enabled | quote }}
           - name: DD_APP_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ template "datadog.appKeySecretName" . }}
                 key: app-key
+          - name: DD_EXTERNAL_METRICS_PROVIDER_ENABLED
+            value: {{ .Values.clusterAgent.metricsProvider.enabled | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_PORT
+            value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
+            value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
           {{- end }}
-          {{- if .Values.clusterAgent.clusterChecks.enabled }}
+          {{- if .Values.datadog.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
-            value: {{ .Values.clusterAgent.clusterChecks.enabled | quote }}
+            value: {{ .Values.datadog.clusterChecks.enabled | quote }}
           - name: DD_EXTRA_CONFIG_PROVIDERS
-            value: "kube_services"
+            value: "kube_endpoints kube_services"
           - name: DD_EXTRA_LISTENERS
-            value: "kube_services"
+            value: "kube_endpoints kube_services"
           {{- end }}
           {{- if .Values.datadog.clusterName }}
+          {{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+          {{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+          {{- end}}
           - name: DD_CLUSTER_NAME
             value: {{ .Values.datadog.clusterName | quote }}
           {{- end }}
@@ -113,20 +145,20 @@ spec:
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           - name: DD_LEADER_ELECTION
-            value: {{ .Values.datadog.leaderElection | default "true" | quote}}
+            value: {{ default "true" .Values.datadog.leaderElection | quote}}
           {{- if .Values.datadog.leaderLeaseDuration }}
           - name: DD_LEADER_LEASE_DURATION
             value: {{ .Values.datadog.leaderLeaseDuration | quote }}
-          {{- else if .Values.clusterAgent.clusterChecks.enabled }}
+          {{- else if .Values.datadog.clusterChecks.enabled }}
           - name: DD_LEADER_LEASE_DURATION
             value: "15"
           {{- end }}
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.datadog.collectEvents | quote}}
+          {{- end }}
           - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
             value: {{ template "datadog.fullname" . }}-cluster-agent
-          {{- end }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
@@ -134,38 +166,46 @@ spec:
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
+          {{- if .Values.datadog.orchestratorExplorer.enabled }}
+          - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+            value: "true"
+          {{- end }}
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
 {{- end }}
-{{- if .Values.clusterAgent.livenessProbe }}
         livenessProbe:
 {{ toYaml .Values.clusterAgent.livenessProbe | indent 10 }}
-{{- else if .Values.clusterAgent.metricsProvider.enabled }}
-        livenessProbe:
-          httpGet:
-            port: 443
-            path: /healthz
-            scheme: HTTPS
-{{- end }}
-{{- if .Values.clusterAgent.readinessProbe }}
         readinessProbe:
 {{ toYaml .Values.clusterAgent.readinessProbe | indent 10 }}
-{{- else if .Values.clusterAgent.metricsProvider.enabled}}
-        readinessProbe:
-          httpGet:
-            port: 443
-            path: /healthz
-            scheme: HTTPS
+        volumeMounts:
+{{- if .Values.clusterAgent.volumeMounts }}
+{{ toYaml .Values.clusterAgent.volumeMounts | indent 10 }}
 {{- end }}
 {{- if .Values.clusterAgent.confd }}
-        volumeMounts:
           - name: confd
             mountPath: /conf.d
             readOnly: true
+{{- end }}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+          - name: cluster-agent-yaml
+            mountPath: /etc/datadog-agent/datadog-cluster.yaml
+            subPath: datadog-cluster.yaml
+            readOnly: true
+{{- end}}
       volumes:
+{{- if .Values.clusterAgent.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-confd
+{{- end }}
+{{- if .Values.clusterAgent.datadog_cluster_yaml }}
+        - name: cluster-agent-yaml
+          configMap:
+            name: {{ template "datadog.fullname" . }}-cluster-agent-config
+{{- end}}
+
+{{- if .Values.clusterAgent.volumes }}
+{{ toYaml .Values.clusterAgent.volumes | indent 8 }}
 {{- end }}
       {{- if .Values.clusterAgent.tolerations }}
       tolerations:
@@ -175,5 +215,6 @@ spec:
       affinity:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}-cluster-agent{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      nodeSelector:
+{{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
 {{ end }}

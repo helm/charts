@@ -3,12 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "grafana.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
 {{- with .Values.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -17,14 +14,15 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "grafana.name" . }}
-      release: {{ .Release.Name }}
+      {{- include "grafana.selectorLabels" . | nindent 6 }}
   serviceName: {{ template "grafana.fullname" . }}-headless
   template:
     metadata:
       labels:
-        app: {{ template "grafana.name" . }}
-        release: {{ .Release.Name }}
+        {{- include "grafana.selectorLabels" . | nindent 8 }}
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-json-config: {{ include (print $.Template.BasePath "/dashboards-json-configmap.yaml") . | sha256sum }}

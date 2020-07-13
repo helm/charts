@@ -11,6 +11,12 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{- range $key, $value := .Values.statefulSetAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
@@ -33,9 +39,17 @@ spec:
         {{- if not .Values.existingConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
+        {{- if not .Values.existingSecret }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
         {{- if and .Values.prometheus.exporter.enabled (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+        {{- end }}
+        {{- if and .Values.rabbitmqPrometheusPlugin.enabled (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.rabbitmqPrometheusPlugin.port | quote }}
+        prometheus.io/path: {{ .Values.rabbitmqPrometheusPlugin.path | quote }}
         {{- end }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -52,9 +66,12 @@ spec:
 {{ toYaml .Values.securityContext | indent 10 }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
+{{- if .Values.initContainer.enabled }}
         - name: bootstrap
           image: {{ .Values.busyboxImage.repository}}:{{ .Values.busyboxImage.tag}}
           imagePullPolicy: {{ .Values.busyboxImage.pullPolicy }}
+          securityContext:
+{{- toYaml .Values.initContainer.securityContext | nindent 12 }}
           command: ['sh']
           args:
           - "-c"
@@ -66,6 +83,10 @@ spec:
             if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
               touch "${RABBITMQ_MNESIA_DIR}/force_load"
             fi
+            {{- end }}
+            {{- if and (.Values.securityContext.runAsUser) (.Values.securityContext.fsGroup) (.Values.initContainer.chownFiles) }}
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /var/lib/rabbitmq/
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /etc/rabbitmq
             {{- end }}
           env:
           - name: POD_NAME
@@ -89,6 +110,7 @@ spec:
               mountPath: /etc/rabbitmq
             - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
+{{- end}}
 {{- if .Values.extraInitContainers }}
 {{ tpl (toYaml .Values.extraInitContainers) . | indent 8 }}
 {{- end }}
@@ -137,10 +159,19 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
+            {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+            - name: metrics
+              protocol: TCP
+              containerPort: {{ .Values.rabbitmqPrometheusPlugin.port }}
+            {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
+          {{- if .Values.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | trim | nindent 12 }}
+          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -241,6 +272,12 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else }}
       {{- if eq .Values.podAntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -262,6 +299,8 @@ spec:
                     app: {{ template "rabbitmq-ha.name" . }}
                     release: {{ .Release.Name }}
       {{- end }}
+      {{- end }}
+
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -291,9 +330,9 @@ spec:
     - metadata:
         name: {{ .Values.persistentVolume.name }}
         annotations:
-        {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
-        {{- end }}
+{{ tpl (toYaml .Values.persistentVolume.annotations) . | indent 10 }}
+        labels:
+{{ tpl (toYaml .Values.persistentVolume.labels) . | indent 10 }}
       spec:
         accessModes:
         {{- range .Values.persistentVolume.accessModes }}
@@ -308,6 +347,10 @@ spec:
       {{- else }}
         storageClassName: "{{ .Values.persistentVolume.storageClass }}"
       {{- end }}
+      {{- end }}
+      {{- with .Values.persistentVolume.selector }}
+        selector:
+          {{- toYaml . | nindent 10 }}
       {{- end }}
 {{- else }}
         - name: {{ .Values.persistentVolume.name }}

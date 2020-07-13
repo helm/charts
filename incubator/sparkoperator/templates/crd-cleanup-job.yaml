@@ -17,10 +17,18 @@ spec:
     spec:
       serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
       restartPolicy: OnFailure
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | trim | indent 8 }}
       containers:
         - name: delete-sparkapp-crd
           image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          {{- if .Values.securityContext }}
+          securityContext:
+            {{- range $securityPolicy, $value := .Values.securityContext }}
+              {{ $securityPolicy }}: {{ $value }}
+              {{- end }}
+          {{- end }}
           command:
             - "/bin/sh"
             - "-c"
@@ -33,6 +41,12 @@ spec:
         - name: delete-scheduledsparkapp-crd
           image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          {{- if .Values.securityContext }}
+          securityContext:
+            {{- range $securityPolicy, $value := .Values.securityContext }}
+              {{ $securityPolicy }}: {{ $value }}
+              {{- end }}
+          {{- end }}
           command:
             - "/bin/sh"
             - "-c"

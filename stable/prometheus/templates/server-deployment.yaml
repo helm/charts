@@ -1,6 +1,6 @@
 {{- if .Values.server.enabled -}}
 {{- if not .Values.server.statefulSet.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
 {{- if .Values.server.deploymentAnnotations }}
@@ -10,6 +10,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   selector:
     matchLabels:
@@ -17,8 +18,9 @@ spec:
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
-{{ toYaml .Values.server.strategy | indent 4 }}
-  {{- end }}
+{{ toYaml .Values.server.strategy | trim | indent 4 }}
+    {{ if eq .Values.server.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}
@@ -38,31 +40,37 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
+      {{- if .Values.server.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.server.extraInitContainers | indent 8 }}
+      {{- end }}
       containers:
-        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
-          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+        {{- if .Values.configmapReload.prometheus.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.prometheus.name }}
+          image: "{{ .Values.configmapReload.prometheus.image.repository }}:{{ .Values.configmapReload.prometheus.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.prometheus.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9090{{ .Values.server.prefixURL }}/-/reload
-          {{- range $key, $value := .Values.configmapReload.extraArgs }}
+          {{- range $key, $value := .Values.configmapReload.prometheus.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
-          {{- range .Values.configmapReload.extraVolumeDirs }}
+          {{- range .Values.configmapReload.prometheus.extraVolumeDirs }}
             - --volume-dir={{ . }}
           {{- end }}
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+{{ toYaml .Values.configmapReload.prometheus.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
-          {{- range .Values.configmapReload.extraConfigmapMounts }}
-            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+        {{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -79,18 +87,15 @@ spec:
             - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-            - --web.enable-lifecycle
-          {{- range $key, $value := .Values.server.extraArgs }}
-            - --{{ $key }}={{ $value }}
+          {{- range .Values.server.extraFlags }}
+            - --{{ . }}
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
           {{- end }}
-          {{- if .Values.server.enableAdminApi }}
-            - --web.enable-admin-api
-          {{- end }}
-          {{- if .Values.server.skipTSDBLock }}
-            - --storage.tsdb.no-lockfile
+
+          {{- range $key, $value := .Values.server.extraArgs }}
+            - --{{ $key }}={{ $value }}
           {{- end }}
           ports:
             - containerPort: 9090
@@ -98,14 +103,20 @@ spec:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.readinessProbeInitialDelay }}
+            periodSeconds: {{ .Values.server.readinessProbePeriodSeconds }}
+            timeoutSeconds: {{ .Values.server.readinessProbeTimeout }}
+            failureThreshold: {{ .Values.server.readinessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.readinessProbeSuccessThreshold }}
           livenessProbe:
             httpGet:
               path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+            initialDelaySeconds: {{ .Values.server.livenessProbeInitialDelay }}
+            periodSeconds: {{ .Values.server.livenessProbePeriodSeconds }}
+            timeoutSeconds: {{ .Values.server.livenessProbeTimeout }}
+            failureThreshold: {{ .Values.server.livenessProbeFailureThreshold }}
+            successThreshold: {{ .Values.server.livenessProbeSuccessThreshold }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
@@ -146,6 +157,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.server.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.server.hostAliases | indent 8 }}
+    {{- end }}
     {{- if .Values.server.securityContext }}
       securityContext:
 {{ toYaml .Values.server.securityContext | indent 8 }}
@@ -183,8 +198,8 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
-        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.prometheus.name }}-{{ .name }}
           configMap:
             name: {{ .configMap }}
       {{- end }}
@@ -198,7 +213,7 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
-      {{- range .Values.configmapReload.extraConfigmapMounts }}
+      {{- range .Values.configmapReload.prometheus.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}

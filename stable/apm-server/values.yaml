@@ -135,6 +135,10 @@ config:
 plugins: []
   # - kinesis.so
 
+# User used to run the container. 1000 = apm-server
+runAsUser: 1000
+runAsGroup: 1000
+
 # Additional container arguments
 extraArgs: []
   # - -d

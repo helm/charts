@@ -16,7 +16,7 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.metrics.service.type }}
-  {{ if eq .Values.metrics.service.type "LoadBalancer" -}} {{ if .Values.metrics.service.loadBalancerIP -}}
+  {{ if eq .Values.metrics.service.type "LoadBalancer" -}} {{ if .Values.metrics.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.metrics.service.loadBalancerIP }}
   {{ end -}}
   {{- end -}}

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "ipfs.fullname" . }}
@@ -10,6 +10,10 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   serviceName: {{ template "ipfs.servicename" . }}
+  selector:
+    matchLabels:
+      app: {{ template "ipfs.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -23,21 +27,21 @@ spec:
         # the persistent volume to be able to start.
         fsGroup: 1000
         runAsUser: 1000
-      livenessProbe:
-        httpGet:
-          path: /debug/metrics/prometheus
-          port: api
-        initialDelaySeconds: 15
-        periodSeconds: 3
-      readinessProbe:
-        httpGet:
-          path: /debug/metrics/prometheus
-          port: api
-        initialDelaySeconds: 15
-        periodSeconds: 3
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}
+        livenessProbe:
+          httpGet:
+            path: /debug/metrics/prometheus
+            port: api
+          initialDelaySeconds: 15
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /debug/metrics/prometheus
+            port: api
+          initialDelaySeconds: 15
+          periodSeconds: 3
         ports:
 {{- if .Values.swarm.enabled }}
         - containerPort: 4001

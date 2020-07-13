@@ -1,20 +1,35 @@
 # Default values for superset.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-
 replicaCount: 1
 
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.28.1"
+  tag: "0.36.0"
   pullPolicy: "IfNotPresent"
   pullSecrets: []
 
 initFile: |-
-  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
-  superset runserver
+  if [ "$1" == "development-mode" ]; then
+    /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
+    superset run
+  elif [ "$1" == "production-mode" ]; then
+    superset db upgrade
+    superset init
+    gunicorn \
+        -w 10 \
+        -k gevent \
+        --timeout 300 \
+        -b  0.0.0.0:8088 \
+        --limit-request-line 0 \
+        --limit-request-field_size 0 \
+        "superset.app:create_app()"
+  else
+    echo "You need to specify which mode to start in by setting production-mode"
+    echo "or development-mode in extraArguments."
+    exit 1
+  fi
 
 configFile: |-
   #---------------------------------------------------------
@@ -57,6 +72,11 @@ extraConfigFiles: {}
 ## Extra environment variables that will be passed onto deployment pod
 ##
 extraEnv: {}
+
+## Extra arguments that will be passed to init_superset.sh
+## For the sample initFile this is development-mode or production-mode
+extraArguments:
+- production-mode
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for secret keys, etc
@@ -186,7 +206,7 @@ readinessProbe:
   httpGet:
     path: /health
     port: http
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2

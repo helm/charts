@@ -205,7 +205,7 @@ spec:
           {{- if eq .Values.external.type "NodePort" }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- else }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:

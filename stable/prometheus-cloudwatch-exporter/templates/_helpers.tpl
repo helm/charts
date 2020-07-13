@@ -30,3 +30,47 @@ Create chart name and version as used by the chart label.
 {{- define "prometheus-cloudwatch-exporter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create serviceAccountName for deployment.
+*/}}
+{{- define "prometheus-cloudwatch-exporter.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "prometheus-cloudwatch-exporter.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "deployment.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1beta2" -}}
+{{- else -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for rbac.
+*/}}
+{{- define "rbac.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
+{{- print "rbac.authorization.k8s.io/v1" -}}
+{{- else -}}
+{{- print "rbac.authorization.k8s.io/v1beta1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for ingress.
+*/}}
+{{- define "ingress.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+{{- print "networking.k8s.io/v1beta1" -}}
+{{- else -}}
+{{- print "extensions/v1beta1" -}}
+{{- end -}}
+{{- end -}}

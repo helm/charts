@@ -1,5 +1,4 @@
-{{- if .Values.server.enabled -}}
-{{- if .Values.rbac.create }}
+{{- if and .Values.server.enabled .Values.rbac.create (empty .Values.server.useExistingClusterRoleName) -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -34,6 +33,7 @@ rules:
       - watch
   - apiGroups:
       - "extensions"
+      - "networking.k8s.io"
     resources:
       - ingresses/status
       - ingresses
@@ -45,5 +45,4 @@ rules:
       - "/metrics"
     verbs:
       - get
-{{- end }}
 {{- end }}

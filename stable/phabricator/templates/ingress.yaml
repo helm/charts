@@ -26,8 +26,18 @@ spec:
             serviceName: {{ template "phabricator.fullname" $ }}
             servicePort: http
   {{- end }}
-  {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- range .Values.ingress.hosts }}
+  {{- if .tls }}
+  - hosts:
+  {{- if .tlsHosts }}
+  {{- range $host := .tlsHosts }}
+    - {{ $host }}
+  {{- end }}
+  {{- else }}
+    - {{ .name }}
+  {{- end }}
+    secretName: {{ .tlsSecret }}
+  {{- end }}
   {{- end }}
 {{- end }}

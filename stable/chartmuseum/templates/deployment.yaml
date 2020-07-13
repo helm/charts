@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "chartmuseum.fullname" . }}
@@ -10,6 +10,13 @@ metadata:
 {{ toYaml .Values.deployment.labels | indent 4 }}
 {{- end }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "chartmuseum.name" . }}
+      release: {{ .Release.Name | quote }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 6 }}
+{{- end }}
   replicas: {{ .Values.replicaCount }}
   strategy:
 {{ toYaml .Values.strategy | indent 4 }}
@@ -17,7 +24,7 @@ spec:
 {{- if .Values.deployment.matchlabes }}
   selector:
     matchLabels:
-{{ toYaml .Values.deployment.matchlabes | indent 6 }}
+{{ toYaml .Values.deployment.matchlabels | indent 6 }}
 {{- end }}
   template:
     metadata:
@@ -31,6 +38,23 @@ spec:
 {{ toYaml .Values.deployment.labels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- else if .Values.persistence.enabled }}
+      initContainers:
+      - name: volume-permissions
+        image: {{ template "chartmuseum.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command: ['sh', '-c', 'chown -R {{ .Values.securityContext.fsGroup }}:{{ .Values.securityContext.fsGroup }} {{ .Values.persistence.path }}']
+        volumeMounts:
+        - mountPath: {{ .Values.persistence.path }}
+          name: storage-volume
+      {{- end }}
+{{- include "chartmuseum.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -84,7 +108,10 @@ spec:
         args:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
-        - --storage-local-rootdir=/storage
+        - --storage-local-rootdir={{ .Values.persistence.path }}
+{{- end }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 8 }}
 {{- end }}
         ports:
         - name: http
@@ -101,7 +128,7 @@ spec:
 {{ toYaml .Values.probes.readiness | indent 10 }}
         volumeMounts:
 {{- if eq .Values.env.open.STORAGE "local" }}
-        - mountPath: /storage
+        - mountPath: {{ .Values.persistence.path }}
           name: storage-volume
 {{- end }}
 {{- if  .Values.gcp.secret.enabled }}
@@ -134,13 +161,12 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- if .Values.serviceAccount.create }}
+      schedulerName: {{ .Values.deployment.schedulerName }}
+    {{- end -}}
+    {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "chartmuseum.fullname" . }}
     {{- else if .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-    {{- end }}
-    {{- with .Values.securityContext }}
-      securityContext:
-{{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
       - name: storage-volume

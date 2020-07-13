@@ -1,10 +1,9 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "percona-xtradb-cluster.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "percona-xtradb-cluster.fullname" . }}
   labels:
     app: {{ template "percona-xtradb-cluster.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

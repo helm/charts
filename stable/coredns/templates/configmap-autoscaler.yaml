@@ -1,0 +1,37 @@
+{{- if .Values.autoscaler.enabled }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  namespace:  {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+    {{- if .Values.customLabels }}
+    {{- toYaml .Values.customLabels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.autoscaler.configmap.annotations }}
+  annotations:
+    {{- toYaml .Values.autoscaler.configmap.annotations | nindent 4 }}
+  {{- end }}
+data:
+  # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
+  # If using small nodes, "nodesPerReplica" should dominate.
+  linear: |-
+    {
+      "coresPerReplica": {{ .Values.autoscaler.coresPerReplica | float64 }},
+      "nodesPerReplica": {{ .Values.autoscaler.nodesPerReplica | float64 }},
+      "preventSinglePointFailure": {{ .Values.autoscaler.preventSinglePointFailure }},
+      "min": {{ .Values.autoscaler.min | int }},
+      "max": {{ .Values.autoscaler.max | int }},
+      "includeUnschedulableNodes": {{ .Values.autoscaler.includeUnschedulableNodes }}
+    }
+{{- end }}

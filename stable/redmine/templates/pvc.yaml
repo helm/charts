@@ -3,11 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "redmine.fullname" . }}
-  labels:
-    app: {{ template "redmine.fullname" . }}
-    chart: {{ template "redmine.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+  labels: {{- include "redmine.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

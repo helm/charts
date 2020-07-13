@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }} networking.k8s.io/v1beta1 {{- else }} extensions/v1beta1 {{- end }}
 kind: Ingress
 metadata:
   name: {{ template "anchore-engine.fullname" . }}
@@ -30,7 +30,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- if .Values.ingress.apiHosts }}
+  {{- if or .Values.ingress.apiHosts .Values.ingress.uiHosts .Values.ingress.feedsHosts }}
     {{- range .Values.ingress.apiHosts }}
     - host: {{ . | quote }}
       http:
@@ -40,7 +40,6 @@ spec:
             serviceName: {{ template "anchore-engine.api.fullname" $ }}
             servicePort: {{ $.Values.anchoreApi.service.port }}
     {{- end }}
-    {{- if and (and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled) .Values.ingress.uiHosts }}
     {{- range .Values.ingress.uiHosts }}
     - host: {{ . | quote }}
       http:
@@ -50,19 +49,35 @@ spec:
             serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
             servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}
     {{- end }}
+    {{- range .Values.ingress.feedsHosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+        - path: {{ $.Values.ingress.feedsPath }}
+          backend:
+            serviceName: {{ template "anchore-engine.enterprise-feeds.fullname" $ }}
+            servicePort: {{ $.Values.anchoreEnterpriseFeeds.service.port }}
     {{- end }}
   {{- else }}
     - http:
         paths:
-        - path: {{ $.Values.ingress.apiPath }}
+        {{- with .Values.ingress.apiPath }}
+        - path: {{ . }}
           backend:
             serviceName: {{ template "anchore-engine.api.fullname" $ }}
             servicePort: {{ $.Values.anchoreApi.service.port }}
-        {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseUi.enabled }}
-        - path: {{ $.Values.ingress.uiPath }}
+        {{- end }}
+        {{- with .Values.ingress.uiPath }}
+        - path: {{ . }}
           backend:
             serviceName: {{ template "anchore-engine.enterprise-ui.fullname" $ }}
             servicePort: {{ $.Values.anchoreEnterpriseUi.service.port }}
+        {{- end }}
+        {{- with .Values.ingress.feedsPath }}
+        - path: {{ . }}
+          backend:
+            serviceName: {{ template "anchore-engine.enterprise-feeds.fullname" $ }}
+            servicePort: {{ $.Values.anchoreEnterpriseFeeds.service.port }}
         {{- end }}
   {{- end }}
 {{- end -}}

@@ -47,8 +47,8 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{/* Generate basic labels */}}
 {{- define "prometheus-operator.labels" }}
 chart: {{ template "prometheus-operator.chartref" . }}
-release: {{ .Release.Name | quote }}
-heritage: {{ .Release.Service | quote }}
+release: {{ $.Release.Name | quote }}
+heritage: {{ $.Release.Service | quote }}
 {{- if .Values.commonLabels}}
 {{ toYaml .Values.commonLabels }}
 {{- end }}
@@ -81,11 +81,13 @@ heritage: {{ .Release.Service | quote }}
 {{- end -}}
 {{- end -}}
 
-{{/* Workaround for https://github.com/helm/helm/issues/3117 */}}
-{{- define "prometheus-operator.rangeskipempty" -}}
-{{- range $key, $value := . }}
-{{- if $value }}
-{{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
-{{- end }}
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "prometheus-operator.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}

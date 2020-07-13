@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   accessModes:
 {{ toYaml .Values.alertmanager.persistentVolume.accessModes | indent 4 }}
@@ -20,6 +21,9 @@ spec:
 {{- else }}
   storageClassName: "{{ .Values.alertmanager.persistentVolume.storageClass }}"
 {{- end }}
+{{- end }}
+{{- if .Values.alertmanager.persistentVolume.volumeBindingMode }}
+  volumeBindingModeName: "{{ .Values.alertmanager.persistentVolume.volumeBindingMode }}"
 {{- end }}
   resources:
     requests:

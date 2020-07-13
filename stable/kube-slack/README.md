@@ -11,7 +11,7 @@ This chart adds a deployment, listening for cluster-wide pod failures and postin
 To install the chart with the release name `my-release`, configure an [Incoming Webhook](https://my.slack.com/apps/A0F7XDUAZ-incoming-webhooks) in Slack, note its url(`webhook-url` here) and run:
 
 ```console
-$ helm install stable/kube-slack --set slackUrl=webhook-url --name my-release
+$ helm install stable/kube-slack --set envVars.SLACK_URL=webhook-url --name my-release
 ```
 
 ## Uninstalling the Chart
@@ -26,7 +26,7 @@ $ helm delete my-release
 
 All configuration parameters are listed in [`values.yaml`](values.yaml).
 
-The environment values passed to kube-slack can be described in `envVars` parameter. At a minimum, the `envVars.SLACK_URL` value must be set.
+The environment values passed to kube-slack can be described in `envVars` parameter. At a minimum, the `envVars.SLACK_URL` value must be set. This can be done via either `envVars.SLACK_URL` or `envVarsFromSecret.SLACK_URL`. See [`values.yaml`](values.yaml) for more information about `envVarsFromSecret` usage.
 
 ## RBAC
 By default the chart will install the recommended RBAC roles and rolebindings.

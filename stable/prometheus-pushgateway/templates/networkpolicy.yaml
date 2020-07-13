@@ -1,0 +1,26 @@
+{{ if .Values.networkPolicy }}
+apiVersion: {{ template "prometheus-pushgateway.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+{{- if .Values.networkPolicy.customSelectors }}
+  name: ingress-allow-customselector-{{ template "prometheus-pushgateway.name" . }}
+{{- else if .Values.networkPolicy.allowAll }}
+  name: ingress-allow-all-{{ template "prometheus-pushgateway.name" . }}
+{{- else -}}
+{{- fail "One of `allowAll` or `customSelectors` must be specified." }}
+{{- end }}
+  labels:
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "prometheus-pushgateway.name" .}}
+      release: {{ .Release.Name }}
+  ingress:
+    - ports:
+      - port: {{ .Values.service.targetPort }}
+{{- if .Values.networkPolicy.customSelectors }}
+      from:
+{{ toYaml .Values.networkPolicy.customSelectors | indent 8 }}
+{{- end -}}
+{{- end -}}

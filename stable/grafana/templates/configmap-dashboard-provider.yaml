@@ -3,16 +3,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "grafana.name" . }}
-    chart: {{ template "grafana.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "grafana.labels" . | nindent 4 }}
 {{- with .Values.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
   name: {{ template "grafana.fullname" . }}-config-dashboards
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "grafana.namespace" . }}
 data:
   provider.yaml: |-
     apiVersion: 1
@@ -22,6 +19,7 @@ data:
       folder: '{{ .Values.sidecar.dashboards.provider.folder }}'
       type: {{ .Values.sidecar.dashboards.provider.type }}
       disableDeletion: {{ .Values.sidecar.dashboards.provider.disableDelete }}
+      allowUiUpdates: {{ .Values.sidecar.dashboards.provider.allowUiUpdates }}
       options:
         path: {{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
 {{- end}}

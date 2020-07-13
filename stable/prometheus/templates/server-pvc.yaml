@@ -12,6 +12,7 @@ metadata:
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
   name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
 spec:
   accessModes:
 {{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
@@ -21,6 +22,9 @@ spec:
 {{- else }}
   storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
 {{- end }}
+{{- end }}
+{{- if .Values.server.persistentVolume.volumeBindingMode }}
+  volumeBindingModeName: "{{ .Values.server.persistentVolume.volumeBindingMode }}"
 {{- end }}
   resources:
     requests:

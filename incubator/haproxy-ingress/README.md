@@ -73,6 +73,7 @@ Parameter | Description | Default
 `controller.config` | additional haproxy-ingress [ConfigMap entries](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#configmap) | `{}`
 `controller.hostNetwork` | Optionally set to true when using CNI based kubernetes installations | `false`
 `controller.dnsPolicy` | Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true' | `ClusterFirst`
+`controller.terminationGracePeriodSeconds` | How much to wait before terminating a pod (in seconds) | `60`
 `controller.kind` | Type of deployment, DaemonSet or Deployment | `Deployment`
 `controller.tcp` | TCP [service ConfigMap](https://github.com/jcmoraisjr/haproxy-ingress/blob/v0.6/README.md#tcp-services-configmap): `<port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]` | `{}`
 `controller.enableStaticPorts` | Set to `false` to only rely on ports from `controller.tcp` | `true`
@@ -98,18 +99,18 @@ Parameter | Description | Default
 `controller.nodeSelector` | to control scheduling | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
-`controller.service.clusterIP` | internal controller cluster service IP | `""`
-`controller.service.externalTrafficPolicy` | external traffic policy | `Cluster`
+`controller.service.clusterIP` | internal controller cluster service IP | `nil`
+`controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `Local`
 `controller.service.externalIPs` | list of IP addresses at which the controller services are available | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` |  | `[]`
-`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 80 ]`
-`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port` and an optional `nodePort`. | `[ port: 443 ]`
+`controller.service.httpPorts` | The http ports to open, that map to the Ingress' port 80. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 80, targetPort: http ]`
+`controller.service.httpsPorts` | The https ports to open, that map to the Ingress' port 443. Each entry specifies a `port`, `targetPort` and an optional `nodePort`. | `[ port: 443 , targetPort: https]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.stats.enabled` | whether to enable exporting stats |  `false`
 `controller.stats.port` | The port number used haproxy-ingress-controller for haproxy statistics | `1936`
 `controller.stats.service.annotations` | annotations for stats service | `{}`
-`controller.stats.service.clusterIP` | internal stats cluster service IP | `""`
+`controller.stats.service.clusterIP` | internal stats cluster service IP | `nil`
 `controller.stats.service.externalIPs` | list of IP addresses at which the stats service is available | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` |  | `[]`
@@ -122,7 +123,7 @@ Parameter | Description | Default
 `controller.metrics.extraArgs` | Extra arguments to the haproxy_exporter |  `{}`
 `controller.metrics.resources` | prometheus-exporter container resource requests & limits |  `{}`
 `controller.metrics.service.annotations` | annotations for metrics service | `{}`
-`controller.metrics.service.clusterIP` | internal metrics cluster service IP | `""`
+`controller.metrics.service.clusterIP` | internal metrics cluster service IP | `nil`
 `controller.metrics.service.externalIPs` | list of IP addresses at which the metrics service is available | `[]`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` |  | `[]`
@@ -150,7 +151,7 @@ Parameter | Description | Default
 `defaultBackend.resources.limits.memory` | default backend memory resources limit | `20Mi`
 `defaultBackend.service.name` | name of default backend service to create | `ingress-default-backend`
 `defaultBackend.service.annotations` | annotations for metrics service | `{}`
-`defaultBackend.service.clusterIP` | internal metrics cluster service IP | `""`
+`defaultBackend.service.clusterIP` | internal metrics cluster service IP | `nil`
 `defaultBackend.service.externalIPs` | list of IP addresses at which the metrics service is available | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` |  | `[]`

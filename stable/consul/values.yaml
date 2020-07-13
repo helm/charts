@@ -129,6 +129,7 @@ uiIngress:
   annotations: {}
   labels: {}
   hosts: []
+  path: /
   tls: []
 
 ## Useful when ACLs are enabled
@@ -148,6 +149,7 @@ test:
 nodeSelector: {}
 tolerations: []
 additionalLabels: {}
+podAnnotations: {}
 
 # Lifecycle for StatefulSet
 # lifecycle:

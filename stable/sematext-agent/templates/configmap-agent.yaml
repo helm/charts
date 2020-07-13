@@ -12,9 +12,13 @@ data:
   {{- range $key, $val := .Values.agent.config }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
-  {{- if .Values.customUrl }}
-  SERVER_BASE_URL: {{ default "" .Values.customUrl.serverBaseUrl | quote }}
-  EVENTS_RECEIVER_URL: {{ default "" .Values.customUrl.eventsRecieverUrl | quote }}
-  LOGS_RECEIVER_URL: {{ default "" .Values.customUrl.logsReceiverUrl | quote }}
+  {{- if .Values.serverBaseUrl }}
+  SERVER_BASE_URL: {{ default "" .Values.serverBaseUrl | quote }}
+  {{- end }}
+  {{- if .Values.eventsReceiverUrl }}
+  EVENTS_RECEIVER_URL: {{ default "" .Values.eventsReceiverUrl | quote }}
+  {{- end }}
+  {{- if .Values.logsReceiverUrl }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.logsReceiverUrl | quote }}
   {{- end }}
   API_SERVER_PORT: "{{ .Values.agent.service.port }}"

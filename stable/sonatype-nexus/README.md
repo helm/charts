@@ -1,5 +1,7 @@
 # Nexus
 
+**This chart has been deprecated and moved to [Oteemo Charts](https://github.com/oteemo/charts)**
+
 [Nexus OSS](https://www.sonatype.com/nexus-repository-oss) is a free open source repository manager. It supports a wide range of package formats and it's used by hundreds of tech companies.
 
 ## Introduction
@@ -66,8 +68,9 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
-| `nexus.imageTag`                            | Version of Nexus                    | `3.17.0`                                 |
+| `nexus.imageTag`                            | Version of Nexus                    | `3.19.1`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
+| `nexus.imagePullSecret`                     | Secret to download Nexus image from private registry      | `nil`             |
 | `nexus.env`                                 | Nexus environment variables         | `[{install4jAddVmParams: -Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap}]` |
 | `nexus.resources`                           | Nexus resource requests and limits  | `{}`                                    |
 | `nexus.dockerPort`                          | Port to access docker               | `5003`                                  |
@@ -122,6 +125,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusBackup.persistence.storageSize`       | Size of Nexus backup data volume    | `8Gi`                                   |
 | `nexusBackup.persistence.annotations`       | PV annotations for backup           | `{}`                                    |
 | `nexusBackup.persistence.existingClaim`     | Existing PV name for backup         | `nil`                                   |
+| `nexusBackup.resources`                     | Backup resource requests and limits | `{}`                                    |
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
@@ -146,8 +150,12 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `service.portName`                          | Service port name                | `nil`                                      |
 | `service.labels`                            | Service labels                   | `nil`                                      |
 | `service.annotations`                       | Service annotations              | `nil`                                      |
+| `service.loadBalancerSourceRanges`          | Service LoadBalancer source IP whitelist | `nil`                              |
 | `service.targetPort`                        | Service port                     | `nil`                                      |
 | `service.port`                              | Port for exposing service        | `nil`                                      |
+| `serviceAccount.create`                     | Automatically create a service account | `true`                               |
+| `serviceAccount.name`                       | Service account to use 				   | `nil`								  |
+| `serviceAccount.annotations`                | Service account annotations			   | `nil`	   							  |
 | `route.enabled`         | Set to true to create route for additional service | `false` |
 | `route.name`            | Name of route                                      | `docker` |
 | `route.portName`        | Target port name of service                        | `docker` |

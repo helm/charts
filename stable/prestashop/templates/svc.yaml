@@ -30,3 +30,4 @@ spec:
       {{- end }}
   selector:
     app: "{{ template "prestashop.name" . }}"
+    release: "{{ .Release.Name }}"

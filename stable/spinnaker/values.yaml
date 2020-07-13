@@ -1,11 +1,14 @@
 halyard:
-  spinnakerVersion: 1.16.1
+  spinnakerVersion: 1.19.4
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.23.2
+    tag: 1.32.0
+    pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Provide additional parameters to halyard deploy apply command
+  additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
   additionalScripts:
@@ -77,6 +80,26 @@ halyard:
   #   timestamp: '2019-09-16 18:18:44'
   #   version: 1.16.1
 
+  ## Define local configuration for Spinnaker services.
+  ## The contents of these files would be copies of the configuration normally retrieved from
+  ## `gs://halconfig/<service-name>`, but instead need to be available locally on the halyard pod to facilitate
+  ## offline installation. This would typically be used along with a custom `bom:` with the `local:` prefix on a
+  ## service version.
+  ## Read more for details:
+  ## https://www.spinnaker.io/guides/operator/custom-boms/#boms-and-configuration-on-your-filesystem
+  ## The key for each entry must be the name of the service and a file name separated by the '_' character.
+  serviceConfigs: {}
+  # clouddriver_clouddriver-ro.yml: |-
+  #   ...
+  # clouddriver_clouddriver-rw.yml: |-
+  #   ...
+  # clouddriver_clouddriver.yml: |-
+  #   ...
+  # deck_settings.json: |-
+  #   ...
+  # echo_echo.yml: |-
+  #   ...
+
   ## Uncomment if you want to add extra commands to the init script
   ## run by the init container before halyard is started.
   ## The content will be passed through `tpl`, so value interpolation is supported.
@@ -124,6 +147,10 @@ dockerRegistries:
 #   username: _json_key
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
+# - name: ecr
+#   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
+#   username: AWS
+#   passwordCommand: aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'
 
 # If you don't want to put your passwords into a values file
 # you can use a pre-created secret instead of putting passwords
@@ -137,8 +164,8 @@ kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  secretName: my-kubeconfig
-  secretKey: config
+  # secretName: my-kubeconfig
+  # secretKey: config
   # Use this when you want to configure halyard to reference a kubeconfig from s3
   # This allows you to keep your kubeconfig in an encrypted s3 bucket
   # For more info visit:
@@ -148,6 +175,12 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  # Use this to limit the namespaces this kubernetes account will access.
+  # Note, if you use nameSpaces, omittedNameSpaces will not be used.
+  # Note, the casing of the nameSpace variable here.
+  # nameSpaces:
+  # - namespace1
+  # - namespace2
   omittedNameSpaces:
   - kube-system
   - kube-public
@@ -201,7 +234,6 @@ ingressGate:
 #   - pipeline-templates
 spinnakerFeatureFlags:
   - artifacts
-  - jobs
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -230,11 +262,15 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2019-02-13T19-48-27Z
-  serviceType: ClusterIP
+  image:
+    tag: RELEASE.2020-01-03T19-12-21Z
+  service:
+    type: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
-  bucket: "spinnaker"
+  defaultBucket:
+    enabled: true
+    name: "spinnaker"
   nodeSelector: {}
 # Uncomment if you don't want to create a PVC for minio
 #  persistence:
@@ -261,6 +297,10 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+  # assumeRole: "<role to assume>"
+  ## Here you can pass extra arguments to configure s3 storage options
+  extraArgs: []
+  #  - "--path-style-access true"
 
 # Azure Storage Account
 azs:
@@ -272,6 +312,8 @@ azs:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether PSP resources should be created
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -280,6 +322,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+  serviceAccountAnnotations: {}
 securityContext:
   # Specifies permissions to write for user/group
   runAsUser: 1000

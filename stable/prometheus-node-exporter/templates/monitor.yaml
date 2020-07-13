@@ -3,6 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-node-exporter.fullname" . }}
+  namespace: {{ template "prometheus-node-exporter.namespace" . }}
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
   {{- if .Values.prometheus.monitor.additionalLabels }}
 {{ toYaml .Values.prometheus.monitor.additionalLabels | indent 4 }}
@@ -17,4 +18,8 @@ spec:
       {{- if .Values.prometheus.monitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.prometheus.monitor.scrapeTimeout }}
       {{- end }}
+{{- if .Values.prometheus.monitor.relabelings }}
+      relabelings:
+{{ toYaml .Values.prometheus.monitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}

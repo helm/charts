@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `etcdOperator.podAnnotations`                     | Annotations for the etcd operator pod                                | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
+| `etcdOperator.priorityClassName`                  | Priority class for the etcd-operator pod(s)                          | `""`                                           |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
@@ -93,6 +94,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secret containing aws credentials                 |                                                |
 | `backupOperator.nodeSelector`                     | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `backupOperator.commandArgs`                      | Additional command arguments                                         | `{}`                                           |
+| `backupOperator.priorityClassName`                | Priority class for the etcd-backuop-operator pod(s)                  | `""`                                           |
 | `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
 | `restoreOperator.replicaCount`                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `restoreOperator.image.repository`                | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
@@ -105,6 +107,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secret containing aws credentials                 |                                                |
 | `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `restoreOperator.commandArgs`                     | Additional command arguments                                         | `{}`                                           |
+| `restoreOperator.priorityClassName`               | Priority class for the etcd-restore-operator pod(s)                  | `""`                                           |
 | `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
 | `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
 | `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.25`                                       |

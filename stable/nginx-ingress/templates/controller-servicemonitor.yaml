@@ -11,7 +11,7 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.metrics.serviceMonitor.additionalLabels }}
 {{ toYaml .Values.controller.metrics.serviceMonitor.additionalLabels | indent 4 }}
     {{- end }}
@@ -22,12 +22,17 @@ spec:
       {{- if .Values.controller.metrics.serviceMonitor.honorLabels }}
       honorLabels: true
       {{- end }}
+  {{- if .Values.controller.metrics.serviceMonitor.namespaceSelector }}
+  namespaceSelector:
+{{ toYaml .Values.controller.metrics.serviceMonitor.namespaceSelector | indent 4 -}}
+  {{ else }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
       component: "{{ .Values.controller.name }}"
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
 {{- end }}

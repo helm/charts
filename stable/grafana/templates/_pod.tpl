@@ -3,9 +3,6 @@
 schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
 serviceAccountName: {{ template "grafana.serviceAccountName" . }}
-{{- if .Values.schedulerName }}
-schedulerName: "{{ .Values.schedulerName }}"
-{{- end }}
 {{- if .Values.securityContext }}
 securityContext:
 {{ toYaml .Values.securityContext | indent 2 }}
@@ -22,7 +19,7 @@ initContainers:
     imagePullPolicy: {{ .Values.initChownData.image.pullPolicy }}
     securityContext:
       runAsUser: 0
-    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsUser }}", "/var/lib/grafana"]
+    command: ["chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }}", "/var/lib/grafana"]
     resources:
 {{ toYaml .Values.initChownData.resources | indent 6 }}
     volumeMounts:
@@ -38,6 +35,8 @@ initContainers:
     imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
     command: ["/bin/sh"]
     args: [ "-c", "mkdir -p /var/lib/grafana/dashboards/default && /bin/sh /etc/grafana/download_dashboards.sh" ]
+    resources:
+{{ toYaml .Values.downloadDashboards.resources | indent 6 }}
     env:
 {{- range $key, $value := .Values.downloadDashboards.env }}
       - name: "{{ $key }}"
@@ -60,7 +59,7 @@ initContainers:
 {{- end }}
 {{- if .Values.sidecar.datasources.enabled }}
   - name: {{ template "grafana.name" . }}-sc-datasources
-    image: "{{ .Values.sidecar.image }}"
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
       - name: METHOD
@@ -97,9 +96,11 @@ imagePullSecrets:
 containers:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: {{ template "grafana.name" . }}-sc-dashboard
-    image: "{{ .Values.sidecar.image }}"
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
     imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
     env:
+      - name: METHOD
+        value: {{ .Values.sidecar.dashboards.watchMethod }}
       - name: LABEL
         value: "{{ .Values.sidecar.dashboards.label }}"
       - name: FOLDER
@@ -161,7 +162,7 @@ containers:
 {{- end }}
 {{- end -}}
 {{- if .Values.dashboardsConfigMaps }}
-{{- range keys .Values.dashboardsConfigMaps }}
+{{- range (keys .Values.dashboardsConfigMaps | sortAlpha) }}
       - name: dashboards-{{ . }}
         mountPath: "/var/lib/grafana/dashboards/{{ . }}"
 {{- end }}
@@ -184,9 +185,11 @@ containers:
 {{- if .Values.sidecar.dashboards.enabled }}
       - name: sc-dashboard-volume
         mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{ if .Values.sidecar.dashboards.SCProvider }}
       - name: sc-dashboard-provider
         mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
         subPath: provider.yaml
+{{- end}}
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
       - name: sc-datasources-volume
@@ -196,6 +199,7 @@ containers:
       - name: {{ .name }}
         mountPath: {{ .mountPath }}
         readOnly: {{ .readOnly }}
+        subPath: {{ .subPath | default "" }}
     {{- end }}
     {{- range .Values.extraVolumeMounts }}
       - name: {{ .name }}
@@ -222,7 +226,7 @@ containers:
             name: {{ .Values.admin.existingSecret | default (include "grafana.fullname" .) }}
             key: {{ .Values.admin.userKey | default "admin-user" }}
       {{- end }}
-      {{- if not .Values.env.GF_SECURITY_ADMIN_PASSWORD }}
+      {{- if and (not .Values.env.GF_SECURITY_ADMIN_PASSWORD) (not .Values.env.GF_SECURITY_ADMIN_PASSWORD__FILE) }}
       - name: GF_SECURITY_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
@@ -248,6 +252,11 @@ containers:
             name: {{ .Values.smtp.existingSecret }}
             key: {{ .Values.smtp.passwordKey | default "password" }}
       {{- end }}
+    {{- range $key, $value := .Values.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+{{ toYaml $value | indent 10 }}
+    {{- end }}
 {{- range $key, $value := .Values.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
@@ -255,7 +264,7 @@ containers:
     {{- if .Values.envFromSecret }}
     envFrom:
       - secretRef:
-          name: {{ .Values.envFromSecret }}
+          name: {{ tpl .Values.envFromSecret . }}
     {{- end }}
     {{- if .Values.envRenderSecret }}
     envFrom:
@@ -268,8 +277,8 @@ containers:
 {{ toYaml .Values.readinessProbe | indent 6 }}
     resources:
 {{ toYaml .Values.resources | indent 6 }}
-{{- if .Values.extraContainers }}
-{{ toYaml .Values.extraContainers | indent 2}}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 2 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
 nodeSelector:
@@ -293,7 +302,7 @@ volumes:
       name: {{ .configMap }}
 {{- end }}
   {{- if .Values.dashboards }}
-    {{- range keys .Values.dashboards }}
+    {{- range (keys .Values.dashboards | sortAlpha) }}
   - name: dashboards-{{ . }}
     configMap:
       name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
@@ -332,7 +341,7 @@ volumes:
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: sc-dashboard-volume
     emptyDir: {}
-{{- if .Values.sidecar.dashboards.enabled }}
+{{- if .Values.sidecar.dashboards.SCProvider }}
   - name: sc-dashboard-provider
     configMap:
       name: {{ template "grafana.fullname" . }}-config-dashboards
@@ -357,4 +366,7 @@ volumes:
   - name: {{ .name }}
     emptyDir: {}
 {{- end -}}
+{{- if .Values.extraContainerVolumes }}
+{{ toYaml .Values.extraContainerVolumes | indent 2 }}
+{{- end }}
 {{- end }}

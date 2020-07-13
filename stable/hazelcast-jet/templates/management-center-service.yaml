@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.managementcenter.service.annotations }}
+  annotations:
+  {{ toYaml .Values.managementcenter.service.annotations | indent 4 }}
+  {{- end }}
+  name: {{ template "hazelcast-jet-management-center.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    helm.sh/chart: {{ template "hazelcast-jet.chart" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.managementcenter.service.type }}
+  {{- if .Values.managementcenter.service.clusterIP }}
+  clusterIP: {{ .Values.managementcenter.service.clusterIP }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    role: hazelcast-jet-management-center
+  ports:
+  - protocol: TCP
+    port: {{ .Values.managementcenter.service.port }}
+    targetPort: mc-port
+    name: mc-port
+  - protocol: TCP
+    port: {{ .Values.managementcenter.service.httpsPort }}
+    targetPort: mc-port
+    name: mc-https-port

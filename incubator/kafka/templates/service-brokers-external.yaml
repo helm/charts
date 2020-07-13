@@ -38,6 +38,9 @@ metadata:
   labels:
   {{- include "kafka.broker.labels" $root | nindent 4 }}
     pod: {{ $responsiblePod | quote }}
+  {{- if $root.Values.external.labels }}
+{{ toYaml $root.Values.external.labels | indent 4 }}
+  {{- end }}
 spec:
   type: {{ $root.Values.external.type }}
   ports:
@@ -60,6 +63,12 @@ spec:
       protocol: TCP
   {{- if and (eq $root.Values.external.type "LoadBalancer") (eq $loadBalancerIPLen $replicas) }}
   loadBalancerIP: {{ index $root.Values.external.loadBalancerIP $i }} 
+  {{- end }}
+  {{- if $root.Values.external.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $root.Values.external.loadBalancerSourceRanges }}
+    - {{ . | quote}}
+    {{- end }}
   {{- end }}
   selector:
     {{- include "kafka.broker.matchLabels" $root | nindent 4 }}

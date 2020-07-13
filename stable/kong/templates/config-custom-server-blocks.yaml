@@ -3,10 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "kong.fullname" . }}-default-custom-server-blocks
   labels:
-    app: {{ template "kong.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong.metaLabels" . | nindent 4 }}
 data:
   servers.conf: |
     # Prometheus metrics and health-checking server

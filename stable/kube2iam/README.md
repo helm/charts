@@ -51,6 +51,7 @@ Parameter | Description | Default
 `image.repository` | Image | `jtblin/kube2iam`
 `image.tag` | Image tag | `0.10.7`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`image.pullSecrets` | Image pull secrets | `[]`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `priorityClassName` | priorityClassName to be added to pods | `{}`
@@ -60,12 +61,19 @@ Parameter | Description | Default
 `prometheus.serviceMonitor.enabled` | If true, create a Prometheus Operator ServiceMonitor resource | `false`
 `prometheus.serviceMonitor.interval` | Interval at which the metrics endpoint is scraped | `10s`
 `prometheus.serviceMonitor.namespace` | An alternative namespace in which to install the ServiceMonitor | `""`
+`prometheus.serviceMonitor.labels` | Labels to add to the ServiceMonitor | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`
 `updateStrategy` | Strategy for DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `verbose` | Enable verbose output | `false`
 `tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`
+`aws.secret_key` | The value to use for AWS_SECRET_ACCESS_KEY | `""`
+`aws.access_key` | The value to use for AWS_ACCESS_KEY_ID | `""`
+`aws.region` | The AWS region to use | `""`
+`existingSecret` | Set the AWS credentials using an existing secret | `""`
+`podSecurityPolicy.enabled` | If true, create a podSecurityPolicy object. For the pods to use the psp, rbac.create should also be set to true | `false`
+`podSecurityPolicy.annotations` | The annotations to add to the podSecurityPolicy object | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

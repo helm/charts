@@ -1,4 +1,13 @@
-# CouchDB
+
+
+# CouchDB - DEPRECATED
+
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/apache/couchdb-helm
+- **Charts repository:** https://apache.github.io/couchdb-helm
+```bash
+helm repo add couchdb https://apache.github.io/couchdb-helm
+```
 
 Apache CouchDB is a database featuring seamless multi-master sync, that scales
 from big data to mobile, with an intuitive HTTP/JSON API and designed for

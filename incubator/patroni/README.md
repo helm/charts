@@ -3,7 +3,7 @@
 This directory contains a Kubernetes chart to deploy a five node [Patroni](https://github.com/zalando/patroni/) cluster using a [Spilo](https://github.com/zalando/spilo) and a StatefulSet.
 
 ## Prerequisites Details
-* Kubernetes 1.5+
+* Kubernetes 1.9+
 * PV support on the underlying infrastructure
 
 ## StatefulSet Details
@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `fullnameOverride`                | Override the fullname of the chart          | `nil`                                               |
 | `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
 | `image.repository`                | The image to pull                           | `registry.opensource.zalan.do/acid/spilo-10`        |
-| `image.tag`                       | The version of the image to pull            | `1.4-p16`                                           |
+| `image.tag`                       | The version of the image to pull            | `1.5-p5`                                            |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
 | `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
 | `credentials.admin`               | Password of the admin                       | `cola`                                              |

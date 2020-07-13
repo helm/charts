@@ -1,5 +1,5 @@
 {{ if .Values.rbac.create }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+    name: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole

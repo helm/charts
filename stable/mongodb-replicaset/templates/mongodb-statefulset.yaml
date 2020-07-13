@@ -9,8 +9,17 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{ toYaml .Values.statefulSetAnnotations | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 spec:
+{{- if .Values.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb-replicaset.name" . }}
@@ -52,6 +61,9 @@ spec:
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
       initContainers:
         - name: copy-config
           image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
@@ -120,6 +132,10 @@ spec:
               value: {{ .Values.replicaSetName }}
             - name: TIMEOUT
               value: "{{ .Values.init.timeout }}"
+            - name: SKIP_INIT
+              value: "{{ .Values.skipInitialization }}"
+            - name: TLS_MODE
+              value: {{ .Values.tls.mode }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -185,7 +201,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --sslMode=requireSSL
+            - --sslMode={{ .Values.tls.mode }}
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
@@ -237,18 +253,7 @@ spec:
             - -c
             - >-
               /bin/mongodb_exporter
-            {{- if .Values.auth.enabled }}
-              --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-            {{- else }}
-              --mongodb.uri mongodb://localhost:{{ .Values.port }}
-            {{- end }}
-            {{- if .Values.tls.enabled }}
-              --mongodb.tls
-              --mongodb.tls-ca=/ca/tls.crt
-              --mongodb.tls-cert=/work-dir/mongo.pem
-            {{- end }}
-              --mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
-              --mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
+              --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
               --web.telemetry-path={{ .Values.metrics.path }}
               --web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:
@@ -281,7 +286,6 @@ spec:
           {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
-            fsGroup: {{ .Values.metrics.securityContext.fsGroup }}
           {{- end }}
           livenessProbe:
             exec:
@@ -290,20 +294,14 @@ spec:
                 - -c
                 - >-
                   /bin/mongodb_exporter
-                {{- if .Values.auth.enabled }}
-                  --mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-                {{- else }}
-                  --mongodb.uri mongodb://localhost:{{ .Values.port }}
-                {{- end }}
-                {{- if .Values.tls.enabled }}
-                  --mongodb.tls
-                  --mongodb.tls-ca=/ca/tls.crt
-                  --mongodb.tls-cert=/work-dir/mongo.pem
-                {{- end }}
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
                   --test
             initialDelaySeconds: 30
             periodSeconds: 10
 {{ end }}
+        {{- if .Values.extraContainers }}
+        {{- tpl (toYaml .Values.extraContainers) . | nindent 8 }}
+        {{- end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -340,6 +338,9 @@ spec:
           emptyDir: {}
         - name: configdir
           emptyDir: {}
+{{- if .Values.extraVolumes }}
+{{- tpl (toYaml .Values.extraVolumes) . | nindent 8 }}
+{{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
