@@ -54,6 +54,7 @@ logging:
   msp: warning
   policies: warning
 
+
 ##################################
 ## Peer configuration options    #
 ##################################
@@ -76,7 +77,13 @@ peer:
       enabled: "false"
     client:
       enabled: "false"
-
+  chaincode:
+    # define the ccenv image used by the peer
+    builder: ""
+    runtime:
+      golang: ""
+      java: ""
+      node: ""
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials
