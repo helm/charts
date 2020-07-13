@@ -28,7 +28,7 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
-  # Include Auth application in ingress, useful if the auth component is 
+  # Include Auth application in ingress, useful if the auth component is
   # exposed independently.
   ingressEnabled: true
   # Auth application ingress path.
