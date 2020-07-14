@@ -25,8 +25,12 @@ agent:
   image:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent
+    # agent.image.electorName is the name of the container image of the Instana agent.
+    electorName: instana/leader-elector
     # agent.image.tag is the tag name of the agent container image.
     tag: latest
+    # agent.image.electorTag is the tag name of the agent container image.
+    electorTag: 0.5.4
     # agent.image.pullPolicy specifies when to pull the image container.
     pullPolicy: Always
 

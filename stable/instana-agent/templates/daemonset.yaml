@@ -31,7 +31,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-        - name: {{ template "instana-agent.name" . }}
+        - name: instana-agent
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           env:
@@ -149,8 +149,8 @@ spec:
               cpu: {{ default 1.5 .Values.agent.pod.limits.cpu }}
           ports:
             - containerPort: 42699
-        - name: {{ template "instana-agent.name" . }}-leader-elector
-          image: instana/leader-elector:0.5.4
+        - name: instana-agent-leader-elector
+          image: "{{ .Values.agent.image.electorName }}:{{ .Values.agent.image.electorTag }}"
           env:
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
