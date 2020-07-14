@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `snapshotOperator.controller.imageTag`  | Image Tag for Snapshot Controller             | `1.12.0`                                          |
 | `snapshotOperator.replicas`             | Number of Snapshot Operator Replicas          | `1`                                               |
 | `ndm.enabled`                           | Enable Node Disk Manager                      | `true`                                            |
-| `ndm.image`                             | Image for Node Disk Manager                   | `openebs/node-disk-manager-amd64`                 |
+| `ndm.image`                             | Image for Node Disk Manager                   | `openebs/node-disk-manager`                 |
 | `ndm.imageTag`                          | Image Tag for Node Disk Manager               | `0.7.0`                                           |
 | `ndm.sparse.path`                       | Directory where Sparse files are created      | `/var/openebs/sparse`                             |
 | `ndm.sparse.size`                       | Size of the sparse file in bytes              | `10737418240`                                     |
@@ -85,7 +85,7 @@ The following table lists the configurable parameters of the OpenEBS chart and t
 | `ndm.filters.excludePaths`              | Exclude devices with specified path patterns  | `loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md,/dev/rbd` |
 | `ndm.probes.enableSeachest`             | Enable Seachest probe for NDM                 | `false`                                           |
 | `ndmOperator.enabled`                   | Enable NDM Operator                           | `true`                                            |
-| `ndmOperator.image`                     | Image for NDM Operator                        | `openebs/node-disk-operator-amd64`                |
+| `ndmOperator.image`                     | Image for NDM Operator                        | `openebs/node-disk-operator`                |
 | `ndmOperator.imageTag`                  | Image Tag for NDM Operator                    | `0.7.0`                                           |
 | `jiva.image`                            | Image for Jiva                                | `openebs/jiva`                                    |
 | `jiva.imageTag`                         | Image Tag for Jiva                            | `1.12.0`                                          |
