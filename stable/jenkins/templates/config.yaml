@@ -210,7 +210,7 @@ data:
     yes n | cp -i {{ .Values.master.jenkinsRef }}/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
-  echo "configure script approval"
+    echo "configure script approval"
   {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/scriptapproval.xml {{ .Values.master.jenkinsHome }}/scriptApproval.xml;
   {{- else }}
