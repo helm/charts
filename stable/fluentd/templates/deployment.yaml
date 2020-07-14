@@ -32,7 +32,7 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
-{{- with .Values.podLabels }}
+{{- with .Values.deployment.labels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
       annotations:

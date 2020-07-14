@@ -53,6 +53,7 @@ Parameter | Description | Default
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
+`deployment.labels` | Additional labels for pods | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
 `image.tag` | Image tag | `v2.4.0`
@@ -70,7 +71,6 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `plugins.enabled` | Enable Plugins Installation | `false`
 `plugins.pluginsList` | List of plugins to install | `[]`
-`podLabels` | Additional labels for pods | `{}`
 `rbac.create` | Specifies whether RBAC resources should be created | `true`
 `serviceAccount.create` | Specifies whether a service account should be created. | `true`
 `serviceAccount.name` | Name of the service account.

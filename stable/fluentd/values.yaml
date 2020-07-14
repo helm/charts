@@ -64,12 +64,13 @@ metrics:
     # interval: 30s
     # scrapeTimeout: 10s
 
-## Pod Labels
-podLabels: {}
-
 annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/port: "24231"
+
+# Pod Labels
+deployment:
+  labels: {}
 
 ingress:
   enabled: false
