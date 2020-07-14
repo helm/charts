@@ -5,6 +5,22 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.3.3 correct templating of master.slaveJenkinsUrl
+
+Fixes #22708
+
+## 2.3.2 Fix wrong value for overwritePluginsFromImage
+
+Fixes #23003
+Fixes #22633
+
+Also fixes indentation for #23114
+
+## 2.3.1
+
+Always mount {{ .Values.master.jenkinsRef }}/secrets/ directory. Previous it
+was mounted only when `master.enableXmlConfig` was enabled.
+
 ## 2.3.0
 
 Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled

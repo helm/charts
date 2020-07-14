@@ -34,6 +34,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverAvailability: true
     kubeApiserverError: true
     kubeApiserverSlos: true
     kubelet: true
@@ -528,6 +529,10 @@ grafana:
     dashboards:
       enabled: true
       label: grafana_dashboard
+
+      ## Annotations for Grafana dashboard configmaps
+      ##
+      annotations: {}
     datasources:
       enabled: true
       defaultDatasourceEnabled: true

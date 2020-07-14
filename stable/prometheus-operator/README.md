@@ -153,6 +153,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `defaultRules.rules.general` | Create General default rules| `true` |
 | `defaultRules.rules.k8s` | Create K8S default rules| `true` |
 | `defaultRules.rules.kubeApiserver` | Create Api Server default rules| `true` |
+| `defaultRules.rules.kubeApiserverAvailability` | Create Api Server Availability default rules| `true` |
 | `defaultRules.rules.kubeApiserverError` | Create Api Server Error default rules| `true` |
 | `defaultRules.rules.kubeApiserverSlos` | Create Api Server SLOs default rules| `true` |
 | `defaultRules.rules.kubelet` | Create kubelet default rules | `true` |
@@ -468,6 +469,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `grafana.serviceMonitor.relabelings` | The `relabel_configs` for scraping the grafana instance. | `` |
 | `grafana.serviceMonitor.selfMonitor` | Create a `serviceMonitor` to automatically monitor the grafana instance | `true` |
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
+| `grafana.sidecar.dashboards.annotations` | Create annotations on dashboard configmaps | `{}` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
 | `grafana.sidecar.datasources.annotations` | Create annotations on datasource configmaps | `{}` |
 | `grafana.sidecar.datasources.createPrometheusReplicasDatasources` | Create datasource for each Pod of Prometheus StatefulSet i.e. `Prometheus-0`, `Prometheus-1` | `false` |

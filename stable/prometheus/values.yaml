@@ -868,10 +868,12 @@ server:
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   ##
   readinessProbeInitialDelay: 30
+  readinessProbePeriodSeconds: 5
   readinessProbeTimeout: 30
   readinessProbeFailureThreshold: 3
   readinessProbeSuccessThreshold: 1
   livenessProbeInitialDelay: 30
+  livenessProbePeriodSeconds: 15
   livenessProbeTimeout: 30
   livenessProbeFailureThreshold: 3
   livenessProbeSuccessThreshold: 1

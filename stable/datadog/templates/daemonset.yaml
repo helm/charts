@@ -41,7 +41,7 @@ spec:
 {{ toYaml .Values.agents.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if and .Values.datadog.securityContext .Values.datadog.securityContext.seLinuxOptions }}
+      {{- if (.Values.datadog.securityContext) and .Values.datadog.securityContext.seLinuxOptions }}
       securityContext:
         seLinuxOptions:
 {{ toYaml .Values.datadog.securityContext.seLinuxOptions | indent 10 }}
