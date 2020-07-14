@@ -5,6 +5,10 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.3.3 correct templating of master.slaveJenkinsUrl
+
+Fixes #22708
+
 ## 2.3.2 Fix wrong value for overwritePluginsFromImage
 
 Fixes #23003
