@@ -103,7 +103,7 @@ jenkins:
       connectTimeout: "{{ .Values.master.slaveConnectTimeout }}"
       readTimeout: "{{ .Values.master.slaveReadTimeout }}"
       {{- if .Values.master.slaveJenkinsUrl }}
-      jenkinsUrl: "{{ tpl .Values.master.slaveJenkinsUrl }}"
+      jenkinsUrl: "{{ tpl .Values.master.slaveJenkinsUrl . }}"
       {{- else if .Values.master.slaveKubernetesNamespace }}
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
       {{- else }}

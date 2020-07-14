@@ -97,10 +97,9 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        {{- range $value := .Values.clusterChecksRunner.env }}
-          - name: {{ $value.name }}
-            value: {{ $value.value | quote }}
-        {{- end }}
+{{- if .Values.clusterChecksRunner.env }}
+{{ toYaml .Values.clusterChecksRunner.env | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
 {{- if .Values.clusterChecksRunner.volumeMounts }}

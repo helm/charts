@@ -75,8 +75,6 @@ spec:
       dnsConfig:
 {{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
       {{- end }}
-      imagePullSecrets:
-{{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       containers:
       - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
@@ -168,6 +166,10 @@ spec:
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
+          {{- if .Values.datadog.orchestratorExplorer.enabled }}
+          - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+            value: "true"
+          {{- end }}
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
 {{- end }}

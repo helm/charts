@@ -79,10 +79,9 @@
       value: "clusterchecks endpointschecks"
     {{- end }}
     {{- end }}
-  {{- range $value := .Values.agents.containers.agent.env }}
-    - name: {{ $value.name }}
-      value: {{ $value.value | quote }}
-  {{- end }}
+{{- if .Values.agents.containers.agent.env }}
+{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
+{{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}

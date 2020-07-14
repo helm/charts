@@ -159,19 +159,24 @@ data:
     </jenkins.CLI>
 {{- end }}
   apply_config.sh: |-
+    echo "applying Jenkins configuration"
     mkdir -p {{ .Values.master.jenkinsRef }}/secrets/;
 {{- if .Values.master.enableXmlConfig }}
+    echo "apply XML configuration"
     echo "false" > {{ .Values.master.jenkinsRef }}/secrets/slave-to-master-security-kill-switch;
 {{- if .Values.master.overwriteConfig }}
+    echo "overwriting existing configuration"
     cp /var/jenkins_config/config.xml {{ .Values.master.jenkinsHome }};
     cp /var/jenkins_config/jenkins.CLI.xml {{ .Values.master.jenkinsHome }};
     cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
   {{- if .Values.master.additionalConfig }}
   {{- range $key, $val := .Values.master.additionalConfig }}
+    echo "copying additional configuration"
     cp /var/jenkins_config/{{- $key }} {{ $jenkinsHome }};
   {{- end }}
   {{- end }}
 {{- else }}
+    echo "copy XML configuration"
     yes n | cp -i /var/jenkins_config/config.xml {{ .Values.master.jenkinsHome }};
     yes n | cp -i /var/jenkins_config/jenkins.CLI.xml {{ .Values.master.jenkinsHome }};
     yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml {{ .Values.master.jenkinsHome }};
@@ -183,24 +188,29 @@ data:
 {{- end }}
 {{- else }}
 {{- if .Values.master.JCasC.enabled }}
+    echo "disable Setup Wizard"
     # Prevent Setup Wizard when JCasC is enabled
     echo $JENKINS_VERSION > {{ .Values.master.jenkinsHome }}/jenkins.install.UpgradeWizard.state
     echo $JENKINS_VERSION > {{ .Values.master.jenkinsHome }}/jenkins.install.InstallUtil.lastExecVersion
 {{- end }}
 {{- end }}
 {{- if .Values.master.overwritePlugins }}
+    echo "remove all plugins from shared volume"
     # remove all plugins from shared volume
     rm -rf {{ .Values.master.jenkinsHome }}/plugins/*
 {{- end }}
 {{- if .Values.master.installPlugins }}
+    echo "download plugins"
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt {{ .Values.master.jenkinsHome }};
     rm -rf {{ .Values.master.jenkinsRef }}/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat {{ .Values.master.jenkinsHome }}/plugins.txt)`;
+    echo "copy plugins to shared volume"
     # Copy plugins to shared volume
     yes n | cp -i {{ .Values.master.jenkinsRef }}/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
+    echo "configure script approval"
   {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/scriptapproval.xml {{ .Values.master.jenkinsHome }}/scriptApproval.xml;
   {{- else }}
@@ -208,6 +218,7 @@ data:
   {{- end }}
 {{- end }}
 {{- if .Values.master.initScripts }}
+    echo "copy init scripts"
     mkdir -p {{ .Values.master.jenkinsHome }}/init.groovy.d/;
     {{- if .Values.master.overwriteConfig }}
     rm -f {{ .Values.master.jenkinsHome }}/init.groovy.d/*.groovy
@@ -216,6 +227,7 @@ data:
 {{- end }}
 {{- if .Values.master.JCasC.enabled}}
   {{- if not .Values.master.sidecars.configAutoReload.enabled }}
+    echo "copy configuration as code files"
     mkdir -p {{ .Values.master.jenkinsHome }}/casc_configs;
     rm -rf {{ .Values.master.jenkinsHome }}/casc_configs/*
     {{- if .Values.master.JCasC.configScripts }}
@@ -225,9 +237,11 @@ data:
 {{- end }}
 {{- if .Values.master.enableXmlConfig }}
 {{- if .Values.master.credentialsXmlSecret }}
+    echo "copy credentials.xml"
     yes n | cp -i /var/jenkins_credentials/credentials.xml {{ .Values.master.jenkinsHome }};
 {{- end }}
 {{- if .Values.master.jobs }}
+    echo "copy jobs"
     for job in $(ls /var/jenkins_jobs); do
       mkdir -p {{ .Values.master.jenkinsHome }}/jobs/$job
       yes {{ if not .Values.master.overwriteJobs }}n{{ end }} | cp -i /var/jenkins_jobs/$job {{ .Values.master.jenkinsHome }}/jobs/$job/config.xml
@@ -235,8 +249,10 @@ data:
 {{- end }}
 {{- end }}
 {{- if .Values.master.secretsFilesSecret }}
+    echo "copy secrets"
     yes n | cp -i /var/jenkins_secrets/* {{ .Values.master.jenkinsRef }}/secrets/;
 {{- end }}
+    echo "finished initialization"
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
