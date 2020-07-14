@@ -228,7 +228,7 @@ master:
     - kubernetes:1.25.7
     - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.22
+    - credentials-binding:1.23
     - git:4.2.2
     - configuration-as-code:1.41
 
@@ -239,7 +239,7 @@ master:
   # overwritePlugins: true
 
   # Configures if plugins bundled with `master.image` should be overwritten with the values of 'master.installPlugins' on upgrade or redeployment.
-  master.overwritePluginsFromImage: true
+  overwritePluginsFromImage: true
 
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
@@ -308,6 +308,8 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # How many connection-related errors to retry on
+      reqRetryConnect: 10
       # env:
       #   - name: REQ_TIMEOUT
       #     value: "30"
@@ -618,6 +620,7 @@ networkPolicy:
   # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
   internalAgents:
     allowed: true
+    podLabels: {}
     namespaceLabels: {}
       # project: myproject
   externalAgents: {}

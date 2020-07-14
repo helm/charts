@@ -1,3 +1,4 @@
+{{- if .Values.proxy.enabled -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 apiVersion: v1
 kind: Service
@@ -24,3 +25,4 @@ spec:
     app: {{ $name }}
     component: {{ $name }}-proxy
     release: {{ .Release.Name }}
+{{- end }}

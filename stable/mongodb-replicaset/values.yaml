@@ -3,8 +3,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Override the deployment namespace
-global:
-#  namespaceOverride: ""
+global: {}
+# global:
+#   namespaceOverride: ""
 
 replicas: 3
 port: 27017
@@ -76,6 +77,8 @@ metrics:
   securityContext:
     enabled: true
     runAsUser: 1001
+
+serviceAccount: ""
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -196,3 +199,16 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+# Startup probe, will only be added since Kubernetes v1.16 or higher
+# When you have a lot of collections/indices, MongoDB need some time to start
+startupProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 60
+  periodSeconds: 10
+  successThreshold: 2
+
+# Enables/disables the headless client service
+clientService:
+  enabled: true

@@ -144,3 +144,9 @@ resources: {}
   # requests:
   #  cpu: 10m
   #  memory: 32Mi
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""
+
