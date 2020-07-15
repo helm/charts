@@ -67,6 +67,7 @@ Parameter | Description | Default
 `auth.service.type` | type of auth service to create | `ClusterIP`
 `auth.service.port` | port for the http auth service | `80`
 `auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32`. | REQUIRED if `auth.customSecret` is not set
+`auth.ingressEnabled` | enable auth ingress. | `true`
 `auth.ingressPath` | auth ingress path. | `/`
 `auth.tls` | tls configuration for central sso auth ingress. | `{}`
 `auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
