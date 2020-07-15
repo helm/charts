@@ -94,3 +94,6 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `timeoutSeconds` | Timeout for a webhook call in seconds. | `` |
 | `securityContext` | Security context for the containers | `{enabled: false, runAsNonRoot: true, runAsUser: 1}` |
 | `deploymentStrategy` | Specify deployment spec rollout strategy | `{}` |
+| `extraContainers` | Additional containers to be added to the deployment | `[]` |
+| `extraVolumes` | Additional volumes to be added to the deployment | `[]` |
+| `extraPorts` | Additional ports to OPA service. Useful to expose `extraContainer` ports. | `[]` |

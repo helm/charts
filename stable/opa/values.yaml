@@ -239,3 +239,33 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+extraContainers: []
+## Additional containers to be added to the opa pod.
+# - name: example-app
+#   image: example/example-app:latest
+#   args:
+#     - "run"
+#     - "--port=11811"
+#     - "--config=/etc/example-app-conf/config.yaml"
+#     - "--opa-endpoint=https://localhost:443"
+#   ports:
+#     - name: http
+#       containerPort: 11811
+#       protocol: TCP
+#   volumeMounts:
+#     - name: example-app-auth-config
+#       mountPath: /etc/example-app-conf
+
+extraVolumes: []
+## Additional volumes to the opa pod.
+# - name: example-app-auth-config
+#   secret:
+#     secretName: example-app-auth-config
+
+extraPorts: []
+## Additional ports to the opa services. Useful to expose extra container ports.
+# - port: 11811
+#   protocol: TCP
+#   name: http
+#   targetPort: http
