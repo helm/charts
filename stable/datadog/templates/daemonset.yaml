@@ -131,10 +131,9 @@ spec:
 {{ toYaml .Values.agents.affinity | indent 8 }}
       serviceAccountName: {{ if .Values.agents.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.agents.rbac.serviceAccountName }}"{{ end }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
       {{- if .Values.agents.nodeSelector }}
 {{ toYaml .Values.agents.nodeSelector | indent 8 }}
-      {{- else if eq .Values.targetSystem "windows" }}
-        kubernetes.io/os: windows
       {{- end }}
   updateStrategy:
 {{ toYaml .Values.agents.updateStrategy | indent 4 }}

@@ -126,8 +126,9 @@ spec:
                 app: {{ template "datadog.fullname" . }}-clusterchecks
             topologyKey: kubernetes.io/hostname
 {{- end }}
-      {{- if .Values.clusterChecksRunner.nodeSelector }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
+      {{- if .Values.clusterChecksRunner.nodeSelector }}
 {{ toYaml .Values.clusterChecksRunner.nodeSelector | indent 8 }}
       {{- end }}
       {{- if .Values.clusterChecksRunner.tolerations }}
