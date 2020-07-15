@@ -6,6 +6,8 @@ image:
   repository: rundeck/rundeck
   tag: 3.2.7
   pullPolicy: IfNotPresent
+  # Name of the secret to pull from your private repository
+  # pullSecrets: ""
 
 deployment:
   replicaCount: 1
