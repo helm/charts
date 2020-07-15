@@ -201,10 +201,15 @@ spec:
   imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 4 }}
 {{- end }}
-{{- if or .Values.prometheus.prometheusSpec.additionalScrapeConfigs .Values.prometheus.prometheusSpec.additionalScrapeConfigsExternal }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigs }}
   additionalScrapeConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
     key: additional-scrape-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.enabled }}
+  additionalScrapeConfigs:
+    name: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.name }}
+    key: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.key }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
   additionalAlertManagerConfigs:

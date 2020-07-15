@@ -21,7 +21,7 @@ metadata:
 spec:
 {{- if or (and .Values.auth.enabled .Values.auth.tls) .Values.ingress.tls }}
   tls:
-  {{- if and .Values.auth.enabled .Values.auth.tls }}
+  {{- if (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
@@ -45,7 +45,7 @@ spec:
               serviceName: {{ $fullName }}-proxy
               servicePort: http
   {{- end }}
-  {{- if .Values.auth.enabled }}
+  {{- if and .Values.auth.enabled .Values.auth.ingressEnabled }}
     # Global SSO used in the callback for login
     - host: {{ $authDomain }}
       http:
