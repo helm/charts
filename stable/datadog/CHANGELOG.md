@@ -1,7 +1,7 @@
 # Datadog changelog
 
 ## 2.3.30
-* Fixed daemoset template for go 1.14
+* Fixed daemonset template for go 1.14
 
 ## 2.3.29
 
