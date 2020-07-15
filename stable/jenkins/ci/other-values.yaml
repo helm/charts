@@ -17,6 +17,10 @@ master:
                 attributeName: "memberOf"
   additionalPlugins:
     - ldap:1.24
+  scriptApproval:
+    - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
+    - "new groovy.json.JsonSlurperClassic"
+
 persistence:
   enabled: false
 
