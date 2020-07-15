@@ -288,9 +288,9 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `agent.customJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
 | `agent.enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `agent.image`              | Agent image name                                | `jenkins/jnlp-slave`   |
+| `agent.image`              | Agent image name                                | `jenkins/inbound-agent`|
 | `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
-| `agent.tag`                | Agent image tag                                 | `3.27-1`               |
+| `agent.tag`                | Agent image tag                                 | `4.3-4`               |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
