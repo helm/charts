@@ -34,6 +34,9 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
   version: {{ .Values.prometheus.prometheusSpec.image.tag }}
+  {{- if .Values.prometheus.prometheusSpec.image.sha }}
+  sha: {{ .Values.prometheus.prometheusSpec.image.sha }}
+  {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalLabels }}
   externalLabels:
