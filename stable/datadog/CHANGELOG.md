@@ -1,5 +1,8 @@
 # Datadog changelog
 
+## 2.3.31
+* Fixed daemonset template for go 1.14
+
 ## 2.3.29
 
 * Change the default port for the Cluster Agent's External Metrics Provider
