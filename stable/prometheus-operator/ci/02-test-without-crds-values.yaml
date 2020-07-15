@@ -5,7 +5,7 @@ prometheusOperator:
     additional:
       - kube-system
 
-nodeExporter:
+prometheus-node-exporter:
   service:
     targetPort: 9101
     port: 9101
