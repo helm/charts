@@ -12,6 +12,9 @@ metadata:
     chart: {{ template "traefik.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+  {{- if .Values.metrics.prometheus.service.labels }}
+    {{ toYaml .Values.metrics.prometheus.service.labels | indent 4 }}
+  {{- end }}
   {{- with .Values.metrics.prometheus.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

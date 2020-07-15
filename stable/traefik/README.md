@@ -214,6 +214,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `metrics.prometheus.buckets`           | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]`                                 |
 | `metrics.prometheus.service.name`      | Custom service name for the Prometheus service                                                 | ``                                           |
 | `metrics.prometheus.service.annotations`      | Annotations for the Prometheus service                                                 | `{ prometheus.io/scrape: "true" }`                                           |
+| `metrics.prometheus.service.labels`    | Labels for the Prometheus service                                               | `{}`                                           |
 | `metrics.prometheus.service.port`      | Port for the Prometheus service                                                 | `9100`                                           |
 | `metrics.prometheus.service.type`      | Type for the Prometheus service                                                 | `ClusterIP`                                           |
 | `metrics.prometheus.service.loadBalancerIP`      | Static IP for the Prometheus Service when its type is `LoadBalancer`                                            | ``                                           |
