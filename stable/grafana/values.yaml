@@ -51,6 +51,7 @@ livenessProbe:
 image:
   repository: grafana/grafana
   tag: 7.0.5
+  sha: 17cbd08b9515fda889ca959e9d72ee6f3327c8f1844a3336dfd952134f38e2fe
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -92,6 +93,7 @@ extraEmptyDirMounts: []
 downloadDashboardsImage:
   repository: curlimages/curl
   tag: 7.70.0
+  sha: 4643760807987d54154af5767b0028861b1b279108af7f70bf820b948069c366
   pullPolicy: IfNotPresent
 
 downloadDashboards:
@@ -226,6 +228,7 @@ initChownData:
   image:
     repository: busybox
     tag: "1.31.1"
+    sha: fb1f7b885314372fa4aecbb2ba98a70dfed1d60d85e1191075ee616e55df577b
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits
@@ -467,6 +470,7 @@ sidecar:
   image:
     repository: kiwigrid/k8s-sidecar
     tag: 0.1.151
+    sha: 7b98eecdf6d117b053622e9f317c632a4b2b97636e8b2e96b311a5fd5c68d211
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
