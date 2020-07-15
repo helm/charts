@@ -13,7 +13,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   {{- if .Values.metrics.prometheus.service.labels }}
-    {{ toYaml .Values.metrics.prometheus.service.labels | indent 4 }}
+    {{- toYaml .Values.metrics.prometheus.service.labels | nindent 4 }}
   {{- end }}
   {{- with .Values.metrics.prometheus.service.annotations }}
   annotations:
