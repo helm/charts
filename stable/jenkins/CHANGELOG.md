@@ -5,6 +5,11 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.4.0 Update default agent image
+
+`jenkins/jnlp-slave` is deprected and `jenkins/inbound-agent` should be used instead.
+Also updated it to newest version (4.3-4).
+
 ## 2.3.3 correct templating of master.slaveJenkinsUrl
 
 Fixes #22708
