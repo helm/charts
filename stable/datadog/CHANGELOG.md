@@ -1,6 +1,11 @@
 # Datadog changelog
 
+## 2.3.32
+
+* Always add os in nodeSelector based on `targetSystem`
+
 ## 2.3.31
+
 * Fixed daemonset template for go 1.14
 
 ## 2.3.29
