@@ -208,8 +208,8 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.enabled }}
   additionalScrapeConfigs:
-    name: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.SecretName }}
-    key: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.SecretKey }}
+    name: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.name }}
+    key: {{- .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.key }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
   additionalAlertManagerConfigs:

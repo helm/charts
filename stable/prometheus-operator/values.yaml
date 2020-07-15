@@ -1865,12 +1865,12 @@ prometheus:
     #     action: labeldrop
 
     ## If additional scrape configurations are already deployed in a single secret file you can use this section.
-    ## Expected values are the cm name and key
+    ## Expected values are the secret name and key
     ## Cannot be used with additionalScrapeConfigs
     additionalScrapeConfigsSecret: {}
       # enabled: false
-      # SecretName:
-      # SecretKey:
+      # name:
+      # key:
 
     ## additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful
     ## when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false'
