@@ -1864,6 +1864,14 @@ prometheus:
     #   - regex: (kubernetes_io_hostname|failure_domain_beta_kubernetes_io_region|beta_kubernetes_io_os|beta_kubernetes_io_arch|beta_kubernetes_io_instance_type|failure_domain_beta_kubernetes_io_zone)
     #     action: labeldrop
 
+    ## If additional scrape configurations are already deployed in a single secret file you can use this section.
+    ## Expected values are the secret name and key
+    ## Cannot be used with additionalScrapeConfigs
+    additionalScrapeConfigsSecret: {}
+      # enabled: false
+      # name:
+      # key:
+
     ## additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful
     ## when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false'
     additionalPrometheusSecretsAnnotations: {}
@@ -1925,18 +1933,6 @@ prometheus:
     ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
     ## (permissions, dir tree) on mounted volumes before starting prometheus
     initContainers: []
-
-    ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus
-    ## will fail to provision if the correct secret does not exist.
-    ## This option requires that you are maintaining a secret in the same namespace as Prometheus with
-    ## a name of 'prometheus-operator-prometheus-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
-    ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
-    ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
-    ## secret will overwrite your self-maintained secret).
-    ##
-    ## scrape_config docs: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
-    ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
-    additionalScrapeConfigsExternal: false
 
     ## PortName to use for Prometheus.
     ##
