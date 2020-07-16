@@ -167,3 +167,15 @@ podDisruptionBudget:
 service:
   percona:
     headless: false
+
+## Set the serviceAccountName.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+# serviceAccountName:
+
+## Set the securityContext parameters.
+## 999 is the UID of mysql user.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# securityContext:
+#   runAsUser: 999
+#   runAsGroup: 999
+#   fsGroup: 999
