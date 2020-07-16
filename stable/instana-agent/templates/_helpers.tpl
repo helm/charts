@@ -47,7 +47,7 @@ The name of the PodSecurityPolicy used.
 */}}
 {{- define "instana-agent.podSecurityPolicyName" -}}
 {{- if .Values.podSecurityPolicy.enable -}}
-    {{ default (include "instana-agent.fullname" .) .Values.podSecurityPolicy.name }}
+{{ default (include "instana-agent.fullname" .) .Values.podSecurityPolicy.name }}
 {{- end -}}
 {{- end -}}
 
@@ -55,11 +55,10 @@ The name of the PodSecurityPolicy used.
 Add Helm metadata to resource labels.
 */}}
 {{- define "instana-agent.commonLabels" -}}
-{{- if .Values.templating -}}
 app.kubernetes.io/name: {{ include "instana-agent.name" . }}
+{{ if .Values.templating -}}
 app.kubernetes.io/version: {{ .Chart.Version }}
 {{- else -}}
-app.kubernetes.io/name: {{ include "instana-agent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 helm.sh/chart: {{ include "instana-agent.chart" . }}
@@ -70,10 +69,8 @@ helm.sh/chart: {{ include "instana-agent.chart" . }}
 Add Helm metadata to selector labels specifically for deployments/daemonsets/statefulsets.
 */}}
 {{- define "instana-agent.selectorLabels" -}}
-{{- if .Values.templating -}}
 app.kubernetes.io/name: {{ include "instana-agent.name" . }}
-{{- else -}}
-app.kubernetes.io/name: {{ include "instana-agent.name" . }}
+{{ if not .Values.templating -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
