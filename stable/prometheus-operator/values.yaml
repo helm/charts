@@ -1184,6 +1184,7 @@ prometheusOperator:
   serviceAccount:
     create: true
     name: ""
+    annotation: {}
 
   ## Configuration for Prometheus operator service
   ##

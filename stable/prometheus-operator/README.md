@@ -240,6 +240,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.service.type` | Prometheus operator service type | `ClusterIP` |
 | `prometheusOperator.serviceAccount.create` | Create a serviceaccount for the operator | `true` |
 | `prometheusOperator.serviceAccount.name` | Operator serviceAccount name | `""` |
+| `prometheusOperator.serviceAccount.annotations` | Annotations to add to the serviceaccount | `{}` |
 | `prometheusOperator.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
 | `prometheusOperator.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping the operator instance. | `` |
 | `prometheusOperator.serviceMonitor.relabelings` | The `relabel_configs` for scraping the operator instance. | `` |
