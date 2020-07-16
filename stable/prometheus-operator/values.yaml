@@ -1628,6 +1628,11 @@ prometheus:
     ##
     externalUrl: ""
 
+    ## Ignore NamespaceSelector settings from the PodMonitor and ServiceMonitor configs
+    ## If true, PodMonitors and ServiceMonitors can only discover Pods and Services within the namespace they are deployed into
+    ##
+    ignoreNamespaceSelectors: false
+
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##

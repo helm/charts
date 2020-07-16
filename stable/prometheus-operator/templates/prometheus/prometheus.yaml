@@ -56,6 +56,9 @@ spec:
 {{- else }}
   externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ template "prometheus-operator.namespace" . }}:{{ .Values.prometheus.service.port }}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.ignoreNamespaceSelectors }}
+  ignoreNamespaceSelectors: {{ .Values.prometheus.prometheusSpec.ignoreNamespaceSelectors }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.nodeSelector }}
   nodeSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.nodeSelector | indent 4 }}
