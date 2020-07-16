@@ -24,7 +24,6 @@ log:
   format: logfmt
   level: info
 
-
 resources: {}
   # requests:
   #   cpu: 100m
