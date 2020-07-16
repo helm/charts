@@ -1377,6 +1377,7 @@ prometheus:
   serviceAccount:
     create: true
     name: ""
+    annotations: {}
 
   ## Configuration for Prometheus service
   ##
