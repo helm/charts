@@ -149,4 +149,3 @@ resources: {}
 ## For example: kubeTargetVersionOverride: 1.14.9
 ##
 kubeTargetVersionOverride: ""
-
