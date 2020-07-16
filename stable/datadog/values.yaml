@@ -1226,6 +1226,41 @@ kube-state-metrics:
     #
     create: true
 
+  ## @param image.tag - object - optional
+  image:
+    tag: v1.8.0
+
+  ## @param collectors - list of objects - optional
+  collectors:
+    certificatesigningrequests: true
+    configmaps: true
+    cronjobs: true
+    daemonsets: true
+    deployments: true
+    endpoints: true
+    horizontalpodautoscalers: true
+    ingresses: true
+    jobs: true
+    limitranges: true
+    mutatingwebhookconfigurations: true
+    namespaces: true
+    networkpolicies: true
+    nodes: true
+    persistentvolumeclaims: true
+    persistentvolumes: true
+    poddisruptionbudgets: true
+    pods: true
+    replicasets: true
+    replicationcontrollers: true
+    resourcequotas: true
+    secrets: true
+    services: true
+    statefulsets: true
+    storageclasses: true
+    validatingwebhookconfigurations: true
+    verticalpodautoscalers: false
+    volumeattachments: true
+
   serviceAccount:
     ## @param created - boolean - required
     ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
