@@ -8,8 +8,10 @@ https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "k8s-resources-namespace" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -1276,6 +1278,7 @@ data:
                         "datasource": "$datasource",
                         "fill": 1,
                         "id": 9,
+                        "interval": "1m",
                         "legend": {
                             "avg": false,
                             "current": false,
@@ -2253,7 +2256,7 @@ data:
                 "30d"
             ]
         },
-        "timezone": "",
+        "timezone": "UTC",
         "title": "Kubernetes / Compute Resources / Namespace (Pods)",
         "uid": "85a562078cdf77779eaa1add43ccec1e",
         "version": 0

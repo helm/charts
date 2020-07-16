@@ -87,8 +87,7 @@ master:
   useSecurity: true
 
   # enables configuration done directly via XML files
-  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
-  enableXmlConfig: true
+  enableXmlConfig: false
   # Allows to configure different SecurityRealm using Jenkins XML
   securityRealm: |-
     <securityRealm class="hudson.security.LegacySecurityRealm"/>
@@ -141,8 +140,8 @@ master:
   usePodSecurityContext: true
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
-  # runAsUser: <defaults to 0>
-  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  runAsUser: 1000
+  fsGroup: 1000
   servicePort: 8080
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -229,7 +228,7 @@ master:
     - kubernetes:1.25.7
     - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.22
+    - credentials-binding:1.23
     - git:4.2.2
     - configuration-as-code:1.41
 
@@ -240,7 +239,7 @@ master:
   # overwritePlugins: true
 
   # Configures if plugins bundled with `master.image` should be overwritten with the values of 'master.installPlugins' on upgrade or redeployment.
-  master.overwritePluginsFromImage: true
+  overwritePluginsFromImage: true
 
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
@@ -272,8 +271,8 @@ master:
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
-    enabled: false
-    defaultConfig: false
+    enabled: true
+    defaultConfig: true
     configScripts: {}
     # Ignored if securityRealm is defined in master.JCasC.configScripts and
     # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
@@ -299,7 +298,7 @@ master:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
-      enabled: false
+      enabled: true
       image: kiwigrid/k8s-sidecar:0.1.144
       imagePullPolicy: IfNotPresent
       resources: {}
@@ -309,6 +308,8 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # How many connection-related errors to retry on
+      reqRetryConnect: 10
       # env:
       #   - name: REQ_TIMEOUT
       #     value: "30"
@@ -452,14 +453,16 @@ master:
 
 agent:
   enabled: true
-  image: "jenkins/jnlp-slave"
-  tag: "3.27-1"
+  image: "jenkins/inbound-agent"
+  tag: "4.3-4"
   workingDir: "/home/jenkins"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
   componentName: "jenkins-slave"
   privileged: false
+  runAsUser:
+  runAsGroup:
   resources:
     requests:
       cpu: "512m"
@@ -617,6 +620,7 @@ networkPolicy:
   # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
   internalAgents:
     allowed: true
+    podLabels: {}
     namespaceLabels: {}
       # project: myproject
   externalAgents: {}

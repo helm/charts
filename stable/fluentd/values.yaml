@@ -68,6 +68,10 @@ annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/port: "24231"
 
+# Pod Labels
+deployment:
+  labels: {}
+
 ingress:
   enabled: false
   annotations:

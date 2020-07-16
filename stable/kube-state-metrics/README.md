@@ -14,9 +14,10 @@ $ helm install stable/kube-state-metrics
 
 | Parameter                                    | Description                                                                           | Default                                    |
 |:---------------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
-| `image.repository`                           | The image repository to pull from                                                     | quay.io/coreos/kube-state-metrics          |
-| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.6`                                   |
+| `image.repository`                           | The image repository to pull from                                                     | `quay.io/coreos/kube-state-metrics`        |
+| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.7`                                   |
 | `image.pullPolicy`                           | Image pull policy                                                                     | `IfNotPresent`                             |
+| `imagePullSecrets`                           | List of container registry secrets                                                    | `[]`                                       |
 | `replicas`                                   | Number of replicas                                                                    | `1`                                        |
 | `autosharding.enabled`                       | Set to `true` to automatically shard data across `replicas` pods. EXPERIMENTAL        | `false`                                    |
 | `service.port`                               | The port of the container                                                             | `8080`                                     |
@@ -28,20 +29,20 @@ $ helm install stable/kube-state-metrics
 | `serviceAccount.create`                      | If true, create & use serviceAccount                                                  | `true`                                     |
 | `serviceAccount.name`                        | If not set & create is true, use template fullname                                    |                                            |
 | `serviceAccount.imagePullSecrets`            | Specify image pull secrets field                                                      | `[]`                                       |
-| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true. | `false`  |
-| `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | {}                                         |
-| `podSecurityPolicy.additionalVolumes`        | Specify allowed volumes in the pod security policy (`secret` is always allowed)       | []                                         |
+| `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true`. | `false` |
+| `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | `{}`                                       |
+| `podSecurityPolicy.additionalVolumes`        | Specify allowed volumes in the pod security policy (`secret` is always allowed)       | `[]`                                       |
 | `securityContext.enabled`                    | Enable security context                                                               | `true`                                     |
 | `securityContext.fsGroup`                    | Group ID for the filesystem                                                           | `65534`                                    |
 | `securityContext.runAsGroup`                 | Group ID for the container                                                            | `65534`                                    |
 | `securityContext.runAsUser`                  | User ID for the container                                                             | `65534`                                    |
 | `priorityClassName`                          | Name of Priority Class to assign pods                                                 | `nil`                                      |
-| `nodeSelector`                               | Node labels for pod assignment                                                        | {}                                         |
-| `affinity`                                   | Affinity settings for pod assignment                                                  | {}                                         |
-| `tolerations`                                | Tolerations for pod assignment                                                        | []                                         |
-| `podAnnotations`                             | Annotations to be added to the pod                                                    | {}                                         |
-| `podDisruptionBudget`                        | Optional PodDisruptionBudget                                                          | {}                                         |
-| `resources`                                  | kube-state-metrics resource requests and limits                                       | {}                                         |
+| `nodeSelector`                               | Node labels for pod assignment                                                        | `{}`                                       |
+| `affinity`                                   | Affinity settings for pod assignment                                                  | `{}`                                       |
+| `tolerations`                                | Tolerations for pod assignment                                                        | `[]`                                       |
+| `podAnnotations`                             | Annotations to be added to the pod                                                    | `{}`                                       |
+| `podDisruptionBudget`                        | Optional PodDisruptionBudget                                                          | `{}`                                       |
+| `resources`                                  | kube-state-metrics resource requests and limits                                       | `{}`                                       |
 | `collectors.certificatesigningrequests`      | Enable the certificatesigningrequests collector.                                      | `true`                                     |
 | `collectors.configmaps`                      | Enable the configmaps collector.                                                      | `true`                                     |
 | `collectors.cronjobs`                        | Enable the cronjobs collector.                                                        | `true`                                     |
@@ -75,3 +76,4 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.namespace`               | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |
 | `prometheus.monitor.honorLabels`             | Honor metric labels                                                                   | `false`                                    |
 | `namespaceOverride`                          | Override the deployment namespace                                                     | `""` (`Release.Namespace`)                 |
+| `kubeTargetVersionOverride`                  | Override the k8s version of the target cluster                                        | `""`                                       |

@@ -53,6 +53,7 @@ Parameter | Description | Default
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.useComponentLabel` | Wether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the controller deployment* | `false`
+`controller.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
@@ -88,6 +89,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.podAnnotationConfigChecksum` | add annotation with checksum/config | `false`
 `controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
@@ -120,6 +122,8 @@ Parameter | Description | Default
 `controller.service.nodePorts.https` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
 `controller.service.nodePorts.tcp` | Sets the nodePort for an entry referenced by its key from `tcp` | `{}`
 `controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
+`controller.service.internal.enabled` | Enables an (additional) internal load balancer | false
+`controller.service.internal.annotations` | Annotations for configuring the additional internal load balancer | `{}`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -171,6 +175,7 @@ Parameter | Description | Default
 `controller.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `{}`
 `controller.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `{}`
+`controller.admissionWebhooks.patch.resources` | Admission webhooks pod resource requests & limits | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
@@ -188,6 +193,7 @@ Parameter | Description | Default
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.useComponentLabel` | Whether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the defaultBackend deployment* | `false`
+`defaultBackend.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
@@ -345,6 +351,47 @@ controller:
     annotations:
       domainName: "kubernetes-example.com"
 ```
+
+## Additional internal load balancer
+
+This setup is useful when you need both external and internal load balancers but don't want to have multiple ingress controllers and multiple ingress objects per application.
+
+By default, the ingress object will point to the external load balancer address, but if correctly configured, you can make use of the internal one if the URL you are looking up resolves to the internal load balancer's URL.
+
+You'll need to set both the following values:
+
+`controller.service.internal.enabled`
+`controller.service.internal.annotations`
+
+If one of them is missing the internal load balancer will not be deployed. Example you may have `controller.service.internal.enabled=true` but no annotations set, in this case no action will be taken.
+
+`controller.service.internal.annotations` varies with the cloud service you're using.
+
+Example for AWS
+```
+controller:
+  service:
+    internal:
+      enabled: true
+      annotations:
+        # Create internal ELB
+        service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+        # Any other annotation can be declared here.
+```
+
+Example for GCE
+```
+controller:
+  service:
+    internal:
+      enabled: true
+      annotations:
+        # Create internal LB
+        cloud.google.com/load-balancer-type: "Internal"
+        # Any other annotation can be declared here.
+```
+
+An use case for this scenario is having a split-view DNS setup where the public zone CNAME records point to the external balancer URL while the private zone CNAME records point to the internal balancer URL. This way, you only need one ingress kubernetes object.
 
 ## Ingress Admission Webhooks
 

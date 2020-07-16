@@ -13,6 +13,7 @@ rules:
       - ""
     resources:
       - pods
+      - namespaces
     verbs:
       - get
       - watch
@@ -20,9 +21,9 @@ rules:
   - apiGroups:
       - "*"
     resources:
-      - deployments
-      - statefulsets
-      - namespaces
+      {{- range .Values.downscaleResources }}
+      - {{ . }}
+      {{- end }}
     verbs:
       - get
       - watch

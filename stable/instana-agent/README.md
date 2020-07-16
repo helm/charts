@@ -34,7 +34,7 @@ If you're in the EU, you'll probably also want to set the regional equivalent va
 * agent.endpointHost
 * agent.endpointPort
 
-_Note:_ Check the values for the endpoint entries in the [agent backend configuration](https://docs.instana.io/quick_start/agent_configuration/#backend).
+_Note:_ You can find the options mentioned in the [configuration section below](#configuration)
 
 Optionally, if your infrastructure uses a proxy, you should ensure that you set values for:
 
@@ -119,7 +119,6 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.image.tag`                  | The image tag to pull                                                   | `latest`                                                                                                    |
 | `agent.image.pullPolicy`           | Image pull policy                                                       | `Always`                                                                                                    |
 | `agent.key`                        | Your Instana Agent key                                                  | `nil` You must provide your own key                                                                         |
-| `agent.leaderElectorPort`          | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
 | `agent.listenAddress`              | List of addresses to listen on, or "*" for all interfaces               | `nil`                                                                                                       |
 | `agent.mode`                       | Agent mode (Supported values are APM, INFRASTRUCTURE, AWS)              | `APM`                                                                                                       |
 | `agent.pod.annotations`            | Additional annotations to apply to the pod                              | `{}`                                                                                                        |
@@ -135,9 +134,12 @@ The following table lists the configurable parameters of the Instana chart and t
 | `agent.pod.requests.cpu`           | Container cpu requests in cpu cores                                     | `0.5`                                                                                                       |
 | `agent.pod.tolerations`            | Tolerations for pod assignment                                          | `[]`                                                                                                        |
 | `agent.env`                        | Additional environment variables for the agent                          | `{}`                                                                                                        |
-| `agent.redactKubernetesSecrets`    | Enable additional secrets redaction for selected Kubernetes resources   | `nil` See [Kubernetes secrets](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#secrets) for more details.   |
+| `agent.redactKubernetesSecrets`    | Enable additional secrets redaction for selected Kubernetes resources   | `nil` See [Kubernetes secrets](https://docs.instana.io/setup_and_manage/host_agent/on/kubernetes/#secrets) for more details.   |
 | `cluster.name`                     | Display name of the monitored cluster                                   | Value of `zone.name`                                                                                        |
-| `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/quick_start/agent_setup/container/kubernetes/#podsecuritypolicy) for more details. |
+| `leaderElector.port`               | Instana leader elector sidecar port                                     | `42655`                                                                                                     |
+| `leaderElector.image.name`         | The elector image name to pull                                          | `instana/leader-elector`                                                                                             |
+| `leaderElector.image.tag`          | The elector image tag to pull                                           | `0.5.4`                                                                                                    |
+| `podSecurityPolicy.enable`         | Whether a PodSecurityPolicy should be authorized for the Instana Agent pods. Requires `rbac.create` to be `true` as well. | `false` See [PodSecurityPolicy](https://docs.instana.io/setup_and_manage/host_agent/on/kubernetes/#podsecuritypolicy) for more details. |
 | `podSecurityPolicy.name`           | Name of an _existing_ PodSecurityPolicy to authorize for the Instana Agent pods. If not provided and `podSecurityPolicy.enable` is `true`, a PodSecurityPolicy will be created for you. | `nil` |
 | `rbac.create`                      | Whether RBAC resources should be created                                | `true`                                                                                                      |
 | `serviceAccount.create`            | Whether a ServiceAccount should be created                              | `true`                                                                                                      |
@@ -159,4 +161,4 @@ To configure the agent, you can either:
 - edit the [config map](templates/configmap.yaml), or
 - provide the configuration via the `agent.configuration_yaml` parameter in [values.yaml](values.yaml)
 
-This configuration will be used for all Instana Agents on all nodes. Visit the [agent configuration documentation](https://docs.instana.io/quick_start/agent_configuration/#configuration) for more details on configuration options.
+This configuration will be used for all Instana Agents on all nodes. Visit the [agent configuration documentation](https://docs.instana.io/setup_and_manage/host_agent/#agent-configuration-file) for more details on configuration options.

@@ -9,10 +9,9 @@
   env:
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.systemProbe.logLevel | default .Values.datadog.logLevel | quote }}
-  {{- range $value := .Values.agents.containers.systemProbe.env }}
-    - name: {{ $value.name }}
-      value: {{ $value.value | quote }}
-  {{- end }}
+{{- if .Values.agents.containers.systemProbe.env }}
+{{ toYaml .Values.agents.containers.systemProbe.env | indent 4 }}
+{{- end }}
   resources:
 {{ toYaml .Values.agents.containers.systemProbe.resources | indent 4 }}
   volumeMounts:
@@ -21,8 +20,14 @@
     - name: sysprobe-config
       mountPath: /etc/datadog-agent
     - name: sysprobe-socket-dir
-      mountPath: /opt/datadog-agent/run
+      mountPath: /var/run/sysprobe
     - name: procdir
       mountPath: /host/proc
+      readOnly: true
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: src
+      mountPath: /usr/src
       readOnly: true
 {{- end -}}

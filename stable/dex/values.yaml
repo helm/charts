@@ -4,8 +4,9 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.23.0"
+imageTag: "v2.24.0"
 imagePullPolicy: "IfNotPresent"
+imagePullSecrets: {}
 
 inMiniKube: false
 

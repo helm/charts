@@ -61,6 +61,9 @@ spec:
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
       initContainers:
         - name: copy-config
           image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
@@ -218,6 +221,24 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
+          startupProbe:
+            exec:
+              command:
+                - mongo
+              {{- if .Values.tls.enabled }}
+                - --ssl
+                - --sslCAFile=/data/configdb/tls.crt
+                - --sslPEMKeyFile=/work-dir/mongo.pem
+              {{- end }}
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+{{- end }}
           readinessProbe:
             exec:
               command:
@@ -293,8 +314,24 @@ spec:
                   /bin/mongodb_exporter
                   --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
                   --test
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - >-
+                  /bin/mongodb_exporter
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+                  --test
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+{{- end }}
 {{ end }}
         {{- if .Values.extraContainers }}
         {{- tpl (toYaml .Values.extraContainers) . | nindent 8 }}

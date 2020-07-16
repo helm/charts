@@ -23,10 +23,16 @@ spec:
   selector:
     matchLabels:
       app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 6 }}
+        {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}-cluster-agent
+        {{- if .Values.clusterAgent.podLabels }}
+{{ toYaml .Values.clusterAgent.podLabels | indent 8 }}
+        {{- end }}
       name: {{ template "datadog.fullname" . }}-cluster-agent
       annotations:
         {{- if .Values.clusterAgent.datadog_cluster_yaml }}
@@ -65,11 +71,18 @@ spec:
       hostNetwork: {{ .Values.clusterAgent.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      imagePullSecrets:
-{{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
+      {{- if .Values.clusterAgent.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
+      {{- end }}
       containers:
       - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+        {{- with .Values.clusterAgent.command }}
+        command: {{ range . }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
 {{ toYaml .Values.clusterAgent.resources | indent 10 }}
@@ -153,6 +166,10 @@ spec:
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
+          {{- if .Values.datadog.orchestratorExplorer.enabled }}
+          - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+            value: "true"
+          {{- end }}
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
 {{- end }}
@@ -199,5 +216,8 @@ spec:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
+      {{- if .Values.clusterAgent.nodeSelector }}
 {{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}

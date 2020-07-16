@@ -13,6 +13,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ template "efs-provisioner.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "efs-provisioner.name" . }}
     env: {{ .Values.global.deployEnv }}
@@ -67,6 +68,13 @@ spec:
         {{- if .Values.efsProvisioner.dnsName }}
         - name: DNS_NAME
           value: {{ .Values.efsProvisioner.dnsName }}
+        {{- end }}
+        {{- if .Values.extraEnv }}
+        {{ toYaml .Values.extraEnv | nindent 8 }}
+        {{- end }}
+        {{- if .Values.envFrom }}
+        envFrom:
+        {{ toYaml .Values.envFrom | nindent 8 }}
         {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}

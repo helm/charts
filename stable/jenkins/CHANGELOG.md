@@ -5,6 +5,55 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.4.0 Update default agent image
+
+`jenkins/jnlp-slave` is deprected and `jenkins/inbound-agent` should be used instead.
+Also updated it to newest version (4.3-4).
+
+## 2.3.3 correct templating of master.slaveJenkinsUrl
+
+Fixes #22708
+
+## 2.3.2 Fix wrong value for overwritePluginsFromImage
+
+Fixes #23003
+Fixes #22633
+
+Also fixes indentation for #23114
+
+## 2.3.1
+
+Always mount {{ .Values.master.jenkinsRef }}/secrets/ directory. Previous it
+was mounted only when `master.enableXmlConfig` was enabled.
+
+## 2.3.0
+
+Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled
+
+## 2.2.0 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
+Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
+
+## 2.1.2 updated README
+
+## 2.1.1 update credentials-binding plugin to 1.23
+
+## 2.1.0
+
+Add support to set `runAsUser` and `runAsGroup` for `agent`.
+
+## 2.0.1
+
+Only render authorizationStrategy and securityRealm when values are set.
+
+## 2.0.0 Configuration as Code now default + container does not run as root anymore
+
+The README contains more details for this update.
+Please note that the updated values contain breaking changes.
+
 ## 1.27.0 Update plugin versions & sidecar container
 
 | plugin                | old version | new version |
@@ -19,7 +68,6 @@ configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwig
 ## 1.26.0
 
 Add support to override `workingDir` for default pod template
->>>>>>> master
 
 ## 1.25.0
 

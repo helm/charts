@@ -3,10 +3,10 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-kubelet
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-kubelet
-{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- include "prometheus-operator.labels" . | indent 4 }}
 spec:
   endpoints:
   {{- if .Values.kubelet.serviceMonitor.https }}
@@ -70,6 +70,27 @@ spec:
 {{ toYaml .Values.kubelet.serviceMonitor.probesRelabelings | indent 4 }}
 {{- end }}
 {{- end }}
+{{- if .Values.kubelet.serviceMonitor.resource }}
+  - port: https-metrics
+    scheme: https
+    path: {{ .Values.kubelet.serviceMonitor.resourcePath }}
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.kubelet.serviceMonitor.resourceMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.resourceMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.resourceRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.resourceRelabelings | indent 4 }}
+{{- end }}
+{{- end }}
   {{- else }}
   - port: http-metrics
     {{- if .Values.kubelet.serviceMonitor.interval }}
@@ -98,6 +119,22 @@ spec:
 {{- if .Values.kubelet.serviceMonitor.cAdvisorRelabelings }}
     relabelings:
 {{ toYaml .Values.kubelet.serviceMonitor.cAdvisorRelabelings | indent 4 }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.resource }}
+  - port: http-metrics
+    path: {{ .Values.kubelet.serviceMonitor.resourcePath }}
+    {{- if .Values.kubelet.serviceMonitor.interval }}
+    interval: {{ .Values.kubelet.serviceMonitor.interval }}
+    {{- end }}
+    honorLabels: true
+{{- if .Values.kubelet.serviceMonitor.resourceMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubelet.serviceMonitor.resourceMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.kubelet.serviceMonitor.resourceRelabelings }}
+    relabelings:
+{{ toYaml .Values.kubelet.serviceMonitor.resourceRelabelings | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
   {{- end }}

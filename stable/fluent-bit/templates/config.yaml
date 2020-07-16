@@ -23,6 +23,7 @@ data:
         HTTP_Listen  0.0.0.0
         HTTP_Port    2020
 {{- end }}
+{{ .Values.extraEntries.service | indent 8 }}
 
   fluent-bit-input.conf: |
     [INPUT]
@@ -43,6 +44,9 @@ data:
 {{- if .Values.input.tail.dockerMode }}
         Docker_Mode       On
         Docker_Mode_Flush {{ .Values.input.tail.dockerModeFlush }}
+{{- end }}
+{{- if .Values.input.tail.exclude_path }}
+        Exclude_Path    {{ .Values.input.tail.exclude_path }}
 {{- end }}
 {{- if .Values.input.systemd.enabled }}
     [INPUT]
