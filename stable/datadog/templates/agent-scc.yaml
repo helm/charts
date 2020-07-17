@@ -24,7 +24,7 @@ volumes:
 # Use the `spc_t` selinux type to access the
 # docker/cri socket + proc and cgroup stats
 seLinuxContext:
-{{ toYaml .Values.datadog.securityContext | indent 2 }}
+{{ toYaml .Values.agents.podSecurity.securityContext | indent 2 }}
 # system-probe requires some specific seccomp and capabilities
 seccompProfiles:
 {{ toYaml .Values.agents.podSecurity.seccompProfiles | indent 2 }}
