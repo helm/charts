@@ -13,7 +13,12 @@ service:
   portRequest: 7051
   portEvent: 7053
 
+# Path of the docker socket on the host
 dockerSocketPath: /var/run/docker.sock
+# Docker config to be used to pull the images (base64'd)
+dockerConfig: null
+# Docker config mount path
+dockerConfigMountPath: /root/.docker
 
 ingress:
   enabled: false
