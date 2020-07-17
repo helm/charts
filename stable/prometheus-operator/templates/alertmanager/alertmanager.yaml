@@ -11,6 +11,9 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.image }}
   baseImage: {{ .Values.alertmanager.alertmanagerSpec.image.repository }}
   version: {{ .Values.alertmanager.alertmanagerSpec.image.tag }}
+  {{- if .Values.alertmanager.alertmanagerSpec.image.sha }}
+  sha: {{ .Values.alertmanager.alertmanagerSpec.image.sha }}
+  {{- end }}
 {{- end }}
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
