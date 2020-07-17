@@ -67,7 +67,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
 | `service.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
-| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
+| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -95,7 +95,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `initChownData.enabled`                   | If false, don't reset data ownership at startup | true                                                  |
 | `initChownData.image.repository`          | init-chown-data container image repository    | `busybox`                                               |
 | `initChownData.image.tag`                 | init-chown-data container image tag           | `1.31.1`                                                |
-| `initChownData.image.sha`                 | init-chown-data container image sha (optional)| `fb1f7b885314372fa4aecbb2ba98a70dfed1d60d85e1191075ee616e55df577b` |
+| `initChownData.image.sha`                 | init-chown-data container image sha (optional)| `""`                                                    |
 | `initChownData.image.pullPolicy`          | init-chown-data container image pull policy   | `IfNotPresent`                                          |
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
@@ -124,7 +124,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image.repository`                | Sidecar image repository                      | `kiwigrid/k8s-sidecar`                                  |
 | `sidecar.image.tag`                       | Sidecar image tag                             | `0.1.151`                                               |
-| `sidecar.image.sha`                       | Sidecar image sha (optional)                  | `7b98eecdf6d117b053622e9f317c632a4b2b97636e8b2e96b311a5fd5c68d211` |
+| `sidecar.image.sha`                       | Sidecar image sha (optional)                  | `""`                                                    |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
@@ -170,7 +170,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `downloadDashboards.resources`            | Resources of `download-dashboards` container  | `{}`                                                    |
 | `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
 | `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.70.0`                                                |
-| `downloadDashboardsImage.sha`             | Curl docker image sha (optional)              | `4643760807987d54154af5767b0028861b1b279108af7f70bf820b948069c366` |
+| `downloadDashboardsImage.sha`             | Curl docker image sha (optional)              | `""`                                                    |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
 
