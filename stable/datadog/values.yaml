@@ -47,13 +47,12 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext:
-    rule: MustRunAs
-    seLinuxOptions:
-      user: "system_u"
-      role: "system_r"
-      type: "spc_t"
-      level: "s0"
+  securityContext: {}
+  #  seLinuxOptions:
+  #    user: "system_u"
+  #    role: "system_r"
+  #    type: "spc_t"
+  #    level: "s0"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
@@ -707,6 +706,17 @@ agents:
       ## If true, create a SecurityContextConstraints resource for Agent pods
       #
       create: false
+
+    ## @param securityContext - object - required
+    ## Provide securityContext configuration
+    #
+    securityContext:
+      rule: MustRunAs
+      seLinuxOptions:
+        user: system_u
+        role: system_r
+        type: spc_t
+        level: s0
 
     ## @param privileged - boolean - optional
     ## If true, Allow to run privileged containers
