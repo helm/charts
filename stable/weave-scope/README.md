@@ -75,6 +75,8 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 | **ingress.paths** |	Ingress paths | [] |
 | **ingress.hosts** | Ingress accepted hostnames | nil |
 | **ingress.tls** |	Ingress TLS configuration |	[] |
+| **securityContext.runAsNonRoot** | Wether the container will not be runned as root | true |
+| **securityContext.readOnlyRootFilesystem** | Wether the container will mount root's FS in read only |	true |
 
 ### Weave Scope agent
 
@@ -94,6 +96,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **resources.requests.memory** | memory request in MiB (Mi)| |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **securityContext.runAsNonRoot** | Wether the container will not be runned as root | true |
+| **securityContext.readOnlyRootFilesystem** | Wether the container will mount root's FS in read only |	true |
 
 ### Weave Scope cluster agent
 
@@ -115,6 +119,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **resources.requests.memory** | memory request in MiB (Mi)| |
 | **resources.limits.cpu** | CPU limit in MHz (m) | |
 | **resources.limits.memory** | memory limit in MiB (Mi) | |
+| **securityContext.runAsNonRoot** | Wether the container will not be runned as root | true |
+| **securityContext.readOnlyRootFilesystem** | Wether the container will mount root's FS in read only |	true |
 
 ## Other notes
 

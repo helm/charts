@@ -30,6 +30,14 @@ spec:
             {{- range $arg := .Values.flags }}
             - {{ $arg | quote }}
             {{- end }}
+          securityContext:
+            privileged: true
+            {{- if .Values.securityContext.runAsNonRoot}}
+            runAsNonRoot: true
+            {{- end }}
+            {{- if .Values.securityContext.readOnlyRootFilesystem}}
+            readOnlyRootFilesystem: true
+            {{- end }}
           ports:
             - name: http
               containerPort: 4040

@@ -37,6 +37,10 @@ weave-scope-frontend:
         # weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
         # memory: ""
   flags: []
+  # Security contexts options for weave-scope-frontend. Both to true by default.
+  securityContext:
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
   # weave-scope-frontend Ingress
   ingress:
     # If true, weave-scope-frontend ingress will be created
@@ -85,6 +89,10 @@ weave-scope-agent:
       # cpu: ""
       # weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
       # memory: ""
+  # Security contexts options for weave-scope-agent. Both to true by default.
+  securityContext:
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
 
 # weave-scope-agent.* controls how the Weave Scope node agent pods are installed
 weave-scope-cluster-agent:
@@ -123,3 +131,7 @@ weave-scope-cluster-agent:
       # cpu: ""
       # weave-scope-cluster-agent.resources.limits.memory: memory limit in MiB (Mi)
       # memory: ""
+  # Security contexts options for weave-scope-cluster-agent. Both to true by default.
+  securityContext:
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true

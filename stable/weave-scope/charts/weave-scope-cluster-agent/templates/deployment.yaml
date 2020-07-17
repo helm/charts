@@ -41,6 +41,14 @@ spec:
             {{- else }}
             - {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
             {{- end }}
+          securityContext:
+            privileged: true
+            {{- if .Values.securityContext.runAsNonRoot }}
+            runAsNonRoot: true
+            {{- end }}
+            {{- if .Values.securityContext.readOnlyRootFilesystem}}
+            readOnlyRootFilesystem: true
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       serviceAccountName: {{ template "weave-scope-cluster-agent.serviceAccountName" . }}
