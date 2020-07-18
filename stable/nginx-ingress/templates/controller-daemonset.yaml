@@ -9,9 +9,9 @@ metadata:
     chart: {{ template "nginx-ingress.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ template "nginx-ingress.releaseLabel" . }}
-    app.kubernetes.io/component: controller
+    {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
   name: {{ template "nginx-ingress.controller.fullname" . }}
-  annotations:    
+  annotations:
 {{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
 spec:
   selector:
@@ -19,7 +19,7 @@ spec:
       app: {{ template "nginx-ingress.name" . }}
       release: {{ template "nginx-ingress.releaseLabel" . }}
     {{- if .Values.controller.useComponentLabel }}
-      app.kubernetes.io/component: controller
+      {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
     {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   updateStrategy:
@@ -37,7 +37,7 @@ spec:
         app: {{ template "nginx-ingress.name" . }}
         release: {{ template "nginx-ingress.releaseLabel" . }}
         component: "{{ .Values.controller.name }}"
-        app.kubernetes.io/component: controller
+        {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
@@ -61,7 +61,7 @@ spec:
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           {{- with .Values.controller.image }}
-          image: "{{.repository}}{{- if (.digest) -}} @{{.digest}} {{- else -}} :{{ .tag }} {{- end -}}"
+          image: "{{- if .registry -}}{{ .registry }}/{{- end -}}{{ .repository }}{{- if (.digest) -}} @{{.digest}}{{- else -}}:{{ .tag }} {{- end -}}"
           {{- end }}
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           {{- if .Values.controller.lifecycle }}

@@ -1,4 +1,4 @@
-{{- if and .Values.alertmanager.enabled .Values.rbac.create -}}
+{{- if and .Values.alertmanager.enabled .Values.rbac.create .Values.alertmanager.useClusterRole -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:

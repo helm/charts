@@ -74,7 +74,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | Parameter                         | Description                                       | Default                   |
 | --------------------------------- | ------------------------------------------------- | ------------------------- |
 | `image.repository`                | `hlf-peer` image repository                       | `hyperledger/fabric-peer` |
-| `image.tag`                       | `hlf-peer` image tag                              | `1.4.3`            |
+| `image.tag`                       | `hlf-peer` image tag                              | `1.4.3`                   |
 | `image.pullPolicy`                | Image pull policy                                 | `IfNotPresent`            |
 | `service.portRequest`             | TCP port for requests to Peer                     | `7051`                    |
 | `service.portEvent`               | TCP port for event service on Peer                | `7053`                    |
@@ -97,6 +97,8 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.hosts`                   | Ingress hostnames                                 | `[]`                      |
 | `ingress.tls`                     | Ingress TLS configuration                         | `[]`                      |
 | `dockerSocketPath`                | Docker Socket path                                | `/var/run/docker.sock`    |
+| `dockerConfig`                    | Docker Config file base 64 encoded                | `null`                    |
+| `dockerConfigMountPath`           | Docker Config file mount path                     | `/root/.docker`           |
 | `peer.databaseType`               | Database type to use (`goleveldb` or `CouchDB`)   | `goleveldb`               |
 | `peer.couchdbInstance`            | CouchDB chart name to use `cdb-peer1`             | `cdb-peer1`               |
 | `peer.mspID`                      | ID of MSP the Peer belongs to                     | `Org1MSP`                 |
@@ -107,6 +109,10 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `peer.gossip.useLeaderElection`   | Gossip use leader election                        | `"true"`                  |
 | `peer.tls.server.enabled`         | Do we enable server-side TLS?                     | `false`                   |
 | `peer.tls.client.enabled`         | Do we enable client-side TLS?                     | `false`                   |
+| `peer.chaincode.builder`          | Image of the chaincode builder                    | ``                        |
+| `peer.chaincode.runtime.golang`   | Image of the chaincode runtime for Go             | ``                        |
+| `peer.chaincode.runtime.java`     | Image of the chaincode runtime for Java           | ``                        |
+| `peer.chaincode.runtime.node`     | Image of the chaincode runtime for Node.js        | ``                        |
 | `secrets.peer.cred`               | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'      | ``                        |
 | `secrets.peer.cert`               | Certificate: as 'cert.pem'                        | ``                        |
 | `secrets.peer.key`                | Private key: as 'key.pem'                         | ``                        |

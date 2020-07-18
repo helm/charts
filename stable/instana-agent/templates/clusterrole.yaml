@@ -17,7 +17,7 @@ rules:
 - apiGroups: ["batch"]
   resources:
     - "jobs"
-    - 'cronjobs'
+    - "cronjobs"
   verbs: ["get", "list", "watch"]
 - apiGroups: ["extensions"]
   resources:

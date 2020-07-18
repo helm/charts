@@ -47,12 +47,14 @@ The following table lists the configurable parameters of the nginx-ingress chart
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
+`controller.image.registry` | controller container image registry | `us.gcr.io`
+`controller.image.repository` | controller container image repository | `k8s-artifacts-prod/ingress-nginx/controller`
 `controller.image.tag` | controller container image tag | `0.32.0`
 `controller.image.digest` | controller container image digest | `""`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.useComponentLabel` | Wether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the controller deployment* | `false`
+`controller.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
@@ -88,6 +90,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.podAnnotationConfigChecksum` | add annotation with checksum/config | `false`
 `controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
@@ -173,6 +176,7 @@ Parameter | Description | Default
 `controller.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `{}`
 `controller.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `{}`
+`controller.admissionWebhooks.patch.resources` | Admission webhooks pod resource requests & limits | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
@@ -190,6 +194,7 @@ Parameter | Description | Default
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.useComponentLabel` | Whether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the defaultBackend deployment* | `false`
+`defaultBackend.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`

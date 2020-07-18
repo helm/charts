@@ -1,9 +1,9 @@
 # Chart 1.x to 2.x migration guide
 
 The `datadog` chart has been refactored to regroup the `values.yaml` parameters in a more logical way.
-Migrating from chart v1 to chart v2 hence requires to restructure the `values.yaml` file.
+Migrating from chart v1 to chart v2 hence requires that you restructure the `values.yaml` file.
 For all the parameters in the existing `values.yaml` file that applied to chart v1, you’ll
-find to which parameters they correspond to in v2 in the following table.
+find the parameters to which they correspond to in v2 in the following table.
 Parameters that are not listed in the table below haven’t been touched and are at the same
 location in v1 and v2.
 
@@ -13,7 +13,7 @@ location in v1 and v2.
 | `image.tag`                             | `agents.image.tag` and `clusterCheckRunner.image.tag`                |                                                                                                                                                         |
 | `image.pullPolicy`                      | `agents.image.pullPolicy` and `clusterCheckRunner.image.pullPolicy`         |                                                                                                                                                         |
 | `image.pullSecrets`                     | `agents.image.pullSecrets` and `clusterCheckRunner.image.pullSecrets`         |                                                                                                                                                         |
-| `datadog.name`                          | ∅                                                                           | The name of the container inside the agent and cluster-agent pod isn’t configurable anymore                                                             |
+| `datadog.name`                          | ∅                                                                           | The name of the container inside the Agent and Cluster Agent pod isn’t configurable anymore                                                             |
 | `datadog.useCriSocketVolume`            | ∅                                                                           | If `datadog.criSocketPath` is defined, the socket will be mounted inside the container without needing to set `datadog.useCriSocketVolume` in addition. |
 | `datadog.containerLogsPath`             | ∅                                                                           | Not needed anymore because the chart automatically detects if the CRI is `docker` based on `criSocketPath` and mounts the path accordingly              |
 | `datadog.apmEnabled`                    | `datadog.apm.enabled`                                                       |                                                                                                                                                         |
@@ -31,7 +31,7 @@ location in v1 and v2.
 | `systemProbe.seccompRoot`               | `datadog.systemProbe.seccompRoot`                                           |                                                                                                                                                         |
 | `systemProbe.bpfDebug`                  | `datadog.systemProbe.bpfDebug`                                              |                                                                                                                                                         |
 | `systemProbe.apparmor`                  | `datadog.systemProbe.apparmor`                                              |                                                                                                                                                         |
-| `clusterAgent.containerName`            | ∅                                                                           | The name of the container inside the cluster agent pod isn’t configurable anymore                                                                       |
+| `clusterAgent.containerName`            | ∅                                                                           | The name of the container inside the Cluster Agent pod isn’t configurable anymore                                                                       |
 | `clusterAgent.clusterChecks.enabled`    | `datadog.clusterChecks.enabled`                                             |                                                                                                                                                         |
 | `rbac.create`                           | `agents.rbac.create` and `clusterAgent.rbac.create`                         |                                                                                                                                                         |
 | `rbac.serviceAccountName`               | `agents.rbac.serviceAccountName` and `clusterAgent.rabc.serviceAccountName` |                                                                                                                                                         |

@@ -68,6 +68,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["elasticsearch_exporter",
+                    {{- with .Values.log.format }}
+                    "--log.format={{ . }}",
+                    {{- end }}
+                    {{- with .Values.log.level }}
+                    "--log.level={{ . }}",
+                    {{- end }}
                     {{- if .Values.es.uri }}
                     "--es.uri={{ .Values.es.uri }}",
                     {{- end }}
