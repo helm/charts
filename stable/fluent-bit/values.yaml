@@ -331,3 +331,21 @@ securityContext: {}
 podSecurityContext: {}
   # podSecurityContext:
   #   runAsUser: 1000
+
+## Add your own init container (example installation of Lua filter plugin)
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: {}
+  # load-plugin:
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   # Assumed plugins volume is configured at Pod level via extraVolumes
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /fluent-bit/plugins
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       curl -sS <download-url> -o /plugin.zip
+  #       unzip /plugin.zip
+  #       cp -av <plugin-zip-contents> /fluent-bit/plugins/
