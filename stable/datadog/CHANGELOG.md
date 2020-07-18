@@ -1,5 +1,47 @@
 # Datadog changelog
 
+## 2.3.33
+
+* Create new `datadog.podSecurity.securityContext` field to fix windows agent daemonset config.
+
+## 2.3.32
+
+* Always add os in nodeSelector based on `targetSystem`
+
+## 2.3.31
+
+* Fixed daemonset template for go 1.14
+
+## 2.3.29
+
+* Change the default port for the Cluster Agent's External Metrics Provider
+  from 443 to 8443.
+* Document usage of `clusterAgent.env`
+
+## 2.3.28
+
+* fix daemonset template generation if `datadog.securityContext` is set to `nil`
+
+## 2.3.27
+
+* add systemProbe.collectDNSStats option
+
+## 2.3.26
+
+* fix PodSecurityContext configuration
+
+## 2.3.25
+
+* Use directly .env var YAML block for all agents (was already the case for Cluster Agent)
+
+## 2.3.24
+
+* Allow enabling Orchestrator Explorer data collection from the process-agent
+
+## 2.3.23
+
+* Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
+
 ## 2.3.22
 
 * Remove duplicate imagePullSecrets

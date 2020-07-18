@@ -9,12 +9,14 @@ strategy:
 
 busybox:
   image: "busybox"
-  tag: "1.31.1"
+  tag: "1.32"
 
 testFramework:
   enabled: true
-  image: "dduportal/bats"
-  tag: "0.4.0"
+  image: "bats/bats"
+  tag: "1.2.1"
+  imagePullPolicy: IfNotPresent
+  securityContext: {}
 
 ## Specify password for root user
 ##
@@ -59,6 +61,11 @@ extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+## A string to add extra environment variables
+# extraEnvVars: |
+#   - name: EXTRA_VAR
+#     value: "extra"
 
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.

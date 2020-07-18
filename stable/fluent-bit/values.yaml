@@ -250,6 +250,7 @@ input:
     ignore_older: ""
     dockerMode: false
     dockerModeFlush: 4
+    exclude_path: ""
   systemd:
     enabled: false
     filters:

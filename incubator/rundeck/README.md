@@ -39,6 +39,9 @@ persistence.existingClaim | Name of an existing volume claim | None
 serviceAccount.create | Set to true to create a service account for the Rundeck pod | false
 serviceAccount.annotations | A map of annotations to attach to the service account (eg: AWS IRSA) | {}
 serviceAccount.name | Name of the service account the Rundeck pod should use | ""
+volumes | volumes made available to all containers | ""
+volumeMounts | volumeMounts to add to the rundeck container | ""
+initContainers | can be used to download plugins or customise your rundeck installation | ""
 
 ## AWS & K8s Permissions
 

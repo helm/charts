@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "docker-registry.fullname" . }}
+  labels:
+{{ include "docker-registry.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "docker-registry.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
