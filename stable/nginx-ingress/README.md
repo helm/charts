@@ -47,7 +47,8 @@ The following table lists the configurable parameters of the nginx-ingress chart
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
+`controller.image.registry` | controller container image registry | `us.gcr.io`
+`controller.image.repository` | controller container image repository | `k8s-artifacts-prod/ingress-nginx/controller`
 `controller.image.tag` | controller container image tag | `0.32.0`
 `controller.image.digest` | controller container image digest | `""`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
