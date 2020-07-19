@@ -133,6 +133,9 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+  limits:
+    memory: 512Mi
+    cpu: 200m
 
 # Custom mysql configuration files path
 configurationFilesPath: /etc/mysql/conf.d/
@@ -236,3 +239,6 @@ initContainer:
     requests:
       memory: 10Mi
       cpu: 10m
+    limits:
+      memory: 20Mi
+      cpu: 20m
