@@ -45,7 +45,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.20.0
+    tag: v0.21.0
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
