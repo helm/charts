@@ -129,19 +129,25 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `namespaceOverride`               | Override the deployment namespace    | Not set (`Release.Namespace`)             |
 | `master.componentName`            | Jenkins master name                  | `jenkins-master`                          |
 | `master.enableXmlConfig`          | enables configuration done via XML files | `false`                               |
+| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
+
+#### Jenkins Configuration as Code (JCasC)
+| Parameter                         | Description                          | Default                                   |
+| --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `master.JCasC.enabled`            | Whether Jenkins Configuration as Code is enabled or not | `true`                  |
 | `master.JCasC.defaultConfig`      | Enables default Jenkins configuration via configuration as code plugin | `true`  |
+| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
+| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
+| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
 | `master.sidecars.configAutoReload` | Jenkins Config as Code auto-reload settings |                                   |
 | `master.sidecars.configAutoReload.enabled` | Jenkins Config as Code auto-reload settings (Attention: rbac needs to be enabled otherwise the sidecar can't read the config map) | `true`                                                      |
 | `master.sidecars.configAutoReload.image` | Image which triggers the reload | `kiwigrid/k8s-sidecar:0.1.144`           |
 | `master.sidecars.configAutoReload.reqRetryConnect` | How many connection-related errors to retry on  | `10`          |
 | `master.sidecars.configAutoReload.env` | Environment variables for the Jenkins Config as Code auto-reload container  | Not set |
-| `master.testEnabled`              | Can be used to disable rendering test resources when using helm template | `true`                         |
 
 #### Jenkins Configuration Files & Scripts
 | Parameter                         | Description                          | Default                                   |
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
-| `master.JCasC.configScripts`      | List of Jenkins Config as Code scripts | `{}`                                    |
 | `master.initScripts`              | List of Jenkins init scripts         | `[]`                                      |
 | `master.overwriteConfig`          | Replace init scripts and config w/ ConfigMap on boot  | `false`                  |
 | `master.credentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set               |
@@ -158,8 +164,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.disableRememberMe`        | Disable use of remember me           | `false`                                   |
 | `master.securityRealm`            | Jenkins XML for Security Realm       | XML for `LegacySecurityRealm`             |
 | `master.authorizationStrategy`    | Jenkins XML for Authorization Strategy | XML for `FullControlOnceLoggedInAuthorizationStrategy` |
-| `master.JCasC.securityRealm`      | Jenkins Config as Code for Security Realm | `legacy`                             |
-| `master.JCasC.authorizationStrategy` | Jenkins Config as Code for Authorization Strategy | `loggedInUsersCanDoAnything` |
 | `master.enableRawHtmlMarkupFormatter` | Enable HTML parsing using (see below) | false                                |
 | `master.markupFormatter`          | Yaml of the markup formatter to use  | `plainText`                               |
 | `master.disabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`              |
