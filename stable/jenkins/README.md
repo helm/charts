@@ -154,8 +154,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.secretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                        |
 | `master.jobs`                     | Jenkins XML job configs              | `{}`                                      |
 | `master.overwriteJobs`            | Replace jobs w/ ConfigMap on boot    | `false`                                   |
-| `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
-| `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 
 #### Jenkins Global Security
 | Parameter                         | Description                          | Default                                   |
@@ -354,6 +352,11 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `serviceAccountAgent.create`      | Configures if an agent ServiceAccount with this name should be created | `false`         |
 | `serviceAccountAgent.annotations` | Configures annotation for the agent ServiceAccount | `{}`                              |
 
+#### Deprecated
+| Parameter                         | Description                          | Default                                   |
+| --------------------------------- | ------------------------------------ | ----------------------------------------- |
+| `master.customConfigMap`          | Deprecated: Use a custom ConfigMap   | `false`                                   |
+| `master.additionalConfig`         | Deprecated: Add additional config files | `{}`                                   |
 
 Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload sent to a Jenkins webhooks, e.g. URL of a pull-request being built. To display such data as processed HTML instead of raw text set `master.enableRawHtmlMarkupFormatter` to true. This option requires installation of OWASP Markup Formatter Plugin (antisamy-markup-formatter). The plugin is **not** installed by default, please update `master.installPlugins`.
 
