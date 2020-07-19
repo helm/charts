@@ -7,6 +7,15 @@ replicaCount: 3  # Desired quantity of ZooKeeper pods. This should always be (1,
 podDisruptionBudget:
   maxUnavailable: 1  # Limits how many Zokeeper pods may be unavailable due to voluntary disruptions.
 
+
+## StatefulSet allows you to relax its ordering guarantees while preserving
+## its uniqueness and identity guarantees via its `.spec.podManagementPolicy field`.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+##
+## There are two valid pod management policies: OrderedReady and Parallel
+## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
+podManagementPolicy: OrderedReady
+
 terminationGracePeriodSeconds: 1800  # Duration in seconds a Zokeeper pod needs to terminate gracefully.
 
 updateStrategy:

@@ -11,6 +11,7 @@ metadata:
 spec:
   serviceName: {{ template "zookeeper.headless" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}  
   selector:
     matchLabels:
       app: {{ template "zookeeper.name" . }}
