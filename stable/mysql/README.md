@@ -47,7 +47,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | Parameter                                    | Description                                                                                  | Default                                              |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | `args`                                       | Additional arguments to pass to the MySQL container.                                         | `[]`                                                 |
-| `initContainer.resources`                    | initContainer resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
+| `initContainer.resources.requests`           | initContainer resource requests                                                              | Memory: `10Mi`, CPU: `10m`                           |
+| `initContainer.resources.limits`             | initContainer resource limits                                                                | Memory: `20Mi`, CPU: `20m`                           |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.30`                                             |
 | `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
@@ -100,7 +101,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `metrics.flags`                              | Additional flags for the mysql exporter to use                                               | `[]`                                                 |
 | `metrics.serviceMonitor.enabled`             | Set this to `true` to create ServiceMonitor for Prometheus operator                          | `false`                                              |
 | `metrics.serviceMonitor.additionalLabels`    | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus        | `{}`                                                 |
-| `resources`                                  | CPU/Memory resource requests/limits                                                          | Memory: `256Mi`, CPU: `100m`                         |
+| `resources.requests`                         | CPU/Memory resource requests                                                                 | Memory: `256Mi`, CPU: `100m`                         |
+| `resources.limits`                           | CPU/Memory resource limits                                                                   | Memory: `512Mi`, CPU: `200m`                         |
 | `configurationFiles`                         | List of mysql configuration files                                                            | `nil`                                                |
 | `configurationFilesPath`                     | Path of mysql configuration files                                                            | `/etc/mysql/conf.d/`                                 |
 | `securityContext.enabled`                    | Enable security context (mysql pod)                                                          | `false`                                              |
