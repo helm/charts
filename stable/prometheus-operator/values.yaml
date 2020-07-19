@@ -34,6 +34,7 @@ defaultRules:
     general: true
     k8s: true
     kubeApiserver: true
+    kubeApiserverAvailability: true
     kubeApiserverError: true
     kubeApiserverSlos: true
     kubelet: true
@@ -334,7 +335,8 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.20.0
+      tag: v0.21.0
+      sha: ""
 
     ## If true then the user will be responsible to provide a secret with alertmanager configuration
     ## So when true the config part will be ignored (including templateFiles) and the one in the secret will be used
@@ -528,6 +530,10 @@ grafana:
     dashboards:
       enabled: true
       label: grafana_dashboard
+
+      ## Annotations for Grafana dashboard configmaps
+      ##
+      annotations: {}
     datasources:
       enabled: true
       defaultDatasourceEnabled: true
@@ -1134,6 +1140,7 @@ prometheusOperator:
     image:
       repository: squareup/ghostunnel
       tag: v1.5.2
+      sha: ""
       pullPolicy: IfNotPresent
     resources: {}
 
@@ -1151,6 +1158,7 @@ prometheusOperator:
       image:
         repository: jettech/kube-webhook-certgen
         tag: v1.2.1
+        sha: ""
         pullPolicy: IfNotPresent
       resources: {}
       ## Provide a priority class name to the webhook patching job
@@ -1327,6 +1335,7 @@ prometheusOperator:
   image:
     repository: quay.io/coreos/prometheus-operator
     tag: v0.38.1
+    sha: ""
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -1334,12 +1343,14 @@ prometheusOperator:
   configmapReloadImage:
     repository: docker.io/jimmidyson/configmap-reload
     tag: v0.3.0
+    sha: ""
 
   ## Prometheus-config-reloader image to use for config and rule reloading
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/coreos/prometheus-config-reloader
     tag: v0.38.1
+    sha: ""
 
   ## Set the prometheus config reloader side-car CPU limit
   ##
@@ -1354,6 +1365,7 @@ prometheusOperator:
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
     tag: v1.16.12
+    sha: ""
     pullPolicy: IfNotPresent
 
 ## Deploy a Prometheus instance
@@ -1573,7 +1585,8 @@ prometheus:
     ##
     image:
       repository: quay.io/prometheus/prometheus
-      tag: v2.18.1
+      tag: v2.18.2
+      sha: ""
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -1859,6 +1872,14 @@ prometheus:
     #   - regex: (kubernetes_io_hostname|failure_domain_beta_kubernetes_io_region|beta_kubernetes_io_os|beta_kubernetes_io_arch|beta_kubernetes_io_instance_type|failure_domain_beta_kubernetes_io_zone)
     #     action: labeldrop
 
+    ## If additional scrape configurations are already deployed in a single secret file you can use this section.
+    ## Expected values are the secret name and key
+    ## Cannot be used with additionalScrapeConfigs
+    additionalScrapeConfigsSecret: {}
+      # enabled: false
+      # name:
+      # key:
+
     ## additionalPrometheusSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful
     ## when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false'
     additionalPrometheusSecretsAnnotations: {}
@@ -1920,18 +1941,6 @@ prometheus:
     ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
     ## (permissions, dir tree) on mounted volumes before starting prometheus
     initContainers: []
-
-    ## Enable additional scrape configs that are managed externally to this chart. Note that the prometheus
-    ## will fail to provision if the correct secret does not exist.
-    ## This option requires that you are maintaining a secret in the same namespace as Prometheus with
-    ## a name of 'prometheus-operator-prometheus-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
-    ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
-    ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
-    ## secret will overwrite your self-maintained secret).
-    ##
-    ## scrape_config docs: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
-    ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
-    additionalScrapeConfigsExternal: false
 
     ## PortName to use for Prometheus.
     ##

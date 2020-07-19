@@ -108,6 +108,11 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe.periodSeconds`      | Readiness probe period seconds                                            | `10`                                                |
 | `readinessProbe.successThreshold`   | Readiness probe success threshold                                         | `1`                                                 |
 | `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
+| `startupProbe.failureThreshold`     | Startup probe failure threshold                                           | `60`                                                |
+| `startupProbe.initialDelaySeconds`  | Startup probe initial delay seconds                                       | `5`                                                 |
+| `startupProbe.periodSeconds`        | Startup probe period seconds                                              | `10`                                                |
+| `startupProbe.successThreshold`     | Startup probe success threshold                                           | `2`                                                 |
+| `startupProbe.timeoutSeconds`       | Startup probe timeout seconds                                             | `5`                                                 |
 | `extraContainers`                   | Additional containers to add to the StatefulSet                           | `[]`                                                |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |

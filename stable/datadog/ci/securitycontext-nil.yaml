@@ -1,0 +1,6 @@
+# Test the support of `securitContext` set to `nil`
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+  
+  securityContext:

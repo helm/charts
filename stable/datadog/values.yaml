@@ -47,13 +47,12 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext:
-    rule: MustRunAs
-    seLinuxOptions:
-      user: "system_u"
-      role: "system_r"
-      type: "spc_t"
-      level: "s0"
+  securityContext: {}
+  #  seLinuxOptions:
+  #    user: "system_u"
+  #    role: "system_r"
+  #    type: "spc_t"
+  #    level: "s0"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
@@ -260,7 +259,7 @@ datadog:
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
-  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
+  ## ref: https://docs.datadoghq.com/agent/docker/?tab=standard#environment-variables
   #
   env: []
   #   - name: <ENV_VAR_NAME>
@@ -372,6 +371,11 @@ datadog:
     #
     enableOOMKill: false
 
+    ## @param collectDNSStats - boolean - optional
+    ## Enable DNS stat collection
+    #
+    collectDNSStats: false
+
   orchestratorExplorer:
     ## @param enabled - boolean - required
     ## Set this to true to enable the orchestrator explorer.
@@ -472,7 +476,14 @@ clusterAgent:
       type: ClusterIP
       ## @param port - int - optional
       ##
-      port: 443
+      port: 8443
+
+  ## @param env - list of object - optional
+  ## The Cluster-Agent supports many additional environment variables that can
+  ## be passed literally.
+  ## ref: https://docs.datadoghq.com/agent/cluster_agent/commands/#cluster-agent-options
+  #
+  env: []
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
@@ -695,6 +706,17 @@ agents:
       ## If true, create a SecurityContextConstraints resource for Agent pods
       #
       create: false
+
+    ## @param securityContext - object - required
+    ## Provide securityContext configuration
+    #
+    securityContext:
+      rule: MustRunAs
+      seLinuxOptions:
+        user: system_u
+        role: system_r
+        type: spc_t
+        level: s0
 
     ## @param privileged - boolean - optional
     ## If true, Allow to run privileged containers
