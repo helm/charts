@@ -42,6 +42,7 @@ app.kubernetes.io/name: {{ include "name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/*
 Return the appropriate apiVersion for daemonset.
 */}}
 {{- define "daemonset.apiVersion" -}}
@@ -62,3 +63,4 @@ Return the appropriate apiVersion for statefulset.
 {{- print "apps/v1" -}}
 {{- end -}}
 {{- end -}}
+
