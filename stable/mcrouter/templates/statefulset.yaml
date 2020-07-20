@@ -1,22 +1,22 @@
 {{- if eq .Values.controller "statefulset" }}
-apiVersion: {{ template "statefulset.apiVersion" . }}
+apiVersion: {{ template "mcrouter.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mcrouter.fullname" . }}
   labels:
-    {{- include "labels" . | nindent 4 }}
+    {{- include "mcrouter.labels" . | nindent 4 }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "mcrouter.fullname" . }}
   replicas: {{ .Values.statefulset.replicas }}
   selector:
     matchLabels:
-      {{- include "selectorLabels" . | nindent 6 }}
+      {{- include "mcrouter.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "selectorLabels" . | nindent 8 }}
+        {{- include "mcrouter.selectorLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:
@@ -25,7 +25,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                {{- include "selectorLabels" . | nindent 16 }}
+                {{- include "mcrouter.selectorLabels" . | nindent 16 }}
         {{- else if eq .Values.statefulset.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -33,12 +33,12 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  {{- include "selectorLabels" . | nindent 18 }}
+                  {{- include "mcrouter.selectorLabels" . | nindent 18 }}
         {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "mcrouter.fullname" . }}
         image: {{ .Values.image }}
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | default "IfNotPresent" | quote }}
         command: ["mcrouter"]
         args:
         - -p {{ .Values.mcrouterCommandParams.port }}
@@ -60,9 +60,9 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{ toYaml .Values.resources | indent 10 }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "mcrouter.fullname" . }}
 {{- end }}

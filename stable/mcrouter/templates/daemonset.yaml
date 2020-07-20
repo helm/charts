@@ -1,25 +1,25 @@
 {{- if eq .Values.controller "daemonset" }}
-apiVersion: {{ template "daemonset.apiVersion" . }}
+apiVersion: {{ template "mcrouter.daemonset.apiVersion" . }}
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mcrouter.fullname" . }}
   labels:
-    {{- include "labels" . | nindent 4 }}
+    {{- include "mcrouter.labels" . | nindent 4 }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
   selector:
     matchLabels:
-      {{- include "selectorLabels" . | nindent 6 }}
+      {{- include "mcrouter.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "selectorLabels" . | nindent 8 }}
+        {{- include "mcrouter.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "mcrouter.fullname" . }}
         image: {{ .Values.image }}
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | default "IfNotPresent" | quote }}
         command: ["mcrouter"]
         args:
         - -p {{ .Values.mcrouterCommandParams.port }}
@@ -46,5 +46,5 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "mcrouter.fullname" . }}
 {{- end -}}

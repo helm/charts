@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mcrouter.fullname" . }}
   labels:
-    {{- include "labels" . | nindent 4 }}
+    {{- include "mcrouter.labels" . | nindent 4 }}
 spec:
   clusterIP: None
   ports:
@@ -11,4 +11,4 @@ spec:
     port: {{ .Values.mcrouterCommandParams.port }}
     targetPort: mcrouter-port
   selector:
-    {{- include "selectorLabels" . | nindent 4 }}
+    {{- include "mcrouter.selectorLabels" . | nindent 4 }}
