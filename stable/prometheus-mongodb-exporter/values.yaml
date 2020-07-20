@@ -32,6 +32,7 @@ mongodb:
 # If this is provided, the value mongodb.uri is ignored.
 existingSecret:
   name: ""
+  key: "mongodb-uri"
 
 nameOverride: ""
 
