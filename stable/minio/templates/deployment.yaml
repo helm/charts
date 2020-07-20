@@ -227,9 +227,7 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- if .Values.imagePullSecrets }}
-      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
-{{- end }}
+{{- include "minio.imagePullSecrets" . | indent 6 }}
 {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
