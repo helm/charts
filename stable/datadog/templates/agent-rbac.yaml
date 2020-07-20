@@ -127,6 +127,22 @@ rules:
   verbs:
   - "update"
 {{- end }}
+{{- if .Values.clusterAgent.admissionController.enabled }}
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs: ["get", "list", "watch", "update", "create"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "update", "create"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets", "replicasets", "deployments"]
+  verbs: ["get"]
+{{- end }}
 ---
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding

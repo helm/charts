@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.35
+
+* Add support for configuring the Datadog Admission Controller
+
 ## 2.3.34
 
 * Add support for scaling based on `DatadogMetric` CRD
