@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.34
+
+* Add support for scaling based on `DatadogMetric` CRD
+
 ## 2.3.33
 
 * Create new `datadog.podSecurity.securityContext` field to fix windows agent daemonset config.
@@ -51,6 +55,10 @@
 ## 2.3.21
 
 * Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
+## 2.3.20
+
+* Fix process-agent <> system-probe communication
 
 ## 2.3.19
 

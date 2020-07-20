@@ -116,6 +116,8 @@ spec:
             value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
             value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_USE_DATADOGMETRIC_CRD
+            value: {{ .Values.clusterAgent.metricsProvider.useDatadogMetrics | quote }}
           {{- end }}
           {{- if .Values.datadog.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
