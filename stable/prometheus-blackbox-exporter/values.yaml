@@ -149,3 +149,10 @@ prometheusRule:
   additionalLabels: {}
   namespace: ""
   rules: []
+
+## Network policy for chart
+networkPolicy:
+  # Enable network policy and allow access from anywhere
+  enabled: false
+  # Limit access only from monitoring namespace
+  allowMonitoringNamespace: false
