@@ -36,7 +36,7 @@ RollingUpdate:
   maxUnavailable: 1
   maxSurge: 10%
 
-#preStopSleep: 20
+# preStopSleep: 20
 terminationGracePeriodSeconds: 30
 
 podAnnotations: {}
