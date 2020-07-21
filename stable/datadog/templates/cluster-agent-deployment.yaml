@@ -116,6 +116,16 @@ spec:
             value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
             value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_USE_DATADOGMETRIC_CRD
+            value: {{ .Values.clusterAgent.metricsProvider.useDatadogMetrics | quote }}
+          {{- end }}
+          {{- if .Values.clusterAgent.admissionController.enabled }}
+          - name: DD_ADMISSION_CONTROLLER_ENABLED
+            value: {{ .Values.clusterAgent.admissionController.enabled | quote }}
+          - name: DD_ADMISSION_CONTROLLER_MUTATE_UNLABELLED
+            value: {{ .Values.clusterAgent.admissionController.mutateUnlabelled | quote }}
+          - name: DD_ADMISSION_CONTROLLER_SERVICE_NAME
+            value: {{ template "datadog.fullname" . }}-cluster-agent-admission-controller
           {{- end }}
           {{- if .Values.datadog.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
@@ -216,5 +226,8 @@ spec:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
+      {{- if .Values.clusterAgent.nodeSelector }}
 {{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}
