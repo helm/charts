@@ -159,7 +159,7 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "decimals": 3,
-                        "description": "How much error budget is left looking at our 0.990% availability gurantees?",
+                        "description": "How much error budget is left looking at our 0.990% availability guarantees?",
                         "fill": 10,
                         "gridPos": {
 

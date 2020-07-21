@@ -65,7 +65,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | readinessProbe | Health check for pod | {} |
 | startupProbe | Health check for pod | {} |
 | service.type | Kubernetes service type | ClusterIP |
-| persistence.enabled | Boolean to enable and disable persistance | true |
+| persistence.enabled | Boolean to enable and disable persistence | true |
 | persistence.storageClass | If set to "-", storageClassName: "", which disables dynamic provisioning. If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner.  (gp2 on AWS, standard on GKE, AWS & OpenStack |  |
 | persistence.annotations | Annotations for volumeClaimTemplates | nil |
 | persistence.accessMode | Access mode for the volume | ReadWriteOnce |
@@ -161,7 +161,7 @@ In the above examples, the pod names were `influxdb-meta-0` and `influxdb-0` res
 
 The [InfluxDB](https://hub.docker.com/_/influxdb/) image stores data in the `/var/lib/influxdb` directory in the container.
 
-If persistence is enabled, a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) associated with Statefulset will be provisioned. The volume is created using dynamic volume provisioning. In case of a disruption e.g. a node drain, kubernetes ensures that the same volume will be reatached to the Pod, preventing any data loss. Althought, when persistence is not enabled, InfluxDB data will be stored in an empty directory thus, in a Pod restart, data will be lost.
+If persistence is enabled, a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) associated with Statefulset will be provisioned. The volume is created using dynamic volume provisioning. In case of a disruption e.g. a node drain, kubernetes ensures that the same volume will be reatached to the Pod, preventing any data loss. Although, when persistence is not enabled, InfluxDB data will be stored in an empty directory thus, in a Pod restart, data will be lost.
 
 ## Starting with authentication
 

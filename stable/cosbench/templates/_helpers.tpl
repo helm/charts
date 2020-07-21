@@ -52,7 +52,7 @@ Create the name of the service account to use for the driver component
 {{- end -}}
 
 {{/*
-Create a comma seperated list of drivers
+Create a comma separated list of drivers
 */}}
 {{- define "cosbench.driversList" -}}
 {{- $count := (int .Values.driver.replicaCount) -}}

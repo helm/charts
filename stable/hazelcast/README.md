@@ -6,7 +6,7 @@
 
 **Given the [stable deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Hazelcast IMDG Helm chart is now located at [hazelcast/charts](https://github.com/hazelcast/charts/).**
 
-**The Hazelcast IMDG chart repo is also avaliable at [Helm Hub](https://hub.helm.sh/charts/hazelcast/hazelcast).**
+**The Hazelcast IMDG chart repo is also available at [Helm Hub](https://hub.helm.sh/charts/hazelcast/hazelcast).**
 
 To install new chart, you just need to add the related repo and use `hazelcast/hazelcast` instead of `stable/hazelcast` as a chart name.
 

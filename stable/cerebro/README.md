@@ -77,8 +77,8 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `config.tlsVerify`                  | Validate Elasticsearch cert         | `true`                                    |
 | `config.tlsCaCert`                  | CA cert to use for cert validation  | `See values.yaml`                         |
 | `securityContext`                   | Security context for pod            | `See values.yaml`                         |
-| `volumes`                           | Volumes defintion                   | `See values.yaml`                         |
-| `volumemounts`                      | Volume mount defintion              | `See values.yaml`                         |
+| `volumes`                           | Volumes definition                   | `See values.yaml`                         |
+| `volumemounts`                      | Volume mount definition              | `See values.yaml`                         |
 
 
 

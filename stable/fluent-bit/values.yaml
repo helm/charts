@@ -152,7 +152,7 @@ fullConfigMap: false
 existingConfigMap: ""
 
 
-# NOTE If you want to add extra sections, add them here, inbetween the includes,
+# NOTE If you want to add extra sections, add them here, between the includes,
 # wherever they need to go. Sections order matters.
 
 rawConfig: |-

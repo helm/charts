@@ -105,7 +105,7 @@ $ helm install --name rocketchat -f values.yaml stable/rocketchat
 
 ### Database Setup
 
-Rocket.Chat uses a MongoDB instance to presist its data.
+Rocket.Chat uses a MongoDB instance to persist its data.
 By default, the [MongoDB](https://github.com/kubernetes/charts/tree/master/stable/mongodb) chart is deployed and a single MongoDB instance is created as the primary in a replicaset.  
 Please refer to this chart for additional MongoDB configuration options.
 If you are using chart defaults, make sure to set at least the `mongodb.mongodbRootPassword`, `mongodb.mongodbUsername` and `mongodb.mongodbPassword` values. 

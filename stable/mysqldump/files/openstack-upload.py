@@ -172,7 +172,7 @@ def upload(source, destination, ttl_days):
     print ('\nUploaded {} of {} file(s), {} failure(s)'.format(count, found, errs))
 
     if errs:
-        print("FAIL: Error(s) occured")
+        print("FAIL: Error(s) occurred")
         return 2
 
     if not count and found:

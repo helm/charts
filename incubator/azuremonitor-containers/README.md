@@ -90,7 +90,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.domain`            | Azure Log analytics cloud domain (public,china, us govt)| opinsights.azure.com (Public cloud as default), opinsights.azure.cn (China Cloud), opinsights.azure.us (US Govt Cloud)      |
 | `omsagent.env.clusterName`   | Name of your cluster                                    | Does not have a default value, needs to be provided                                                                         |
 | `omsagent.rbac`              | rbac enabled/disabled                                   | true  (i.e.enabled)                                                                                                           |
-| `omsagent.proxy`             | Proxy endpoint                                          | Doesnt have default value. Refer to [configure proxy](#Configuring-Proxy-Endpoint) |
+| `omsagent.proxy`             | Proxy endpoint                                          | Doesn't have default value. Refer to [configure proxy](#Configuring-Proxy-Endpoint) |
 
 > Note: For Azure Manage K8s clusters such as Azure Arc K8s and ARO v4, `omsagent.env.clusterId` with fully qualified azure resource id of the cluster should be used instead of `omsagent.env.clusterName`
 
@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 
 ## Agent data collection settings
 
-Staring with chart version 1.0.0, agent data collection settings are controlled thru a config map. Refer to documentation about agent data collection settings [here](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
+Staring with chart version 1.0.0, agent data collection settings are controlled through a config map. Refer to documentation about agent data collection settings [here](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-agent-config)
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
 
@@ -134,7 +134,7 @@ If you need help with this chart, please reach us out through [this](mailto:askc
 Starting with chart version 2.0.0, chart will create a CRD (healthstates.azmon.container.insights) in kube-system namespace. This is used by the agent for cluster health monitoring.
 ## Container Runtime(s)
 
-Starting with chart version 2.7.0, chart will support Container Runtime Interface(CRI) compatiable runtimes such as CRI-O and ContainerD etc. in addition to Docker/Moby.
+Starting with chart version 2.7.0, chart will support Container Runtime Interface(CRI) compatible runtimes such as CRI-O and ContainerD etc. in addition to Docker/Moby.
 
 ## Configuring Proxy Endpoint
 
@@ -158,7 +158,7 @@ port|port number for the proxy server
 For example:
 `omsagent.proxy=http://user01:password@proxy01.contoso.com:8080`
 
-> Note: Although you do not have any user/password set for the proxy, you will still need to add a psuedo user/password. This can be any username or password.
+> Note: Although you do not have any user/password set for the proxy, you will still need to add a pseudo user/password. This can be any username or password.
 
 The Azure Monitor for containers agent only creates secure connection over http.
 Even if you specify the protocol as http, please note that http requests are created using SSL/TLS secure connection so the proxy must support SSL/TLS.

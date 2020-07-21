@@ -147,7 +147,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 | `secrets.teamAuthorizedKeys` | Array of team names and worker public keys for external workers | `nil` |
-| `secrets.vaultAuthParam` | Paramter to pass when logging in via the backend | `nil` |
+| `secrets.vaultAuthParam` | Parameter to pass when logging in via the backend | `nil` |
 | `secrets.vaultCaCert` | CA certificate use to verify the vault server SSL cert | `nil` |
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
@@ -208,7 +208,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.cleanUpWorkDirOnStart` | Removes any previous state created in `concourse.worker.workDir` | `true` |
-| `worker.emptyDirSize` | When persistance is disabled this value will be used to limit the emptyDir volume size | `nil` |
+| `worker.emptyDirSize` | When persistence is disabled this value will be used to limit the emptyDir volume size | `nil` |
 | `worker.enabled` | Enable or disable the worker component. You should set postgres.enabled=false in order not to get an unnecessary Postgres chart deployed | `true` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |

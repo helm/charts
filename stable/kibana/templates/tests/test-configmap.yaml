@@ -12,7 +12,7 @@ data:
   run.sh: |-
     @test "Test Status" {
       {{- if .Values.service.selector }}
-      skip "Can't guarentee pod names with selector"
+      skip "Can't guarantee pod names with selector"
       {{- else }}
       {{- $port := .Values.service.externalPort }}
       url="http://{{ template "kibana.fullname" . }}{{ if $port }}:{{ $port }}{{ end }}/api{{ .Values.livenessProbe.path }}"

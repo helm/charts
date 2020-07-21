@@ -242,7 +242,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Minor Changes
 
-* Dont allow to change the value of `new_k8s` flag.
+* Don't allow to change the value of `new_k8s` flag.
 
 ## v1.4.5
 

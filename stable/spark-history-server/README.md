@@ -84,7 +84,7 @@ to allow creation of privileged containers in the project/namepace where the his
 
 #### Discussions of Storage Options
 
-Becuase a PVC is a namespaced Kubernetes resource, the fact that it is created in the same namespace where the chart is installed means that Spark jobs that would like to log events to the PVC also need to be deployed in the same namespace. If this is an issue for you (e.g. you have another dedicated namespace for your Spark jobs), then use HDFS or GCS instead.
+Because a PVC is a namespaced Kubernetes resource, the fact that it is created in the same namespace where the chart is installed means that Spark jobs that would like to log events to the PVC also need to be deployed in the same namespace. If this is an issue for you (e.g. you have another dedicated namespace for your Spark jobs), then use HDFS or GCS instead.
 
 In the case of GCS, a secret is also namespaced, but it's only used to enable the history server to read the remote GCS bucket. So Spark jobs logging to GCS can run in any namespace. Unless jobs are running in the same namespace as the history server, you'll need to create the secret separately in the job namespace before runninng the job.
 

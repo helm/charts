@@ -9,7 +9,7 @@ helm repo add pomerium https://helm.pomerium.io
 ```
 
 ## Deprecation Plan
-This version of the chart will be updated through the end of the Pomerium 0.5.x series for verison bumps and critical fixes.  No other changes will be accepted.
+This version of the chart will be updated through the end of the Pomerium 0.5.x series for version bumps and critical fixes.  No other changes will be accepted.
 
 We welcome contributions in the [new repository](https://github.com/pomerium/pomerium-helm).
 

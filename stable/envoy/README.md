@@ -29,7 +29,7 @@ The following table lists the configurable parameters of the envoy chart and the
 Parameter | Description | Default
 --- | --- | ---
 `args` | Command-line args passed to Envoy | `["-l", "$loglevel", "-c", "/config/envoy.yaml"]`
-`argsTemplate` | Golang template of command-line args passed to Envoy. Must be a string containing a template snippet rather than YAML array. Prefered over `args` if both are set | ``
+`argsTemplate` | Golang template of command-line args passed to Envoy. Must be a string containing a template snippet rather than YAML array. Preferred over `args` if both are set | ``
 `files.envoy\.yaml` | content of a full envoy configuration file as documented in https://www.envoyproxy.io/docs/envoy/latest/configuration/configuration | See [values.yaml](values.yaml)
 `templates.envoy\.yaml` | golang template of a full configuration file. Use the `{{ .Values.foo.bar }}` syntax to embed chart values | See [values.yaml](values.yaml)
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`

@@ -147,7 +147,7 @@ privileged: false
 
 ## Add Elastic beat-exporter for Prometheus
 ## https://github.com/trustpilot/beat-exporter
-## Dont forget to enable http on config.http.enabled (exposing filebeat stats)
+## Don't forget to enable http on config.http.enabled (exposing filebeat stats)
 monitoring:
   enabled: true
   serviceMonitor:

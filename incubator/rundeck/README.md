@@ -53,7 +53,7 @@ If running Rundeck in AWS on EKS, [AWS IRSA](https://docs.aws.amazon.com/eks/lat
 ### AWS & K8s
 The `rundeck.awsConfigSecret` and `rundeck.kubeConfigSecret` keys allow for mounting additional configuration for AWS and Kubernetes tools and SDKs. The secrets are mounted into their respective configuration directories under the Rundeck users's home directory. 
 
-For example, you can create a secret containing kubeconfig file content that can be used to configure authentication to another remote cluster via the AWS IAM authenticator. Combine this with an AWS IRSA annotation on the Rundeck service account and you can configure Rundeck to auth to multiple EKS clusters' APIs accross multiple AWS accounts without ever needing to manage AWS IAM API keys or K8s credentials.
+For example, you can create a secret containing kubeconfig file content that can be used to configure authentication to another remote cluster via the AWS IAM authenticator. Combine this with an AWS IRSA annotation on the Rundeck service account and you can configure Rundeck to auth to multiple EKS clusters' APIs across multiple AWS accounts without ever needing to manage AWS IAM API keys or K8s credentials.
 ```yaml
 apiVersion: v1
 kind: Secret

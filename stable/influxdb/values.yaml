@@ -230,7 +230,7 @@ backup:
 
   ## Azure
   ## Secret is expected to have connection string stored in `connection-string` field
-  ## Existing container will be used or private one withing storage account will be created.
+  ## Existing container will be used or private one within storage account will be created.
   # azure:
   #   storageAccountSecret: influxdb-backup-azure-key
   #   destination_container: influxdb-container

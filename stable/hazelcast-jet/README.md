@@ -8,7 +8,7 @@ Visit [jet-start.sh](https://jet-start.sh) to learn more about the architecture 
 
 **Given the [stable deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Hazelcast Jet Helm chart is now located at [hazelcast/charts](https://github.com/hazelcast/charts/).**
 
-**The Hazelcast Jet chart repo is also avaliable at [Helm Hub](https://hub.helm.sh/charts/hazelcast/hazelcast-jet).**
+**The Hazelcast Jet chart repo is also available at [Helm Hub](https://hub.helm.sh/charts/hazelcast/hazelcast-jet).**
 
 To install new chart, you just need to add the related repo and use `hazelcast/hazelcast-jet ` instead of `stable/hazelcast-jet` as a chart name.
 

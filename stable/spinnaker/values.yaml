@@ -261,7 +261,7 @@ redis:
 #      enabled: false
 
 # Minio access/secret keys for the in-cluster S3 usage
-# Minio is not exposed publically
+# Minio is not exposed publicly
 minio:
   enabled: true
   image:

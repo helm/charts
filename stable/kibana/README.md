@@ -103,7 +103,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `persistentVolumeClaim.enabled`            | Enable PVC for plugins                                                 | `false`                               |
 | `persistentVolumeClaim.existingClaim`      | Use your own PVC for plugins                                           | `false`                               |
 | `persistentVolumeClaim.annotations`        | Add your annotations for the PVC                                       | `{}`                                  |
-| `persistentVolumeClaim.accessModes`        | Acces mode to the PVC                                                  | `ReadWriteOnce`                       |
+| `persistentVolumeClaim.accessModes`        | Access mode to the PVC                                                  | `ReadWriteOnce`                       |
 | `persistentVolumeClaim.size`               | Size of the PVC                                                        | `5Gi`                                 |
 | `persistentVolumeClaim.storageClass`       | Storage class of the PVC                                               | None:                                 |
 | `readinessProbe.enabled`                   | readinessProbe to be enabled?                                          | `false`                               |

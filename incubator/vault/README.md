@@ -98,7 +98,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vaultExporter.enabled`           | Enable or disable vault exporter         | `false`                             |
 | `vaultExporter.repository`        | Container image for vault exporter       | `grapeshot/vault_exporter`          |
 | `vaultExporter.tag`               | Container image tag for vault exporter   | `v0.1.2`                            |
-| `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
+| `vaultExporter.pullPolicy`        | Image pull policy that should be used     | `IfNotPresent`                      |
 | `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
 | `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
 | `serviceMonitor.enabled`          | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
@@ -160,7 +160,7 @@ serviceMonitor:
   jobLabel: "vault-exporter"
 ```
 
-If you do not want to use the default vaultExporter container, but use your own, you can declare it in the `vault.extraContainer` part. But you have to expose a __named__ port for the metrics and set this name in the `serviceMonitor.podPortName`. For exmaple:
+If you do not want to use the default vaultExporter container, but use your own, you can declare it in the `vault.extraContainer` part. But you have to expose a __named__ port for the metrics and set this name in the `serviceMonitor.podPortName`. For example:
 
 ```yaml
 vaultExporter:

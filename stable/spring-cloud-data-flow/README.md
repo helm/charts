@@ -107,7 +107,7 @@ You can look up the IP address used by the NGINX Ingress Controller with:
 ingress=$(kubectl get svc nginx-ingress-controller -n nginx-ingress -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-This is useful if you would like to use `xip.io` instead of your own DNS resolution. The folowing options assume that you will use `xip.io` but you can replace the host values below with your own DNS hosts if you prefer.
+This is useful if you would like to use `xip.io` instead of your own DNS resolution. The following options assume that you will use `xip.io` but you can replace the host values below with your own DNS hosts if you prefer.
 
 To enable the creation of an `Ingress` resource and configure the services to use `ClusterIP` type use the following set options in your helm install command:
 

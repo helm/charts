@@ -172,13 +172,13 @@ proxy:
   ## Ref: https://docs.wavefront.com/proxies_configuring.html
   # args:
 
-  ## Proxy is a Java application. By default Java will consume upto 4G of heap memory.
+  ## Proxy is a Java application. By default Java will consume up to 4G of heap memory.
   ## This can be used to override the default. Uses the `-Xmx` command line option for java
   # heap: 1024m
 
   ## Preprocessor rules is a powerful way to apply filtering or to enhance metrics as they flow
   ## through the proxy. You can configure the rules here. By default a rule to drop Kubernetes
-  ## generated labels is applied to remove unecessary and often noisy tags.
+  ## generated labels is applied to remove unnecessary and often noisy tags.
   ## Ref: https://docs.wavefront.com/proxies_preprocessor_rules.html
   # preprocessor:
   #   rules.yaml: |
