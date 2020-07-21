@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Envoy is an open source edge and service proxy, designed for cloud-native applications.
 name: envoy
-version: 1.9.0
+version: 1.9.1
 appVersion: 1.11.2
 keywords:
 - envoy
