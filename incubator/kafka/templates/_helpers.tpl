@@ -114,6 +114,7 @@ app.kubernetes.io/component: kafka-monitor
 {{- define "kafka.monitor.labels" -}}
 {{ include "kafka.common.metaLabels" . }}
 {{ include "kafka.monitor.matchLabels" . }}
+{{- end -}}
 
 {{/*
 Test if bootstrap.servers is defined in kafka mirror config for consumer and if not use our service
