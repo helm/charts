@@ -14,7 +14,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-{{- if (eq $.Values.rbac.useExistingRole false) }}
+{{- if (not $.Values.rbac.useExistingRole) }}
   name: {{ template "kube-state-metrics.fullname" $ }}
 {{- else }}
   name: {{ $.Values.rbac.useExistingRole }}

@@ -1,4 +1,4 @@
-{{- if and (eq $.Values.rbac.create true) (.Values.namespace) (eq .Values.rbac.useClusterRole false) (eq .Values.rbac.useExistingRole false)  -}}
+{{- if and (eq $.Values.rbac.create true) (.Values.namespace) (eq .Values.rbac.useClusterRole false) (not .Values.rbac.useExistingRole)  -}}
 {{- range (split "," $.Values.namespace) }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
