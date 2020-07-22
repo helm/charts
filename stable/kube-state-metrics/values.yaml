@@ -33,6 +33,12 @@ rbac:
   # If true, create & use RBAC resources
   create: true
 
+  # Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to it, rolename set here.
+  useExistingRole: false 
+
+  #if set to false - Run without Cluteradmin privs needed - ONLY works if namespace is also set (if useExistingRole is set this name is used as CluterRole or Role to bind to)
+  useClusterRole: true
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created, require rbac true
   create: true
@@ -128,9 +134,6 @@ collectors:
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
-
-## if set to false - Run without Cluster-admin privilegs needed - ONLY works if namespace is also set
-useClusterRole: true
 
 ## Override the deployment namespace
 ##
