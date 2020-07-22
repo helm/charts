@@ -20,6 +20,10 @@ securityContext:
   enabled: true  # Should be set to false when running on OpenShift
   runAsUser: 1000
 
+log:
+  format: logfmt
+  level: info
+
 resources: {}
   # requests:
   #   cpu: 100m

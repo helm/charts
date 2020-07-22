@@ -30,6 +30,14 @@ spec:
         - name: dockersocket
           hostPath:
             path: {{ .Values.dockerSocketPath }}
+        {{- if .Values.dockerConfig }}
+        - name: docker-config
+          secret:
+            secretName: {{ include "hlf-peer.fullname" . }}-dockerconfigjson
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+        {{- end }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
           secret:
@@ -163,6 +171,10 @@ spec:
               name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
+            {{- if .Values.dockerConfig }}
+            - name: docker-config
+              mountPath: {{ .Values.dockerConfigMountPath }}
+            {{ end }}
             {{- if .Values.secrets.peer.cert }}
             - mountPath: /var/hyperledger/msp/signcerts
               name: id-cert

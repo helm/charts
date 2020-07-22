@@ -21,8 +21,7 @@ spec:
         # This will restart the rundeck pod if its environment configuration is updated by helm
         checksum/config: {{ include (print $.Template.BasePath "/rundeck-environment-configmap.yaml") . | sha256sum }}
         {{- with .Values.deployment.annotations }}
-        annotations:
-          {{- toYaml . | nindent 10 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "rundeck.name" . }}
@@ -63,6 +62,10 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-environment-configmap
+          {{- if .Values.rundeck.envSecret }}
+          - secretRef:
+              name: {{ .Values.rundeck.envSecret }}
+          {{- end }}
           env:
             - name: RUNDECK_GRAILS_URL
               value: {{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}
@@ -78,9 +81,20 @@ spec:
             mountPath: /home/rundeck/.ssh
             readOnly: true
         {{- end }}
-        {{- if .Values.rundeck.awsCredentialsSecret }}
-          - name: aws-credentials
-            mountPath: /home/rundeck/.aws/credentials
+        {{- if .Values.rundeck.awsConfigSecret }}
+          - name: aws-config
+            mountPath: /home/rundeck/.aws/
+        {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+          - name: kube-config
+            mountPath: /home/rundeck/.kube/
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+          - name: extra-config
+            mountPath: /home/rundeck/extra/
+        {{- end }}
+        {{- if .Values.volumeMounts }}
+          {{- toYaml .Values.volumeMounts | nindent 10}}
         {{- end }}
           ports:
             - name: rundeck
@@ -135,6 +149,23 @@ spec:
           secret:
             secretName: {{ .Values.rundeck.awsCredentialsSecret}}
         {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+        - name: kube-config
+          secret:
+            secretName: {{ .Values.rundeck.kubeConfigSecret}}
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+        - name: extra-config
+          secret:
+            secretName: {{ .Values.rundeck.extraConfigSecret}}
+        {{- end }}
+      {{- if .Values.volumes }}
+        {{- toYaml .Values.volumes | nindent 8}}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+        {{- toYaml .Values.initContainers | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

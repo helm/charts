@@ -53,6 +53,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
 | `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `7.0.3`                                                 |
+| `image.sha`                               | Image sha (optional)                          | `17cbd08b9515fda889ca959e9d72ee6f3327c8f1844a3336dfd952134f38e2fe` |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -66,7 +67,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
 | `service.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
-| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
+| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
 | `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
@@ -93,7 +94,8 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
 | `initChownData.enabled`                   | If false, don't reset data ownership at startup | true                                                  |
 | `initChownData.image.repository`          | init-chown-data container image repository    | `busybox`                                               |
-| `initChownData.image.tag`                 | init-chown-data container image tag           | `latest`                                                |
+| `initChownData.image.tag`                 | init-chown-data container image tag           | `1.31.1`                                                |
+| `initChownData.image.sha`                 | init-chown-data container image sha (optional)| `""`                                                    |
 | `initChownData.image.pullPolicy`          | init-chown-data container image pull policy   | `IfNotPresent`                                          |
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
@@ -122,6 +124,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
 | `sidecar.image.repository`                | Sidecar image repository                      | `kiwigrid/k8s-sidecar`                                  |
 | `sidecar.image.tag`                       | Sidecar image tag                             | `0.1.151`                                               |
+| `sidecar.image.sha`                       | Sidecar image sha (optional)                  | `""`                                                    |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
@@ -166,7 +169,8 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                        |
 | `downloadDashboards.resources`            | Resources of `download-dashboards` container  | `{}`                                                    |
 | `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
-| `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
+| `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.70.0`                                                |
+| `downloadDashboardsImage.sha`             | Curl docker image sha (optional)              | `""`                                                    |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
 

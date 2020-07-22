@@ -1,0 +1,33 @@
+{{- if .Values.agents.podSecurity.podSecurityPolicy.create}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "datadog.fullname" . }}
+  labels:
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ join "," .Values.agents.podSecurity.seccompProfiles | quote }}
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: {{ join "," .Values.agents.podSecurity.apparmorProfiles | quote }}
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: "runtime/default"
+    apparmor.security.beta.kubernetes.io/defaultProfileName: "runtime/default"
+spec:
+  privileged: {{ .Values.agents.podSecurity.privileged }}
+  hostNetwork: {{ .Values.agents.useHostNetwork }}
+  hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
+  allowedCapabilities: 
+{{ toYaml .Values.agents.podSecurity.capabilites | indent 4 }}
+  volumes:
+{{ toYaml .Values.agents.podSecurity.volumes | indent 4 }}
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+{{ toYaml .Values.agents.podSecurity.securityContext | indent 4 }}
+  supplementalGroups:
+    rule: RunAsAny
+{{- end }}

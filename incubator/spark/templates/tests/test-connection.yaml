@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "spark.fullname" . }}-test-connection"
+  labels:
+{{ include "spark.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "spark.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
