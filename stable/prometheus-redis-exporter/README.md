@@ -69,6 +69,7 @@ The following table lists the configurable parameters and their default values.
 | `serviceMonitor.labels`        | Labels for the servicemonitor passed to Prometheus Operator      |  `{}`            |
 | `serviceMonitor.timeout`       | Timeout after which the scrape is ended                |                            |
 | `serviceMonitor.targetLabels`  | Set of labels to transfer on the Kubernetes Service onto the target.  |             |
+| `serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion.  |             |
 | `prometheusRule.enabled`           | Set this to true to create prometheusRules for Prometheus operator | `false`     |
 | `prometheusRule.additionalLabels`  | Additional labels that can be used so prometheusRules will be discovered by Prometheus  | `{}`  |
 | `prometheusRule.namespace`         | namespace where prometheusRules resource should be created |      |
