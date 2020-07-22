@@ -12,5 +12,9 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
+{{- if (not .Values.alertmanager.useExistingRole) }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
+{{- else }}
+  name: {{ .Values.alertmanager.useExistingRole }}
+{{- end }}
 {{- end }}
