@@ -13,7 +13,12 @@ service:
   portRequest: 7051
   portEvent: 7053
 
+# Path of the docker socket on the host
 dockerSocketPath: /var/run/docker.sock
+# Docker config to be used to pull the images (base64'd)
+dockerConfig: null
+# Docker config mount path
+dockerConfigMountPath: /root/.docker
 
 ingress:
   enabled: false
@@ -54,6 +59,7 @@ logging:
   msp: warning
   policies: warning
 
+
 ##################################
 ## Peer configuration options    #
 ##################################
@@ -76,7 +82,13 @@ peer:
       enabled: "false"
     client:
       enabled: "false"
-
+  chaincode:
+    # define the ccenv image used by the peer
+    builder: ""
+    runtime:
+      golang: ""
+      java: ""
+      node: ""
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials

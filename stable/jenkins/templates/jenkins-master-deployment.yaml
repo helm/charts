@@ -138,9 +138,9 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
-            {{- end }}
             {{- if .Values.master.secretsFilesSecret }}
             - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
@@ -287,10 +287,10 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
               readOnly: false
-            {{- end }}
             {{- if or .Values.master.secretsFilesSecret }}
             - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
@@ -325,6 +325,8 @@ spec:
               value: "http://localhost:8080{{- .Values.master.jenkinsUriPrefix -}}/reload-configuration-as-code/?casc-reload-token=$(POD_NAME)"
             - name: REQ_METHOD
               value: "POST"
+            - name: REQ_RETRY_CONNECT
+              value: "{{ .Values.master.sidecars.configAutoReload.reqRetryConnect }}"
             {{- if .Values.master.sidecars.configAutoReload.env }}
 {{ toYaml .Values.master.sidecars.configAutoReload.env | indent 12 }}
             {{- end }}
@@ -367,9 +369,9 @@ spec:
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
+      {{- end }}
       - name: secrets-dir
         emptyDir: {}
-      {{- end }}
       {{- if .Values.master.secretsFilesSecret }}
       - name: jenkins-secrets
         secret:

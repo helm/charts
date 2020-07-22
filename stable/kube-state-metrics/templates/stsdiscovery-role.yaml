@@ -19,9 +19,11 @@ rules:
 - apiGroups:
   - apps
   resourceNames:
-  - kube-state-metrics
+  - {{ template "kube-state-metrics.fullname" . }}
   resources:
   - statefulsets
   verbs:
   - get
+  - list
+  - watch
 {{- end }}

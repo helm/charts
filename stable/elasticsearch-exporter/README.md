@@ -106,6 +106,8 @@ Parameter | Description | Default
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
 `prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]`
+`log.format` | Format used for the logs. Valid formats are `json` and `logfmt` | `logfmt`
+`log.level` | Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` | `info`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

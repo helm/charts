@@ -32,6 +32,7 @@ mongodb:
 # If this is provided, the value mongodb.uri is ignored.
 existingSecret:
   name: ""
+  key: "mongodb-uri"
 
 nameOverride: ""
 
@@ -74,6 +75,7 @@ securityContext:
   runAsUser: 10000
 
 service:
+  labels: {}
   annotations: {}
   port: 9216
   type: ClusterIP
@@ -90,5 +92,6 @@ serviceMonitor:
   scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
+  targetLabels: []
 
 tolerations: []
