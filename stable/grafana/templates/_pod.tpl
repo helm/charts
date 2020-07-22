@@ -10,7 +10,7 @@ securityContext:
 {{- if .Values.priorityClassName }}
 priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.extraInitContainers) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.sidecar.datasources.enabled .Values.sidecar.notifiers.enabled .Values.extraInitContainers) }}
 initContainers:
 {{- end }}
 {{- if ( and .Values.persistence.enabled .Values.initChownData.enabled ) }}
@@ -95,6 +95,37 @@ initContainers:
     volumeMounts:
       - name: sc-datasources-volume
         mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
+{{- if .Values.sidecar.notifiers.enabled }}
+  - name: {{ template "grafana.name" . }}-sc-notifiers
+    {{- if .Values.sidecar.image.sha }}
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}@sha256:{{ .Values.sidecar.image.sha }}"
+    {{- else }}
+    image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
+    {{- end }}
+    imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+    env:
+      - name: METHOD
+        value: LIST
+      - name: LABEL
+        value: "{{ .Values.sidecar.notifiers.label }}"
+      - name: FOLDER
+        value: "/etc/grafana/provisioning/notifiers"
+      - name: RESOURCE
+        value: "both"
+      {{- if .Values.sidecar.notifiers.searchNamespace }}
+      - name: NAMESPACE
+        value: "{{ .Values.sidecar.notifiers.searchNamespace }}"
+      {{- end }}
+      {{- if .Values.sidecar.skipTlsVerify }}
+      - name: SKIP_TLS_VERIFY
+        value: "{{ .Values.sidecar.skipTlsVerify }}"
+      {{- end }}
+    resources:
+{{ toYaml .Values.sidecar.resources | indent 6 }}
+    volumeMounts:
+      - name: sc-notifiers-volume
+        mountPath: "/etc/grafana/provisioning/notifiers"
 {{- end}}
 {{- if .Values.extraInitContainers }}
 {{ toYaml .Values.extraInitContainers | indent 2 }}
@@ -214,6 +245,10 @@ containers:
 {{- if .Values.sidecar.datasources.enabled }}
       - name: sc-datasources-volume
         mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
+{{- if .Values.sidecar.notifiers.enabled }}
+      - name: sc-notifiers-volume
+        mountPath: "/etc/grafana/provisioning/notifiers"
 {{- end}}
     {{- range .Values.extraSecretMounts }}
       - name: {{ .name }}
@@ -369,6 +404,10 @@ volumes:
 {{- end }}
 {{- if .Values.sidecar.datasources.enabled }}
   - name: sc-datasources-volume
+    emptyDir: {}
+{{- end -}}
+{{- if .Values.sidecar.notifiers.enabled }}
+  - name: sc-notifiers-volume
     emptyDir: {}
 {{- end -}}
 {{- range .Values.extraSecretMounts }}
