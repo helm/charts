@@ -172,6 +172,7 @@ serviceMonitor:
   scheme: http
   relabelings: []
   targetLabels: []
+  metricRelabelings: []
 
 prometheusRule:
   ## If true, a PrometheusRule CRD is created for a prometheus operator
