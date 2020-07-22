@@ -102,6 +102,7 @@ Parameter | Description | Default
 `serviceMonitor.scheme` | Scheme to use for scraping | `http`
 `serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
 `serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
+`serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
