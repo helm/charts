@@ -20,7 +20,9 @@ spec:
     {{- if .Values.defaultBackend.useComponentLabel }}
       {{ .Values.defaultBackend.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: default-backend
     {{- end }}
+{{- if not .Values.defaultBackend.autoscaling.enabled }}
   replicas: {{ .Values.defaultBackend.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:

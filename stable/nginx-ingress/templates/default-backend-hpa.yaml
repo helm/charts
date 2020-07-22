@@ -1,0 +1,32 @@
+{{- if .Values.defaultBackend.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ template "nginx-ingress.chart" . }}
+    component: "{{ .Values.defaultBackend.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: {{ template "deployment.apiVersion" . }}
+    kind: Deployment
+    name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+  minReplicas: {{ .Values.defaultBackend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.defaultBackend.autoscaling.maxReplicas }}
+  metrics:
+{{- with .Values.defaultBackend.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ . }}
+{{- end }}
+{{- with .Values.defaultBackend.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ . }}
+{{- end }}
+{{- end }}
