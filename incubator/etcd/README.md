@@ -5,7 +5,7 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 * https://github.com/kubernetes/contrib/pull/1295
 
 ## Prerequisites Details
-* Kubernetes 1.5 (for `StatefulSets` support)
+* Kubernetes 1.9 (for `StatefulSets` support)
 * PV support on the underlying infrastructure
 * ETCD version >= 3.0.0
 
