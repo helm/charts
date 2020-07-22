@@ -1,4 +1,8 @@
-# cluster-autoscaler
+# DEPRECATED
+
+This Helm chart has been moved to the [kubernetes/autoscaler](https://github.com/kubernetes/autoscaler) repository.
+
+## cluster-autoscaler
 
 [The cluster autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup.
 
