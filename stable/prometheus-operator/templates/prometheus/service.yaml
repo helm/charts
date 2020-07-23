@@ -34,7 +34,7 @@ spec:
 {{- end }}
   ports:
   - name: {{ .Values.prometheus.prometheusSpec.portName }}
-    {{- if eq .Values.prometheus.service.type "NodePort" }}
+    {{- if eq .Values.prometheus.service.type "NodePort" | and .Values.prometheus.service.nodePort }}
     nodePort: {{ .Values.prometheus.service.nodePort }}
     {{- end }}
     port: {{ .Values.prometheus.service.port }}

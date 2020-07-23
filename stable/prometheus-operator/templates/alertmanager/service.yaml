@@ -34,7 +34,7 @@ spec:
 {{- end }}
   ports:
     - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
-    {{- if eq .Values.alertmanager.service.type "NodePort" }}
+    {{- if eq .Values.alertmanager.service.type "NodePort" | and .Values.alertmanager.service.nodePort }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
     {{- end }}
       port: {{ .Values.alertmanager.service.port }}
