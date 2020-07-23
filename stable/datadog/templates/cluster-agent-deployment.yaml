@@ -179,6 +179,7 @@ spec:
           {{- if .Values.datadog.orchestratorExplorer.enabled }}
           - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
             value: "true"
+          {{- end }}
           - name: DD_COMPLIANCE_CONFIG_ENABLED
             value:  {{ .Values.datadog.securityAgent.compliance.enabled | quote }}
           {{- if .Values.datadog.securityAgent.compliance.enabled }}
