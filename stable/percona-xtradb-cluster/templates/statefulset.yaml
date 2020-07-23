@@ -35,6 +35,8 @@ spec:
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
         imagePullPolicy: IfNotPresent
         command:
         - "rm"
@@ -129,6 +131,8 @@ spec:
       {{ if .Values.logTail }}
       - name: "logs"
         image: "busybox:1.25.0"
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
         imagePullPolicy: IfNotPresent
         command:
         - "tail"

@@ -77,6 +77,11 @@ tolerations: []
 #    memory: 256Mi
 #    cpu: 100m
 
+# initResources:
+#  requests:
+#    memory: 128Mi
+#    cpu: 100m
+
 configFiles:
   node.cnf: |+
     [mysqld]
