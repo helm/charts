@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.36
+
+* Bump default Agent version to `7.21.1`
+
 ## 2.3.35
 
 * Add support for configuring the Datadog Admission Controller
