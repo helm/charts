@@ -12,6 +12,15 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+# Enable deamonset to scan the path / on every node
+daemonset:
+  enabled: true
+  clamPathConfig:
+    volumeMounts:
+    - name: host-fs
+      mountPath: /host-fs
+      readOnly: true
+
 service:
   type: ClusterIP
   port: 3310
