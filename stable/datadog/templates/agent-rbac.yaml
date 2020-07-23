@@ -18,6 +18,7 @@ rules:
   - pods
   - nodes
   - componentstatuses
+  - podsecuritypolicies
   verbs:
   - get
   - list

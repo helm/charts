@@ -12,7 +12,7 @@
     {{- include "containers-common-env" . | nindent 4 }}
     - name: DD_LOG_LEVEL
       value: {{ .Values.agents.containers.securityAgent.logLevel | default .Values.datadog.logLevel | quote }}
-    - name: DD_COMPLIANCE_ENABLED
+    - name: DD_COMPLIANCE_CONFIG_ENABLED
       value:  {{ .Values.datadog.securityAgent.compliance.enabled | quote }}
     {{- if .Values.datadog.securityAgent.compliance.enabled }}
     - name: DD_COMPLIANCE_CONFIG_CHECK_INTERVAL
