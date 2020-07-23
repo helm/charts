@@ -48,12 +48,12 @@
     path: /usr/src
   name: src
 {{- end }}
-{{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.enabled }}
+{{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.compliance.enabled }}
 - hostPath:
     path: /etc/passwd
   name: passwd
 {{- end }}
-{{- if .Values.datadog.securityAgent.enabled }}
+{{- if .Values.datadog.securityAgent.compliance.enabled }}
 - hostPath:
     path: /etc/group
   name: group

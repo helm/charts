@@ -18,6 +18,13 @@ rules:
   - pods
   - nodes
   - componentstatuses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "policy"
+  resources:
   - podsecuritypolicies
   verbs:
   - get

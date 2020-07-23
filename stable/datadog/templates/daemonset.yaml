@@ -59,7 +59,7 @@ spec:
       dnsConfig:
 {{ toYaml .Values.agents.dnsConfig | indent 8 }}
       {{- end }}
-      {{- if .Values.datadog.securityAgent.enabled }}
+      {{- if .Values.datadog.securityAgent.compliance.enabled }}
       hostPID: true
       {{- else -}}
       {{- if .Values.datadog.dogstatsd.useHostPID }}
@@ -84,7 +84,7 @@ spec:
         {{- if .Values.datadog.systemProbe.enabled }}
           {{- include "container-system-probe" . | nindent 6 }}
         {{- end }}
-        {{- if .Values.datadog.securityAgent.enabled }}
+        {{- if .Values.datadog.securityAgent.compliance.enabled }}
           {{- include "container-security-agent" . | nindent 6 }}
         {{- end }}
       initContainers:

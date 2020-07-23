@@ -19,6 +19,15 @@
       value: {{ .Values.datadog.securityAgent.compliance.checkInterval | quote }}
     - name: HOST_ROOT
       value: /host/root
+    - name: DD_CLUSTER_AGENT_ENABLED
+      value: {{ .Values.clusterAgent.enabled | quote }}
+    - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+      value: {{ template "datadog.fullname" . }}-cluster-agent
+    - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "clusterAgent.tokenSecretName" . }}
+          key: token
     {{- end }}
   {{- range $value := .Values.agents.containers.securityAgent.env }}
     - name: {{ $value.name }}

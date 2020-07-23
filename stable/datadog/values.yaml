@@ -388,11 +388,6 @@ datadog:
   ## Enable security agent and provide custom configs
   #
   securityAgent:
-    ## @param enabled - boolean - required
-    ## Set this to true to enable security agent
-    #
-    enabled: false
-
     ## @param compliance - object - required
     compliance:
       ## @param enabled - boolean - required
