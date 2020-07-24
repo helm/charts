@@ -1360,6 +1360,10 @@ prometheusOperator:
   ##
   configReloaderMemory: 25Mi
 
+  ## Set a Field Selector to filter watched secrets
+  ##
+  secretFieldSelector: ""
+
   ## Hyperkube image to use when cleaning up
   ##
   hyperkubeImage:

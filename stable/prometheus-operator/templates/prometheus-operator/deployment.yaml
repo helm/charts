@@ -75,6 +75,9 @@ spec:
             {{- end }}
             - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
             - --config-reloader-memory={{ .Values.prometheusOperator.configReloaderMemory }}
+            {{- if .Values.prometheusOperator.secretFieldSelector }}
+            - --secret-field-selector={{ .Values.prometheusOperator.secretFieldSelector }}
+            {{- end }}
           ports:
             - containerPort: 8080
               name: http

@@ -225,6 +225,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.logFormat` | Operator log output formatting | `"logfmt"` |
 | `prometheusOperator.logLevel` | Operator log level. Possible values: "all", "debug",	"info",	"warn",	"error", "none" | `"info"` |
 | `prometheusOperator.hostNetwork` | Host network for operator pods. Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico) | `false` |
+| `prometheusOperator.secretFieldSelector` | Set a Field Selector to filter watched secrets | `` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `{}` |
 | `prometheusOperator.podAnnotations` | Annotations to add to the operator pod | `{}` |
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
