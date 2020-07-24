@@ -1,4 +1,4 @@
-{{- if and .Values.prometheusOperator.admissionWebhooks.enabled }}
+{{- if and .Values.prometheusOperator.enabled .Values.prometheusOperator.admissionWebhooks.enabled }}
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
