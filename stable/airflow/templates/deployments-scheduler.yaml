@@ -195,18 +195,13 @@ spec:
             {{- if .Values.scheduler.connections }}
             - name: connections
               mountPath: /home/airflow/connections
-            {{- end}}
+            {{- end }}
             {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
             - name: variables-pools
               mountPath: /home/airflow/variables-pools/
-            {{- end}}
-            {{- range .Values.airflow.extraConfigmapMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-              {{- if .subPath }}
-              subPath: {{ .subPath }}
-              {{- end }}
+            {{- end }}
+            {{- if .Values.airflow.extraConfigmapMounts }}
+            {{- toYaml .Values.airflow.extraConfigmapMounts | nindent 12 }}
             {{- end }}
             {{- if .Values.airflow.extraVolumeMounts }}
             {{- toYaml .Values.airflow.extraVolumeMounts | nindent 12 }}

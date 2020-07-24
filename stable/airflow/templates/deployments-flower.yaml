@@ -81,14 +81,7 @@ spec:
               protocol: TCP
           {{- if .Values.flower.extraConfigmapMounts }}
           volumeMounts:
-            {{- range .Values.flower.extraConfigmapMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-              {{- if .subPath }}
-              subPath: {{ .subPath }}
-              {{- end }}
-            {{- end }}
+            {{- toYaml .Values.flower.extraConfigmapMounts | nindent 12 }}
           {{- end }}
           command:
             - "/usr/bin/dumb-init"

@@ -178,13 +178,8 @@ spec:
               mountPath: {{ .Values.logs.path }}
               subPath: {{ .Values.logs.persistence.subPath }}
             {{- end }}
-            {{- range .Values.airflow.extraConfigmapMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              readOnly: {{ .readOnly }}
-              {{- if .subPath }}
-              subPath: {{ .subPath }}
-              {{- end }}
+            {{- if .Values.airflow.extraConfigmapMounts }}
+            {{- toYaml .Values.airflow.extraConfigmapMounts | nindent 12 }}
             {{- end }}
             {{- if .Values.airflow.extraVolumeMounts }}
             {{- toYaml .Values.airflow.extraVolumeMounts | nindent 12 }}
