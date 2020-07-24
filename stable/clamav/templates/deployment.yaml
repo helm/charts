@@ -26,17 +26,21 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.freshclamConfig }}
+{{- if or .Values.freshclamConfig .Values.clamdConfig .Values.extraVolumeMounts }}
           volumeMounts:
+{{- end }}
+{{- if .Values.freshclamConfig }}
           - name: freshclam-config-volume
             mountPath: /etc/clamav/freshclam.conf
             subPath: freshclam.conf
 {{- end }}
 {{- if .Values.clamdConfig }}
-          volumeMounts:
           - name: clamd-config-volume
             mountPath: /etc/clamav/clamd.conf
             subPath: clamd.conf
+{{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
 {{- end }}
           ports:
             - name: clamavport
@@ -52,17 +56,21 @@ spec:
             initialDelaySeconds: 300
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-{{- if .Values.freshclamConfig }}
+{{- if or .Values.freshclamConfig .Values.clamdConfig .Values.extraVolumes }}
       volumes:
+{{- end }}
+{{- if .Values.freshclamConfig }}
         - name: freshclam-config-volume
           configMap:
             name: {{ include "clamav.fullname" . }}-freshclam
 {{- end }}
 {{- if .Values.clamdConfig }}
-      volumes:
         - name: clamd-config-volume
           configMap:
             name: {{ include "clamav.fullname" . }}-clamd
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

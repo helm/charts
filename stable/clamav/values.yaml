@@ -12,6 +12,15 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+extraVolumes: []
+  # - name: extras
+  #   emptyDir: {}
+
+extraVolumeMounts: []
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
 service:
   type: ClusterIP
   port: 3310
