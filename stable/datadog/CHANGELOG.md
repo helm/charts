@@ -1,5 +1,13 @@
 # Datadog changelog
 
+## 2.3.38
+
+* Add support of DD\_CONTAINER\_{INCLUDE,EXCLUDE}\_{METRICS,LOGS}
+
+## 2.3.37
+
+* Add NET\_BROADCAST capability
+
 ## 2.3.36
 
 * Bump default Agent version to `7.21.1`
