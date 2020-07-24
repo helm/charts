@@ -637,6 +637,8 @@ flower:
     externalPort: 5555
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    nodePort:
+      http: ""
 
   ## the number of seconds to wait (in bash) before starting the flower container
   ##
