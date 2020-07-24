@@ -23,6 +23,9 @@ spec:
     - name: flower
       protocol: TCP
       port: {{ .Values.flower.service.externalPort }}
+      {{- if and (eq .Values.flower.service.type "NodePort") (.Values.flower.service.nodePort.http) }}
+      nodePort: {{ .Values.flower.service.nodePort.http }}
+      {{- end }}
       targetPort: 5555
   {{- if eq .Values.flower.service.type "LoadBalancer" }}
   {{- if .Values.flower.service.loadBalancerIP }}

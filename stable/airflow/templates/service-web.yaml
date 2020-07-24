@@ -27,10 +27,8 @@ spec:
     - name: web
       protocol: TCP
       port: {{ .Values.web.service.externalPort | default 8080 }}
-      {{- if eq .Values.web.service.type "NodePort" }}
-      {{- if .Values.web.service.nodePort.http }}
+      {{- if and (eq .Values.web.service.type "NodePort") (.Values.web.service.nodePort.http) }}
       nodePort: {{ .Values.web.service.nodePort.http }}
-      {{- end }}
       {{- end }}
       targetPort: 8080
   {{- if eq .Values.web.service.type "LoadBalancer" }}
