@@ -3,7 +3,7 @@ description: DEPRECATED Toolkit for building data processing pipelines.
 name: spring-cloud-data-flow
 version: 2.7.2
 appVersion: 2.5.1.RELEASE
-# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+# The spring-cloud-data-flow chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
 deprecated: true
 home: http://cloud.spring.io/spring-cloud-dataflow/
 sources:
