@@ -135,3 +135,4 @@ weave-scope-cluster-agent:
   securityContext:
     runAsNonRoot: true
     readOnlyRootFilesystem: true
+    
