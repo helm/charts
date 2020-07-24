@@ -79,8 +79,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraVolumeMounts`                     | Optional array of volumes to mount inside the CoreDNS container                       | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
-| `RollingUpdate.maxUnavailable`          | Maximum number of unavailable replicas during rolling update                          | `1`                                                         |
-| `RollingUpdate.maxSurge`                | Maximum number of pods created above desired number of pods                           | `25%`                                                       |
+| `rollingUpdate.maxUnavailable`          | Maximum number of unavailable replicas during rolling update                          | `1`                                                         |
+| `rollingUpdate.maxSurge`                | Maximum number of pods created above desired number of pods                           | `25%`                                                       |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
 | `podAnnotations`                        | Optional Pod only Annotations                                                         | {}                                                          |
 | `terminationGracePeriodSeconds`         | Optional duration in seconds the pod needs to terminate gracefully.                   | 30                                                          |

@@ -32,7 +32,7 @@ resources:
 #       name: memory
 #       targetAverageUtilization: 60
 
-RollingUpdate:
+rollingUpdate:
   maxUnavailable: 1
   maxSurge: 25%
 
