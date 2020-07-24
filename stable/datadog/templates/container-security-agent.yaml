@@ -56,10 +56,13 @@
       readOnly: true
     - name: passwd
       mountPath: /etc/passwd
+      readOnly: true
     - name: group
       mountPath: /etc/group
+      readOnly: true
     - name: hostroot
       mountPath: /host/root
+      readOnly: true
     - name: procdir
       mountPath: /host/proc
       readOnly: true
