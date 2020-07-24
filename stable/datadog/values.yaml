@@ -750,6 +750,7 @@ agents:
     - SYS_RESOURCE
     - SYS_PTRACE
     - NET_ADMIN
+    - NET_BROADCAST
     - IPC_LOCK
 
     ## @param volumes - list - optional
