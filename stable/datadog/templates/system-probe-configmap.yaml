@@ -21,6 +21,12 @@ data:
       enable_tcp_queue_length: {{ $.Values.datadog.systemProbe.enableTCPQueueLength }}
       enable_oom_kill: {{ $.Values.datadog.systemProbe.enableOOMKill }}
       collect_dns_stats: {{ $.Values.datadog.systemProbe.collectDNSStats }}
+    runtime_security_config:
+      enabled: {{ $.Values.datadog.securityAgent.runtime.enabled }}
+      debug: false
+      socket: {{ $.Values.datadog.securityAgent.runtime.socket }}
+      syscall_monitor:
+        enabled: {{ $.Values.datadog.securityAgent.runtime.syscallMonitor.enabled }}
 
 {{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
 ---

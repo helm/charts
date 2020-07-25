@@ -29,6 +29,16 @@
           name: {{ template "clusterAgent.tokenSecretName" . }}
           key: token
     {{- end }}
+    - name: DD_RUNTIME_SECURITY_CONFIG_ENABLED
+      value:  {{ .Values.datadog.securityAgent.runtime.enabled | quote }}
+    {{- if .Values.datadog.securityAgent.runtime.enabled }}
+    {{- if .Values.datadog.securityAgent.runtime.socket }}
+    - name: DD_RUNTIME_SECURITY_CONFIG_SOCKET
+      value: {{ .Values.datadog.securityAgent.runtime.socket }}
+    {{- end }}
+    - name: DD_RUNTIME_SECURITY_CONFIG_SYSCALL_MONITOR_ENABLED
+      value: {{ .Values.datadog.securityAgent.runtime.syscallMonitor.enabled | quote }}
+    {{- end }}
   {{- range $value := .Values.agents.containers.securityAgent.env }}
     - name: {{ $value.name }}
       value: {{ $value.value | quote }}
@@ -51,6 +61,7 @@
       subPath: datadog.yaml
     {{- end }}
     {{- if eq .Values.targetSystem "linux" }}
+    {{- if .Values.datadog.securityAgent.compliance.enabled }}
     - name: cgroups
       mountPath: /host/sys/fs/cgroup
       readOnly: true
@@ -69,6 +80,17 @@
     {{- if .Values.datadog.securityAgent.compliance.configMap }}
     - name: complianceconfigdir
       mountPath: /etc/datadog-agent/compliance.d
+      readOnly: true
+    {{- end }}
+    {{- end }}
+    {{- if and .Values.datadog.securityAgent.runtime.enabled .Values.datadog.securityAgent.runtime.policies.configMap }}
+    - name: runtimepoliciesdir
+      mountPath: /etc/datadog-agent/runtime_security_agent.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /var/run/sysprobe
       readOnly: true
     {{- end }}
     {{- end }}

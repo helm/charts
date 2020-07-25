@@ -66,6 +66,13 @@
     name: {{ .Values.datadog.securityAgent.compliance.configMap }}
 {{- end }}
 {{- end }}
+{{- if .Values.datadog.securityAgent.runtime.enabled }}
+{{- if .Values.datadog.securityAgent.runtime.policies.configMap }}
+- name: runtimepoliciesdir
+  configMap:
+    name: {{ .Values.datadog.securityAgent.runtime.policies.configMap }}
+{{- end }}
+{{- end }}
 {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
 - hostPath:
     path: "/var/lib/datadog-agent/logs"

@@ -84,7 +84,7 @@ spec:
         {{- if .Values.datadog.systemProbe.enabled }}
           {{- include "container-system-probe" . | nindent 6 }}
         {{- end }}
-        {{- if .Values.datadog.securityAgent.compliance.enabled }}
+        {{- if or .Values.datadog.securityAgent.compliance.enabled .Values.datadog.securityAgent.runtime.enabled}}
           {{- include "container-security-agent" . | nindent 6 }}
         {{- end }}
       initContainers:

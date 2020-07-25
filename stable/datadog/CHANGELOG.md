@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.39
+
+* Introduce configuration to enable Security Agent compliance and runtime security features.
+
 ## 2.3.38
 
 * Add support of DD\_CONTAINER\_{INCLUDE,EXCLUDE}\_{METRICS,LOGS}

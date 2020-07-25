@@ -394,8 +394,39 @@ datadog:
       ## Set this to true to enable compliance checks
       #
       enabled: false
+      # @param configMap - string - required - contains compliance benchmarks that will be used
+      #
       configMap: datadog-compliance-benchmarks
+      # @param checkInterval - duration - required - compliance check run interval
+      #
       checkInterval: 20m
+
+    ## @param runtime - object - required
+    runtime:
+      ## @param enabled - boolean - optional - default: false
+      ## Set to true to enable the Security Runtime Module.
+      #
+      enabled: false
+      ## @param socket - string - optional - default: /opt/datadog-agent/run/runtime-security.sock
+      ## The full path to the location of the unix socket where security runtime module is accessed.
+      #
+      # socket: /opt/datadog-agent/run/runtime-security.sock
+
+      ## @param policies - object - required
+      ## Policy files
+      policies:
+        ## @param configMap - string - optional - contains policies that will be loaded
+        ##
+        configMap:
+
+      ## @param syscall_monitor - object - optional
+      ## Syscall monitoring
+      #
+      syscallMonitor:
+        ## @param enabled - boolean - optional - default: false
+        ## Set to true to enable the Syscall monitoring.
+        #
+        enabled: false
 
 ## @param clusterAgent - object - required
 ## This is the Datadog Cluster Agent implementation that handles cluster-wide
