@@ -30,6 +30,10 @@ spec:
       priorityClassName: "{{ .Values.proxy.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+{{- if .Values.proxy.runAsUser }}
+      securityContext:
+        runAsUser: {{ .Values.proxy.runAsUser }}
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -39,10 +43,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - "/bin/bash"
-            - "-ec"
-            - |
-              exec gosu stolon stolon-proxy
+            - stolon-proxy
           env:
             - name: POD_NAME
               valueFrom:

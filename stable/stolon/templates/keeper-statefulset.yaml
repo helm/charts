@@ -32,9 +32,14 @@ spec:
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
-{{- if .Values.keeper.fsGroup }}
+{{- if or .Values.keeper.fsGroup .Values.keeper.runAsUser }}
       securityContext:
+{{- if .Values.keeper.runAsUser }}
+        runAsUser: {{ .Values.keeper.runAsUser }}
+{{- end}}
+{{- if .Values.keeper.fsGroup }}
         fsGroup: {{ .Values.keeper.fsGroup }}
+{{- end}}
 {{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -54,11 +59,10 @@ spec:
               export POD_IP=$(hostname -i)
               export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
               export STOLON_DATA=/stolon-data
-              chown stolon:stolon $STOLON_DATA
               {{- if .Values.shmVolume.enabled }}
               chmod -R 777 /dev/shm
               {{- end }}
-              exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
+              exec stolon-keeper --data-dir $STOLON_DATA
           env:
             - name: POD_NAME
               valueFrom:

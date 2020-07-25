@@ -77,6 +77,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
+| `keeper.runAsUser`                      | Keeper securityContext runAsUser               | `stolon`                                                     |
 | `keeper.fsGroup`                        | Keeper securityContext fsGroup, do not set if pg9 or 10 | ``                                                  |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
@@ -91,6 +92,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |
+| `proxy.runAsUser`                       | Proxy securityContext runAsUser                | `stolon`                                                     |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
 | `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
@@ -101,6 +103,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
 | `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
 | `sentinel.priorityClassName`            | Sentinel priorityClassName                     | `nil`                                                        |
+| `sentinel.runAsUser`                    | Sentinel securityContext runAsUser             | `stolon`                                                     |
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |

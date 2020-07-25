@@ -14,8 +14,29 @@ rules:
   resources:
     - pods
     - endpoints
-    - configmaps
+  verbs:
+    - "watch"
+    - "get"
+    - "list"
+    - "update"
+    - "patch"
+- apiGroups:
+    - ""
+  resources:
     - events
   verbs:
-    - "*"
+    - "watch"
+    - "get"
+    - "list"
+- apiGroups:
+  - ""
+  resources:
+    - configmaps
+  verbs:
+    - "watch"
+    - "get"
+    - "list"
+    - "create"
+    - "update"
+    - "patch"
 {{- end -}}

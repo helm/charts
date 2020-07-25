@@ -31,6 +31,10 @@ spec:
       priorityClassName: "{{ .Values.sentinel.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+{{- if .Values.sentinel.runAsUser }}
+      securityContext:
+        runAsUser: {{ .Values.sentinel.runAsUser }}
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -40,10 +44,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - "/bin/bash"
-            - "-ec"
-            - |
-              exec gosu stolon stolon-sentinel
+            - stolon-sentinel
           env:
             - name: POD_NAME
               valueFrom:

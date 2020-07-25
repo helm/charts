@@ -115,6 +115,7 @@ keeper:
   annotations: {}
   resources: {}
   priorityClassName: ""
+  runAsUser: "stolon"
   fsGroup: ""
   service:
     type: ClusterIP
@@ -144,6 +145,7 @@ proxy:
   annotations: {}
   resources: {}
   priorityClassName: ""
+  runAsUser: "stolon"
   service:
     type: ClusterIP
 #    loadBalancerIP: ""
@@ -174,6 +176,7 @@ sentinel:
   annotations: {}
   resources: {}
   priorityClassName: ""
+  runAsUser: "stolon"
   nodeSelector: {}
   affinity: {}
   tolerations: []
