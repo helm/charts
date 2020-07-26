@@ -574,7 +574,7 @@ server:
 
   ## EnableServiceLinks indicates whether information about services should be injected
   ## into pod's environment variables, matching the syntax of Docker links.
-  ## WARNING: Not supported in K8s prior to v1.13.0 - therefore, the field will be skipped by the chart.
+  ## WARNING: the field is unsupported and will be skipped in K8s prior to v1.13.0.
   ##
   enableServiceLinks: true
 
