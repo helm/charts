@@ -572,7 +572,10 @@ server:
   ##
   priorityClassName: ""
 
-  ## WARNING: Not supported in K8s prior to v1.13.0 - therefore, the field will be skipped by the chart.
+  ## EnableServiceLinks indicates whether information about services should be injected
+  ## into pod's environment variables, matching the syntax of Docker links.
+  ## WARNING: Not supported in K8s prior v1.13.0 - therefore, the field will be skipped by the chart.
+  ##
   enableServiceLinks: true
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
