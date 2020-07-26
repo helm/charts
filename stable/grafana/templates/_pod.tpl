@@ -1,3 +1,4 @@
+
 {{- define "grafana.pod" -}}
 {{- if .Values.schedulerName }}
 schedulerName: "{{ .Values.schedulerName }}"
@@ -6,6 +7,10 @@ serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.securityContext }}
 securityContext:
 {{ toYaml .Values.securityContext | indent 2 }}
+{{- end }}
+{{- if .Values.hostAliases }}
+hostAliases:
+{{ toYaml .Values.hostAliases | indent 2 }}
 {{- end }}
 {{- if .Values.priorityClassName }}
 priorityClassName: {{ .Values.priorityClassName }}

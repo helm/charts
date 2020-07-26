@@ -130,6 +130,12 @@ extraExposePorts: []
  #   targetPort: 8080
  #   type: ClusterIP
 
+# overrides pod.spec.hostAliases in the grafana deployment's pods
+hostAliases: []
+  # - ip: "1.2.3.4"
+  #   hostnames:
+  #     - "my.host.com"
+
 ingress:
   enabled: false
   # Values can be templated
