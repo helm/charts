@@ -19,6 +19,9 @@ spec:
   - port: metrics
     interval: {{ .Values.serviceMonitor.interval }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- if .Values.serviceMonitor.metricRelabelings }}
+    metricRelabelings: {{ toYaml .Values.serviceMonitor.metricRelabelings | nindent 4 }}
+    {{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
