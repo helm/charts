@@ -40,7 +40,7 @@ spec:
   selector:
     app: {{ template "datadog.fullname" . }}-cluster-agent
   ports:
-  - port: {{ .Values.clusterAgent.metricsProvider.service.port }}
+  - port: {{ template "clusterAgent.metricsProvider.port" . }}
     name: metricsapi
     protocol: TCP
 {{ end }}

@@ -91,7 +91,7 @@ spec:
           name: agentport
           protocol: TCP
         {{- if .Values.clusterAgent.metricsProvider.enabled }}
-        - containerPort: {{ .Values.clusterAgent.metricsProvider.service.port }}
+        - containerPort: {{ template "clusterAgent.metricsProvider.port" . }}
           name: metricsapi
           protocol: TCP
         {{- end }}
@@ -113,7 +113,7 @@ spec:
           - name: DD_EXTERNAL_METRICS_PROVIDER_ENABLED
             value: {{ .Values.clusterAgent.metricsProvider.enabled | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_PORT
-            value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
+            value: {{ include "clusterAgent.metricsProvider.port" . | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
             value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_USE_DATADOGMETRIC_CRD

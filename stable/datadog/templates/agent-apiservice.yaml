@@ -13,7 +13,9 @@ spec:
   service:
     name: {{ template "datadog.fullname" . }}-cluster-agent-metrics-api
     namespace: {{ .Release.Namespace }}
-    port: {{ .Values.clusterAgent.metricsProvider.service.port }}
+{{- if semverCompare "^1.15-0" .Capabilities.KubeVersion.GitVersion }}
+    port: {{ template "clusterAgent.metricsProvider.port" . }}
+{{- end }}
   version: v1beta1
   insecureSkipTLSVerify: true
   group: external.metrics.k8s.io
