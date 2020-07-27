@@ -14,7 +14,7 @@ fullnameOverride: ""
 
 # Enable deamonset to scan the path / on every node
 daemonset:
-  enabled: true
+  enabled: false
   clamPathConfig:
     volumeMounts:
     - name: host-fs
