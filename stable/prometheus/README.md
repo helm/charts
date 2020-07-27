@@ -312,6 +312,7 @@ Parameter | Description | Default
 `server.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
 `server.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `server.priorityClassName` | Prometheus server priorityClassName | `nil`
+`server.enableServiceLinks` | Set service environment variables in Prometheus server pods | `true`
 `server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
