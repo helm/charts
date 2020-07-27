@@ -169,10 +169,10 @@ spec:
         severity: warning
     - alert: KubeJobCompletion
       annotations:
-        message: Job {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.job_name {{`}}`}} is taking more than one hour to complete.
+        message: Job {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.job_name {{`}}`}} is taking more than 12 hours to complete.
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-kubejobcompletion
       expr: kube_job_spec_completions{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"} - kube_job_status_succeeded{job="kube-state-metrics", namespace=~"{{ $targetNamespace }}"}  > 0
-      for: 1h
+      for: 12h
       labels:
         severity: warning
     - alert: KubeJobFailed
