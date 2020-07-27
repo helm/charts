@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.40
+
+* Update documentation for resource requests & limits default values.
+
 ## 2.3.39
 
 * Propagate `datadog.checksd` to the clusterchecks runner to support custom checks there.
