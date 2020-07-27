@@ -53,7 +53,7 @@ spec:
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.securityContext }}
-        securityContext: 
+        securityContext:
           {{- range $securityPolicy, $value := .Values.securityContext }}
             {{ $securityPolicy }}: {{ $value }}
           {{- end }}
@@ -90,12 +90,15 @@ spec:
         - -webhook-port={{ .Values.webhookPort }}
         - -webhook-svc-name={{ .Release.Name }}-webhook
         - -webhook-config-name={{ include "sparkoperator.fullname" . }}-webhook-config
+        - -webhook-namespace-selector={{ .Values.webhookNamespaceSelector }}
         {{- end }}
         {{- if .Values.enableResourceQuotaEnforcement }}
         - -enable-resource-quota-enforcement={{ .Values.enableResourceQuotaEnforcement }}
         {{- end }}
-        {{- if .Values.enableLeaderElection }}
-        - -leader-election={{ .Values.enableLeaderElection }}
+        {{- if .Values.leaderElection.enable }}
+        - -leader-election={{ .Values.leaderElection.enable }}
+        - -leader-election-lock-namespace={{ include "sparkoperator.leaderElectionLockNamespace" . }}
+        - -leader-election-lock-name={{ .Values.leaderElection.lockName }}
         {{- end }}
         {{- if .Values.resources }}
         resources:
@@ -104,4 +107,8 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}

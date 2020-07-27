@@ -1,5 +1,6 @@
+{{- $statefulSet := or (.Values.autoscaling.enabled) (.Values.useStatefulSet) -}}
 apiVersion: apps/v1
-{{- if .Values.autoscaling.enabled}}
+{{- if $statefulSet }}
 kind: StatefulSet
 {{- else}}
 kind: Deployment
@@ -15,11 +16,14 @@ spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
+{{- if .Values.autoscaling.enabled }}
+  serviceName: {{ template "fluentd.name" . }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
-  {{- if .Values.persistence.enabled }}
+  {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
   strategy:
     type: Recreate
   {{- end }}
@@ -28,6 +32,9 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.deployment.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.annotations }}
@@ -108,7 +115,7 @@ spec:
           configMap:
             name: {{ template "fluentd.fullname" . }}
             defaultMode: 0777
-        {{- if and .Values.persistence.enabled (not .Values.autoscaling.enabled) }}
+        {{- if and .Values.persistence.enabled (not $statefulSet) }}
         - name: buffer
           persistentVolumeClaim:
             claimName: {{ template "fluentd.fullname" . }}
@@ -131,7 +138,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-{{- if and .Values.persistence.enabled (.Values.autoscaling.enabled) }}
+{{- if and .Values.persistence.enabled ($statefulSet) }}
   volumeClaimTemplates:
   - metadata:
       name: buffer

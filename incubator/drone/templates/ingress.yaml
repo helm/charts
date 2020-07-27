@@ -1,40 +1,41 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "drone.fullname" . }}
-{{- $httpPort := .Values.service.httpPort }}
+{{- $fullName := include "drone.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
-  annotations:
-  {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  name: {{ $fullName }}
   labels:
-    app: {{ template "drone.name" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  name: {{ template "drone.fullname" . }}
+{{ include "drone.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
+    - host: {{ .host | quote }}
       http:
         paths:
-        {{- if index $.Values.ingress "annotations" }}
-          {{- if eq (index $.Values.ingress.annotations "kubernetes.io/ingress.class" | default "") "gce" }}
-          - path: /*
-          {{- else }}{{/* Has annotations but ingress class is not "gce" */}}
-          - path: /
-          {{- end }}
-        {{- else}}{{/* Has no annotations */}}
-          - path: /
-        {{- end }}
+        {{- range .paths }}
+          - path: {{ . }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $httpPort }}
-  {{- end -}}
-  {{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
-{{- end -}}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}

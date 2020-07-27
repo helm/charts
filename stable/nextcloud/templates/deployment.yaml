@@ -14,7 +14,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
-    type: Recreate
+{{ toYaml .Values.nextcloud.strategy | indent 4 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "nextcloud.name" . }}
@@ -69,13 +69,13 @@ spec:
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db"  }}
-              key: db-username
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.usernameKey | default "db-username" }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db"  }}
-              key: db-password
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.passwordKey | default "db-password" }}
         {{- else }}
           {{- if eq .Values.externalDatabase.type "postgresql" }}
         - name: POSTGRES_HOST
@@ -85,13 +85,13 @@ spec:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db" }}
-              key: db-username
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.usernameKey | default "db-username" }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db" }}
-              key: db-password
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.passwordKey | default "db-password" }}
           {{- else }}
         - name: MYSQL_HOST
           value: {{ .Values.externalDatabase.host | quote }}
@@ -100,13 +100,13 @@ spec:
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db" }}
-              key: db-username
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.usernameKey | default "db-username" }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ printf "%s-%s" .Release.Name "db" }}
-              key: db-password
+              name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-%s" .Release.Name "db") }}
+              key: {{ .Values.externalDatabase.existingSecret.passwordKey | default "db-password" }}
           {{- end }}
         {{- end }}
         - name: NEXTCLOUD_ADMIN_USER
@@ -203,25 +203,25 @@ spec:
         volumeMounts:
         - name: nextcloud-data
           mountPath: /var/www/
-          subPath: root
+          subPath: {{ ternary "root" (printf "%s/%s" .Values.nextcloud.persistence.subPath "root") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html
-          subPath: html
+          subPath: {{ ternary "html" (printf "%s/%s" .Values.nextcloud.persistence.subPath "html") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
-          subPath: data
+          subPath: {{ ternary "data" (printf "%s/%s" .Values.nextcloud.persistence.subPath "data") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/config
-          subPath: config
+          subPath: {{ ternary "config" (printf "%s/%s" .Values.nextcloud.persistence.subPath "config") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/custom_apps
-          subPath: custom_apps
+          subPath: {{ ternary "custom_apps" (printf "%s/%s" .Values.nextcloud.persistence.subPath "custom_apps") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/tmp
-          subPath: tmp
+          subPath: {{ ternary "tmp" (printf "%s/%s" .Values.nextcloud.persistence.subPath "tmp") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/themes
-          subPath: themes
+          subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
         {{- range $key, $value := .Values.nextcloud.configs }}
         - name: nextcloud-config
           mountPath: /var/www/html/config/{{ $key }}
@@ -240,6 +240,9 @@ spec:
         - name: nextcloud-phpconfig
           mountPath: /usr/local/etc/php/conf.d/{{ $key }}
           subPath: {{ $key }}
+        {{- end }}
+        {{- if .Values.nextcloud.extraVolumeMounts }}
+{{ toYaml .Values.nextcloud.extraVolumeMounts | indent 8 }}
         {{- end }}
         {{- if .Values.nginx.enabled }}
       - name: {{ .Chart.Name }}-nginx
@@ -282,25 +285,25 @@ spec:
         volumeMounts:
         - name: nextcloud-data
           mountPath: /var/www/
-          subPath: root
+          subPath: {{ ternary "root" (printf "%s/%s" .Values.nextcloud.persistence.subPath "root") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html
-          subPath: html
+          subPath: {{ ternary "html" (printf "%s/%s" .Values.nextcloud.persistence.subPath "html") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: {{ .Values.nextcloud.datadir }}
-          subPath: data
+          subPath: {{ ternary "data" (printf "%s/%s" .Values.nextcloud.persistence.subPath "data") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/config
-          subPath: config
+          subPath: {{ ternary "config" (printf "%s/%s" .Values.nextcloud.persistence.subPath "config") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/custom_apps
-          subPath: custom_apps
+          subPath: {{ ternary "custom_apps" (printf "%s/%s" .Values.nextcloud.persistence.subPath "custom_apps") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/tmp
-          subPath: tmp
+          subPath: {{ ternary "tmp" (printf "%s/%s" .Values.nextcloud.persistence.subPath "tmp") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-data
           mountPath: /var/www/html/themes
-          subPath: themes
+          subPath: {{ ternary "themes" (printf "%s/%s" .Values.nextcloud.persistence.subPath "themes") (empty .Values.nextcloud.persistence.subPath) }}
         - name: nextcloud-nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
@@ -339,6 +342,9 @@ spec:
       - name: nextcloud-nginx-config
         configMap:
           name: {{ template "nextcloud.fullname" . }}-nginxconfig
+      {{- end }}
+      {{- if .Values.nextcloud.extraVolumes }}
+{{ toYaml .Values.nextcloud.extraVolumes | indent 6 }}
       {{- end }}
       {{- if .Values.nginx.enabled }}
       # Will mount configuration files as www-data (id: 82) for nextcloud

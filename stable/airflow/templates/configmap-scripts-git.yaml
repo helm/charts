@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "airflow.fullname" . }}-scripts-git
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  git-clone.sh: |
+    #!/bin/sh -e
+    REPO=$1
+    REF=$2
+    DIR=$3
+    REPO_HOST=$4
+    REPO_PORT=$5
+    PRIVATE_KEY=$6
+
+    mkdir -p ~/.ssh/
+
+    {{- if .Values.dags.git.sshKeyscan }}
+    ssh-keyscan -p $REPO_PORT $REPO_HOST >> ~/.ssh/known_hosts
+    {{- end }}
+
+    {{- if .Values.dags.git.secret }}
+    cp -rL /keys/* ~/.ssh/
+    chmod 600 ~/.ssh/*
+    echo -e "Host $REPO_HOST\n  Port $REPO_PORT\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
+    {{- end }}
+
+    # ensure the git directory is empty, so we can safely clone
+    if [ -d "$DIR" ]; then
+      rm -rf $( find $DIR -mindepth 1 )
+    fi
+
+    git clone $REPO -b $REF $DIR
+  git-sync.sh: |
+    #!/bin/sh -e
+    REPO=$1
+    REF=$2
+    DIR=$3
+    REPO_HOST=$4
+    REPO_PORT=$5
+    PRIVATE_KEY=$6
+    SYNC_TIME=$7
+
+    mkdir -p ~/.ssh/
+
+    {{- if .Values.dags.git.sshKeyscan }}
+    ssh-keyscan -p $REPO_PORT $REPO_HOST >> ~/.ssh/known_hosts
+    {{- end }}
+
+    {{- if .Values.dags.git.secret }}
+    cp -rL /keys/* ~/.ssh/
+    chmod 600 ~/.ssh/*
+    echo -e "Host $REPO_HOST\n  Port $REPO_PORT\n  IdentityFile ~/.ssh/$PRIVATE_KEY" > ~/.ssh/config
+    {{- end }}
+
+    {{- if and (.Values.dags.git.gitSync.enabled) (not .Values.dags.initContainer.enabled) }}
+    if [ -d "$DIR" ]; then
+      rm -rf $( find $DIR -mindepth 1 )
+    fi
+    git clone $REPO -b $REF $DIR
+    {{- end }}
+
+    # to break the infinite loop when we receive SIGTERM
+    trap "exit 0" SIGTERM
+
+    cd $DIR
+    while true; do
+      git fetch origin $REF;
+      git reset --hard origin/$REF;
+      git clean -fd;
+      date;
+      sleep $SYNC_TIME;
+    done

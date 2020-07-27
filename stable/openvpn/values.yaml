@@ -9,6 +9,9 @@ updateStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
 
+# For supporting pulling from private registries
+imagePullSecretName:
+
 image:
   repository: jfelten/openvpn-docker
   tag: 1.1.0
@@ -32,6 +35,10 @@ service:
 # podAnnotations:
 #   backup.ark.heptio.com/backup-volumes: certs
 podAnnotations: {}
+
+# Add privileged init container to enable IPv4 forwarding
+ipForwardInitContainer: false
+
 resources:
   limits:
     cpu: 300m
@@ -79,6 +86,8 @@ openvpn:
   # OVPN_K8S_SVC_NETWORK:
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
+  # Set default route which openvpn figures basing on network routes inside openvpn pod
+  DEFAULT_ROUTE_ENABLED: true
   # Server certificate data
   # keystoreSecret:
   # secret with openvpn certificates. If specified, certificates are taken from the secret
@@ -94,10 +103,22 @@ openvpn:
   taKey: false
   # Override default cipher
   # cipher: AES-256-CBC
-  # Arbitrary lines appended to the end of the server configuration file
-  # conf: |
+  # Lines appended to the end of the server configuration file
+  # serverConf: |
   #  max-clients 100
   #  client-to-client
+
+  # Lines appended to the end of the client configuration file
+  # Example: if all of your clients are Ubuntu (18.04+) you may need to install
+  # the update-systemd-resolved package (apt install update-systemd-resolved) then
+  # set the following to make sure systemd-resolved routes DNS requests correctly:
+  # clientConf: |
+  #  script-security 2
+  #  up /etc/openvpn/update-systemd-resolved
+  #  up-restart
+  #  down /etc/openvpn/update-systemd-resolved
+  #  down-pre
+
   # Enable istio support for openvpn connections
   istio:
     enabled: false
@@ -108,6 +129,12 @@ openvpn:
   # - -A FORWARD -m conntrack --ctstate NEW -d 10.240.0.0/255.255.0.0 -j ACCEPT
   # - -A FORWARD -j REJECT
 
+  # Enable CCD support
+  ccd:
+    enabled: false
+    config: {}
+    # johndoe: "ifconfig-push 10.240.100.10 10.240.100.11"
+    # janedoe: "ifconfig-push 10.240.100.20 10.240.100.21"
 
 nodeSelector: {}
 tolerations: []

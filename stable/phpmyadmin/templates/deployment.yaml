@@ -75,12 +75,18 @@ spec:
             - name: DATABASE_ENABLE_SSL
               value: {{ ternary "yes" "no" .Values.db.enableSsl | quote }}
             {{- if .Values.db.enableSsl }}
+            {{- if not (empty .Values.db.ssl.clientKey) }}
             - name: DATABASE_SSL_KEY
-              value: "/certs/server_key.pem"
+              value: "/db_certs/server_key.pem"
+            {{- end }}
+            {{- if not (empty .Values.db.ssl.clientCertificate) }}
             - name: DATABASE_SSL_CERT
-              value: "/certs/server_certificate.pem"
+              value: "/db_certs/server_certificate.pem"
+            {{- end }}
+            {{- if not (empty .Values.db.ssl.caCertificate) }}
             - name: DATABASE_SSL_CA
-              value: "/certs/ca_certificate.pem"
+              value: "/db_certs/ca_certificate.pem"
+            {{- end }}
             {{- if .Values.db.ssl.ciphers }}
             - name: DATABASE_SSL_CIPHERS
               values: {{ .Values.db.ssl.ciphers | quote }}
@@ -111,7 +117,7 @@ spec:
           {{- if .Values.db.enableSsl }}
           volumeMounts:
           - name: ssl-certs
-            mountPath: /certs
+            mountPath: /db_certs
           {{- end }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
@@ -143,10 +149,16 @@ spec:
           secret:
             secretName: {{ template "phpmyadmin.fullname" . }}-certs
             items:
+              {{- if not (empty .Values.db.ssl.clientKey) }}
               - key: server_key.pem
                 path: server_key.pem
+              {{- end }}
+              {{- if not (empty .Values.db.ssl.clientCertificate) }}
               - key: server_certificate.pem
                 path: server_certificate.pem
+              {{- end }}
+              {{- if not (empty .Values.db.ssl.caCertificate) }}
               - key: ca_certificate.pem
                 path: ca_certificate.pem
+              {{- end }}
 {{- end }}

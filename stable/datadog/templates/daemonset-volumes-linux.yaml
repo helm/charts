@@ -1,0 +1,69 @@
+{{- define "daemonset-volumes-linux" -}}
+- hostPath:
+    path: /proc
+  name: procdir
+- hostPath:
+    path: /sys/fs/cgroup
+  name: cgroups
+{{- if .Values.datadog.dogstatsd.useSocketVolume }}
+- hostPath:
+    path: {{ .Values.datadog.dogstatsd.hostSocketPath }}
+    type: DirectoryOrCreate
+  name: dsdsocket
+{{- end }}
+{{- if .Values.datadog.apm.useSocketVolume }}
+- hostPath:
+    path: {{ .Values.datadog.apm.hostSocketPath }}
+    type: DirectoryOrCreate
+  name: apmsocket
+{{- end }}
+- name: s6-run
+  emptyDir: {}
+{{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+- name: confd
+  configMap:
+    name: {{ template "datadog.fullname" . }}-confd
+{{- end }}
+{{- if .Values.datadog.systemProbe.enabled }}
+- name: sysprobe-config
+  configMap:
+    name: {{ template "datadog.fullname" . }}-system-probe-config
+{{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
+- name: datadog-agent-security
+  configMap:
+    name: {{ template "datadog.fullname" . }}-security
+- hostPath:
+    path: {{ .Values.datadog.systemProbe.seccompRoot }}
+  name: seccomp-root
+{{- end }}
+- hostPath:
+    path: /sys/kernel/debug
+  name: debugfs
+- name: sysprobe-socket-dir
+  emptyDir: {}
+- hostPath:
+    path: /lib/modules
+  name: modules
+- hostPath:
+    path: /usr/src
+  name: src
+{{- end }}
+{{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled }}
+- hostPath:
+    path: /etc/passwd
+  name: passwd
+{{- end }}
+{{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
+- hostPath:
+    path: "/var/lib/datadog-agent/logs"
+  name: pointerdir
+- hostPath:
+    path: /var/log/pods
+  name: logpodpath
+{{- if not .Values.datadog.criSocketPath }}
+- hostPath:
+    path: /var/lib/docker/containers
+  name: logdockercontainerpath
+{{- end }}
+{{- end }}
+{{- end -}}

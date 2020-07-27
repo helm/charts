@@ -34,7 +34,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Autoscaling
 
-By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+By enabling autoscaling the chart will use statefulset with hpa instead of deployment with PVC.
 Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
 The autoscaling is disabled by default for backward compatibility
 
@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the fluentd chart and t
 
 Parameter | Description | Default
 --- | --- | ---
+`useStatefulSet` | Deploy as a StatefulSet regardless of whether autoscaling is enabled | `nil`
 `affinity` | node/pod affinities | `{}`
 `configMaps` | Fluentd configuration | See [values.yaml](values.yaml)
 `output.host` | output host | `elasticsearch-client.default.svc.cluster.local`
@@ -52,6 +53,7 @@ Parameter | Description | Default
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
+`deployment.labels` | Additional labels for pods | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
 `image.tag` | Image tag | `v2.4.0`

@@ -118,3 +118,11 @@ app.kubernetes.io/component: kafka-monitor
 {{ .Values.prometheus.operator.serviceMonitor.namespace }}
 {{- end -}}
 {{- end -}}
+
+{{- define "prometheusRule.namespace" -}}
+{{- if .Values.prometheus.operator.prometheusRule.releaseNamespace -}}
+{{ .Release.Namespace }}
+{{- else -}}
+{{ .Values.prometheus.operator.prometheusRule.namespace }}
+{{- end -}}
+{{- end -}}

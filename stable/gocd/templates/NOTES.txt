@@ -43,7 +43,7 @@
 {{ end }}
 
 3. The GoCD server URL for configuring the Kubernetes elastic agent plugin settings:
-    echo "https://$(kubectl get service {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.spec.clusterIP}'):8154/go"
+    echo "http://$(kubectl get service {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.spec.clusterIP}'):8153/go"
 
 4. The cluster URL for configuring the Kubernetes elastic agent plugin settings can be obtained by:
     kubectl cluster-info

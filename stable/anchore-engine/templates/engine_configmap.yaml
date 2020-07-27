@@ -11,15 +11,6 @@ metadata:
     {{ toYaml . | nindent 4 }}
     {{- end }}
 data:
-  ANCHORE_DB_NAME: {{ index .Values "postgresql" "postgresDatabase" | quote }}
-  ANCHORE_DB_USER: {{ index .Values "postgresql" "postgresUser" | quote }}
-  {{- if and (index .Values "postgresql" "externalEndpoint") (not (index .Values "postgresql" "enabled")) }}
-  ANCHORE_DB_HOST: {{ index .Values "postgresql" "externalEndpoint" | quote }}
-  {{- else if and (index .Values "cloudsql" "enabled") (not (index .Values "postgresql" "enabled")) }}
-  ANCHORE_DB_HOST: "localhost:5432"
-  {{- else }}
-  ANCHORE_DB_HOST: "{{ template "postgres.fullname" . }}:5432"
-  {{- end }}
   config.yaml: |
     # Anchore Service Configuration File from ConfigMap
     service_dir: {{ .Values.anchoreGlobal.serviceDir }}
@@ -31,6 +22,14 @@ data:
     host_id: "${ANCHORE_POD_NAME}"
     internal_ssl_verify: {{ .Values.anchoreGlobal.internalServicesSsl.verifyCerts }}
     auto_restart_services: false
+
+    {{- if .Values.anchoreEnterpriseGlobal.enabled }}
+    license_file: /home/anchore/license.yaml
+    {{- end }}
+
+    global_client_connect_timeout: {{ default 0 .Values.anchoreGlobal.clientConnectTimeout }}
+    global_client_read_timeout: {{ default 0 .Values.anchoreGlobal.clientReadTimeout }}
+
     metrics:
       enabled: {{ .Values.anchoreGlobal.enableMetrics }}
       auth_disabled: {{ .Values.anchoreGlobal.metricsAuthDisabled }}
@@ -46,6 +45,9 @@ data:
         # If enabled only sync specific feeds instead of all that are found.
         enabled: true
         feeds:
+          {{- if not .Values.anchoreEnterpriseGlobal.enabled }}
+          github: {{ default "true" .Values.anchoreGlobal.syncGithub }}
+          {{- end }}
           # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
           vulnerabilities: {{ default "true" .Values.anchoreGlobal.syncVulnerabilites }}
           # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
@@ -61,9 +63,15 @@ data:
           # anchore support for finding out more about this service
           {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
           vulndb: {{ default "true" .Values.anchoreEnterpriseFeeds.vulndbDriverEnabled }}
+          # Enabling microsoft syncs MSRC data from an on-premise anchore enterprise feeds service. Please contact
+          # anchore support for finding out more about this service
+          microsoft: {{ .Values.anchoreEnterpriseFeeds.msrcDriverEnabled }}
           {{- else }}
           vulndb: false
+          microsoft: false
           {{- end }}
+          # Sync github data if available for GHSA matches
+          github: {{ default "true" .Values.anchoreGlobal.syncGithub }}
       {{- if and .Values.anchoreEnterpriseGlobal.enabled .Values.anchoreEnterpriseFeeds.enabled }}
       {{- if .Values.anchoreGlobal.internalServicesSsl.enabled }}
       url: "https://{{- template "anchore-engine.enterprise-feeds.fullname" . }}:{{- .Values.anchoreEnterpriseFeeds.service.port }}/v1/feeds"
@@ -80,7 +88,7 @@ data:
       anonymous_user_password: pbiU2RYZ2XrmYQ
       {{- end }}
       connection_timeout_seconds: {{ default 3 .Values.anchoreGlobal.feedsConnectionTimeout }}
-      read_timeout_seconds: {{ default 60 .Values.anchoreGlobal.feedsReadTimeout }}
+      read_timeout_seconds: {{ default 180 .Values.anchoreGlobal.feedsReadTimeout }}
     default_admin_password: ${ANCHORE_ADMIN_PASSWORD}
     default_admin_email: {{ .Values.anchoreGlobal.defaultAdminEmail }}
 
@@ -117,7 +125,7 @@ data:
           timeout: {{ .Values.anchoreGlobal.dbConfig.timeout }}
           ssl: false
         db_pool_size: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
-        db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolSize }}
+        db_pool_max_overflow: {{ .Values.anchoreGlobal.dbConfig.connectionPoolMaxOverflow }}
     services:
       apiext:
         enabled: true

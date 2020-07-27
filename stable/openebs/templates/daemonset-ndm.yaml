@@ -33,7 +33,14 @@ spec:
       hostNetwork: true
       containers:
       - name: {{ template "openebs.name" . }}-ndm
-        image: "{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
+        image: "{{ .Values.image.repository }}{{ .Values.ndm.image }}:{{ .Values.ndm.imageTag }}"
+        args:
+          - -v=4
+{{- if .Values.featureGates.enabled }}
+{{- if .Values.featureGates.GPTBasedUUID.enabled }}
+          - --feature-gates={{ .Values.featureGates.GPTBasedUUID.featureGateFlag }}
+{{- end}}
+{{- end}}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           privileged: true
@@ -67,11 +74,14 @@ spec:
           value: "{{ .Values.ndm.sparse.count }}"
 {{- end }}
 {{- end }}
+        # Process name used for matching is limited to the 15 characters
+        # present in the pgrep output.
+        # So fullname can be used here with pgrep (cmd is < 15 chars).
         livenessProbe:
           exec:
             command:
             - pgrep
-            - ".*ndm"
+            - "ndm"
           initialDelaySeconds: {{ .Values.ndm.healthCheck.initialDelaySeconds }}
           periodSeconds: {{ .Values.ndm.healthCheck.periodSeconds }}
         volumeMounts:
@@ -84,6 +94,8 @@ spec:
         - name: procmount
           mountPath: /host/proc
           readOnly: true
+        - name: basepath
+          mountPath: /var/openebs/ndm
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
         - name: sparsepath
@@ -104,6 +116,10 @@ spec:
         hostPath:
           path: /proc
           type: Directory
+      - name: basepath
+        hostPath:
+          path: "{{ .Values.varDirectoryPath.baseDir }}/ndm"
+          type: DirectoryOrCreate
 {{- if .Values.ndm.sparse }}
 {{- if .Values.ndm.sparse.path }}
       - name: sparsepath

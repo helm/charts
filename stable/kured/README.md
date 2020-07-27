@@ -2,6 +2,12 @@
 
 See https://github.com/weaveworks/kured
 
+## Deprecation
+
+This chart is deprecated! It has been moved to the kured repository.
+See https://github.com/weaveworks/kured/tree/master/charts/kured for details.
+
+
 ## Autolock feature
 
 This feature is not natively supported by kured but is added using Kubernetes Cronjob to annotate daemonset when to allow kured to run using the lock configuration annotation https://github.com/weaveworks/kured#overriding-lock-configuration
@@ -10,7 +16,7 @@ This feature is not natively supported by kured but is added using Kubernetes Cr
 | Config                  | Description                                                                 | Default                    |
 | ------                  | -----------                                                                 | -------                    |
 | `image.repository`      | Image repository                                                            | `weaveworks/kured` |
-| `image.tag`             | Image tag                                                                   | `1.2.0`                    |
+| `image.tag`             | Image tag                                                                   | `1.4.0`                    |
 | `image.pullPolicy`      | Image pull policy                                                           | `IfNotPresent`             |
 | `image.pullSecrets`     | Image pull secrets                                                          | `[]`                       |
 | `extraArgs`             | Extra arguments to pass to `/usr/bin/kured`. See below.                     | `{}`                       |
@@ -24,8 +30,8 @@ This feature is not natively supported by kured but is added using Kubernetes Cr
 | `priorityClassName`     | Priority Class to be used by the pods                                       | `""`                       |
 | `podAnnotations`        | Annotations to apply to pods (eg to add Prometheus annotations)             | `{}`                       |
 | `autolock.enabled`      | Activate autolock to define when to allow kured to be executed                                                        | `false` |
-| `autolock.image.repository`      | Image repository for kubectl command                                                         | `honestica/k8s-tools` |
-| `autolock.image.tag`             | Image tag                                                                   | `1c80a6579bdb73059d72101c9f82f26291954d68`                    |
+| `autolock.image.repository`      | Image repository for kubectl command                                                         | `docker.io/bitnami/kubectl` |
+| `autolock.image.tag`             | Image tag                                                                   | `1.17.5`                    |
 | `autolock.scheduleUnlock`      | CronJob schedule to unlock kured                                                      | `0 4 * * *` |
 | `autolock.schedulelock`      | CronJob schedule to lock kured                                                      | `0 6 * * *` |
 

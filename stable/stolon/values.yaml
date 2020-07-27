@@ -1,8 +1,11 @@
 # clusterName:
 image:
   repository: sorintlab/stolon
-  tag: v0.13.0-pg10
+  tag: v0.16.0-pg10
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  # pullSecrets:
+  #   - name: "myKubernetesSecret"
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:
@@ -11,6 +14,10 @@ etcdImage:
   pullPolicy: IfNotPresent
 
 debug: false
+
+# Enable the creation of a shm volume
+shmVolume:
+  enabled: false
 
 persistence:
   enabled: true
@@ -43,12 +50,16 @@ replicationSecret:
   usernameKey: pg_repl_username
   passwordKey: pg_repl_password
 
+superuserPasswordFile:
+
 superuserUsername: "stolon"
-## password for the superuser (REQUIRED if superuserSecret is not set)
+## password for the superuser (REQUIRED if superuserSecret and superuserPasswordFile are not set)
 superuserPassword:
 
+replicationPasswordFile:
+
 replicationUsername: "repluser"
-## password for the replication user (REQUIRED if replicationSecret is not set)
+## password for the replication user (REQUIRED if replicationSecret and replicationPasswordFile are not set)
 replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
@@ -81,6 +92,7 @@ serviceMonitor:
 job:
   autoCreateCluster: true
   autoUpdateClusterSpec: true
+  annotations: {}
 
 clusterSpec: {}
   # sleepInterval: 1s

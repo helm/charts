@@ -1,25 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "drone.fullname" . }}
+  name: {{ include "drone.fullname" . }}
   labels:
-    app: {{ template "drone.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "drone.labels" . | indent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: http
-    port: {{ .Values.service.httpPort }}
-    targetPort: 8000
-{{- if hasKey .Values.service "nodePort" }}
-    nodePort: {{ .Values.service.nodePort }}
-{{- end }}
-  - name: grpc
-    port: 9000
-    targetPort: 9000
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
-    app: {{ template "drone.name" . }}
-    release: {{ .Release.Name | quote }}
-    component: server
+    app.kubernetes.io/name: {{ include "drone.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

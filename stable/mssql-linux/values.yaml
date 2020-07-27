@@ -70,3 +70,10 @@ resources:
   #  memory: 2Gi
 nodeSelector: {}
   # kubernetes.io/hostname: minikube
+
+tolerations: []
+
+affinity: {}
+
+securityContext: {}
+  # runAsUser: 1000

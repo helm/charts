@@ -1,14 +1,16 @@
-{{- if and .Values.exporter.enabled .Values.exporter.servicemonitor }}
+{{- if and .Values.exporter.enabled .Values.exporter.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "cassandra.fullname" . }}
-  name: hello-prometheus-scraping
   labels:
     app: {{ template "cassandra.name" . }}
     chart: {{ template "cassandra.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- if .Values.exporter.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.exporter.serviceMonitor.additionalLabels | indent 4 }}
+    {{- end }}
 spec:
   jobLabel: {{ template "cassandra.name" . }}
   endpoints:

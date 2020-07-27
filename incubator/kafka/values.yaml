@@ -142,6 +142,9 @@ external:
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+  # Labels to be added to external services
+  # labels:
+  #  aLabel: "value"
   dns:
     useInternal: false
     useExternal: true
@@ -368,7 +371,7 @@ prometheus:
     enabled: false
 
     serviceMonitor:
-      # Namespace Prometheus is installed in
+      # Namespace in which to install the ServiceMonitor resource.
       namespace: monitoring
       # Use release namespace instead
       releaseNamespace: false
@@ -378,6 +381,39 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+    prometheusRule:
+      ## Add Prometheus Rules?
+      enabled: false
+
+      ## Namespace in which to install the PrometheusRule resource.
+      namespace: monitoring
+      # Use release namespace instead
+      releaseNamespace: false
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus
+
+      ## Some example rules.
+      ## e.g. max(kafka_controller_kafkacontroller_activecontrollercount_value{service="my-kafka-release"}) by (service) < 1
+      rules:
+      - alert: KafkaNoActiveControllers
+        annotations:
+          message: The number of active controllers in {{ "{{" }} $labels.namespace {{ "}}" }} is less than 1. This usually means that some of the Kafka nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one whilst monitoring the under-replicated partitions graph).
+        expr: max(kafka_controller_kafkacontroller_activecontrollercount_value) by (namespace) < 1
+        for: 5m
+        labels:
+          severity: critical
+      - alert: KafkaMultipleActiveControllers
+        annotations:
+          message: The number of active controllers in {{ "{{" }} $labels.namespace {{ "}}" }} is greater than 1. This usually means that some of the Kafka nodes aren't communicating properly. If it doesn't resolve itself you can try killing the pods (one by one whilst monitoring the under-replicated partitions graph).
+        expr: max(kafka_controller_kafkacontroller_activecontrollercount_value) by (namespace) > 1
+        for: 5m
+        labels:
+          severity: critical
 
 ## Kafka Config job configuration
 ##
@@ -425,6 +461,11 @@ topics: []
   #         - Write
   #     - user: all
   #       operations: [ All ]
+
+## Enable/disable the chart's tests.  Useful if using this chart as a dependency of
+## another chart and you don't want these tests running when trying to develop and
+## test your own chart.
+testsEnabled: true
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

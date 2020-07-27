@@ -4,10 +4,31 @@
 
 MariaDB is developed as open source software and as a relational database it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained MariaDB Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```bash
-$ helm install stable/mariadb
+$ helm install my-release stable/mariadb
 ```
 
 ## Introduction
@@ -27,7 +48,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/mariadb
+$ helm install my-release stable/mariadb
 ```
 
 The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -64,7 +85,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `volumePermissions.enabled`                 | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`             |
 | `volumePermissions.image.registry`          | Init container volume-permissions image registry    | `docker.io`                                                       |
 | `volumePermissions.image.repository`        | Init container volume-permissions image name        | `bitnami/minideb`                                                 |
-| `volumePermissions.image.tag`               | Init container volume-permissions image tag         | `stretch`                                                         |
+| `volumePermissions.image.tag`               | Init container volume-permissions image tag         | `buster`                                                          |
 | `volumePermissions.image.pullPolicy`        | Init container volume-permissions image pull policy | `Always`                                                          |
 | `volumePermissions.resources`               | Init container resource requests/limit              | `nil`                                                             |
 | `service.type`                              | Kubernetes service type                             | `ClusterIP`                                                       |
@@ -200,7 +221,7 @@ The above parameters map to the env variables defined in [bitnami/mariadb](http:
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set rootUser.password=secretpassword,db.user=app_database \
     stable/mariadb
 ```
@@ -210,7 +231,7 @@ The above command sets the MariaDB `root` account password to `secretpassword`. 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/mariadb
+$ helm install my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -276,7 +297,7 @@ The feature allows for specifying a template string for a initContainer in the m
 master:
   extraInitContainers: |
     - name: initcontainer
-      image: bitnami/minideb:stretch
+      image: bitnami/minideb:buster
       command: ["/bin/sh", "-c"]
       args:
         - install_packages curl && curl http://api-service.local/db/starting;

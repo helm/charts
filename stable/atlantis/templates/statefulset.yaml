@@ -111,6 +111,13 @@ spec:
           ports:
           - name: atlantis
             containerPort: 4141
+          {{- if .Values.loadEnvFromSecrets }}
+          envFrom:
+          {{- range .Values.loadEnvFromSecrets }}
+            - secretRef:
+                name: {{ . }}
+          {{- end }}
+          {{- end }}
           env:
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
@@ -258,7 +265,7 @@ spec:
             readOnly: true
             mountPath: /etc/secret-gitconfig
           {{- end }}
-          {{- if or .Values.aws .Values.awsSecretName}}
+          {{- if or .Values.aws .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
             mountPath: /home/atlantis/.aws

@@ -23,11 +23,9 @@ spec:
     {{- end }}
   template:
     metadata:
-      {{- if .Values.master.annotations }}
+      {{- with .Values.master.annotations }}
       annotations:
-        {{- range $key, $value := .Values.master.annotations }}
-        {{ $key }}: {{ $value }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         app: {{ template "mariadb.name" . }}
@@ -302,7 +300,7 @@ spec:
               - key: mariadb-password
                 path: mariadb-password
               {{- end }}
-              {{- if .Values.replication.injectSecretsAsVolume }}
+              {{- if and .Values.replication.enabled .Values.replication.injectSecretsAsVolume }}
               - key: mariadb-replication-password
                 path: mariadb-replication-password
               {{- end }}

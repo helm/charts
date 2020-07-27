@@ -23,6 +23,9 @@ spec:
       labels:
         app: {{ template "metabase.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -49,6 +52,12 @@ spec:
                 name: {{ template "metabase.fullname" . }}-ssl
                 key: password
           {{- end }}
+          {{- if .Values.jetty }}
+            {{- range $key, $value := .Values.jetty }}
+          - name: MB_JETTY_{{ $key | upper }}
+            value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           - name: MB_DB_TYPE
             value: {{ .Values.database.type | lower }}
           {{- if .Values.database.encryptionKey }}
@@ -59,12 +68,12 @@ spec:
                 key: encryptionKey
           {{- end }}
           {{- if ne (.Values.database.type | lower) "h2" }}
-            {{- if .Values.database.connectionURI }}
+            {{- if or .Values.database.existingSecretConnectionURIKey .Values.database.connectionURI }}
           - name: MB_DB_CONNECTION_URI
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: connectionURI
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretConnectionURIKey "connectionURI" }}
             {{- else }}
           - name: MB_DB_HOST
             value: {{ .Values.database.host | quote }}
@@ -75,13 +84,13 @@ spec:
           - name: MB_DB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: username
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretUsernameKey "username" }}
           - name: MB_DB_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "metabase.fullname" . }}-database
-                key: password
+                name: {{ or .Values.database.existingSecret (printf "%s-database" (include "metabase.fullname" .)) }}
+                key: {{ or .Values.database.existingSecretPasswordKey "password" }}
             {{- end }}
           {{- end }}
           - name: MB_PASSWORD_COMPLEXITY
@@ -105,22 +114,26 @@ spec:
           {{- end }}
           - name: MB_EMOJI_IN_LOGS
             value: {{ .Values.emojiLogging | quote }}
+          {{- if .Values.siteUrl }}
+          - name: MB_SITE_URL
+            value: {{ .Values.siteUrl | quote }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
-            initialDelaySeconds: 120
-            timeoutSeconds: 30
-            failureThreshold: 6
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
-            initialDelaySeconds: 30
-            timeoutSeconds: 3
-            periodSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           {{- if .Values.log4jProperties }}
           volumeMounts:
             - name: config

@@ -22,6 +22,10 @@ resources: {}
 # Extra environment variables - allows yaml definitions
 extraEnvVars: []
 
+# Specify the initial script file name here to be executed before starting Solr
+# The file is located relative to the solr chart root folder
+initScript: ""
+
 # Sets the termination Grace period for the solr pods
 # This can take a while for shards to elect new leaders
 terminationGracePeriodSeconds: 180
@@ -29,7 +33,7 @@ terminationGracePeriodSeconds: 180
 # Solr image settings
 image:
   repository: solr
-  tag: 7.7.2
+  tag: 8.4.0
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -54,6 +58,9 @@ podAnnotations: {}
 
 # Affinity group rules or the solr pods
 affinity: {}
+
+# Tolerations for pod assignment
+tolerations: []
 
 # Update Strategy for solr pods
 updateStrategy:

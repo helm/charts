@@ -4,10 +4,12 @@
 {{- $name :=  include "cluster-overprovisioner.name" . -}}
 {{- $chart :=  include "cluster-overprovisioner.chart" . -}}
 {{- $chartName := .Chart.Name }}
+{{- $podSecurityContext := .Values.podSecurityContext }}
 {{- $priorityClassName := .Values.priorityClassOverprovision.name }}
 {{- $repository := .Values.image.repository }}
 {{- $imageTag := .Values.image.tag }}
 {{- $pullPolicy := .Values.image.pullPolicy }}
+{{- $imagePullSecrets := .Values.image.pullSecrets }}
 
 {{ range .Values.deployments }}
 apiVersion: apps/v1
@@ -44,12 +46,20 @@ spec:
     {{- end }}
     spec:
       priorityClassName: {{ $priorityClassName }}
+      securityContext:
+        {{- toYaml $podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $chartName }}
           image: "{{ $repository }}:{{ $imageTag }}"
           imagePullPolicy: {{ $pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+    {{- if $imagePullSecrets }}
+      imagePullSecrets:
+      {{- range $imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
     {{- with .nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

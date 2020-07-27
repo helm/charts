@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: prom/cloudwatch-exporter
-  tag: cloudwatch_exporter-0.6.0
+  tag: cloudwatch_exporter-0.8.0
   pullPolicy: IfNotPresent
 
 # Example proxy configuration:
@@ -22,6 +22,8 @@ image:
 #   - '/config/config.yml'
 
 command: []
+
+containerPort: 9106
 
 service:
   type: ClusterIP
@@ -64,6 +66,11 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  # annotations:
+  # Will add the provided map to the annotations for the crated serviceAccount
+  # e.g.
+  # annotations:
+  #   eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/prom-cloudwatch-exporter-oidc
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -108,6 +115,7 @@ affinity: {}
 
 # Configurable health checks against the /healthy and /ready endpoints
 livenessProbe:
+  path: /-/healthy
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5
@@ -115,6 +123,7 @@ livenessProbe:
   failureThreshold: 3
 
 readinessProbe:
+  path: /-/ready
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5
@@ -145,6 +154,37 @@ serviceMonitor:
   #     action: replace
   #     replacement: mydbname
   #     targetLabel: dbname
+
+prometheusRule:
+  # Specifies whether a PrometheusRule should be created
+  enabled: false
+  # Set the namespace the PrometheusRule should be deployed
+  # namespace: monitoring
+  # Set labels for the PrometheusRule, use this to define your scrape label for Prometheus Operator
+  # labels:
+  # Example - note the Kubernetes convention of camelCase instead of Prometheus'
+  # rules:
+  #    - alert: ELB-Low-BurstBalance
+  #      annotations:
+  #        message: The ELB BurstBalance during the last 10 minutes is lower than 80%.
+  #      expr: aws_ebs_burst_balance_average < 80
+  #      for: 10m
+  #      labels:
+  #        severity: warning
+  #    - alert: ELB-Low-BurstBalance
+  #      annotations:
+  #        message: The ELB BurstBalance during the last 10 minutes is lower than 50%.
+  #      expr: aws_ebs_burst_balance_average < 50
+  #      for: 10m
+  #      labels:
+  #        severity: warning
+  #    - alert: ELB-Low-BurstBalance
+  #      annotations:
+  #        message: The ELB BurstBalance during the last 10 minutes is lower than 30%.
+  #      expr: aws_ebs_burst_balance_average < 30
+  #      for: 10m
+  #      labels:
+  #        severity: critical
 
 ingress:
   enabled: false

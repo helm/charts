@@ -1,4 +1,9 @@
-# Node-RED
+# DEPRECATED - Node-RED
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/billimek/billimek-charts/tree/master/charts/node-red
+- **Charts repo:** https://billimek.com/billimek-charts
 
 Low-code programming for event-driven applications
 
@@ -38,7 +43,7 @@ The following tables lists the configurable parameters of the Node-RED chart and
 | Parameter                          | Description                                                             | Default                   |
 |:---------------------------------- |:----------------------------------------------------------------------- |:------------------------- |
 | `image.repository`                 | node-red image                                                          | `nodered/node-red`        |
-| `image.tag`                        | node-red image tag                                                      | `1.0.2-12-minimal`        |
+| `image.tag`                        | node-red image tag                                                      | `1.0.4-12-minimal`        |
 | `image.pullPolicy`                 | node-red image pull policy                                              | `IfNotPresent`            |
 | `strategyType`                     | Specifies the strategy used to replace old Pods by new ones             | `Recreate`                |
 | `livenessProbePath`                | Default livenessProbe path                                              | `/`                       |

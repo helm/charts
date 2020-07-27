@@ -10,6 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   config.yaml: |
+{{- if or .Values.rules.default .Values.rules.custom }}
     rules:
 {{- if .Values.rules.default }}
     - seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}'
@@ -81,6 +82,7 @@ data:
 {{- end -}}
 {{- if .Values.rules.custom }}
 {{ toYaml .Values.rules.custom | indent 4 }}
+{{- end -}}
 {{- end -}}
 {{- if .Values.rules.external }}
     externalRules:

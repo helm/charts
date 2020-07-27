@@ -14,6 +14,15 @@ rules:
   resources:
   - events
   - pods
+  - pods/log
+  verbs:
+  - list
+  - get
+  - watch
+{{- if or (.Values.containerToken) (.Values.infraToken) }}
+- apiGroups:
+  - ""
+  resources:
   - configmaps
   - nodes
   - secrets
@@ -41,9 +50,11 @@ rules:
   - apps
   resources:
   - deployments
+  - replicasets
   verbs:
   - watch
   - list
+  - get
 - apiGroups:
   - extensions
   resources:
@@ -52,4 +63,5 @@ rules:
   - get
   - watch
   - list
+{{- end }}
 {{- end }}

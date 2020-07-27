@@ -14,7 +14,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.8.2-debian-9-r0
+  tag: 3.8.2-debian-10-r30
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -114,6 +114,9 @@ rabbitmq:
   clustering:
     address_type: hostname
     k8s_domain: cluster.local
+    ## Rebalance master for queues in cluster when new replica is created
+    ## ref: https://www.rabbitmq.com/rabbitmq-queues.8.html#rebalance
+    rebalance: false
 
   loadDefinition:
     enabled: false
@@ -192,6 +195,10 @@ service:
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # nodePort: 30672
+
+  ## Set the LoadBalancerIP
+  ##
+  # loadBalancerIP:
 
   ## Node port Tls
   ##
@@ -400,7 +407,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/rabbitmq-exporter
-    tag: 0.29.0-debian-9-r104
+    tag: 0.29.0-debian-10-r28
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -419,7 +426,7 @@ metrics:
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/port: "9419"
 
   livenessProbe:
     enabled: true
@@ -453,9 +460,82 @@ metrics:
     # relabellings:
     ## Specify honorLabels parameter to add the scrape endpoint
     honorLabels: false
+    ## Specify the release for ServiceMonitor. Sometimes it should be custom for prometheus operator to work
+    # release: ""
     ## Used to pass Labels that are used by the Prometheus installed in your cluster to select Service Monitors to work with
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
     additionalLabels: {}
+
+  ## Custom PrometheusRule to be defined
+  ## The value is evaluated as a template, so, for example, the value can depend on .Release or .Chart
+  ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+      ## List of reules, used as template by Helm.
+      ## These are just examples rules inspired from https://awesome-prometheus-alerts.grep.to/rules.html
+      ## Please adapt them to your needs.
+      ## Make sure to constraint the rules to the current rabbitmq service.
+      ## Also make sure to escape what looks like helm template.
+      # - alert: RabbitmqDown
+      #   expr: rabbitmq_up{service="{{ template "rabbitmq.fullname" . }}"} == 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Rabbitmq down (instance {{ "{{ $labels.instance }}" }})
+      #     description: RabbitMQ node down
+
+      # - alert: ClusterDown
+      #   expr: |
+      #     sum(rabbitmq_running{service="{{ template "rabbitmq.fullname" . }}"})
+      #     < {{ .Values.replicas }}
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster down (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Less than {{ .Values.replicas }} nodes running in RabbitMQ cluster
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: ClusterPartition
+      #   expr: rabbitmq_partitions{service="{{ template "rabbitmq.fullname" . }}"} > 0
+      #   for: 5m
+      #   labels:
+      #     severity: error
+      #   annotations:
+      #     summary: Cluster partition (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Cluster partition
+      #         VALUE = {{ "{{ $value }}" }}
+
+      # - alert: OutOfMemory
+      #   expr: |
+      #     rabbitmq_node_mem_used{service="{{ template "rabbitmq.fullname" . }}"}
+      #     / rabbitmq_node_mem_limit{service="{{ template "rabbitmq.fullname" . }}"}
+      #     * 100 > 90
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Out of memory (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         Memory available for RabbmitMQ is low (< 10%)\n  VALUE = {{ "{{ $value }}" }}
+      #         LABELS: {{ "{{ $labels }}" }}
+
+      # - alert: TooManyConnections
+      #   expr: rabbitmq_connectionsTotal{service="{{ template "rabbitmq.fullname" . }}"} > 1000
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #   annotations:
+      #     summary: Too many connections (instance {{ "{{ $labels.instance }}" }})
+      #     description: |
+      #         RabbitMQ instance has too many connections (> 1000)
+      #         VALUE = {{ "{{ $value }}" }}\n  LABELS: {{ "{{ $labels }}" }}
 
 ##
 ## Init containers parameters:
@@ -466,7 +546,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/minideb
-    tag: stretch
+    tag: buster
     pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

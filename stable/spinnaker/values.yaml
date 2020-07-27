@@ -1,12 +1,14 @@
 halyard:
-  spinnakerVersion: 1.16.1
+  spinnakerVersion: 1.19.4
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: 1.23.2
+    tag: 1.32.0
     pullSecrets: []
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Uncomment to add storage class for the persistence data volume
+  # storageClass: <storageclass_name>
   # Provide additional parameters to halyard deploy apply command
   additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
@@ -147,6 +149,10 @@ dockerRegistries:
 #   username: _json_key
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
+# - name: ecr
+#   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
+#   username: AWS
+#   passwordCommand: aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'
 
 # If you don't want to put your passwords into a values file
 # you can use a pre-created secret instead of putting passwords
@@ -160,8 +166,8 @@ kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  secretName: my-kubeconfig
-  secretKey: config
+  # secretName: my-kubeconfig
+  # secretKey: config
   # Use this when you want to configure halyard to reference a kubeconfig from s3
   # This allows you to keep your kubeconfig in an encrypted s3 bucket
   # For more info visit:
@@ -171,6 +177,12 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  # Use this to limit the namespaces this kubernetes account will access.
+  # Note, if you use nameSpaces, omittedNameSpaces will not be used.
+  # Note, the casing of the nameSpace variable here.
+  # nameSpaces:
+  # - namespace1
+  # - namespace2
   omittedNameSpaces:
   - kube-system
   - kube-public
@@ -252,11 +264,15 @@ redis:
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2019-02-13T19-48-27Z
-  serviceType: ClusterIP
+  image:
+    tag: RELEASE.2020-01-03T19-12-21Z
+  service:
+    type: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
-  bucket: "spinnaker"
+  defaultBucket:
+    enabled: true
+    name: "spinnaker"
   nodeSelector: {}
 # Uncomment if you don't want to create a PVC for minio
 #  persistence:
@@ -298,6 +314,8 @@ azs:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether PSP resources should be created
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -306,6 +324,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+  serviceAccountAnnotations: {}
 securityContext:
   # Specifies permissions to write for user/group
   runAsUser: 1000

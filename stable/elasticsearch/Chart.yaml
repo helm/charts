@@ -1,9 +1,11 @@
 apiVersion: v1
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 1.32.1
-appVersion: 6.8.2
-description: Flexible and powerful open source, distributed real-time search and analytics
+version: 1.32.5
+appVersion: 6.8.6
+# The elasticsearch chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Flexible and powerful open source, distributed real-time search and analytics
   engine.
 icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
 sources:
@@ -13,16 +15,4 @@ sources:
 - https://github.com/GoogleCloudPlatform/elasticsearch-docker
 - https://github.com/clockworksoul/helm-elasticsearch
 - https://github.com/pires/kubernetes-elasticsearch-cluster
-maintainers:
-- name: simonswine
-  email: christian@jetstack.io
-- name: icereval
-  email: michael.haselton@gmail.com
-- name: rendhalver
-  email: pete.brown@powerhrg.com
-- name: desaintmartin
-  email: cedric@desaintmartin.fr
-- name: KongZ
-  email: goonohc@gmail.com
-- name: hectorj2f
-  email: hfernandez@mesosphere.com
+maintainers: []

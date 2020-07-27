@@ -14,6 +14,9 @@ spec:
       app: {{ template "owncloud.fullname" . }}
       release: "{{ .Release.Name }}"
   replicas: 1
+{{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+{{- end }}
   template:
     metadata:
       labels:

@@ -53,7 +53,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.14.6
+  tag: v1.17.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -83,7 +83,9 @@ extraArgs:
   # scale-down-non-empty-candidates-count: 5
   # max-node-provision-time: 15m0s
   # scan-interval: 10s
-  # scale-down-delay: 10m
+  # scale-down-delay-after-add: 10m
+  # scale-down-delay-after-delete: 0s
+  # scale-down-delay-after-failure: 3m
   # scale-down-unneeded-time: 10m
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
@@ -107,13 +109,16 @@ replicaCount: 1
 rbac:
   ## If true, create & use RBAC resources
   ##
-  create: false
+  create: true
   ## If true, create & use Pod Security Policy resources
   ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
   pspEnabled: false
-  ## Ignored if rbac.create is true
-  ##
-  serviceAccountName: default
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
   ## Annotations for the Service Account
   ##
   serviceAccountAnnotations: {}
@@ -132,6 +137,28 @@ priorityClassName: ""
 # 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'
 # autoscaler does not depend on cluster DNS, recommended to set this to "Default"
 # dnsPolicy: "Default"
+
+## Security context for pod
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# securityContext:
+#   runAsNonRoot: true
+#   runAsUser: 1001
+#   runAsGroup: 1001
+
+## Security context for container
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+# containerSecurityContext:
+#   capabilities:
+#     drop:
+#       - all
+
+## Deployment update strategy
+## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# updateStrategy:
+#   rollingUpdate:
+#     maxSurge: 1
+#     maxUnavailable: 0
+#   type: RollingUpdate
 
 service:
   annotations: {}
@@ -166,6 +193,8 @@ serviceMonitor:
    ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
   selector:
     prometheus: kube-prometheus
+  # The metrics path to scrape - autoscaler exposes /metrics (standard)
+  path: /metrics
 
 ## String to partially override cluster-autoscaler.fullname template (will maintain the release name)
 nameOverride: ""
@@ -175,3 +204,8 @@ fullnameOverride: ""
 
 # Allow overridding the .Capabilities.KubeVersion.GitVersion (useful for "helm template" command)
 kubeTargetVersionOverride: ""
+
+## Priorities Expander
+## If extraArgs.expander is set to priority, then expanderPriorities is used to define cluster-autoscaler-priority-expander priorities
+## https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/expander/priority/readme.md
+expanderPriorities: {}

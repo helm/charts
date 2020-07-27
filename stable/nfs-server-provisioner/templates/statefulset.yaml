@@ -26,6 +26,10 @@ spec:
       # NOTE: This is 10 seconds longer than the default nfs-provisioner --grace-period value of 90sec
       terminationGracePeriodSeconds: 100
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nfs-provisioner.fullname" . }}{{ else }}{{ .Values.rbac.serviceAccountName | quote }}{{ end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -34,14 +38,38 @@ spec:
             - name: nfs
               containerPort: 2049
               protocol: TCP
+            - name: nfs-udp
+              containerPort: 2049
+              protocol: UDP
+            - name: nlockmgr
+              containerPort: 32803
+              protocol: TCP
+            - name: nlockmgr-udp
+              containerPort: 32803
+              protocol: UDP
             - name: mountd
               containerPort: 20048
               protocol: TCP
-            - name: rpcbind-tcp
+            - name: mountd-udp
+              containerPort: 20048
+              protocol: UDP
+            - name: rquotad
+              containerPort: 875
+              protocol: TCP
+            - name: rquotad-udp
+              containerPort: 875
+              protocol: UDP
+            - name: rpcbind
               containerPort: 111
               protocol: TCP
             - name: rpcbind-udp
               containerPort: 111
+              protocol: UDP
+            - name: statd
+              containerPort: 662
+              protocol: TCP
+            - name: statd-udp
+              containerPort: 662
               protocol: UDP
           securityContext:
             capabilities:
@@ -50,6 +78,9 @@ spec:
                 - SYS_RESOURCE
           args:
             - "-provisioner={{ template "nfs-provisioner.provisionerName" . }}"
+          {{- range $key, $value := .Values.extraArgs }}
+            - "-{{ $key }}={{ $value }}"
+          {{- end }}
           env:
             - name: POD_IP
               valueFrom:
@@ -64,44 +95,47 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /export
+          {{- with .Values.resources }}
           resources:
-        {{- with .Values.resources }}
-          resources:
-{{ toYaml . | indent 12 }}
-        {{- end }}
-    {{- with .Values.nodeSelector }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
-{{- if not .Values.persistence.enabled }}
+      {{- if not .Values.persistence.enabled }}
       volumes:
         - name: data
           emptyDir: {}
-{{- end }}
+      {{- end }}
 
-{{- if .Values.persistence.enabled }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: data
       spec:
         accessModes: [ {{ .Values.persistence.accessMode | quote }} ]
-      {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
+        {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
         storageClassName: ""
-      {{- else }}
+        {{- else }}
         storageClassName: {{ .Values.persistence.storageClass | quote }}
-      {{- end }}
-      {{- end }}
+        {{- end }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
-{{- end }}
+  {{- end }}

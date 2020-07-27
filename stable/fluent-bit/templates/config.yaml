@@ -23,22 +23,30 @@ data:
         HTTP_Listen  0.0.0.0
         HTTP_Port    2020
 {{- end }}
+{{ .Values.extraEntries.service | indent 8 }}
 
   fluent-bit-input.conf: |
     [INPUT]
-        Name             tail
-        Path             {{ .Values.input.tail.path }}
-        Parser           {{ .Values.input.tail.parser }}
-        Tag              {{ .Values.filter.kubeTag }}.*
-        Refresh_Interval 5
-        Mem_Buf_Limit    {{ .Values.input.tail.memBufLimit }}
-        Skip_Long_Lines  On
+        Name              tail
+        Path              {{ .Values.input.tail.path }}
+        Parser            {{ .Values.input.tail.parser }}
+        Tag               {{ .Values.filter.kubeTag }}.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     {{ .Values.input.tail.memBufLimit }}
+        Skip_Long_Lines   On
 {{- if .Values.input.tail.ignore_older }}
-        Ignore_Older    {{ .Values.input.tail.ignore_older }}
+        Ignore_Older      {{ .Values.input.tail.ignore_older }}
 {{- end }}
 {{- if .Values.trackOffsets }}
-        DB               /tail-db/tail-containers-state.db
-        DB.Sync          Normal
+        DB                /tail-db/tail-containers-state.db
+        DB.Sync           Normal
+{{- end }}
+{{- if .Values.input.tail.dockerMode }}
+        Docker_Mode       On
+        Docker_Mode_Flush {{ .Values.input.tail.dockerModeFlush }}
+{{- end }}
+{{- if .Values.input.tail.exclude_path }}
+        Exclude_Path    {{ .Values.input.tail.exclude_path }}
 {{- end }}
 {{- if .Values.input.systemd.enabled }}
     [INPUT]
@@ -59,7 +67,7 @@ data:
         Path              {{ .Values.audit.input.path }}
         Parser            {{ .Values.audit.input.parser }}
         DB                /var/log/audit.db
-        Tag               audit.*
+        Tag               {{ .Values.audit.input.tag }}
         Refresh_Interval  5
         Mem_Buf_Limit     {{ .Values.audit.input.memBufLimit }}
         Buffer_Chunk_Size {{ .Values.audit.input.bufferChunkSize }}
@@ -90,6 +98,9 @@ data:
 {{- end }}
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
+{{- end }}
+{{- if .Values.filter.useJournal }}
+        Use_Journal         On
 {{- end }}
 {{ .Values.extraEntries.filter | indent 8 }}
 
@@ -135,6 +146,12 @@ data:
 {{- end }}
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.logstash_prefix_key }}
+        Logstash_Prefix_Key {{ .Values.backend.es.logstash_prefix_key }}
+{{- end }}
+{{- if .Values.backend.es.logstash_dateformat }}
+        Logstash_DateFormat {{ .Values.backend.es.logstash_dateformat }}
+{{- end }}
 {{ else if .Values.backend.es.index }}
         Index {{ .Values.backend.es.index }}
 {{- end }}
@@ -195,6 +212,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- if .Values.backend.http.json_date_format }}
+        json_date_format {{ .Values.backend.http.json_date_format }}
 {{- end }}
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}

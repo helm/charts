@@ -4,7 +4,7 @@
 
 image:
   repository: coredns/coredns
-  tag: "1.6.6"
+  tag: "1.7.0"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -20,6 +20,11 @@ resources:
 serviceType: "ClusterIP"
 
 prometheus:
+  service:
+    enabled: false
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9153"
   monitor:
     enabled: false
     additionalLabels: {}
@@ -29,9 +34,7 @@ service:
 # clusterIP: ""
 # loadBalancerIP: ""
 # externalTrafficPolicy: ""
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9153"
+  annotations: {}
 
 serviceAccount:
   create: false
@@ -51,7 +54,7 @@ rbac:
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
-# Optional priority class to be used for the coredns pods
+# Optional priority class to be used for the coredns pods. Used for autoscaler if autoscaler.priorityClassName not set.
 priorityClassName: ""
 
 # Default zone is what Kubernetes recommends:
@@ -128,6 +131,9 @@ nodeSelector: {}
 #     effect: NoSchedule
 tolerations: []
 
+# https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
+podDisruptionBudget: {}
+
 # configure custom zone files as per https://coredns.io/2017/05/08/custom-dns-entries-for-kubernetes/
 zoneFiles: []
 #  - filename: example.db
@@ -139,6 +145,15 @@ zoneFiles: []
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
 
+# optional array of extra volumes to create
+extraVolumes: []
+# - name: some-volume-name
+#   emptyDir: {}
+# optional array of mount points for extraVolumes
+extraVolumeMounts: []
+# - name: some-volume-name
+#   mountPath: /etc/wherever
+
 # optional array of secrets to mount inside coredns container
 # possible usecase: need for secure connection with etcd backend
 extraSecrets: []
@@ -147,5 +162,57 @@ extraSecrets: []
 # - name: some-fancy-secret
 #   mountPath: /etc/wherever
 
-# Custom labels to apply to Deployment, Pod, Service, ServiceMonitor
+# Custom labels to apply to Deployment, Pod, Service, ServiceMonitor. Including autoscaler if enabled.
 customLabels: {}
+
+## Configue a cluster-proportional-autoscaler for coredns
+# See https://github.com/kubernetes-incubator/cluster-proportional-autoscaler
+autoscaler:
+  # Enabled the cluster-proportional-autoscaler
+  enabled: false
+
+  # Number of cores in the cluster per coredns replica
+  coresPerReplica: 256
+  # Number of nodes in the cluster per coredns replica
+  nodesPerReplica: 16
+  # Min size of replicaCount
+  min: 0
+  # Max size of replicaCount (default of 0 is no max)
+  max: 0
+  # Whether to include unschedulable nodes in the nodes/cores calculations - this requires version 1.8.0+ of the autoscaler
+  includeUnschedulableNodes: false
+  # If true does not allow single points of failure to form
+  preventSinglePointFailure: true
+
+  image:
+    repository: k8s.gcr.io/cluster-proportional-autoscaler-amd64
+    tag: "1.8.0"
+    pullPolicy: IfNotPresent
+
+  # Optional priority class to be used for the autoscaler pods. priorityClassName used if not set.
+  priorityClassName: ""
+
+  # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+  affinity: {}
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+
+  # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+  tolerations: []
+
+  # resources for autoscaler pod
+  resources:
+    requests:
+      cpu: "20m"
+      memory: "10Mi"
+    limits:
+      cpu: "20m"
+      memory: "10Mi"
+
+  # Options for autoscaler configmap
+  configmap:
+    ## Annotations for the coredns-autoscaler configmap
+    # i.e. strategy.spinnaker.io/versioned: "false" to ensure configmap isn't renamed
+    annotations: {}

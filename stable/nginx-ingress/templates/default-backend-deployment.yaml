@@ -5,16 +5,24 @@ metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    {{ .Values.defaultBackend.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: default-backend
+    {{- if .Values.defaultBackend.deploymentLabels }}
+{{ toYaml .Values.defaultBackend.deploymentLabels | indent 4 }}
+    {{- end }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
+    {{- if .Values.defaultBackend.useComponentLabel }}
+      {{ .Values.defaultBackend.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: default-backend
+    {{- end }}
+{{- if not .Values.defaultBackend.autoscaling.enabled }}
   replicas: {{ .Values.defaultBackend.replicaCount }}
+{{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
@@ -26,8 +34,8 @@ spec:
     {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
-        component: "{{ .Values.defaultBackend.name }}"
-        release: {{ .Release.Name }}
+        release: {{ template "nginx-ingress.releaseLabel" . }}
+        {{ .Values.defaultBackend.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: default-backend
         {{- if .Values.defaultBackend.podLabels }}
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}
@@ -45,7 +53,9 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
-          image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
+          {{- with .Values.defaultBackend.image }}
+          image: "{{.repository}}{{- if (.digest) -}} @{{.digest}} {{- else -}} :{{ .tag }} {{- end -}}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           args:
           {{- range $key, $value := .Values.defaultBackend.extraArgs }}

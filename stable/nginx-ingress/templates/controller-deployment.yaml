@@ -5,9 +5,13 @@ metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
+    {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
+
+    {{- if .Values.controller.deploymentLabels }}
+{{ toYaml .Values.controller.deploymentLabels | indent 4 }}
+    {{- end }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
   annotations:
 {{ toYaml .Values.controller.deploymentAnnotations | indent 4}}
@@ -15,7 +19,10 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
+      release: {{ template "nginx-ingress.releaseLabel" . }}
+    {{- if .Values.controller.useComponentLabel }}
+      {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
+    {{- end }}
 {{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ .Values.controller.replicaCount }}
 {{- end }}
@@ -25,20 +32,28 @@ spec:
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   template:
     metadata:
-      {{- if .Values.controller.podAnnotations }}
+      {{- if or .Values.controller.podAnnotations .Values.controller.podAnnotationConfigChecksum }}
       annotations:
       {{- range $key, $value := .Values.controller.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
+      {{- if .Values.controller.podAnnotationConfigChecksum }}
+        checksum/config: {{ tpl (toYaml .Values.controller) . | sha256sum }}
+      {{- end }}
       {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
+        release: {{ template "nginx-ingress.releaseLabel" . }}
         component: "{{ .Values.controller.name }}"
-        release: {{ .Release.Name }}
+        {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
         {{- if .Values.controller.podLabels }}
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+{{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -53,7 +68,9 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
-          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          {{- with .Values.controller.image }}
+          image: "{{- if .registry -}}{{ .registry }}/{{- end -}}{{ .repository }}{{- if (.digest) -}} @{{.digest}}{{- else -}}:{{ .tag }} {{- end -}}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           {{- if .Values.controller.lifecycle }}
           lifecycle:
@@ -61,7 +78,15 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if .Values.defaultBackend.enabled }}
+            - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}
+          {{- else }}
+            {{- if (semverCompare "<0.21.0" .Values.controller.image.tag) }}
+            - --default-backend-service={{ required ".Values.controller.defaultBackendService is required if .Values.defaultBackend.enabled=false and .Values.controller.image.tag < 0.21.0" .Values.controller.defaultBackendService }}
+            {{- else if .Values.controller.defaultBackendService }}
+            - --default-backend-service={{ .Values.controller.defaultBackendService }}
+            {{- end }}
+          {{- end }}
           {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
@@ -85,6 +110,9 @@ spec:
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}
+          {{- if and (.Values.controller.scope.enabled) (.Values.rbac.scope) }}
+            - --update-status=false
+          {{- end }}
           {{- if and (.Values.controller.reportNodeInternalIp) (.Values.controller.hostNetwork) }}
             - --report-node-internal-ip-address={{ .Values.controller.reportNodeInternalIp }}
           {{- end }}
@@ -92,6 +120,9 @@ spec:
             - --validating-webhook=:{{ .Values.controller.admissionWebhooks.port }}
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+          {{- end }}
+          {{- if .Values.controller.maxmindLicenseKey }}
+            - --maxmind-license-key={{ .Values.controller.maxmindLicenseKey }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             {{- if $value }}

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init-scripts
+  name: {{ template "stolon.fullname" . }}-init-scripts
 data:
 {{- with .Values.initdbScripts }}
 {{ toYaml . | indent 2 }}
@@ -29,6 +29,10 @@ spec:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+{{- if .Values.job.annotations }}
+      annotations:
+{{ toYaml .Values.job.annotations | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: Never
       containers:
@@ -49,7 +53,7 @@ spec:
       volumes:
         - name: sql-script
           configMap:
-            name: init-scripts
+            name: {{ template "stolon.fullname" . }}-init-scripts
             defaultMode: 420
       initContainers:
         - name: wait-for-database

@@ -8,7 +8,7 @@ deploymentStrategy: {}
 
 image:
   repository: sonarqube
-  tag: 7.9.1-community
+  tag: 7.9.2-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
 
@@ -91,11 +91,25 @@ livenessProbe:
   # A trailing "/" must be included
   sonarWebContext: /
   # sonarWebContext: /sonarqube/
-
-# Set extra env variables. Like proxy settings.
-extraEnv: {}
   # If an ingress *path* is defined, it should be reflected here
   # sonar.web.context: /sonarqube
+
+## Provide a secret containing one or more certificate files in the keys that will be added to cacerts
+## The cacerts file will be set via SONARQUBE_WEB_JVM_OPTS
+##
+# caCerts:
+#   secret: my-secret
+
+## Values to add to SONARQUBE_WEB_JVM_OPTS
+##
+# jvmOpts: "-Djava.net.preferIPv4Stack=true"
+jvmOpts: ""
+
+## Environment variables to attach to the pods
+##
+# env:
+#   - name: VARIABLE
+#     value: my-value
 
 # Set annotations for pods
 annotations: {}
@@ -130,6 +144,11 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
+
 # List of plugins to install.
 # For example:
 # plugins:
@@ -138,6 +157,7 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+  lib: []
 
   # initContainerImage: alpine:3.10.3
   # deleteDefaultPlugins: true
@@ -160,11 +180,6 @@ plugins:
 # The 'sonar.secretKeyPath' property will be set automatically.
 # sonarSecretKey: "settings-encryption-secret"
 
-customCerts:
-  ## Enable to override the default cacerts with your own one
-  enabled: false
-  secretName: my-cacerts
-
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
 ## Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
@@ -178,14 +193,14 @@ postgresql:
   enabled: true
   # To use an external PostgreSQL instance, set enabled to false and uncomment
   # the line below:
-  # postgresServer: ""
+  # postgresqlServer: ""
   # To use an external secret for the password for an external PostgreSQL
   # instance, set enabled to false and provide the name of the secret on the
   # line below:
-  # postgresPasswordSecret: ""
-  postgresUser: "sonarUser"
-  postgresPassword: "sonarPass"
-  postgresDatabase: "sonarDB"
+  # postgresqlPasswordSecret: ""
+  postgresqlUsername: "sonarUser"
+  postgresqlPassword: "sonarPass"
+  postgresqlDatabase: "sonarDB"
   # Specify the TCP port that PostgreSQL should use
   service:
     port: 5432

@@ -111,6 +111,9 @@ controller:
   # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
   dnsPolicy: ClusterFirst
 
+  # How many seconds to wait before terminating a pod.
+  terminationGracePeriodSeconds: 60
+
   ## DaemonSet or Deployment
   ##
   kind: Deployment

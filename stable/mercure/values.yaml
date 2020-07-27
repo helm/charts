@@ -2,20 +2,28 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-transportUrl: "bolt://updates.db?size=0&cleanup_frequency=0.3"
-allowAnonymous: "0"
-corsAllowedOrigins: ""
-debug: "0"
-demo: "0"
+transportUrl: bolt://updates.db?size=0&cleanup_frequency=0.3
+allowAnonymous: false
+subscriptions: false
+metrics: false
+metricsLogin: "mercure"
+metricsPassword: ""
+corsAllowedOrigins: []
+debug: false
+demo: false
+jwtAlgorithm: HS256
 jwtKey: ""
-logFormat: "FLUENTD"
-publishAllowedOrigins: ""
+logFormat: FLUENTD
+publishAllowedOrigins: []
 publisherJwtKey: ""
 subscriberJwtKey: ""
 heartbeatInterval: "0s"
-readTimeout: "0s"
-writeTimeout: "0s"
-useForwardedHeaders: "0"
+readTimeout: "5s"
+writeTimeout: "60s"
+dispatchTimeout: "5s"
+compress: false
+useForwardedHeaders: false
+license: ""
 
 # GCP load balancers by default terminate connections after 30 seconds. This can be changed by
 # enabling the following backendConfig and changing the `timeoutSec` property.
@@ -30,7 +38,7 @@ replicaCount: 1
 
 image:
   repository: dunglas/mercure
-  tag: v0
+  tag: v0.10
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
