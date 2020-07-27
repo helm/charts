@@ -43,6 +43,8 @@ The following table lists the configurable parameters of the mysql exporter char
 | `image.tag`                            | Image tag                                           | `v0.11.0`                          |
 | `image.pullPolicy`                     | Image pull policy                                   | `IfNotPresent`                     |
 | `service.name`                         | Service name                                        | `mysql-exporter`                   |
+| `service.labels`                       | Additional labels for the service                   | `{}`                               |
+| `service.annotations`                  | Annotations to be added to the service              | `{}`                               |
 | `service.type`                         | Service type                                        | `ClusterIP`                        |
 | `service.externalport`                 | The service port                                    | `9104`                             |
 | `service.internalPort`                 | The target port of the container                    | `9104`                             |
@@ -65,7 +67,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | `cloudsqlproxy.instanceConnectionName` | Google Cloud instance connection name               | `project:us-central1:dbname`       |
 | `cloudsqlproxy.port`                   | Cloud SQL Proxy listening port                      | `3306`                             |
 | `cloudsqlproxy.credentials`            | Cloud SQL Proxy service account credentials         | `bogus credential file`            |
-| `serviceMonitor.enable`                | Integration with prometheus-operator                | `false`                            |
+| `serviceMonitor.enabled`               | Integration with prometheus-operator                | `false`                            |
 | `serviceMonitor.interval`              | Interval for polling this exporter                  |                                    |
 | `serviceMonitor.scrapeTimeout`         | Timeout where exporter is considered faulty         |                                    |
 | `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from          | `""`                               |

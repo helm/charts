@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.35/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+# https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -238,8 +238,8 @@ spec:
                     anyOf:
                     - type: integer
                     - type: string
-                    description: Name or number of the target port of the endpoint.
-                      Mutually exclusive with port.
+                    description: Name or number of the pod port this endpoint refers
+                      to. Mutually exclusive with port.
                     x-kubernetes-int-or-string: true
                   tlsConfig:
                     description: TLS configuration to use when scraping the endpoint
@@ -458,9 +458,3 @@ spec:
   - name: v1
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

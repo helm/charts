@@ -78,8 +78,10 @@ https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" $) "%(name)s" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -96,7 +98,7 @@ def init_yaml_styles():
 
 
 def escape(s):
-    return s.replace("{{", "{{`{{").replace("}}", "}}`}}")
+    return s.replace("{{", "{{`{{").replace("}}", "}}`}}").replace("{{`{{", "{{`{{`}}").replace("}}`}}", "{{`}}`}}")
 
 
 def yaml_str_repr(struct, indent=2):

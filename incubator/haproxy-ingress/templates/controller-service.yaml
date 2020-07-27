@@ -9,7 +9,7 @@ metadata:
 {{- if .Values.controller.service.labels }}
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
@@ -40,7 +40,7 @@ spec:
   ports:
   {{- if .Values.controller.enableStaticPorts }}
   {{- range .Values.controller.service.httpPorts }}
-    - name: "{{ .port }}-http"
+    - name: "http-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
       targetPort: {{ .targetPort }}
@@ -49,7 +49,7 @@ spec:
       {{- end }}
   {{- end }}
   {{- range .Values.controller.service.httpsPorts }}
-    - name: "{{ .port }}-https"
+    - name: "https-{{ .port }}"
       port: {{ .port }}
       protocol: TCP
       targetPort: {{ .targetPort }}
@@ -65,7 +65,7 @@ spec:
       targetPort: "{{ tpl $key $ }}-tcp"
   {{- end }}
   selector:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"

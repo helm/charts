@@ -1,18 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ include "oauth-proxy.fullname" . }}
   labels:
-    app: {{ template "oauth-proxy.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-  name: {{ template "oauth-proxy.fullname" . }}
+{{ include "oauth-proxy.labels" . | indent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: {{ .Values.service.port }}
+      targetPort: http
       protocol: TCP
+      name: http
   selector:
-    app: {{ template "oauth-proxy.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "oauth-proxy.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -29,6 +29,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "prometheus-blackbox-exporter.serviceAccountName" . }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -76,13 +77,9 @@ spec:
             - containerPort: {{ .Values.service.port }}
               name: http
           livenessProbe:
-            httpGet:
-              path: /health
-              port: http
+            {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /health
-              port: http
+            {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           volumeMounts:
             - mountPath: /config
               name: config

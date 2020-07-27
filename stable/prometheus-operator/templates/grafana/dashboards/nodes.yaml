@@ -8,8 +8,10 @@ https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "nodes" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -203,7 +205,7 @@ data:
                                 "expr": "sum by (cpu) (irate(node_cpu_seconds_total{cluster=\"$cluster\", job=\"node-exporter\", mode!=\"idle\", instance=\"$instance\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{cpu}}`}}",
+                                "legendFormat": "{{`{{`}}cpu{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -307,7 +309,7 @@ data:
                                 "expr": "max (sum by (cpu) (irate(node_cpu_seconds_total{cluster=\"$cluster\", job=\"node-exporter\", mode!=\"idle\", instance=\"$instance\"}[2m])) ) * 100\n",
                                 "format": "time_series",
                                 "intervalFactor": 10,
-                                "legendFormat": "{{`{{ cpu }}`}}",
+                                "legendFormat": "{{`{{`}} cpu {{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -927,7 +929,7 @@ data:
                                 "expr": "max(rate(node_network_receive_bytes_total{cluster=\"$cluster\", job=\"node-exporter\", instance=\"$instance\", device!~\"lo\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}device{{`}}`}}",
                                 "refId": "A"
                             }
                         ],
@@ -1018,7 +1020,7 @@ data:
                                 "expr": "max(rate(node_network_transmit_bytes_total{cluster=\"$cluster\", job=\"node-exporter\", instance=\"$instance\", device!~\"lo\"}[5m]))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{device}}`}}",
+                                "legendFormat": "{{`{{`}}device{{`}}`}}",
                                 "refId": "A"
                             }
                         ],

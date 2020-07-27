@@ -2,7 +2,7 @@
 replicaCount: 1
 image:
   repository: hjacobs/kube-ops-view
-  tag: 19.9.0
+  tag: 20.4.0
   pullPolicy: IfNotPresent
 service:
   # annotations:
@@ -45,6 +45,9 @@ tolerations: []
 
 # Add securityContext
 securityContext: {}
+
+# Add securityContext at pod level:
+podSecurityContext: {}
 
 # Defaults for Redis
 redis:

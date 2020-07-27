@@ -17,11 +17,18 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.hub.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
       {{- if .Values.hub.podAnnotations }}
       annotations:
 {{ toYaml .Values.hub.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.hub.securityContext }}
+      securityContext:
+{{ toYaml .Values.hub.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
@@ -65,7 +72,7 @@ spec:
               value: {{ .Values.hub.gridNodePolling | quote }}
             {{- end }}
             {{- if .Values.hub.gridCleanUpCycle }}
-            - name: GRID_CLEANUP_CYCLE
+            - name: GRID_CLEAN_UP_CYCLE
               value: {{ .Values.hub.gridCleanUpCycle | quote }}
             {{- end }}
             {{- if .Values.hub.gridTimeout }}

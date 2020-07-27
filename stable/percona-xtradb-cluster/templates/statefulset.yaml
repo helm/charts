@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "percona-xtradb-cluster.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "percona-xtradb-cluster.fullname" . }}
@@ -25,6 +25,13 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
     spec:
+      {{- with .Values.serviceAccountName }}
+      serviceAccountName: "{{ . }}"
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{ . | toYaml | nindent 8 }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
@@ -101,7 +108,7 @@ spec:
           timeoutSeconds: 2
         readinessProbe:
           exec:
-            command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+            command: ["mysql", "--defaults-extra-file=/root/.my.cnf", "-h", "127.0.0.1", "-e", "SELECT 1"]
           initialDelaySeconds: 30
           timeoutSeconds: 2
         volumeMounts:

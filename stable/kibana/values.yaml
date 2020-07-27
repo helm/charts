@@ -167,6 +167,7 @@ podLabels: {}
 dashboardImport:
   enabled: false
   timeout: 60
+  basePath: /
   xpackauth:
     enabled: false
     username: myuser

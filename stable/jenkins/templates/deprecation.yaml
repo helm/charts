@@ -349,4 +349,8 @@
     {{- if .Values.Persistence }}
        {{ fail "Persistence.* values have been renamed, please check the documentation" }}
     {{- end }}
+
+    {{- if .Values.master.JCasC.pluginVersion }}
+       {{ fail "master.JCasC.pluginVersion has been deprecated, please use master.installPlugins instead" }}
+    {{- end }}
 {{- end }}

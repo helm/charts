@@ -65,6 +65,10 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 | `schemaRegistry.url` | URL to the schema registry endpoint | `http://localhost` |
 | `schemaRegistry.port` | Port for the schema registry | `8081` |
 | `schemaRegistry.proxy` | Whether to proxy Schema Registry endpoint via the internal webserver | `false` |
+| `schemaRegistry.allowGlobal` | Support for global compatibility level configuration support —i.e change the default compatibility level of your schema registry | `false` |
+| `schemaRegistry.allowTransitive` | Support for transitive compatibility levels (Schema Registry version 3.1.1 or better) | `false` |
+| `schemaRegistry.allowDeletion` | Support for Schema deletion (Schema Registry version 3.3.0 or better) | `false` |
+| `schemaRegistry.readOnlyMode` | Support for readonly mode (overwrites settings for global compatibility configuration and schema deletion) | `false` |
 | `service.type` | Type of the service | `LoadBalancer` |
 | `service.port` | Port to use | `80` |
 | `service.annotations` | Kubernetes service annotations | `{}` |
