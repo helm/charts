@@ -33,9 +33,12 @@ alertmanager:
   enabled: true
 
   ## Use a ClusterRole (and ClusterRoleBinding)
-  ## - If set to false, we define a Role and RoleBinding in the defined namespaces ONLY
+  ## - If set to false - we define a Role and RoleBinding in the defined namespaces ONLY
   ## This makes alertmanager work - for users who do not have ClusterAdmin privs, but wants alertmanager to operate on their own namespaces, instead of clusterwide.
   useClusterRole: true
+
+  ## Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to the rolename set here.
+  useExistingRole: false
 
   ## alertmanager container name
   ##
