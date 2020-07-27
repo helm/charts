@@ -102,6 +102,17 @@ beta.kubernetes.io/os
 {{- end -}}
 
 {{/*
+Correct `clusterAgent.metricsProvider.service.port` if Kubernetes <= 1.15
+*/}}
+{{- define "clusterAgent.metricsProvider.port" -}}
+{{- if semverCompare "^1.15-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- .Values.clusterAgent.metricsProvider.service.port -}}
+{{- else -}}
+443
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the container runtime socket
 */}}
 {{- define "datadog.dockerOrCriSocketPath" -}}
