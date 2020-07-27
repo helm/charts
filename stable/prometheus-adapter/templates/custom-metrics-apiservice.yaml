@@ -1,4 +1,4 @@
-{{- if or .Values.rules.default .Values.rules.custom }}
+{{- if or .Values.rules.default .Values.rules.custom .Values.rules.existing }}
 apiVersion: apiregistration.k8s.io/v1beta1
 kind: APIService
 metadata:

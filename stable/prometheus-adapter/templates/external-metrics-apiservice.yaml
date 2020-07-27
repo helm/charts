@@ -1,4 +1,4 @@
-{{- if .Values.rules.external }}
+{{- if or .Values.rules.external .Values.rules.existing }}
 apiVersion: apiregistration.k8s.io/v1beta1
 kind: APIService
 metadata:

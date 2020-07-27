@@ -1,4 +1,4 @@
-{{- if .Values.rules.resource}}
+{{- if or .Values.rules.resource .Values.rules.existing }}
 apiVersion: apiregistration.k8s.io/v1beta1
 kind: APIService
 metadata:
