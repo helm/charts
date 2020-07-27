@@ -80,6 +80,9 @@ affinity: {}
 #               values:
 #                 - target-host-name
 
+# Override default labels
+labelsOverride: {}
+
 # Annotations to be added to node exporter pods
 podAnnotations: {}
 
