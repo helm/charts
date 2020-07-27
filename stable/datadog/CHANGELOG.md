@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.41
+
+* Fix issue with Kubernetes <= 1.14 and Cluster Agent's External Metrics Provider (must be 443)
+
 ## 2.3.40
 
 * Update documentation for resource requests & limits default values.
