@@ -93,5 +93,6 @@ serviceMonitor:
   namespace:
   additionalLabels: {}
   targetLabels: []
+  metricRelabelings: []
 
 tolerations: []

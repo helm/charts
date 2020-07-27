@@ -66,4 +66,5 @@ podAnnotations:
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
 | `serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
+| `serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
