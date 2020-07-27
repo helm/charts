@@ -32,6 +32,8 @@
     - name: DD_RUNTIME_SECURITY_CONFIG_ENABLED
       value:  {{ .Values.datadog.securityAgent.runtime.enabled | quote }}
     {{- if .Values.datadog.securityAgent.runtime.enabled }}
+    - name: DD_RUNTIME_SECURITY_CONFIG_POLICIES_DIR
+      value: "/etc/datadog-agent/runtime-security.d"
     {{- if .Values.datadog.securityAgent.runtime.socket }}
     - name: DD_RUNTIME_SECURITY_CONFIG_SOCKET
       value: {{ .Values.datadog.securityAgent.runtime.socket }}
@@ -83,15 +85,16 @@
       readOnly: true
     {{- end }}
     {{- end }}
-    {{- if and .Values.datadog.securityAgent.runtime.enabled .Values.datadog.securityAgent.runtime.policies.configMap }}
+    {{- if .Values.datadog.securityAgent.runtime.enabled }}
     - name: runtimepoliciesdir
-      mountPath: /etc/datadog-agent/runtime_security_agent.d
+      mountPath: /etc/datadog-agent/runtime-security.d
       readOnly: true
     {{- end }}
-    {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
       mountPath: /var/run/sysprobe
       readOnly: true
-    {{- end }}
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
     {{- end }}
 {{- end -}}

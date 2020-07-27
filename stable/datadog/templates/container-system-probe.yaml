@@ -30,4 +30,9 @@
     - name: src
       mountPath: /usr/src
       readOnly: true
+    {{- if .Values.datadog.securityAgent.runtime.enabled }}
+    - name: runtimepoliciesdir
+      mountPath: /etc/datadog-agent/runtime-security.d
+      readOnly: true
+    {{- end }}
 {{- end -}}

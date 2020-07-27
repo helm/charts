@@ -24,7 +24,7 @@
   configMap:
     name: {{ template "datadog.fullname" . }}-confd
 {{- end }}
-{{- if .Values.datadog.systemProbe.enabled }}
+{{- if or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled}}
 - name: sysprobe-config
   configMap:
     name: {{ template "datadog.fullname" . }}-system-probe-config
@@ -48,7 +48,7 @@
     path: /usr/src
   name: src
 {{- end }}
-{{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.compliance.enabled }}
+{{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.compliance.enabled .Values.datadog.securityAgent.runtime.enabled }}
 - hostPath:
     path: /etc/passwd
   name: passwd
@@ -67,10 +67,12 @@
 {{- end }}
 {{- end }}
 {{- if .Values.datadog.securityAgent.runtime.enabled }}
-{{- if .Values.datadog.securityAgent.runtime.policies.configMap }}
 - name: runtimepoliciesdir
+{{- if .Values.datadog.securityAgent.runtime.policies.configMap }}
   configMap:
     name: {{ .Values.datadog.securityAgent.runtime.policies.configMap }}
+{{- else }}
+  emptyDir: {}
 {{- end }}
 {{- end }}
 {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}

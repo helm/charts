@@ -1,4 +1,4 @@
-{{- if .Values.datadog.systemProbe.enabled }}
+{{- if or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,7 +13,7 @@ metadata:
 data:
   system-probe.yaml: |
     system_probe_config:
-      enabled: {{ $.Values.datadog.systemProbe.enabled }}
+      enabled: {{ or $.Values.datadog.systemProbe.enabled $.Values.datadog.securityAgent.runtime.enabled }}
       debug_port:  {{ $.Values.datadog.systemProbe.debugPort }}
       sysprobe_socket: /var/run/sysprobe/sysprobe.sock
       enable_conntrack: {{ $.Values.datadog.systemProbe.enableConntrack }}
@@ -25,6 +25,8 @@ data:
       enabled: {{ $.Values.datadog.securityAgent.runtime.enabled }}
       debug: false
       socket: {{ $.Values.datadog.securityAgent.runtime.socket }}
+      policies:
+        dir: /etc/datadog-agent/runtime-security.d
       syscall_monitor:
         enabled: {{ $.Values.datadog.securityAgent.runtime.syscallMonitor.enabled }}
 

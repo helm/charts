@@ -35,7 +35,7 @@
     - name: runtimesocketdir
       mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
       readOnly: true
-    {{- if .Values.datadog.systemProbe.enabled }}
+    {{- if or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled }}
     - name: sysprobe-config
       mountPath: /etc/datadog-agent/system-probe.yaml
       subPath: system-probe.yaml

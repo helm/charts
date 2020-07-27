@@ -33,7 +33,7 @@ spec:
         {{- if .Values.agents.customAgentConfig }}
         checksum/agent-config: {{ tpl (toYaml .Values.agents.customAgentConfig) . | sha256sum }}
         {{- end }}
-        {{- if .Values.datadog.systemProbe.enabled }}
+        {{- if or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled}}
         container.apparmor.security.beta.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.apparmor }}
         container.seccomp.security.alpha.kubernetes.io/system-probe: {{ .Values.datadog.systemProbe.seccomp }}
         {{- end }}
@@ -81,7 +81,7 @@ spec:
         {{- if .Values.datadog.processAgent.enabled }}
           {{- include "container-process-agent" . | nindent 6 }}
         {{- end }}
-        {{- if .Values.datadog.systemProbe.enabled }}
+        {{- if or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled }}
           {{- include "container-system-probe" . | nindent 6 }}
         {{- end }}
         {{- if or .Values.datadog.securityAgent.compliance.enabled .Values.datadog.securityAgent.runtime.enabled}}
@@ -94,7 +94,7 @@ spec:
         {{- if eq .Values.targetSystem "linux" }}
           {{ include "containers-init-linux" . | nindent 6 }}
         {{- end }}
-        {{- if and .Values.datadog.systemProbe.enabled (eq .Values.datadog.systemProbe.seccomp "localhost/system-probe") }}
+        {{- if and (or .Values.datadog.systemProbe.enabled .Values.datadog.securityAgent.runtime.enabled)  (eq .Values.datadog.systemProbe.seccomp "localhost/system-probe") }}
           {{ include "system-probe-init" . | nindent 6 }}
         {{- end }}
       volumes:
