@@ -184,6 +184,13 @@ sentinel:
   #  - name: STSENTINEL_LOG_LEVEL
   #    value: "info"
 
+## Additional secret inside the initdb pod
+## can be used to add an additional initial user for application in a secure way
+additionalUserSecret:
+  name: ""
+  usernameKey: pg_additional_username
+  passwordKey: pg_additional_password
+
 ## initdb scripts
 ## Specify dictionary of scripts to be run at first boot, the entry point script is create_script.sh
 ## i.e. you can use pgsql to run sql script on the cluster.
