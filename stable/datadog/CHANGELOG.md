@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.39
+
+* Propagate `datadog.checksd` to the clusterchecks runner to support custom checks there.
+
 ## 2.3.38
 
 * Add support of DD\_CONTAINER\_{INCLUDE,EXCLUDE}\_{METRICS,LOGS}

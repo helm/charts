@@ -21,6 +21,10 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}-clusterchecks
       name: {{ template "datadog.fullname" . }}-clusterchecks
+      annotations:
+        {{- if .Values.datadog.checksd }}
+        checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+        {{- end }}
     spec:
       {{- if .Values.clusterChecksRunner.rbac.dedicated }}
       serviceAccountName: {{ if .Values.clusterChecksRunner.rbac.create }}{{ template "datadog.fullname" . }}-cluster-checks{{ else }}"{{ .Values.clusterChecksRunner.rbac.serviceAccountName }}"{{ end }}
@@ -33,6 +37,34 @@ spec:
       dnsConfig:
 {{ toYaml .Values.clusterChecksRunner.dnsConfig | indent 8 }}
       {{- end }}
+      initContainers:
+      - name: init-volume
+        image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+        imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+        command: ["bash", "-c"]
+        args:
+          - cp -r /etc/datadog-agent /opt
+        volumeMounts:
+          - name: config
+            mountPath: /opt/datadog-agent
+        resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 10 }}
+      - name: init-config
+        image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+        imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+        command: ["bash", "-c"]
+        args:
+          - for script in $(find /etc/cont-init.d/ -type f -name '*.sh' | sort) ; do bash $script ; done
+        volumeMounts:
+          - name: config
+            mountPath: /etc/datadog-agent
+          {{- if .Values.datadog.checksd }}
+          - name: checksd
+            mountPath: /checks.d
+            readOnly: true
+          {{- end }}
+        resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 10 }}
       containers:
       - name: agent
         image: "{{ .Values.clusterChecksRunner.image.repository }}:{{ .Values.clusterChecksRunner.image.tag }}"
@@ -104,15 +136,24 @@ spec:
 {{ toYaml .Values.clusterChecksRunner.resources | indent 10 }}
 {{- if .Values.clusterChecksRunner.volumeMounts }}
         volumeMounts:
+          - name: config
+            mountPath: {{ template "datadog.confPath" . }}
 {{ toYaml .Values.clusterChecksRunner.volumeMounts | indent 10 }}
 {{- end }}
         livenessProbe:
 {{ toYaml .Values.clusterChecksRunner.livenessProbe | indent 10 }}
         readinessProbe:
 {{ toYaml .Values.clusterChecksRunner.readinessProbe | indent 10 }}
-{{- if .Values.clusterChecksRunner.volumes }}
       volumes:
+{{- if .Values.clusterChecksRunner.volumes }}
 {{ toYaml .Values.clusterChecksRunner.volumes | indent 8 }}
+{{- end }}
+        - name: config
+          emptyDir: {}
+{{- if .Values.datadog.checksd }}
+        - name: checksd
+          configMap:
+            name: {{ template "datadog.fullname" . }}-checksd
 {{- end }}
       affinity:
 {{- if .Values.clusterChecksRunner.affinity }}
