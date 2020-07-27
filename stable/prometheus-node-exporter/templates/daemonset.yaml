@@ -6,9 +6,7 @@ metadata:
   labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
 spec:
   selector:
-    matchLabels:
-      app: {{ template "prometheus-node-exporter.name" . }}
-      release: {{ .Release.Name }}
+    matchLabels: {{ include "prometheus-node-exporter.selector" . | indent 6 }}
   {{- if .Values.updateStrategy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}

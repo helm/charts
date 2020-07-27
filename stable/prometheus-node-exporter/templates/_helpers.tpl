@@ -26,10 +26,15 @@ If release name contains chart name it will be used as a full name.
 
 {{/* Generate basic labels */}}
 {{- define "prometheus-node-exporter.labels" }}
-app: {{ template "prometheus-node-exporter.name" . }}
-heritage: {{.Release.Service }}
-release: {{.Release.Name }}
-chart: {{ template "prometheus-node-exporter.chart" . }}
+{{- if .Values.labelsOverride}}
+{{ toYaml .Values.labelsOverride }}
+{{- else}}
+app.kubernetes.io/name: {{ template "prometheus-node-exporter.fullname" . }}
+helm.sh/chart: {{ template "prometheus-node-exporter.fullname" . }}-{{.Chart.Version  }}
+app.kubernetes.io/managed-by: "Helm"
+app.kubernetes.io/instance: {{ template "prometheus-node-exporter.fullname" . }}
+app.kubernetes.io/version: {{.Chart.AppVersion }}
+{{- end }}
 {{- if .Values.podLabels}}
 {{ toYaml .Values.podLabels }}
 {{- end }}
@@ -63,4 +68,16 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
   {{- else -}}
     {{- .Release.Namespace -}}
   {{- end -}}
+{{- end -}}
+
+{{/*
+Define selector used to identify pods managed by this chart.
+*/}}
+{{- define "prometheus-node-exporter.selector" -}}
+{{- if .Values.selectorOverride}}
+{{ toYaml .Values.selectorOverride }}
+{{- else}}
+app.kubernetes.io/name: {{ template "prometheus-node-exporter.fullname" . }}
+app.kubernetes.io/instance: {{ template "prometheus-node-exporter.fullname" . }}
+{{- end -}}
 {{- end -}}
