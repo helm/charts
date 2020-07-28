@@ -202,5 +202,5 @@ spec:
       volumes:
         - name: kubeconfig
           secret:
-            secretName: {{ .Release.Name }}-kubestate-kubeconfig
+            secretName: {{ .Release.Name }}-kubeconfig
 {{- end }}
