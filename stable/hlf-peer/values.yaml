@@ -89,6 +89,15 @@ peer:
       golang: ""
       java: ""
       node: ""
+  operations:
+    listenAddress: ""
+  metrics:
+    provider: "disabled"
+    statsd:
+      network: "udp"
+      address: "127.0.0.1:8125"
+      writeInterval: "10s"
+      prefix: ""
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials
