@@ -3,6 +3,11 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "unifi.fullname" . }}
+  {{- if .Values.persistentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.persistentAnnotations }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
     helm.sh/chart: {{ include "unifi.chart" . }}

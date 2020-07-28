@@ -297,3 +297,5 @@ affinity: {}
 podAnnotations: {}
 
 deploymentAnnotations: {}
+
+persistantAnnotations: {}
