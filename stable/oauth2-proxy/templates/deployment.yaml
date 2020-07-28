@@ -73,8 +73,8 @@ spec:
         {{- if .Values.htpasswdFile.enabled }}
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
-        {{- if .Values.proxyVarsAsSecrets }}
         env:
+        {{- if .Values.proxyVarsAsSecrets }}
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
             secretKeyRef:
