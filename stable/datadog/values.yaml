@@ -407,10 +407,6 @@ datadog:
       ## Set to true to enable the Security Runtime Module.
       #
       enabled: false
-      ## @param socket - string - optional - default: /opt/datadog-agent/run/runtime-security.sock
-      ## The full path to the location of the unix socket where security runtime module is accessed.
-      #
-      # socket: /opt/datadog-agent/run/runtime-security.sock
 
       ## @param policies - object - required
       ## Policy files

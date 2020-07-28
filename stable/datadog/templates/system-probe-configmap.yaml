@@ -24,7 +24,7 @@ data:
     runtime_security_config:
       enabled: {{ $.Values.datadog.securityAgent.runtime.enabled }}
       debug: false
-      socket: {{ $.Values.datadog.securityAgent.runtime.socket }}
+      socket: /var/run/sysprobe/runtime-security.sock
       policies:
         dir: /etc/datadog-agent/runtime-security.d
       syscall_monitor:
