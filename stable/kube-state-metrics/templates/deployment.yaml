@@ -202,5 +202,5 @@ spec:
       volumes:
         - name: kubeconfig
           secret:
-            secretName: {{ .Release.Name }}-kubeconfig
+            secretName: {{ template "kube-state-metrics.fullname" . }}-kubeconfig
 {{- end }}
