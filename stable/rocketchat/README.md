@@ -65,6 +65,7 @@ Parameter | Description | Default
 `persistence.storageClass` | Storage class of the PVC to use | `""`
 `persistence.accessMode` | Access mode of the PVC | `ReadWriteOnce`
 `persistence.size` | Size of the PVC | `8Gi`
+`persistence.existingClaim` | An Existing PVC name for rocketchat volume | `""`
 `resources` | Pod resource requests and limits | `{}`
 `securityContext.enabled` | Enable security context for the pod | `true`
 `securityContext.runAsUser` | User to run the pod as | `999`
