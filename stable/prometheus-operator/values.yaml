@@ -1472,7 +1472,7 @@ prometheus:
     # - secretName: thanos-gateway-tls
     #   hosts:
     #   - thanos-gateway.domain.com
-    
+
   ingress:
     enabled: false
     annotations: {}
