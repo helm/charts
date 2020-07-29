@@ -369,7 +369,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.servicePerReplica.port` |  Port for Prometheus per replica Service to listen on | `9090` |
 | `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
 | `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
-| `prometheus.thanosIngress.enabled` |  Enable Ingress for Thanos Sidecar | `false` |
+| `prometheus.thanosIngress.enabled` |  Enable Ingress for Thanos Sidecar * ingress controller needs to support [gRPC](https://thanos.io/quick-tutorial.md/#store-api) | `false` |
 | `prometheus.thanosIngress.servicePort` |  Ingress Service Port for Thanos Sidecar | `10901` |
 | `prometheus.thanosIngress.paths` |  Ingress paths for Thanos Sidecar | `[]` |
 | `prometheus.thanosIngress.annotations` |  Ingress annotations for Thanos Sidecar | `{}` |
