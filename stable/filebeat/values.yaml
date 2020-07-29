@@ -142,6 +142,15 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+  volumes:
+    - "configMap"
+    - "secret"
+    - "hostPath"
+  runAsUser:
+    rule: "mustRunAs"
+    ranges:
+      min: 0
+      max: 0
 
 privileged: false
 

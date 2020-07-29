@@ -20,17 +20,19 @@ spec:
   requiredDropCapabilities:
     - ALL
   volumes:
-    - configMap
-    - secret
-    - hostPath
+{{- range .Values.podSecurityPolicy.volumes }}
+    - {{ . }}
+{{- end }}
   hostNetwork: false
   hostIPC: false
   hostPID: false
   runAsUser:
-    rule: MustRunAs
+    rule: {{ .Values.podSecurityPolicy.runAsUser.rule }}
+{{- if .Values.podSecurityPolicy.runAsUser.ranges }}
     ranges:
-      - min: 0
-        max: 0
+      - min: {{ .Values.podSecurityPolicy.runAsUser.ranges.min }}
+        max: {{ .Values.podSecurityPolicy.runAsUser.ranges.max }}
+{{- end }}
   seLinux:
     rule: RunAsAny
   supplementalGroups:
