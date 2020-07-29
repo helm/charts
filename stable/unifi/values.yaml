@@ -298,4 +298,4 @@ podAnnotations: {}
 
 deploymentAnnotations: {}
 
-persistantAnnotations: {}
+persistentAnnotations: {}
