@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | jetty.minThreads                 | Jetty min number of threads                                 | null              |
 | jetty.maxQueued                  | Jetty max queue size                                        | null              |
 | jetty.maxIdleTime                | Jetty max idle time                                         | null              |
+| siteUrl                          | Base URL, useful for serving behind a reverse proxy         | null              |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.35.3/).
 

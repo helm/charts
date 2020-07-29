@@ -118,6 +118,9 @@ spec:
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
           initialDelaySeconds: {{ .Values.vault.liveness.initialDelaySeconds }}
           periodSeconds: {{ .Values.vault.liveness.periodSeconds }}
+          failureThreshold: {{ .Values.vault.liveness.failureThreshold }}
+          successThreshold: {{ .Values.vault.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.vault.liveness.timeoutSeconds }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -129,6 +132,9 @@ spec:
             scheme: {{ if .Values.vault.config.listener.tcp.tls_disable -}}HTTP{{- else -}}HTTPS{{- end }}
           initialDelaySeconds: {{ .Values.vault.readiness.initialDelaySeconds }}
           periodSeconds: {{ .Values.vault.readiness.periodSeconds }}
+          failureThreshold: {{ .Values.vault.readiness.failureThreshold }}
+          successThreshold: {{ .Values.vault.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.vault.readiness.timeoutSeconds }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:

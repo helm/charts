@@ -62,6 +62,12 @@ Parameter | Description | Default
 `prometheus.serviceMonitor.interval` | Interval at which the metrics endpoint is scraped | `10s`
 `prometheus.serviceMonitor.namespace` | An alternative namespace in which to install the ServiceMonitor | `""`
 `prometheus.serviceMonitor.labels` | Labels to add to the ServiceMonitor | `{}`
+`probe.enabled`|Enable/disable pod liveness probe|`true`
+`probe.initialDelaySeconds`|Liveness probe initial delay|`30`
+`probe.periodSeconds`|Liveness probe check inteval|`5`
+`probe.successThreshold`|Liveness probe success threshold|`1`
+`probe.failureThreshold`|Liveness probe fail threshold|`3`
+`probe.timeoutSeconds`|Livenees probe timeout|`1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`

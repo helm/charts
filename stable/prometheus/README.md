@@ -126,6 +126,8 @@ Parameter | Description | Default
 --------- | ----------- | -------
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
+`alertmanager.useClusterRole` | Use a ClusterRole (and ClusterRoleBinding). If set to false - we define a Role and RoleBinding in the defined namespaces ONLY. This makes alertmanager work - for users who do not have ClusterAdmin privs, but wants alertmanager to operate on their own namespaces, instead of clusterwide. | `alertmanager`
+`alertmanager.useExistingRole` | Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to the rolename set here.  | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.21.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
@@ -312,6 +314,7 @@ Parameter | Description | Default
 `server.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
 `server.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
 `server.priorityClassName` | Prometheus server priorityClassName | `nil`
+`server.enableServiceLinks` | Set service environment variables in Prometheus server pods | `true`
 `server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
