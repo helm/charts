@@ -158,6 +158,12 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   host: chart-example.local
+  # When a single host isn't enough. Preferrably change the
+  # host variable above to an empty string, and populate the
+  # array below.
+  hosts: []
+  # - atlantis-example.local
+  # - atlantis.production.tld.remote
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

@@ -26,6 +26,16 @@ spec:
 {{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
   rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ .Values.service.port }}
+    {{- end }}
+    {{- if .Values.ingress.host }}
     - host: {{ .Values.ingress.host }}
       http:
         paths:
@@ -33,4 +43,5 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ .Values.service.port }}
+    {{- end }}
 {{- end }}

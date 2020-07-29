@@ -20,7 +20,7 @@ In order for Atlantis to start and run successfully:
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
 
-## Additional manifests 
+## Additional manifests
 
 It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
 
@@ -93,6 +93,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `ingress.labels`                            | Additional labels to use for the Ingress. | `{}` |
 | `ingress.path`                              | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                                 | `/`     |
 | `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           | `chart-example.local`     |
+| `ingress.hosts`                             | Domain name Kubernetes Ingress rule looks for. Supports multiple values in array notation. Set it to the domains Atlantis will be hosted on.                                                                                                                                                                                                           | `[]`     |
 | `ingress.tls`                               | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                            | `[]`     |
 | `test.enabled`                              | Whether to enable the test. | `true` |
 | `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
