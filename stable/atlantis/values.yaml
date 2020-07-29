@@ -158,9 +158,9 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   host: chart-example.local
-  # When a single host isn't enough. Preferrably change the
-  # host variable above to an empty string, and populate the
-  # array below.
+  # When a single host isn't enough. The above
+  # host will still act as the primary endpoint in the chart, however this
+  # value will let you extend to multiple domains/endpoints.
   hosts: []
   # - atlantis-example.local
   # - atlantis.production.tld.remote

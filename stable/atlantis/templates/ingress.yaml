@@ -1,5 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "atlantis.fullname" . -}}
+{{- $servicePort := .Values.service.port -}}
+{{- $ingressPath := .Values.ingress.path -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -30,10 +32,10 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - path: {{ .Values.ingress.path }}
+          - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ .Values.service.port }}
+              servicePort: {{ $servicePort }}
     {{- end }}
     {{- if .Values.ingress.host }}
     - host: {{ .Values.ingress.host }}
