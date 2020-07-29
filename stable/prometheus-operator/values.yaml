@@ -1262,6 +1262,8 @@ prometheusOperator:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
+    ## Scrape timeout. If not set, the Prometheus default scrape timeout is used.
+    scrapeTimeout: ""
     selfMonitor: true
 
     ## 	metric relabel configs to apply to samples before ingestion.
@@ -1453,6 +1455,30 @@ prometheus:
     enabled: false
     minAvailable: 1
     maxUnavailable: ""
+
+# Ingress exposes thanos sidecar outside the clsuter
+  thanosIngress:
+    enabled: false
+    annotations: {}
+    labels: {}
+    servicePort: 10901
+    ## Hosts must be provided if Ingress is enabled.
+    ##
+    hosts: []
+      # - thanos-gateway.domain.com
+
+    ## Paths to use for ingress rules
+    ##
+    paths: []
+    # - /
+
+    ## TLS configuration for Alertmanager Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+    # - secretName: thanos-gateway-tls
+    #   hosts:
+    #   - thanos-gateway.domain.com
 
   ingress:
     enabled: false
