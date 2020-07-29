@@ -47,6 +47,10 @@ spec:
       {{- end }}
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
+      {{- if .Values.server.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.server.extraInitContainers | indent 8 }}
+      {{- end }}
       containers:
         {{- if .Values.configmapReload.prometheus.enabled }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.prometheus.name }}
