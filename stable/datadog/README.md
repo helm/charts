@@ -452,39 +452,7 @@ helm install --name <RELEASE_NAME> \
 
 ## kube-state-metrics collector options
 
-
-
-| Parameter                                    | Description                                                                           | Default                                    |
-|:---------------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
-| `kube-state-metrics.collectors.certificatesigningrequests`      | Enable the certificatesigningrequests collector.                                      | `true`                                     |
-| `kube-state-metrics.collectors.configmaps`                      | Enable the configmaps collector.                                                      | `true`                                     |
-| `kube-state-metrics.collectors.cronjobs`                        | Enable the cronjobs collector.                                                        | `true`                                     |
-| `kube-state-metrics.collectors.daemonsets`                      | Enable the daemonsets collector.                                                      | `true`                                     |
-| `kube-state-metrics.collectors.deployments`                     | Enable the deployments collector.                                                     | `true`                                     |
-| `kube-state-metrics.collectors.endpoints`                       | Enable the endpoints collector.                                                       | `true`                                     |
-| `kube-state-metrics.collectors.horizontalpodautoscalers`        | Enable the horizontalpodautoscalers collector.                                        | `true`                                     |
-| `kube-state-metrics.collectors.ingresses`                       | Enable the ingresses collector.                                                       | `true`                                     |
-| `kube-state-metrics.collectors.jobs`                            | Enable the jobs collector.                                                            | `true`                                     |
-| `kube-state-metrics.collectors.limitranges`                     | Enable the limitranges collector.                                                     | `true`                                     |
-| `kube-state-metrics.collectors.mutatingwebhookconfigurations`   | Enable the mutatingwebhookconfigurations collector.                                   | `true`                                     |
-| `kube-state-metrics.collectors.namespaces`                      | Enable the namespaces collector.                                                      | `true`                                     |
-| `kube-state-metrics.collectors.networkpolicies`                 | Enable the networkpolicies collector.                                                 | `true`                                     |
-| `kube-state-metrics.collectors.nodes`                           | Enable the nodes collector.                                                           | `true`                                     |
-| `kube-state-metrics.collectors.persistentvolumeclaims`          | Enable the persistentvolumeclaims collector.                                          | `true`                                     |
-| `kube-state-metrics.collectors.persistentvolumes`               | Enable the persistentvolumes collector.                                               | `true`                                     |
-| `kube-state-metrics.collectors.poddisruptionbudgets`            | Enable the poddisruptionbudgets collector.                                            | `true`                                     |
-| `kube-state-metrics.collectors.pods`                            | Enable the pods collector.                                                            | `true`                                     |
-| `kube-state-metrics.collectors.replicasets`                     | Enable the replicasets collector.                                                     | `true`                                     |
-| `kube-state-metrics.collectors.replicationcontrollers`          | Enable the replicationcontrollers collector.                                          | `true`                                     |
-| `kube-state-metrics.collectors.resourcequotas`                  | Enable the resourcequotas collector.                                                  | `true`                                     |
-| `kube-state-metrics.collectors.secrets`                         | Enable the secrets collector.                                                         | `true`                                     |
-| `kube-state-metrics.collectors.services`                        | Enable the services collector.                                                        | `true`                                     |
-| `kube-state-metrics.collectors.statefulsets`                    | Enable the statefulsets collector.                                                    | `true`                                     |
-| `kube-state-metrics.collectors.storageclasses`                  | Enable the storageclasses collector.                                                  | `true`                                     |
-| `kube-state-metrics.collectors.validatingwebhookconfigurations` | Enable the validatingwebhookconfigurations collector.                                 | `true`                                     |
-| `kube-state-metrics.collectors.verticalpodautoscalers`          | Enable the verticalpodautoscalers collector.                                          | `true`                                     |
-| `kube-state-metrics.collectors.volumeattachments`               | Enable the volumeattachments collector.                                               | `true`                                     |
-
+All the KSM specific parameters are documented on [the KSM chart page](https://github.com/helm/charts/blob/master/stable/kube-state-metrics/README.md#configuration).
 ## Configuration options for Windows deployments
 
 Some options above are not working/not available on Windows, here is the list of **unsupported** options:
