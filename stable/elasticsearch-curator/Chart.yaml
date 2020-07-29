@@ -1,5 +1,5 @@
 apiVersion: v1
-appVersion: "5.7.6"
+appVersion: "5.7.7"
 description: A Helm chart for Elasticsearch Curator
 name: elasticsearch-curator
 version: 2.1.5
@@ -12,7 +12,5 @@ sources:
 - https://github.com/kubernetes/charts/elasticsearch-curator
 - https://github.com/pires/docker-elasticsearch-curator
 maintainers:
-  - name: desaintmartin
-    email: cedric.dsm@gmail.com
   - name: gianrubio
     email: gianrubio@gmail.com
