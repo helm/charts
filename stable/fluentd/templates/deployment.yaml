@@ -32,6 +32,9 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.deployment.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.annotations }}
