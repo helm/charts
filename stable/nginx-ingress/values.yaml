@@ -4,8 +4,14 @@
 controller:
   name: controller
   image:
-    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.32.0"
+    # registry value can be any of the following:
+    #  us.gcr.io
+    #  eu.gcr.io
+    #  asia.gcr.io
+    registry: us.gcr.io
+    repository: k8s-artifacts-prod/ingress-nginx/controller
+    tag: "v0.34.1"
+    # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
     pullPolicy: IfNotPresent
     # www-data -> uid 101
     runAsUser: 101
@@ -538,6 +544,13 @@ defaultBackend:
   # requests:
   #   cpu: 10m
   #   memory: 20Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
 
   service:
     annotations: {}

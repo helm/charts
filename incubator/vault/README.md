@@ -46,67 +46,82 @@ vault:
 
 The following table lists the configurable parameters of the Vault chart and their default values.
 
-|             Parameter             |              Description                 |               Default               |
-|-----------------------------------|------------------------------------------|-------------------------------------|
-| `imagePullSecret`                 | The name of the secret to use if pulling from a private registry | `nil`       |
-| `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
-| `image.repository`                | Container image to use                   | `vault`                             |
-| `image.tag`                       | Container image tag to deploy            | `.Chart.appVersion`                            |
-| `vault.backendPolicy              | If custom backend needed                 | `{}`                                |
-| `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
-| `vault.extraArgs`                 | Additional arguments for vault server command | `[]`                           |
-| `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
-| `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
-| `vault.extraInitContainers`       | Init containers to be added to the vault pod | `{}`                            |
-| `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
-| `vault.extraVolumeMounts`         | Extra volumes to mount to the controller pod | `{}`                                |
-| `vault.existingConfigName`        | Location of existing Vault configuration | nil                                 |
-| `vault.podApiAddress`             | Set the `VAULT_API_ADDR` environment variable to the Pod IP Address. This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.| `true`           |
-| `vault.config`                    | Vault configuration                      | No default backend                  |
-| `replicaCount`                    | k8s replicas                             | `3`                                 |
-| `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
-| `resources.limits.memory`         | Container requested memory               | `nil`                               |
-| `affinity`                        | Affinity settings                        | See values.yaml                     |
-| `nodeSelector`                    | Node labels for pod assignment           | `{}`                                |
-| `tolerations`                     | Tolerations for node taints              | `[]`                                |
-| `service.loadBalancerIP`          | Assign a static IP to the loadbalancer   | `nil`                               |
-| `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
-| `service.annotations`             | Annotations for service                  | `{}`                                |
-| `service.externalPort`            | External port for the service            | `8200`                              |
-| `service.port`                    | The API port Vault is using              | `8200`                              |
-| `service.clusterExternalPort`     | External cluster port for the service    | `nil`                               |
-| `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
-| `service.additionalSelector`      | Additional selector the Vault service    | `{}`                                |
-| `annotations`                     | Annotations for deployment               | `{}`                                |
-| `labels`                          | Extra labels for deployment              | `{}`                                |
-| `ingress.labels`                  | Labels for ingress                       | `{}`                                |
-| `podAnnotations`                  | Annotations for pods                     | `{}`                                |
-| `priorityClassName`               | Priority class name for pods             | `""`                                |
-| `minReadySeconds`                 | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
-| `podLabels`                       | Extra labels for pods                    | `{}`                                |
-| `serviceAccount.create`           | Specifies whether a ServiceAccount should be created | `true`                 |
-| `serviceAccount.name`             | The name of the ServiceAccount to create | Generated from fullname template    |
-| `serviceAccount.annotations`      | Annotations for the created ServiceAccount | `{}`                              |
-| `rbac.create`                     | Specifies whether RBAC should be created | `true`                              |
-| `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
-| `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
-| `consulAgent.tag`                 | Container image tag for consul agent     | `1.4.0`                             |
-| `consulAgent.pullPolicy`          | Container pull policy for consul agent   | `IfNotPresent`                      |
-| `consulAgent.gossipKeySecretName` | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
-| `consulAgent.HttpPort`            | HTTP port for consul agent API           | `8500`                              |
-| `consulAgent.resources`           | Container resources for consul agent     | `nil`                               |
-| `vaultExporter.enabled`           | Enable or disable vault exporter         | `false`                             |
-| `vaultExporter.repository`        | Container image for vault exporter       | `grapeshot/vault_exporter`          |
-| `vaultExporter.tag`               | Container image tag for vault exporter   | `v0.1.2`                            |
-| `vaultExporter.pullPolicy`        | Image pull policy that sould be used     | `IfNotPresent`                      |
-| `vaultExporter.vaultAddress`      | Vault address that exporter should use   | `127.0.0.1:8200`                    |
-| `vaultExporter.tlsCAFile`         | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
-| `serviceMonitor.enabled`          | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
-| `serviceMonitor.additionalLabels` | Additional labels for Service Monitor    | `{}`                                |
-| `serviceMonitor.podPortName`      | Name of the port of the pod to scrape    | `metrics`                           |
-| `serviceMonitor.interval`         | Prometheus scrape interval               | `10s`                               |
-| `serviceMonitor.jobLabel`         | Prometheus job label                     | `vault-exporter`                    |
-| `prometheusRules.enabled`         | Specifies whether a Prometheus Alert Rule should be created                     | `false`          |
+|             Parameter                  |              Description                 |               Default               |
+|-----------------------------------     |------------------------------------------|-------------------------------------|
+| `imagePullSecret`                      | The name of the secret to use if pulling from a private registry | `nil`       |
+| `image.pullPolicy`                     | Container pull policy                    | `IfNotPresent`                      |
+| `image.repository`                     | Container image to use                   | `vault`                             |
+| `image.tag`                            | Container image tag to deploy            | `.Chart.appVersion`                            |
+| `vault.backendPolicy                   | If custom backend needed                 | `{}`                                |
+| `vault.dev`                            | Use Vault in dev mode                    | true (set to false in production)   |
+| `vault.extraArgs`                      | Additional arguments for vault server command | `[]`                           |
+| `vault.extraEnv`                       | Extra env vars for Vault pods            | `{}`                                |
+| `vault.extraContainers`                | Sidecar containers to add to the vault pod | `{}`                              |
+| `vault.extraInitContainers`            | Init containers to be added to the vault pod | `{}`                            |
+| `vault.extraVolumes`                   | Additional volumes to the controller pod | `{}`                                |
+| `vault.extraVolumeMounts`              | Extra volumes to mount to the controller pod | `{}`                                |
+| `vault.existingConfigName`             | Location of existing Vault configuration | nil                                 |
+| `vault.podApiAddress`                  | Set the `VAULT_API_ADDR` environment variable to the Pod IP Address. This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.| `true`           |
+| `vault.config`                         | Vault configuration                      | No default backend                  |
+| `vault.liveness.aliveIfUninitialized`  | Make sure liveness probe is alive even if cluster is not initialized | "true"  |
+| `vault.liveness.aliveIfSealed`         | Make sure liveness probe is alive even if cluster is unsealed        | "true"  |
+| `vault.liveness.initialDelaySeconds`   | Number of seconds after the container has started before liveness probes are initiated.      | "30"    |
+| `vault.liveness.periodSeconds`         | How often (in seconds) to perform the probe.                         | "10"    |
+| `vault.liveness.failureThreshold`      | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | "3"     |
+| `vault.liveness.successThreshold`      | Minimum consecutive successes for the probe to be considered successful after having failed. | "1"     |
+| `vault.liveness.timeoutSeconds`        | Number of seconds after which the probe times out.                   | "1"     |
+| `vault.readiness.readyIfSealed`        | Make sure readiness probe is ready even if cluster is  unsealed      | "false" |
+| `vault.readiness.readyIfStandby`       | Make sure readiness probe is ready even if node is on standby        | "true"  |
+| `vault.readiness.readyIfUninitialized` | Make sure readiness probe is ready even if cluster is not initialized| "true"  |
+| `vault.readiness.initialDelaySeconds`  | Number of seconds after the container has started before readiness probes are initiated.     | "10"    |
+| `vault.readiness.periodSeconds`        | How often (in seconds) to perform the probe.                         | "10"    |
+| `vault.readiness.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | "3"     |
+| `vault.readiness.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | "1"     |
+| `vault.readiness.timeoutSeconds`       | Number of seconds after which the probe times out.                   | "1"     |
+| `replicaCount`                         | k8s replicas                             | `3`                                 |
+| `resources.limits.cpu`                 | Container requested CPU                  | `nil`                               |
+| `resources.limits.memory`              | Container requested memory               | `nil`                               |
+| `affinity`                             | Affinity settings                        | See values.yaml                     |
+| `nodeSelector`                         | Node labels for pod assignment           | `{}`                                |
+| `tolerations`                          | Tolerations for node taints              | `[]`                                |
+| `service.loadBalancerIP`               | Assign a static IP to the loadbalancer   | `nil`                               |
+| `service.loadBalancerSourceRanges`     | IP whitelist for service type loadbalancer   | `[]`                            |
+| `service.annotations`                  | Annotations for service                  | `{}`                                |
+| `service.externalPort`                 | External port for the service            | `8200`                              |
+| `service.port`                         | The API port Vault is using              | `8200`                              |
+| `service.clusterExternalPort`          | External cluster port for the service    | `nil`                               |
+| `service.clusterPort`                  | The cluster port Vault is using          | `8201`                              |
+| `service.additionalSelector`           | Additional selector the Vault service    | `{}`                                |
+| `annotations`                          | Annotations for deployment               | `{}`                                |
+| `labels`                               | Extra labels for deployment              | `{}`                                |
+| `ingress.labels`                       | Labels for ingress                       | `{}`                                |
+| `podAnnotations`                       | Annotations for pods                     | `{}`                                |
+| `priorityClassName`                    | Priority class name for pods             | `""`                                |
+| `minReadySeconds`                      | Minimum number of seconds that newly created replicas must be ready without any containers crashing | `0`                                |
+| `podLabels`                            | Extra labels for pods                    | `{}`                                |
+| `serviceAccount.create`                | Specifies whether a ServiceAccount should be created | `true`                 |
+| `serviceAccount.name`                  | The name of the ServiceAccount to create | Generated from fullname template    |
+| `serviceAccount.annotations`           | Annotations for the created ServiceAccount | `{}`                              |
+| `rbac.create`                          | Specifies whether RBAC should be created | `true`                              |
+| `consulAgent.join`                     | If set, start start a consul agent       | `nil`                               |
+| `consulAgent.repository`               | Container image for consul agent         | `consul`                            |
+| `consulAgent.tag`                      | Container image tag for consul agent     | `1.4.0`                             |
+| `consulAgent.pullPolicy`               | Container pull policy for consul agent   | `IfNotPresent`                      |
+| `consulAgent.gossipKeySecretName`      | k8s secret containing gossip key         | `nil` (see values.yaml for details) |
+| `consulAgent.HttpPort`                 | HTTP port for consul agent API           | `8500`                              |
+| `consulAgent.resources`                | Container resources for consul agent     | `nil`                               |
+| `vaultExporter.enabled`                | Enable or disable vault exporter         | `false`                             |
+| `vaultExporter.repository`             | Container image for vault exporter       | `grapeshot/vault_exporter`          |
+| `vaultExporter.tag`                    | Container image tag for vault exporter   | `v0.1.2`                            |
+| `vaultExporter.pullPolicy`             | Image pull policy that sould be used     | `IfNotPresent`                      |
+| `vaultExporter.vaultAddress`           | Vault address that exporter should use   | `127.0.0.1:8200`                    |
+| `vaultExporter.tlsCAFile`              | Vault TLS CA certificate mount path      | `/vault/tls/ca.crt`                 |
+| `serviceMonitor.enabled`               | Specifies whether a Prometheus ServiceMonitor should be created | `false`|
+| `serviceMonitor.additionalLabels`      | Additional labels for Service Monitor    | `{}`                                |
+| `serviceMonitor.podPortName`           | Name of the port of the pod to scrape    | `metrics`                           |
+| `serviceMonitor.interval`              | Prometheus scrape interval               | `10s`                               |
+| `serviceMonitor.jobLabel`              | Prometheus job label                     | `vault-exporter`                    |
+| `prometheusRules.enabled`              | Specifies whether a Prometheus Alert Rule should be created                     | `false`          |
 | `prometheusRules.defaultRules.vaultUp`           | Specifies whether the vaultUp rule should be included            | `true`           |
 | `prometheusRules.defaultRules.vaultUninitialized`| Specifies whether the vaultUninitialized rule should be included | `true`           |
 | `prometheusRules.defaultRules.vaultSealed`       | Specifies whether the vaulSealed rule should be included         | `true`           |

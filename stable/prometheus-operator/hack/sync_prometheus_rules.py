@@ -107,7 +107,7 @@ replacement_map = {
         'init': '{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}'},
     'namespace="monitoring"': {
         'replacement': 'namespace="{{ $namespace }}"',
-        'init': '{{- $namespace := .Release.Namespace }}'},
+        'init': '{{- $namespace := printf "%s" (include "prometheus-operator.namespace" .) }}'},
     'alertmanager-$1': {
         'replacement': '$1',
         'init': ''},
@@ -136,7 +136,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}

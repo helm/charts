@@ -89,7 +89,7 @@ spec:
               mountPath: {{ $value.mountPath }}
             {{- end }}
           lifecycle:
-            {{ toYaml .Values.lifecyle | nindent 12 }}
+            {{ toYaml .Values.lifecycle | nindent 12 }}
 
         {{- if .Values.sidecarContainersTemplate }}
         {{ tpl .Values.sidecarContainersTemplate $ | nindent 8 }}

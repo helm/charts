@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.2.X → v7.3.0](UPGRADE.md#v72x--v730)
 * [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
 * [v7.0.X → v7.1.0](UPGRADE.md#v70x--v710)
 * [v6.X.X → v7.0.0](UPGRADE.md#v6xx--v700)
