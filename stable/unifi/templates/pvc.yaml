@@ -6,7 +6,8 @@ metadata:
   {{- if .Values.persistentAnnotations }}
   annotations:
     {{- range $key, $value := .Values.persistentAnnotations }}
-  {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
   {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "unifi.name" . }}
