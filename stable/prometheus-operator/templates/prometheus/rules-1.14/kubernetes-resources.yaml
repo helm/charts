@@ -99,5 +99,5 @@ spec:
           > ( 25 / 100 )
       for: 15m
       labels:
-        severity: warning
+        severity: info
 {{- end }}
