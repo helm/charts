@@ -33,13 +33,23 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-    - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
     {{- if eq .Values.alertmanager.service.type "NodePort" }}
+    - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
       nodePort: {{ .Values.alertmanager.service.nodePort }}
-    {{- end }}
       port: {{ .Values.alertmanager.service.port }}
       targetPort: {{ .Values.alertmanager.service.targetPort }}
       protocol: TCP
+    - name: {{ printf "%s-udp" .Values.alertmanager.alertmanagerSpec.portName }}
+      nodePort: {{ .Values.alertmanager.service.nodePort }}
+      port: {{ .Values.alertmanager.service.port }}
+      targetPort: {{ .Values.alertmanager.service.targetPort }}
+      protocol: UDP
+    {{- else }}
+    - name: {{ .Values.alertmanager.alertmanagerSpec.portName }}
+      port: {{ .Values.alertmanager.service.port }}
+      targetPort: {{ .Values.alertmanager.service.targetPort }}
+      protocol: TCP
+    {{- end }}
   selector:
     app: alertmanager
     alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
