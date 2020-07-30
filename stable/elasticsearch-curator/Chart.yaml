@@ -15,4 +15,4 @@ name: elasticsearch-curator
 sources:
 - https://github.com/kubernetes/charts/elasticsearch-curator
 - https://github.com/pires/docker-elasticsearch-curator
-version: 2.1.6
+version: 2.2.2
