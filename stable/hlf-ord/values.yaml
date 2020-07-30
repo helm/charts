@@ -55,7 +55,15 @@ ord:
       enabled: "false"
     client:
       enabled: "false"
-
+  operations:
+    listenAddress: ""
+  metrics:
+    provider: "disabled"
+    statsd:
+      network: "udp"
+      address: "127.0.0.1:8125"
+      writeInterval: "30s"
+      prefix: ""
 
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials
