@@ -21,6 +21,15 @@ spec:
     {{- if .Values.alertmanager.serviceMonitor.interval }}
     interval: {{ .Values.alertmanager.serviceMonitor.interval }}
     {{- end }}
+    {{- if .Values.alertmanager.serviceMonitor.scheme }}
+    scheme: {{ .Values.alertmanager.serviceMonitor.scheme }}
+    {{- end }}
+    {{- if .Values.alertmanager.serviceMonitor.bearerTokenFile }}
+    bearerTokenFile: {{ .Values.alertmanager.serviceMonitor.bearerTokenFile }}
+    {{- end }}
+    {{- if .Values.alertmanager.serviceMonitor.tlsConfig }}
+    tlsConfig: {{ toYaml .Values.alertmanager.serviceMonitor.tlsConfig | nindent 6 }}
+    {{- end }}
     path: "{{ trimSuffix "/" .Values.alertmanager.alertmanagerSpec.routePrefix }}/metrics"
 {{- if .Values.alertmanager.serviceMonitor.metricRelabelings }}
     metricRelabelings:
