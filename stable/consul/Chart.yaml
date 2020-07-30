@@ -1,7 +1,7 @@
 apiVersion: v1
 name: consul
 home: https://github.com/hashicorp/consul
-version: 3.9.5
+version: 3.9.6
 appVersion: 1.5.3
 description: Highly available and distributed service discovery and key-value store
   designed with support for the modern data center to make distributed systems and
@@ -9,6 +9,9 @@ description: Highly available and distributed service discovery and key-value st
 icon: https://raw.githubusercontent.com/hashicorp/consul/bce3809dfca37b883828c3715b84143dd71c0f85/website/source/assets/images/favicons/android-chrome-512x512.png
 sources:
 - https://github.com/kelseyhightower/consul-on-kubernetes
-maintainers:
-- name: lachie83
-  email: lachlan.evenson@microsoft.com
+# NOTE: Deprecated charts can't have maintainers but leaving commented-out for
+# posterity.
+# maintainers:
+# - name: lachie83
+#   email: lachlan.evenson@microsoft.com
+deprecated: true

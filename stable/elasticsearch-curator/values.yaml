@@ -12,6 +12,7 @@ cronjob:
   startingDeadlineSeconds: ""
   successfulJobsHistoryLimit: ""
   jobRestartPolicy: Never
+  startingDeadlineSeconds: ""
 
 pod:
   annotations: {}

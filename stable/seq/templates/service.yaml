@@ -10,10 +10,20 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.ui.service.port }}
       targetPort: ui
       protocol: TCP
-      name: http
+      name: ui
+    - port: {{ .Values.ingestion.service.port }}
+      targetPort: ingestion
+      protocol: TCP
+      name: ingestion
+{{- if .Values.gelf.enabled }}
+    - port: {{ .Values.gelf.service.port }}
+      targetPort: gelf
+      protocol: {{ .Values.gelf.service.protocol }}
+      name: gelf
+{{- end }}
   selector:
     app: {{ template "seq.name" . }}
     release: {{ .Release.Name }}

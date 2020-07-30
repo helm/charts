@@ -62,16 +62,16 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+          {{- if or .Values.existingSecret (and .Values.aws.secret_key .Values.aws.access_key) }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "kube2iam.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "kube2iam.fullname" . }}{{ end }}
                   key: aws_access_key_id
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "kube2iam.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "kube2iam.fullname" . }}{{ end }}
                   key: aws_secret_access_key
           {{- end }}
           {{- if .Values.aws.region }}
@@ -91,17 +91,17 @@ spec:
               containerPort: {{ .Values.prometheus.metricsPort }}
             {{- end}}
             {{- end}}
-        {{- if .Values.probe }}
+        {{- if .Values.probe.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.host.port }}
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probe.periodSeconds }}
+            successThreshold: {{ .Values.probe.successThreshold }}
+            failureThreshold: {{ .Values.probe.failureThreshold }}
+            timeoutSeconds: {{ .Values.probe.timeoutSeconds }}
         {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

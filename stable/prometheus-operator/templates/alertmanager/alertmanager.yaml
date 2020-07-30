@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -11,6 +11,9 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.image }}
   baseImage: {{ .Values.alertmanager.alertmanagerSpec.image.repository }}
   version: {{ .Values.alertmanager.alertmanagerSpec.image.tag }}
+  {{- if .Values.alertmanager.alertmanagerSpec.image.sha }}
+  sha: {{ .Values.alertmanager.alertmanagerSpec.image.sha }}
+  {{- end }}
 {{- end }}
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
@@ -20,7 +23,7 @@ spec:
 {{- else if and .Values.alertmanager.ingress.enabled .Values.alertmanager.ingress.hosts }}
   externalUrl: "http://{{ index .Values.alertmanager.ingress.hosts 0 }}{{ .Values.alertmanager.alertmanagerSpec.routePrefix }}"
 {{- else }}
-  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ $.Release.Namespace }}:{{ .Values.alertmanager.service.port }}
+  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-alertmanager.{{ template "prometheus-operator.namespace" . }}:{{ .Values.alertmanager.service.port }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.nodeSelector }}
   nodeSelector:
@@ -101,7 +104,15 @@ spec:
   priorityClassName: {{.Values.alertmanager.alertmanagerSpec.priorityClassName }}
 {{- end }}
 {{- if .Values.alertmanager.alertmanagerSpec.additionalPeers }}
-  additionalPeers: {{.Values.alertmanager.alertmanagerSpec.additionalPeers }}
+  additionalPeers:
+{{ toYaml .Values.alertmanager.alertmanagerSpec.additionalPeers | indent 4 }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumes }}
+  volumes: {{.Values.alertmanager.alertmanagerSpec.volumes }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumeMounts }}
+  volumeMounts: {{.Values.alertmanager.alertmanagerSpec.volumeMounts }}
 {{- end }}
   portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}
+

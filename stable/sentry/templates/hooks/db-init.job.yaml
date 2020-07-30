@@ -32,6 +32,10 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.hooks.tolerations }}
+      tolerations:
+{{ toYaml .Values.hooks.tolerations | indent 8 }}
+      {{- end }}
       restartPolicy: Never
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
@@ -64,7 +68,7 @@ spec:
           value: {{ template "sentry.postgresql.host" . }}
         - name: SENTRY_POSTGRES_PORT
           value: {{ template "sentry.postgresql.port" . }}
-        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) (.Values.redis.existingSecret)  }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:

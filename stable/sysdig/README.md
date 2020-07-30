@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | ---                               | ---                                                                    | ---                                         |
 | `image.registry`                  | Sysdig Agent image registry                                            | `docker.io`                                 |
 | `image.repository`                | The image repository to pull from                                      | `sysdig/agent`                              |
-| `image.tag`                       | The image tag to pull                                                  | `9.8.0`                                     |
+| `image.tag`                       | The image tag to pull                                                  | `10.0.0`                                    |
 | `image.pullPolicy`                | The Image pull policy                                                  | `IfNotPresent`                              |
 | `image.pullSecrets`               | Image pull secrets                                                     | `nil`                                       |
 | `resources.requests.cpu`          | CPU requested for being run in a node                                  | `600m`                                      |
@@ -52,7 +52,8 @@ The following table lists the configurable parameters of the Sysdig chart and th
 | `serviceAccount.create`           | Create serviceAccount                                                  | `true`                                      |
 | `serviceAccount.name`             | Use this value as serviceAccountName                                   | ` `                                         |
 | `daemonset.updateStrategy.type`   | The updateStrategy for updating the daemonset                          | `RollingUpdate`                             |
-| `daemonset.affinity`              | Node affinities                                                        | `nil`                                       |
+| `daemonset.affinity`              | Node affinities                                                        | `schedule on amd64 and linux`               |
+| `daemonset.annotations`           | Custom annotations for daemonset                                       | `{}`                                        |
 | `slim.enabled`                    | Use the slim based Sysdig Agent image                                  | `false`                                     |
 | `slim.kmoduleImage.repository`    | The kernel module image builder repository to pull from                | `sysdig/agent-kmodule`                      |
 | `slim.resources.requests.cpu`     | CPU requested for building the kernel module                           | `1000m`                                     |

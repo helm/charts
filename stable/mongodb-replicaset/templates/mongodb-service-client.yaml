@@ -1,4 +1,5 @@
-# A headless service for client applications to use
+{{- if .Values.clientService.enabled -}}
+# An optional headless service for client applications to use
 apiVersion: v1
 kind: Service
 metadata:
@@ -30,4 +31,4 @@ spec:
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}
-
+{{- end -}}

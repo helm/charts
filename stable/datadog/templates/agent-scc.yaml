@@ -1,0 +1,56 @@
+{{- if .Values.agents.podSecurity.securityContextConstraints.create }}
+kind: SecurityContextConstraints
+apiVersion: security.openshift.io/v1
+metadata:
+  name: {{ template "datadog.fullname" . }}
+  labels:
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+users:
+- system:serviceaccount:{{ .Release.Namespace }}:{{ template "datadog.fullname" . }}
+priority: 10
+# Allow host ports for dsd / trace intake
++allowHostPorts: {{ or .Values.datadog.dogstatsd.useHostPort .Values.datadog.apm.enabled }}
+# Allow host PID for dogstatsd origin detection
+allowHostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
+# Allow host network for the CRIO check to reach Prometheus through localhost
+allowHostNetwork: {{ .Values.agents.useHostNetwork }}
+# Allow hostPath for docker / process metrics
+volumes:
+{{ toYaml .Values.agents.podSecurity.volumes | indent 2 }}
+# Use the `spc_t` selinux type to access the
+# docker/cri socket + proc and cgroup stats
+seLinuxContext:
+{{ toYaml .Values.agents.podSecurity.securityContext | indent 2 }}
+# system-probe requires some specific seccomp and capabilities
+seccompProfiles:
+{{ toYaml .Values.agents.podSecurity.seccompProfiles | indent 2 }}
+allowedCapabilities:
+{{ toYaml .Values.agents.podSecurity.capabilites | indent 2 }}
+#
+# The rest is copied from restricted SCC
+#
+allowHostDirVolumePlugin: true
+allowHostIPC: false
+allowPrivilegedContainer: {{ .Values.agents.podSecurity.privileged }}
+allowedFlexVolumes: []
+defaultAddCapabilities: []
+fsGroup:
+  type: MustRunAs
+readOnlyRootFilesystem: false
+runAsUser:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+# If your environment restricts user access to the Docker socket or journald (for logging)
+# create or use an existing group that has access and add the GID to
+# the lines below (also remove the previous line, `type: RunAsAny`)
+#   type: MustRunAs
+#   ranges:
+#   - min: <min-group-ID>
+#   - max: <max-group-ID>
+requiredDropCapabilities: []
+{{- end }}

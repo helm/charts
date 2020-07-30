@@ -21,3 +21,6 @@ data:
         user: $PRISMA_DB_USER
         password: $PRISMA_DB_PASSWORD
         migrations: $PRISMA_DB_MIGRATIONS
+        database: $PRISMA_DB_NAME
+        ssl: $PRISMA_DB_SSL
+        connectionLimit: $PRISMA_DB_CONNECTIONLIMIT

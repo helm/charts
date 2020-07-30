@@ -3,9 +3,48 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.7.15
+
+### Minor changes
+
+* Use the latest image from Agent (10.0.0) by default.
+
+## v1.7.14
+
+### Minor changes
+
+* Implement a more comprehensive securityContext for running the pod.
+
+## v1.7.13
+
+### Minor changes
+
+* Implement scheduling with affinity and not with nodeSelector on amd64 & linux nodes.
+* Add support for custom annotations on daemonSet.
+
+## v1.7.12
+
+### Minor changes
+
+* Use the latest image from Agent (9.9.1) by default.
+* Use kubernetes.io/arch label on daemonSet to schedule pods only on amd64 nodes.
+* Add a livenessProbe to daemonSet.
+
+## v1.7.11
+
+### Minor changes
+
+* Use app.kubernetes.io labels instead of custom ones
+
+## v1.7.10
+
+### Minor changes
+
+* Use the latest image from Agent (9.9.0) by default.
+
 ## v1.7.9
 
-### Major changes
+### Minor changes
 
 * Add the SecurityContextConstraints if the security.openshift.io/v1 API is detected.
 

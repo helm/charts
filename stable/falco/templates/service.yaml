@@ -1,37 +1,16 @@
-{{- if .Values.auditLog.enabled }}
-kind: Service
 apiVersion: v1
-metadata:
-  name: {{ template "falco.fullname" .}}
-  labels:
-    app: {{ template "falco.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-spec:
-  selector:
-    app: {{ template "falco.fullname" .}}
-  ports:
-  - protocol: TCP
-    port: {{ .Values.falco.webserver.listenPort }}
-{{- end }}
-{{- if .Values.falco.grpc.enabled }}
----
 kind: Service
-apiVersion: v1
 metadata:
-  name: {{ template "falco.fullname" .}}-grpc
+  name: {{ include "falco.fullname" . }}
   labels:
-    app: {{ template "falco.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "falco.labels" . | indent 4 }}
 spec:
-  clusterIP: None
-  selector:
-    app: {{ template "falco.fullname" .}}
+  type: {{ .Values.service.type }}
   ports:
-  - protocol: TCP
-    port: {{ .Values.falco.grpc.listenPort }}
-{{- end }}
-
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "falco.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

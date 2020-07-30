@@ -7,8 +7,15 @@
   name: cgroups
 {{- if .Values.datadog.dogstatsd.useSocketVolume }}
 - hostPath:
-    path: "/var/run/datadog/"
+    path: {{ .Values.datadog.dogstatsd.hostSocketPath }}
+    type: DirectoryOrCreate
   name: dsdsocket
+{{- end }}
+{{- if .Values.datadog.apm.useSocketVolume }}
+- hostPath:
+    path: {{ .Values.datadog.apm.hostSocketPath }}
+    type: DirectoryOrCreate
+  name: apmsocket
 {{- end }}
 - name: s6-run
   emptyDir: {}
@@ -34,6 +41,12 @@
   name: debugfs
 - name: sysprobe-socket-dir
   emptyDir: {}
+- hostPath:
+    path: /lib/modules
+  name: modules
+- hostPath:
+    path: /usr/src
+  name: src
 {{- end }}
 {{- if or .Values.datadog.processAgent.enabled .Values.datadog.systemProbe.enabled }}
 - hostPath:

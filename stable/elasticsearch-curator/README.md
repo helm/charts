@@ -53,6 +53,7 @@ their default values.
 | `cronjob.startingDeadlineSeconds`    | Optional deadline in seconds for starting the job if it misses scheduled time for any reason    | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
 | `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                      |
+| `cronjob.startingDeadlineSeconds`    | Amount of time to try reschedule job if we can't run on time| `nil`                                         |
 | `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
 | `pod.labels`                         | Labels to add to the pod                                    | {}                                           |
 | `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |

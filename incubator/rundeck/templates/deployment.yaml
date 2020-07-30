@@ -2,30 +2,32 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "rundeck.fullname" . }}
-  labels:
-    app.kubernetes.io/name: {{ include "rundeck.name" . }}
-    helm.sh/chart: {{ include "rundeck.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  strategy:
+    {{- toYaml .Values.deployment.strategy | nindent 4 }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "rundeck.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      {{- if .Values.annotations }}
-      # Annotations iteration - Useful for KIAM and others
       annotations:
-        {{- range $key, $value := .Values.annotations }}
-        {{ $key }}: {{ $value | quote }}
+        # This will restart the rundeck pod if its environment configuration is updated by helm
+        checksum/config: {{ include (print $.Template.BasePath "/rundeck-environment-configmap.yaml") . | sha256sum }}
+        {{- with .Values.deployment.annotations }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "rundeck.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ include "rundeck.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
       containers:
@@ -35,20 +37,18 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-              livenessProbe:
-                httpGet:
-                  path: /
-                  port: 80
-                  scheme: HTTP
-                initialDelaySeconds: 60
-                periodSeconds: 120
-              readinessProbe:
-                httpGet:
-                  path: /
-                  port: 80
-                  scheme: HTTP
-                initialDelaySeconds: 10
-                periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+              scheme: HTTP
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+              scheme: HTTP
+            periodSeconds: 5
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx
@@ -62,6 +62,10 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-environment-configmap
+          {{- if .Values.rundeck.envSecret }}
+          - secretRef:
+              name: {{ .Values.rundeck.envSecret }}
+          {{- end }}
           env:
             - name: RUNDECK_GRAILS_URL
               value: {{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}
@@ -77,9 +81,20 @@ spec:
             mountPath: /home/rundeck/.ssh
             readOnly: true
         {{- end }}
-        {{- if .Values.rundeck.awsCredentialsSecret }}
-          - name: aws-credentials
-            mountPath: /home/rundeck/.aws/credentials
+        {{- if .Values.rundeck.awsConfigSecret }}
+          - name: aws-config
+            mountPath: /home/rundeck/.aws/
+        {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+          - name: kube-config
+            mountPath: /home/rundeck/.kube/
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+          - name: extra-config
+            mountPath: /home/rundeck/extra/
+        {{- end }}
+        {{- if .Values.volumeMounts }}
+          {{- toYaml .Values.volumeMounts | nindent 10}}
         {{- end }}
           ports:
             - name: rundeck
@@ -108,11 +123,19 @@ spec:
               - key: nginx.conf
                 path: nginx.conf
         - name: data
-        {{- if .Values.rundeck.awsVolumeId }}
+        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.awsVolumeId }}
           # This AWS EBS volume must already exist.
           awsElasticBlockStore:
             volumeID: {{ .Values.rundeck.awsVolumeId }}
             fsType: ext4
+        {{- else if .Values.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+        {{- else if .Values.persistence.claim.create }}
+          persistentVolumeClaim:
+            claimName: {{ include "rundeck.fullname" . }}
+        {{- end }}  
         {{- else }}
           emptyDir: {}
         {{- end }}  
@@ -126,6 +149,23 @@ spec:
           secret:
             secretName: {{ .Values.rundeck.awsCredentialsSecret}}
         {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+        - name: kube-config
+          secret:
+            secretName: {{ .Values.rundeck.kubeConfigSecret}}
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+        - name: extra-config
+          secret:
+            secretName: {{ .Values.rundeck.extraConfigSecret}}
+        {{- end }}
+      {{- if .Values.volumes }}
+        {{- toYaml .Values.volumes | nindent 8}}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+        {{- toYaml .Values.initContainers | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

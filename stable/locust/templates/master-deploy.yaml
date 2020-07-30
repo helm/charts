@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.master" . }}
@@ -10,6 +10,10 @@ metadata:
     component: master
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      {{- include "locust.selectorLabels" . | nindent 6 }}
+      component: "master"
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,8 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        release: {{ .Release.Name | quote }}
-        app: {{ template "locust.fullname" . }}
+        {{- include "locust.selectorLabels" . | nindent 8 }}
         component: "master"
     spec:
     {{- if .Values.image.pullSecrets }}

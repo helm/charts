@@ -1,3 +1,4 @@
+{{- if .Values.auth.enabled -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 apiVersion: v1
 kind: Service
@@ -20,3 +21,4 @@ spec:
     app: {{ $name }}
     component: {{ $name }}-auth
     release: {{ .Release.Name }}
+{{- end }}
