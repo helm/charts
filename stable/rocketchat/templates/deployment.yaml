@@ -109,7 +109,7 @@ spec:
       - name: rocket-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "rocketchat.fullname" . }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "rocketchat.fullname" . }}{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

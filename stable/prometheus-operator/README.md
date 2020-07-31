@@ -376,6 +376,13 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.servicePerReplica.port` |  Port for Prometheus per replica Service to listen on | `9090` |
 | `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
 | `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
+| `prometheus.thanosIngress.enabled` |  Enable Ingress for Thanos Sidecar * ingress controller needs to support [gRPC](https://thanos.io/quick-tutorial.md/#store-api) | `false` |
+| `prometheus.thanosIngress.servicePort` |  Ingress Service Port for Thanos Sidecar | `10901` |
+| `prometheus.thanosIngress.paths` |  Ingress paths for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.annotations` |  Ingress annotations for Thanos Sidecar | `{}` |
+| `prometheus.thanosIngress.labels` |  Ingress labels for Thanos Sidecar | `{}` |
+| `prometheus.thanosIngress.hosts |  Ingress hosts for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.tls |  Ingress tls for Thanos Sidecar | `[]` |
 
 ### Alertmanager
 | Parameter | Description | Default |
@@ -587,6 +594,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.resourceRelabelings` | The `relabel_configs` for scraping cAdvisor. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubelet.serviceMonitor.scrapeTimeout` | Scrape timeout. If not set, the Prometheus default scrape timeout is used | `nil` |
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
 | `kubelet.serviceMonitor.relabelings` | The `relabel_configs` for scraping kubelet. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
