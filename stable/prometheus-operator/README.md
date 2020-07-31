@@ -66,6 +66,7 @@ kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd podmonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 kubectl delete crd thanosrulers.monitoring.coreos.com
+kubectl delete crd probes.monitoring.coreos.com
 ```
 
 ## Work-Arounds for Known Issues
@@ -82,12 +83,13 @@ You should upgrade to Helm 2.14 + in order to avoid this issue. However, if you 
 
 1. Create CRDs
 ```console
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.38/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/release-0.41/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
 
 ```
 
@@ -218,7 +220,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.hyperkubeImage.sha` | Sha for hyperkube image used to perform maintenance tasks | `` |
 | `prometheusOperator.image.pullPolicy` | Pull policy for prometheus operator image | `IfNotPresent` |
 | `prometheusOperator.image.repository` | Repository for prometheus operator image | `quay.io/coreos/prometheus-operator` |
-| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.38.1` |
+| `prometheusOperator.image.tag` | Tag for prometheus operator image | `v0.41.0` |
 | `prometheusOperator.image.sha` | Sha for prometheus operator image  (optional) | `` |
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `kube-system` |
@@ -230,7 +232,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
 | `prometheusOperator.priorityClassName` | Name of Priority Class to assign pods | `nil` |
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
-| `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.38.1` |
+| `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.41.0` |
 | `prometheusOperator.prometheusConfigReloaderImage.sha` | Sha for config-reloader image (optional) | `` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.securityContext` | SecurityContext for prometheus operator | `{"fsGroup": 65534, "runAsGroup": 65534, "runAsNonRoot": true, "runAsUser": 65534}` |
