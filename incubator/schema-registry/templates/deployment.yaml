@@ -117,7 +117,7 @@ spec:
                 fieldPath: status.podIP
           - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
-          - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
+          - name: SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID
             value: {{ template "schema-registry.kafkaStore.groupId" . }}
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}

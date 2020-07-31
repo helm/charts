@@ -43,6 +43,6 @@ Default GroupId to Release Name but allow it to be overridden
 {{- if .Values.kafkaStore.overrideGroupId -}}
 {{- .Values.kafkaStore.overrideGroupId -}}
 {{- else -}}
-{{- .Release.Name -}}
+{{- .Release.Namespace -}}
 {{- end -}}
 {{- end -}}
