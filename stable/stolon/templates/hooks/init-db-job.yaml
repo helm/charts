@@ -57,20 +57,6 @@ spec:
 {{- else }}
             value: {{ .Values.superuserPassword | quote }}
 {{- end }}
-{{- if not (empty .Values.additionalUserSecret.name) }}
-          - name: ADDITIONAL_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.additionalUserSecret.name }}
-                key: {{ .Values.additionalUserSecret.usernameKey }}
-{{- end }}
-{{- if not (empty .Values.additionalUserSecret.name) }}
-          - name: ADDITIONAL_USER_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.additionalUserSecret.name }}
-                key: {{ .Values.additionalUserSecret.passwordKey }}
-{{- end }}
           - name: HOST
             value: {{ template "stolon.fullname" . }}-proxy
         command: ["/bin/bash", "-e", "/tmp/sql-script/create_script.sh"]
