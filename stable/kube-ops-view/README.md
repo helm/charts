@@ -35,3 +35,8 @@ $ helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Variables
+| Parameter                              | Description                                                                      | Default                                           |
+| -------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `env`                                  | Pass environment variables to the pod ([more info](https://github.com/hjacobs/kube-ops-view#configuration)) | `{}` |
