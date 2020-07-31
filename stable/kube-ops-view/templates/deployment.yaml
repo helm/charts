@@ -53,6 +53,11 @@ spec:
         args:
         - --redis-url=redis://{{ .Release.Name }}-redis-master:{{ .Values.redis.master.port }}
         {{- end }}
+        env:
+        {{- range $key, $value := index .Values "env" }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         {{- with .Values.securityContext }}
         securityContext: {{ toYaml . | nindent 10 }}
         {{- end }}
