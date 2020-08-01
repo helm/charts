@@ -137,6 +137,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |
 | `serviceAccount.create`         | If true, create & use Serviceaccount                                            | `true`                                      |
 | `serviceAccount.name`           | If not set and create is true, a name is generated using the fullname template  | ``                                          |
+| `serviceAccount.annotations`    | Annotations to add to the serviceAccount                                        | `{}`                                        |
 | `tls.enable`                    | If true, use the provided certificates. If false, generate self-signed certs    | `false`                                     |
 | `tls.ca`                        | Public CA file that signed the APIService (ignored if tls.enable=false)         | ``                                          |
 | `tls.key`                       | Private key of the APIService (ignored if tls.enable=false)                     | ``                                          |
