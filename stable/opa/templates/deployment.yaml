@@ -72,7 +72,9 @@ spec:
             - name: bootstrap
               mountPath: /bootstrap
 {{- end }}
-
+{{- if .Values.hostNetwork.enabled }}
+      hostNetwork: true
+{{- end }}
       containers:
         - name: opa
           image: {{ .Values.image }}:{{ .Values.imageTag }}
