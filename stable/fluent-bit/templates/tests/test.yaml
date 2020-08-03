@@ -31,7 +31,7 @@ spec:
   containers:
     - name: {{ .Release.Name }}-test
       {{- if eq .Values.backend.type "forward"}}
-      image: "fluent/fluentd:v1.4-debian-1"
+      image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
       {{- else }}
       image: "dwdraju/alpine-curl-jq"
       {{- end }}
