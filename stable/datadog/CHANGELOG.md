@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.42
+
+Add clusterAgent.metricsProvider.useDatadogMetrics to README
+
 ## 2.3.41
 
 * Fix issue with Kubernetes <= 1.14 and Cluster Agent's External Metrics Provider (must be 443)
