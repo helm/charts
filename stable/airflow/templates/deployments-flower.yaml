@@ -110,6 +110,9 @@ spec:
                && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.profile \
                && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.bashrc \
                && source /home/airflow/airflow_env.sh \
+               && echo "*** installing global extra pip packages..." \
+               && pip install --user {{ range .Values.airflow.extraPipPackages }} {{ . | quote }} {{ end }} \
+               {{- end }}
                && echo "*** running flower..." \
                && exec airflow flower
           livenessProbe:
