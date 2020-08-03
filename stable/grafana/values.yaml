@@ -487,6 +487,7 @@ sidecar:
 #     memory: 50Mi
   # skipTlsVerify Set to true to skip tls verification for kube api calls
   # skipTlsVerify: true
+  enableUniqueFilenames: false
   dashboards:
     enabled: false
     SCProvider: true
