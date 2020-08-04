@@ -71,6 +71,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `restartPolicy`                           | container restart policy                                                         | `Always`                                                                     |
 | `livenessProbe`                           | Container liveness probe                                                         | See values.yaml                                                              |
 | `readinessProbe`                          | Container readiness probe                                                        | See values.yaml                                                              |
+| `networkPolicy.enabled`                   | Enable network policy and allow access from anywhere                             | `false`                                                                      |
+| `networkPolicy.allowMonitoringNamespace`  | Limit access only from monitoring namespace                                      | `false`                                                                      |
 | `service.annotations`                     | annotations for the service                                                      | `{}`                                                                         |
 | `service.labels`                          | additional labels for the service                                                | None                                                                         |
 | `service.type`                            | type of service to create                                                        | `ClusterIP`                                                                  |
