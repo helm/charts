@@ -23,6 +23,11 @@ metadata:
 {{ toYaml .Values.prometheus.ingress.labels | indent 4 }}
 {{- end }}
 spec:
+  {{- if .Values.prometheus.ingress.defaultBackend }}
+  backend:
+    serviceName: {{ $serviceName }}
+    servicePort: {{ $servicePort }}
+  {{- end }}
   rules:
   {{- if .Values.prometheus.ingress.hosts }}
   {{- range $host := .Values.prometheus.ingress.hosts }}
