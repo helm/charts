@@ -1178,9 +1178,6 @@ externalDatabase:
   ##
   user: airflow
 
-  ## the connection properties for external database, e.g. "?sslmode=require"
-  properties: ""
-
   ## the name of a pre-created secret containing the external database password
   ##
   passwordSecret: ""
@@ -1188,6 +1185,9 @@ externalDatabase:
   ## the key within `externalDatabase.passwordSecret` containing the password string
   ##
   passwordSecretKey: "postgresql-password"
+
+  ## the connection properties for external database, e.g. "?sslmode=require"
+  properties: ""
 
 ###################################
 # Database - Redis Chart
