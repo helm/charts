@@ -16,6 +16,8 @@ namespace:
 downscaleResources:
   - deployments
   - statefulsets
+  - horizontalpodautoscalers
+  - cronjobs
 
 # List of namespaces to be excluded from the downscaler
 excludedNamespaces: []
