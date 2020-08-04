@@ -266,6 +266,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.annotations` | Prometheus annotations | `{}` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
+| `prometheus.ingress.defaultBackend` | If true, Prometheus Ingress will be configured with default backend | `false` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
 | `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
 | `prometheus.ingress.paths` | Prometheus Ingress paths | `[]` |
@@ -421,6 +422,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
 | `alertmanager.ingress.annotations` | Alertmanager Ingress annotations | `{}` |
 | `alertmanager.ingress.enabled` | If true, Alertmanager Ingress will be created | `false` |
+| `alertmanager.ingress.defaultBackend` | If true, Alertmanager Ingress will be configured with default backend | `false` |  
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.paths` | Alertmanager Ingress paths | `[]` |
