@@ -6,6 +6,9 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
   pullPolicy: IfNotPresent
 
+# Set this to true to drop the use of extensions/v1beta1
+avoidExtensionsV1Beta1ApiVersion: false
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

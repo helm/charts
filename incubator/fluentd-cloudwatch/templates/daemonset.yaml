@@ -1,4 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+{{- if or (.Capabilities.APIVersions.Has "apps/v1") (.Values.avoidExtensionsV1Beta1ApiVersion) }}
 apiVersion: apps/v1
 {{- else }}
 apiVersion: extensions/v1beta1

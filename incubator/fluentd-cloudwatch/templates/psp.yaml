@@ -1,5 +1,5 @@
 {{- if .Values.rbac.pspEnabled }}
-{{- if .Capabilities.APIVersions.Has "policy/v1beta1" }}
+{{- if or (.Capabilities.APIVersions.Has "policy/v1beta1") (.Values.avoidExtensionsV1Beta1ApiVersion) }}
 apiVersion: policy/v1beta1
 {{- else }}
 apiVersion: extensions/v1beta1
