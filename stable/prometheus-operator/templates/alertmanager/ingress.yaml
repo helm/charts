@@ -23,6 +23,11 @@ metadata:
 {{- end }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
+  {{- if .Values.alertmanager.ingress.defaultBackend }}
+  backend:
+    serviceName: {{ $serviceName }}
+    servicePort: {{ $servicePort }}
+  {{- end }}
   rules:
   {{- if .Values.alertmanager.ingress.hosts }}
   {{- range $host := .Values.alertmanager.ingress.hosts }}
