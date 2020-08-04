@@ -1181,6 +1181,21 @@ prometheusOperator:
   ##
   denyNamespaces: []
 
+  ## Namespaces to scope the interaction of the Prometheus Operator for Alertmanager CRs.
+  ## Overrides the global namespace configuration for Alertmanager CRs. Setting to an empty list will disable the configuration
+  ##
+  alertmanagerInstanceNamespaces: []
+
+  ## Namespaces to scope the interaction of the Prometheus Operator for Prometheus CRs.
+  ## Overrides the global namespace configuration for Prometheus CRs. Setting to an empty list will disable the configuration
+  ##
+  prometheusInstanceNamespaces: []
+
+  ## Namespaces to scope the interaction of the Prometheus Operator for Thanos Ruler CRs.
+  ## Overrides the global namespace configuration for Thanos Ruler CRs. Setting to an empty list will disable the configuration
+  ##
+  thanosRulerInstanceNamespaces: []
+
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##

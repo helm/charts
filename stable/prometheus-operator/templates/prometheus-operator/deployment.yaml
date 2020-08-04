@@ -61,6 +61,15 @@ spec:
           {{- end }}
             - --namespaces={{ $ns | join "," }}
           {{- end }}
+          {{- if .Values.prometheusOperator.alertmanagerInstanceNamespaces }}
+            - --alertmanager-instance-namespaces={{ .Values.prometheusOperator.alertmanagerInstanceNamespaces | join "," }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.prometheusInstanceNamespaces }}
+            - --prometheus-instance-namespaces={{ .Values.prometheusOperator.prometheusInstanceNamespaces | join "," }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.thanosRulerInstanceNamespaces }}
+            - --thanos-ruler-instance-namespaces={{ .Values.prometheusOperator.thanosRulerInstanceNamespaces | join "," }}
+          {{- end }}
             - --logtostderr=true
             - --localhost=127.0.0.1
             {{- if .Values.prometheusOperator.prometheusConfigReloaderImage.sha }}
