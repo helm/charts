@@ -381,8 +381,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.thanosIngress.paths` |  Ingress paths for Thanos Sidecar | `[]` |
 | `prometheus.thanosIngress.annotations` |  Ingress annotations for Thanos Sidecar | `{}` |
 | `prometheus.thanosIngress.labels` |  Ingress labels for Thanos Sidecar | `{}` |
-| `prometheus.thanosIngress.hosts |  Ingress hosts for Thanos Sidecar | `[]` |
-| `prometheus.thanosIngress.tls |  Ingress tls for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.hosts` |  Ingress hosts for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.tls` |  Ingress tls for Thanos Sidecar | `[]` |
 
 ### Alertmanager
 | Parameter | Description | Default |
