@@ -183,6 +183,9 @@ alertmanager:
   ingress:
     enabled: false
 
+    # Set default backend for ingress
+    defaultBackend: false
+
     annotations: {}
 
     labels: {}
@@ -1482,6 +1485,8 @@ prometheus:
 
   ingress:
     enabled: false
+    # Set default backend for ingress
+    defaultBackend: false
     annotations: {}
     labels: {}
 
