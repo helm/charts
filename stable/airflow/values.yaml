@@ -1178,6 +1178,9 @@ externalDatabase:
   ##
   user: airflow
 
+  ## the connection properties for external database, e.g. "?sslmode=require"
+  properties: ""
+
   ## the name of a pre-created secret containing the external database password
   ##
   passwordSecret: ""
