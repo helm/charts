@@ -38,6 +38,8 @@ spec:
       image: "{{ .Values.testFramework.image }}:{{ .Values.testFramework.tag }}"
       imagePullPolicy: "{{ .Values.testFramework.imagePullPolicy}}"
       command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
+      resources:
+{{ toYaml .Values.testFramework.resources | indent 8 }}
       volumeMounts:
       - mountPath: /tests
         name: tests

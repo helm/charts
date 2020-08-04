@@ -17,6 +17,10 @@ testFramework:
   tag: "1.2.1"
   imagePullPolicy: IfNotPresent
   securityContext: {}
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m
 
 ## Specify password for root user
 ##

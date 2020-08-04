@@ -125,6 +125,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `priorityClassName`                          | Set pod priorityClassName                                                                    | `{}`                                                 |
 | `deploymentAnnotations`		       | Map of annotations for deployment							      | `{}`						     |
 | `strategy`                                   | Update strategy policy                                                                       | `{type: "Recreate"}`                                 |
+| `testFramework.resources`                    | testFramework resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
