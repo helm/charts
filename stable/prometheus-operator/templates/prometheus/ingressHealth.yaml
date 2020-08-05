@@ -1,0 +1,47 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.healthIngress.enabled }}
+{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus-health" }}
+{{- $servicePort := .Values.prometheus.service.port -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+{{- if .Values.prometheus.healthIngress.annotations }}
+  annotations:
+{{ toYaml .Values.prometheus.healthIngress.annotations | indent 4 }}
+{{- end }}
+  name: {{ $serviceName }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-prometheus
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.prometheus.healthIngress.labels }}
+{{ toYaml .Values.prometheus.healthIngress.labels | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  {{- if .Values.prometheus.ingress.hosts }}
+  {{- range $host := .Values.prometheus.ingress.hosts }}
+    - host: {{ tpl $host $ }}
+      http:
+        paths:
+          - path: /-/ready
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- else }}
+    - http:
+        paths:
+          - path: /-/ready
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- if .Values.prometheus.ingress.tls }}
+  tls:
+{{ toYaml .Values.prometheus.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

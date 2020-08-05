@@ -1456,7 +1456,13 @@ prometheus:
     minAvailable: 1
     maxUnavailable: ""
 
-# Ingress exposes thanos sidecar outside the clsuter
+  ## Configure an additional Ingress to expose health endpoint under a different Ingress.
+  healthIngress:
+    enabled: false
+    annotations: {}
+    labels: {}
+
+  ## Ingress exposes thanos sidecar outside the cluster
   thanosIngress:
     enabled: false
     annotations: {}
