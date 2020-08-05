@@ -1,3 +1,16 @@
+#################################################################
+####          WARNING: This repository is deprecated         ####
+#################################################################
+
+Following upcoming deprecation of https://github.com/helm/charts repository
+The stable/datadog Helm chart has been moved to helm.datadoghq.com (source: https://github.com/DataDog/helm-charts)
+
+You can add new repository by running:
+  helm repo add datadog https://helm.datadoghq.com
+  helm repo update
+
+You can now replace stable/datadog by datadog/datadog in all your Helm commands
+
 {{- if (or (.Values.datadog.apiKeyExistingSecret) (not (eq .Values.datadog.apiKey "<DATADOG_API_KEY>"))) }}
 Datadog agents are spinning up on each node in your cluster. After a few
 minutes, you should see your agents starting in your event stream:
