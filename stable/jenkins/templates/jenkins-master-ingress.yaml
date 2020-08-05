@@ -42,8 +42,8 @@ spec:
   - http:
       paths:
       - backend:
-        serviceName: {{ template "jenkins.fullname" . }}
-        servicePort: {{ .Values.master.servicePort }}
+          serviceName: {{ template "jenkins.fullname" . }}
+          servicePort: {{ .Values.master.servicePort }}
     host: {{ .Values.master.ingress.resourceRootUrl | quote }}
 {{- end }}
 {{- if .Values.master.ingress.tls }}
