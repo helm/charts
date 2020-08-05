@@ -571,7 +571,9 @@ prometheus:
       ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
       selector:
         role: alert-rules
-      labels: {}
+      labels:
+        severity: critical
+        team: devops
 
     serviceMonitor:
       ## Interval at which Prometheus scrapes RabbitMQ Exporter
