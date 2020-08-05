@@ -264,6 +264,10 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.additionalServiceMonitors` | List of `ServiceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.enabled` | Deploy prometheus | `true` |
 | `prometheus.annotations` | Prometheus annotations | `{}` |
+| `prometheus.healthIngress.annotations` | Prometheus Health Ingress annotations | `{}` |
+| `prometheus.healthIngress.enabled` | If true, an additional Ingress for monitoring Prometheus health will be created | `false` |
+| `prometheus.healthIngress.labels` | Prometheus Health Ingress additional labels | `{}` |
+| `prometheus.ingressPerReplica.hostPrefix` |  | `""` |
 | `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
 | `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
 | `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
@@ -381,8 +385,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.thanosIngress.paths` |  Ingress paths for Thanos Sidecar | `[]` |
 | `prometheus.thanosIngress.annotations` |  Ingress annotations for Thanos Sidecar | `{}` |
 | `prometheus.thanosIngress.labels` |  Ingress labels for Thanos Sidecar | `{}` |
-| `prometheus.thanosIngress.hosts |  Ingress hosts for Thanos Sidecar | `[]` |
-| `prometheus.thanosIngress.tls |  Ingress tls for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.hosts` |  Ingress hosts for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.tls` |  Ingress tls for Thanos Sidecar | `[]` |
 
 ### Alertmanager
 | Parameter | Description | Default |
@@ -419,6 +423,9 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.apiVersion` | Api that prometheus will use to communicate with alertmanager. Possible values are v1, v2 | `v2` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
+| `alertmanager.healthIngress.annotations` | Alertmanager Health Ingress annotations | `{}` |
+| `alertmanager.healthIngress.enabled` | If true, an additional Ingress for monitoring Alertmanager health will be created | `false` |
+| `alertmanager.healthIngress.labels` | Alertmanager Health Ingress additional labels | `{}` |
 | `alertmanager.ingress.annotations` | Alertmanager Ingress annotations | `{}` |
 | `alertmanager.ingress.enabled` | If true, Alertmanager Ingress will be created | `false` |
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
