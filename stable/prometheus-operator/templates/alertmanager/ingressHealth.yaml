@@ -1,5 +1,5 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.healthIngress.enabled }}
-{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager-health" }}
+{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}
 {{- $servicePort := .Values.alertmanager.service.port -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
@@ -8,7 +8,7 @@ apiVersion: extensions/v1beta1
 {{ end -}}
 kind: Ingress
 metadata:
-  name: {{ $serviceName }}
+  name: {{ $serviceName }}-health
   namespace: {{ template "prometheus-operator.namespace" . }}
 {{- if .Values.alertmanager.healthIngress.annotations }}
   annotations:

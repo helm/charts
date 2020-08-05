@@ -1,5 +1,5 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.healthIngress.enabled }}
-{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus-health" }}
+{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
 {{- $servicePort := .Values.prometheus.service.port -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
@@ -12,7 +12,7 @@ metadata:
   annotations:
 {{ toYaml .Values.prometheus.healthIngress.annotations | indent 4 }}
 {{- end }}
-  name: {{ $serviceName }}
+  name: {{ $serviceName }}-health
   namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus

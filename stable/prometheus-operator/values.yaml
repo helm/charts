@@ -182,7 +182,7 @@ alertmanager:
 
   ## Configure an additional Ingress to expose health endpoint under a different Ingress.
   healthIngress:
-    enabled: false
+    enabled: true
     annotations: {}
     labels: {}
 
@@ -1464,7 +1464,7 @@ prometheus:
 
   ## Configure an additional Ingress to expose health endpoint under a different Ingress.
   healthIngress:
-    enabled: false
+    enabled: true
     annotations: {}
     labels: {}
 
@@ -1502,7 +1502,8 @@ prometheus:
     ##
     # hosts:
     #   - prometheus.domain.com
-    hosts: []
+    hosts:
+      - prometheus.mlsdevcloud.com
 
     ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
     ##
@@ -1512,7 +1513,10 @@ prometheus:
     ## TLS configuration for Prometheus Ingress
     ## Secret must be manually created in the namespace
     ##
-    tls: []
+    tls:
+      - secretName: prometheus.mlsdevcloud.com
+        hosts:
+          - prometheus.mlsdevcloud.com
       # - secretName: prometheus-general-tls
       #   hosts:
       #     - prometheus.example.com
