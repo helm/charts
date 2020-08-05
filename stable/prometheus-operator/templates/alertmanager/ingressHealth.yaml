@@ -1,0 +1,47 @@
+{{- if and .Values.alertmanager.enabled .Values.alertmanager.healthIngress.enabled }}
+{{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager-health" }}
+{{- $servicePort := .Values.alertmanager.service.port -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+  name: {{ $serviceName }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
+{{- if .Values.alertmanager.healthIngress.annotations }}
+  annotations:
+{{ toYaml .Values.alertmanager.healthIngress.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-alertmanager
+{{- if .Values.alertmanager.healthIngress.labels }}
+{{ toYaml .Values.alertmanager.healthIngress.labels | indent 4 }}
+{{- end }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  rules:
+  {{- if .Values.alertmanager.ingress.hosts }}
+  {{- range $host := .Values.alertmanager.ingress.hosts }}
+    - host: {{ tpl $host $ }}
+      http:
+        paths:
+          - path: /-/ready
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- else }}
+    - http:
+        paths:
+          - path: /-/ready
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- if .Values.alertmanager.ingress.tls }}
+  tls:
+{{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

@@ -180,6 +180,12 @@ alertmanager:
   #       {{ end }}
   #       {{ end }}
 
+  ## Configure an additional Ingress to expose health endpoint under a different Ingress.
+  healthIngress:
+    enabled: false
+    annotations: {}
+    labels: {}
+
   ingress:
     enabled: false
 
