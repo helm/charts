@@ -22,8 +22,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 10%
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -39,16 +39,22 @@ spec:
         {{- end }}
         app.kubernetes.io/name: {{ template "coredns.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
-{{- if .Values.customLabels }}
-{{ toYaml .Values.customLabels | indent 8 }}
-{{- end }}
+        {{- if .Values.customLabels }}
+        {{ toYaml .Values.customLabels }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
+        {{- if .Values.podAnnotations }}
+        {{ toYaml .Values.podAnnotations }}
+        {{- end }}
     spec:
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       serviceAccountName: {{ template "coredns.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
@@ -106,6 +112,12 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
+        {{- if .Values.preStopSleep }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/bin/sleep", "{{ .Values.preStopSleep }}"]
+        {{- end }}
       volumes:
         - name: config-volume
           configMap:

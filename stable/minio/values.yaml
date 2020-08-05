@@ -14,7 +14,7 @@ clusterDomain: cluster.local
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2020-04-28T23-56-56Z
+  tag: RELEASE.2020-06-14T18-32-17Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -22,7 +22,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2020-04-25T00-43-23Z
+  tag: RELEASE.2020-05-28T23-43-36Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `jq` (the JSON
@@ -111,7 +111,7 @@ persistence:
   storageClass: ""
   VolumeName: ""
   accessMode: ReadWriteOnce
-  size: 10Gi
+  size: 500Gi
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
@@ -127,7 +127,7 @@ service:
   type: ClusterIP
   clusterIP: ~
   port: 9000
-  nodePort: 31311
+  nodePort: 32000
 
   ## List of IP addresses at which the Prometheus server service is available
   ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -142,6 +142,9 @@ service:
 
 ## Configure Ingress based on the documentation here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
+
+imagePullSecrets: []
+# - name: "image-pull-secret"
 
 ingress:
   enabled: false
@@ -189,14 +192,15 @@ podLabels: {}
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
   initialDelaySeconds: 5
-  periodSeconds: 30
+  periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
-  failureThreshold: 3
+  failureThreshold: 1
 readinessProbe:
-  initialDelaySeconds: 60
-  periodSeconds: 15
-  timeoutSeconds: 1
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  ## Set this to 1s higher than MINIO_API_READY_DEADLINE
+  timeoutSeconds: 6
   successThreshold: 1
   failureThreshold: 3
 
@@ -205,8 +209,7 @@ readinessProbe:
 ##
 resources:
   requests:
-    memory: 256Mi
-    cpu: 250m
+    memory: 4Gi
 
 ## Create a bucket after minio install
 ##
@@ -291,6 +294,7 @@ b2gateway:
 ## Use this field to add environment variables relevant to Minio server. These fields will be passed on to Minio container(s)
 ## when Chart is deployed
 environment:
+  MINIO_API_READY_DEADLINE: "5s"
   ## Please refer for comprehensive list https://docs.minio.io/docs/minio-server-configuration-guide.html
 
 networkPolicy:

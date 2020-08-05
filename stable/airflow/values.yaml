@@ -611,6 +611,17 @@ flower:
   ##
   podAnnotations: {}
 
+  ## the name of a pre-created secret containing the basic authentication value for flower
+  ##
+  ## NOTE:
+  ## - This sets `AIRFLOW__CELERY__FLOWER_BASIC_AUTH`
+  ##
+  basicAuthSecret: ""
+
+  ## the key within `flower.basicAuthSecret` containing the basic authentication string
+  ##
+  basicAuthSecretKey: ""
+
   ## sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX`
   ##
   ## NOTE:
@@ -626,6 +637,8 @@ flower:
     externalPort: 5555
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    nodePort:
+      http: ""
 
   ## the number of seconds to wait (in bash) before starting the flower container
   ##
@@ -1113,7 +1126,7 @@ postgresql:
   ##
   existingSecret: ""
 
-  ## the key in `postgresql.existingSecret` containing the password string
+  ## the key within `postgresql.existingSecret` containing the password string
   ##
   existingSecretKey: "postgresql-password"
 
@@ -1197,7 +1210,7 @@ redis:
   ##
   existingSecret: ""
 
-  ## the key in `redis.existingSecret` containing the password string
+  ## the key within `redis.existingSecret` containing the password string
   ##
   existingSecretKey: "redis-password"
 

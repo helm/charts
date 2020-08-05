@@ -1,3 +1,4 @@
+{{- if .Values.historical.enabled -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -131,4 +132,5 @@ spec:
       resources:
         requests:
           storage: "{{ .Values.historical.persistence.size }}"
-  {{ end }}
+  {{- end }}
+{{- end }}

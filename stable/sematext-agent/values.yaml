@@ -46,6 +46,8 @@ logagent:
   #    hostPath: <hostPath>
   #    mountPath: <mountPath>
 
+priorityClassName:
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

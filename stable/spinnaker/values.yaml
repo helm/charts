@@ -7,6 +7,8 @@ halyard:
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Uncomment to add storage class for the persistence data volume
+  # storageClass: <storageclass_name>
   # Provide additional parameters to halyard deploy apply command
   additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
@@ -164,8 +166,8 @@ kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  secretName: my-kubeconfig
-  secretKey: config
+  # secretName: my-kubeconfig
+  # secretKey: config
   # Use this when you want to configure halyard to reference a kubeconfig from s3
   # This allows you to keep your kubeconfig in an encrypted s3 bucket
   # For more info visit:
@@ -175,6 +177,12 @@ kubeConfig:
   contexts:
   - default
   deploymentContext: default
+  # Use this to limit the namespaces this kubernetes account will access.
+  # Note, if you use nameSpaces, omittedNameSpaces will not be used.
+  # Note, the casing of the nameSpace variable here.
+  # nameSpaces:
+  # - namespace1
+  # - namespace2
   omittedNameSpaces:
   - kube-system
   - kube-public
@@ -306,6 +314,8 @@ azs:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  # Specifies whether PSP resources should be created
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -314,6 +324,7 @@ serviceAccount:
   # If left blank it is auto-generated from the fullname of the release
   halyardName:
   spinnakerName:
+  serviceAccountAnnotations: {}
 securityContext:
   # Specifies permissions to write for user/group
   runAsUser: 1000

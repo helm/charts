@@ -1,5 +1,28 @@
 # Upgrading Steps
 
+## `v7.2.X` → `v7.3.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to specify a specific port for Flower when using NodePort service type with the value `flower.service.nodePort.http`
+
+__The following values have been ADDED:__
+
+* `flower.service.nodePort.http`
+
+## `v7.1.X` → `v7.2.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Fixed Flower's liveness probe when Basic Authentication is enabled for Flower.
+  You can specify a basic auth value via a Kubernetes Secret using the values `flower.basicAuthSecret` and `flower.basicAuthSecretKey`.
+  The secret value will get encoded and included in the liveness probe's header.
+
+__The following values have been ADDED:__
+
+* `flower.basicAuthSecret`
+* `flower.basicAuthSecretKey`
+
 ## `v7.0.X` → `v7.1.0`
 
 __The following IMPROVEMENTS have been made:__

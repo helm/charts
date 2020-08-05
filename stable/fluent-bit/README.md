@@ -108,9 +108,11 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
 | `extraEntries.filter`              |    Extra entries for existing [FILTER] section                     | ``                    |
 | `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraEntries.service`             |   Extra entries for existing [SERVICE] section                   | ``                    |
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `initContainers`                   | Init containers                            | `{}`                                           |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`             | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -136,6 +138,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
 | `input.tail.dockerMode`            | Recombine split Docker log lines before passing them to the parser.        | `false`                                             |
 | `input.tail.dockerModeFlush`       | Wait period time in seconds to flush queued unfinished split lines in docker mode.        | `4`                                             |
+| `input.tail.exclude_path`          | Exclude paths from tail input (`Exclude_Path` configuration parameter).        | ``                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |

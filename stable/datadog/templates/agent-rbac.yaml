@@ -90,6 +90,59 @@ rules:
   - "get"
   - "watch"
 {{- end }}
+{{- if .Values.datadog.orchestratorExplorer.enabled }}
+- apiGroups:  # to get the kube-system namespace UID and generate a cluster ID
+  - ""
+  resources:
+  - namespaces
+  resourceNames:
+  - "kube-system"
+  verbs:
+  - get
+- apiGroups:  # To create the cluster-id configmap
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  - "datadog-cluster-id"
+  verbs:
+  - create
+  - get
+  - update
+{{- end }}
+{{- if and .Values.clusterAgent.metricsProvider.enabled .Values.clusterAgent.metricsProvider.useDatadogMetrics }}
+- apiGroups:
+  - "datadoghq.com"
+  resources:
+  - "datadogmetrics"
+  verbs:
+  - "list"
+  - "create"
+  - "delete"
+  - "watch"
+- apiGroups:
+  - "datadoghq.com"
+  resources:
+  - "datadogmetrics/status"
+  verbs:
+  - "update"
+{{- end }}
+{{- if .Values.clusterAgent.admissionController.enabled }}
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs: ["get", "list", "watch", "update", "create"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "update", "create"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets", "replicasets", "deployments"]
+  verbs: ["get"]
+{{- end }}
 ---
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding

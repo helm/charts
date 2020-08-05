@@ -6,6 +6,7 @@ rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
 cluster: dev
 
 auth:
+  enabled: true
   annotations: {}
   domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
   extraEnv: []
@@ -27,6 +28,9 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
+  # Include Auth application in ingress, useful if the auth component is
+  # exposed independently.
+  ingressEnabled: true
   # Auth application ingress path.
   # For GKE and AWS ALB ingresses use "/*"
   # For Nginx ingress use "/"
@@ -35,6 +39,7 @@ auth:
     # secretName: sso-auth-tls-secret
 
 proxy:
+  enabled: true
   annotations: {}
   extraEnv:
     - name: STATSD_HOST

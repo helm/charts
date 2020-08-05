@@ -38,3 +38,14 @@ Create chart name and version as used by the chart label.
 {{- printf "%s:%s" .Values.image.repository .Values.image.tag -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Use apps/v1 when supported, fallback to apps/v1beta2 if it's not.
+*/}}
+{{- define "satisfy.deployAPIVersion" -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1" -}}
+{{- printf "apps/v1" -}}
+{{- else -}}
+{{- printf "apps/v1beta2" -}}
+{{- end -}}
+{{- end -}}

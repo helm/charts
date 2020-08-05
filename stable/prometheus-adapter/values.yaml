@@ -3,7 +3,7 @@ affinity: {}
 
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
-  tag: v0.6.0
+  tag: v0.7.0
   pullPolicy: IfNotPresent
 
 logLevel: 4
@@ -20,6 +20,7 @@ priorityClassName: ""
 prometheus:
   url: http://prometheus.default.svc
   port: 9090
+  path: ""
 
 replicas: 1
 

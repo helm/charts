@@ -46,7 +46,7 @@ data:
   {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__NAMESPACE) }}
   AIRFLOW__KUBERNETES__NAMESPACE: "{{ .Release.Namespace }}"
   {{- end }}
-  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__WORKER_SERIVCE_ACCOUNT_NAME) }}
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME) }}
   AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME: "{{ include "airflow.serviceAccountName" . }}"
   {{- end }}
   {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF) }}

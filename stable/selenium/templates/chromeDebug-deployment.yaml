@@ -18,6 +18,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.chromeDebug.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
       {{- if .Values.chromeDebug.podAnnotations }}
       annotations:
 {{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}

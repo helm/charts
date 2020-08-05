@@ -1,6 +1,6 @@
 # Apache Druid
 
-[Apache Druid (incubating)](http://druid.io/) is a high performance analytics data store for event-driven data.
+[Apache Druid](https://druid.apache.org/) is a high performance real-time analytics database.
 
 ## Install Chart
 
@@ -63,12 +63,14 @@ The following table lists the configurable parameters of the Druid chart and the
 | Parameter                                | Description                                             | Default                                    |
 |------------------------------------------|---------------------------------------------------------|--------------------------------------------|
 | `image.repository`                       | container image name                                    | `apache/druid`                             |
-| `image.tag`                              | container image tag                                     | `0.18.0`                                   |
+| `image.tag`                              | container image tag                                     | `0.19.0`                                   |
 | `image.pullPolicy`                       | container pull policy                                   | `IfNotPresent`                             |
 | `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                                       |
+| `configMap.enabled`                       | enable druid configuration as configmap                   | `true`                                     |
 | `configVars`                              | druid configuration variables for all components         | ``                                         |
 | `gCloudStorage.enabled`                  | look for secret to set google cloud credentials         | `false`                                    |
 | `gCloudStorage.secretName`               | secretName to be mounted as google cloud credentials    | `false`                                    |
+| `broker.enabled`                         | enable broker                                           | `true`                                     |
 | `broker.name`                            | broker component name                                   | `broker`                                   |
 | `broker.replicaCount`                    | broker node replicas (deployment)                       | `1`                                        |
 | `broker.port`                            | port of broker component                                | `8082`                                     |
@@ -84,6 +86,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `broker.ingress.path`                    | path of the broker api                                  | `/`                                        |
 | `broker.ingress.annotations`             | annotations for the broker api ingress                  | `{}`                                       |
 | `broker.ingress.tls`                     | TLS configuration for the ingress                        | `[]`                                       |
+| `coordinator.enabled`                    | enable coordinator                                      | `true`                                     |
 | `coordinator.name`                       | coordinator component name                              | `coordinator`                              |
 | `coordinator.replicaCount`               | coordinator node replicas (deployment)                  | `1`                                        |
 | `coordinator.port`                       | port of coordinator component                           | `8081`                                     |
@@ -115,6 +118,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.ingress.path`                  | path of the overlord api                                | `/`                                        |
 | `overlord.ingress.annotations`           | annotations for the overlord api ingress                | `{}`                                       |
 | `overlord.ingress.tls`                   | TLS configuration for the ingress                        | `[]`                                       |
+| `historical.enabled`                     | enable historical                                       | `true`                                     |
 | `historical.name`                        | historical component name                               | `historical`                               |
 | `historical.replicaCount`                | historical node replicas (statefulset)                  | `1`                                        |
 | `historical.port`                        | port of historical component                            | `8083`                                     |
@@ -135,6 +139,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.ingress.path`                | path of the historical api                              | `/`                                        |
 | `historical.ingress.annotations`         | annotations for the historical api ingress              | `{}`                                       |
 | `historical.ingress.tls`                 | TLS configuration for the ingress                        | `[]`                                       |
+| `middleManager.enabled`                  | enable middleManager                                    | `true`                                     |
 | `middleManager.name`                     | middleManager component name                            | `middleManager`                            |
 | `middleManager.replicaCount`             | middleManager node replicas (statefulset)               | `1`                                        |
 | `middleManager.port`                     | port of middleManager component                         | `8091`                                     |

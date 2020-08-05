@@ -81,7 +81,14 @@ spec:
               protocol: TCP
           {{- if .Values.flower.extraConfigmapMounts }}
           volumeMounts:
-            {{- toYaml .Values.flower.extraConfigmapMounts | nindent 12 }}
+            {{- range .Values.flower.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
           {{- end }}
           command:
             - "/usr/bin/dumb-init"
@@ -106,6 +113,19 @@ spec:
                && echo "*** running flower..." \
                && exec airflow flower
           livenessProbe:
+            {{- if and (.Values.flower.basicAuthSecret) (not .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH) }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -H 'Authorization: Basic $(echo -n $AIRFLOW__CELERY__FLOWER_BASIC_AUTH | base64)' 'http://localhost:5555
+                  {{- if .Values.ingress.flower.livenessPath -}}
+                  {{ .Values.ingress.flower.livenessPath }}
+                  {{- else -}}
+                  {{ .Values.ingress.flower.path }}/
+                  {{- end -}}
+                  '"
+            {{- else }}
             httpGet:
               {{- if .Values.ingress.flower.livenessPath }}
               path: "{{ .Values.ingress.flower.livenessPath }}"
@@ -113,6 +133,12 @@ spec:
               path: "{{ .Values.ingress.flower.path }}/"
               {{- end }}
               port: flower
+              {{- if .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH }}
+              httpHeaders:
+                - name: Authorization
+                  value: Basic {{ .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH | b64enc }}
+              {{- end }}
+            {{- end }}
             initialDelaySeconds: 60
             periodSeconds: 30
             timeoutSeconds: 1
@@ -120,4 +146,12 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.flower.resources | nindent 12 }}
+      {{- if .Values.flower.extraConfigmapMounts }}
+      volumes:
+        {{- range .Values.flower.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+      {{- end }}
 {{- end }}

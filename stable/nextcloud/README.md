@@ -144,8 +144,25 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `readinessProbe.timeoutSeconds`                              | When the probe times out                                | `5`                                         |
 | `readinessProbe.failureThreshold`                            | Minimum consecutive failures for the probe              | `3`                                         |
 | `readinessProbe.successThreshold`                            | Minimum consecutive successes for the probe             | `1`                                         |
+| `hpa.enabled`                                                | Boolean to create a HorizontalPodAutoscaler             | `false`                                     |
+| `hpa.cputhreshold`                                           | CPU threshold percent for the HorizontalPodAutoscale    | `60`                                        |
+| `hpa.minPods`                                                | Min. pods for the Nextcloud HorizontalPodAutoscaler     | `1`                                         |
+| `hpa.maxPods`                                                | Max. pods for the Nextcloud HorizontalPodAutoscaler     | `10`                                        |
 | `deploymentAnnotations`                                      | Annotations to be added at 'deployment' level           | not set                                     |
 | `podAnnotations`                                             | Annotations to be added at 'pod' level                  | not set                                     |
+| `metrics.enabled`                                            | Start Prometheus metrics exporter                       | `false`                                     |
+| `metrics.https`                                              | Defines if https is used to connect to nextcloud        | `false` (uses http)                         |
+| `metrics.timeout`                                            | When the scrape times out                               | `5s`                                        |
+| `metrics.image.repository`                                   | Nextcloud metrics exporter image name                   | `xperimental/nextcloud-exporter`            |
+| `metrics.image.tag`                                          | Nextcloud metrics exporter image tag                    | `v0.3.0`                                    |
+| `metrics.image.pullPolicy`                                   | Nextcloud metrics exporter image pull policy            | `IfNotPresent`                              |
+| `metrics.podAnnotations`                                     | Additional annotations for metrics exporter             | not set                                     |
+| `metrics.podLabels`                                          | Additional labels for metrics exporter                  | not set                                     |
+| `metrics.service.type`                                       | Metrics: Kubernetes Service type                        | `ClusterIP`                                 |
+| `metrics.service.loadBalancerIP`                             | Metrics: LoadBalancerIp for service type LoadBalancer   | `nil`                                       |
+| `metrics.service.nodePort`                                   | Metrics: NodePort for service type NodePort             | `nil`                                       |
+| `metrics.service.annotations`                                | Additional annotations for service metrics exporter     | `{prometheus.io/scrape: "true", prometheus.io/port: "9205"}` |
+| `metrics.service.labels`                                     | Additional labels for service metrics exporter          | `{}`                                        |
 
 > **Note**:
 >

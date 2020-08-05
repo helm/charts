@@ -176,6 +176,8 @@ extraEntries:
 #     # >=1 additional Key/Value entrie(s) for existing Filter section
   output: |-
 #     # >=1 additional Key/Value entrie(s) for existing Ouput section
+  service: |-
+#     # >=1 additional Key/Value entrie(s) for existing Service section
 # WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -248,6 +250,7 @@ input:
     ignore_older: ""
     dockerMode: false
     dockerModeFlush: 4
+    exclude_path: ""
   systemd:
     enabled: false
     filters:
@@ -328,3 +331,21 @@ securityContext: {}
 podSecurityContext: {}
   # podSecurityContext:
   #   runAsUser: 1000
+
+## Add your own init container (example installation of Lua filter plugin)
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: {}
+  # load-plugin:
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   # Assumed plugins volume is configured at Pod level via extraVolumes
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /fluent-bit/plugins
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       curl -sS <download-url> -o /plugin.zip
+  #       unzip /plugin.zip
+  #       cp -av <plugin-zip-contents> /fluent-bit/plugins/

@@ -1,6 +1,6 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.12.1
+  tag: v0.12.4
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -11,6 +11,9 @@ affinity: {}
 controller:
   # controller.create: `true` if Sealed Secrets controller should be created
   create: true
+
+# namespace: Namespace to deploy the controller.
+namespace: ""
 
 serviceAccount:
   # serviceAccount.create: Whether to create a service account or not
