@@ -211,6 +211,19 @@ ingress:
 There are a few methods to import dashboards to Grafana. Below are some examples and explanations as to how to use each method:
 
 ```yaml
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default' # Should match a key under dashboards
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default # dashboards under the dashboards object are downloaded to /var/lib/grafana/dashboards/{name}/
+
 dashboards:
   default:
     some-dashboard:
