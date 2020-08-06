@@ -100,9 +100,9 @@ podAnnotations: {}
   # prometheus.io/path: "/stats/prometheus"
   # prometheus.io/port: "9901"
 
-podLabels:
-  app: envoy-whitelisted
-  env: prod
+podLabels: {}
+  # team: "developers"
+  # service: "envoy"
 
 livenessProbe:
   tcpSocket:
