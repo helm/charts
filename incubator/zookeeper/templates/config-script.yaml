@@ -12,11 +12,19 @@ metadata:
 data:
     ok: |
       #!/bin/sh
-      zkServer.sh status
+      if [ -f /tls/client/ca.crt ]; then
+        echo "srvr" | openssl s_client -CAfile /tls/client/ca.crt -cert /tls/client/tls.crt -key /tls/client/tls.key -connect 127.0.0.1:${1:-2281} -quiet -ign_eof 2>/dev/null | grep Mode
+      else
+        zkServer.sh status
+      fi
 
     ready: |
       #!/bin/sh
-      echo ruok | nc 127.0.0.1 ${1:-2181}
+      if [ -f /tls/client/ca.crt ]; then
+        echo "ruok" | openssl s_client -CAfile /tls/client/ca.crt -cert /tls/client/tls.crt -key /tls/client/tls.key -connect 127.0.0.1:${1:-2281} -quiet -ign_eof 2>/dev/null
+      else
+        echo ruok | nc 127.0.0.1 ${1:-2181}
+      fi
 
     run: |
       #!/bin/bash
@@ -30,6 +38,7 @@ data:
       ZK_DATA_LOG_DIR=${ZK_DATA_LOG_DIR:-"/data/log"}
       ZK_CONF_DIR=${ZK_CONF_DIR:-"/conf"}
       ZK_CLIENT_PORT=${ZK_CLIENT_PORT:-2181}
+      ZK_SSL_CLIENT_PORT=${ZK_SSL_CLIENT_PORT:-2281}
       ZK_SERVER_PORT=${ZK_SERVER_PORT:-2888}
       ZK_ELECTION_PORT=${ZK_ELECTION_PORT:-3888}
       ZK_TICK_TIME=${ZK_TICK_TIME:-2000}
@@ -64,7 +73,15 @@ data:
       mkdir -p $ZK_DATA_LOG_DIR
       echo $MY_ID >> $ID_FILE
 
-      echo "clientPort=$ZK_CLIENT_PORT" >> $ZK_CONFIG_FILE
+      if [[ -f /tls/server/ca.crt ]]; then
+        cp /tls/server/ca.crt /data/server-ca.pem
+        cat /tls/server/tls.crt /tls/server/tls.key > /data/server.pem
+      fi
+      if [[ -f /tls/client/ca.crt ]]; then
+        cp /tls/client/ca.crt /data/client-ca.pem
+        cat /tls/client/tls.crt /tls/client/tls.key > /data/client.pem
+      fi
+
       echo "dataDir=$ZK_DATA_DIR" >> $ZK_CONFIG_FILE
       echo "dataLogDir=$ZK_DATA_LOG_DIR" >> $ZK_CONFIG_FILE
       echo "tickTime=$ZK_TICK_TIME" >> $ZK_CONFIG_FILE
@@ -76,6 +93,23 @@ data:
       echo "autopurge.snapRetainCount=$ZK_SNAP_RETAIN_COUNT" >> $ZK_CONFIG_FILE
       echo "autopurge.purgeInterval=$ZK_PURGE_INTERVAL" >> $ZK_CONFIG_FILE
       echo "4lw.commands.whitelist=*" >> $ZK_CONFIG_FILE
+
+      # Client TLS configuration
+      if [[ -f /tls/client/ca.crt ]]; then
+        echo "secureClientPort=$ZK_SSL_CLIENT_PORT" >> $ZK_CONFIG_FILE
+        echo "ssl.keyStore.location=/data/client.pem" >> $ZK_CONFIG_FILE
+        echo "ssl.trustStore.location=/data/client-ca.pem" >> $ZK_CONFIG_FILE
+      else
+        echo "clientPort=$ZK_CLIENT_PORT" >> $ZK_CONFIG_FILE
+      fi
+
+      # Server TLS configuration
+      if [[ -f /tls/server/ca.crt ]]; then
+        echo "serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory" >> $ZK_CONFIG_FILE
+        echo "sslQuorum=true" >> $ZK_CONFIG_FILE
+        echo "ssl.quorum.keyStore.location=/data/server.pem" >> $ZK_CONFIG_FILE
+        echo "ssl.quorum.trustStore.location=/data/server-ca.pem" >> $ZK_CONFIG_FILE
+      fi
 
       for (( i=1; i<=$ZK_REPLICAS; i++ ))
       do

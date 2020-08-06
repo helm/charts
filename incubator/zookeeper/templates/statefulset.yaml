@@ -113,6 +113,16 @@ spec:
                 {{- end }}
               {{- end }}
             {{- end }}
+            {{- if .Values.serverTlsSecret }}
+            - name: {{ $.Release.Name }}-server-tls
+              mountPath: /tls/server
+              readOnly: true
+            {{- end }}
+            {{- if .Values.clientTlsSecret }}
+            - name: {{ $.Release.Name }}-client-tls
+              mountPath: /tls/client
+              readOnly: true
+            {{- end }}
             - name: config
               mountPath: /config-scripts
 
@@ -196,6 +206,16 @@ spec:
         - name: {{ $.Release.Name }}-{{ .name }}
           secret:
             secretName: {{ .name }}
+        {{- end }}
+        {{- if .Values.serverTlsSecret }}
+        - name: {{ $.Release.Name }}-server-tls
+          secret:
+            secretName: {{ .Values.serverTlsSecret }}
+        {{- end }}
+        {{- if .Values.clientTlsSecret }}
+        - name: {{ $.Release.Name }}-client-tls
+          secret:
+            secretName: {{ .Values.clientTlsSecret }}
         {{- end }}
         {{- if .Values.exporters.jmx.enabled }}
         - name: config-jmx-exporter
