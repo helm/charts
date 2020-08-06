@@ -99,6 +99,18 @@ command:
   - -xec
   - /config-scripts/run
 
+## If you want the quorum to use SSL internally, create a
+## kubernetes.io/tls object (cert-manager produces these), and ensure
+## that it has a SAN entry for each of the server hostnames (e.g.:
+## zookeeper-0.zookeeper-headless.namespace.svc.cluster.local).
+## Supply the name of the object here:
+# serverTlsSecret: "zookeeper-server-tls"
+
+## To use client SSL, create a kubernetes.io/tls object (cert-manager
+## produces these), and supply the name here.  If this is provided,
+## then plain-text client connections are disabled.
+# clientTlsSecret: "zookeeper-client-tls"
+
 ## Useful if using any custom authorizer.
 ## Pass any secrets to the kafka pods. Each secret will be passed as an
 ## environment variable by default. The secret can also be mounted to a
