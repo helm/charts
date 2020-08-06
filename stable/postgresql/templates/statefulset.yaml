@@ -152,7 +152,7 @@ spec:
             {{- end }}
             {{- if .Values.initdbPassword }}
             - name: POSTGRESQL_INITSCRIPTS_PASSWORD
-              value: .Values.initdbPassword
+              value: {{ .Values.initdbPassword }}
             {{- end }}
             {{- if .Values.persistence.mountPath }}
             - name: PGDATA
