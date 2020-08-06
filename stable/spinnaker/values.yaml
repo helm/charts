@@ -242,6 +242,10 @@ spinnakerFeatureFlags:
 # nodeSelector to provide to each of the Spinnaker components
 nodeSelector: {}
 
+# Node tolerations
+# Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+tolerations: []
+
 # Redis password to use for the in-cluster redis service
 # Enable redis to use in-cluster redis
 redis:
