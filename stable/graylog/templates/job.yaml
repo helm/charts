@@ -5,6 +5,9 @@ metadata:
   name: {{ template "graylog.fullname" . }}-provisioner-job
   labels:
 {{ include "graylog.metadataLabels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     metadata:
