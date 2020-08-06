@@ -48,7 +48,7 @@ service:
       port: 10000
       targetPort: n0
       protocol: TCP
-  ## Used to whitelist certain source CIDRs 
+  ## Used to whitelist certain source CIDRs
   # loadBalancerSourceRanges:
   # - 0.0.0.0/0
 
@@ -100,9 +100,9 @@ podAnnotations: {}
   # prometheus.io/path: "/stats/prometheus"
   # prometheus.io/port: "9901"
 
-podLabels: {}
-  # team: "developers"
-  # service: "envoy"
+podLabels:
+  app: envoy-whitelisted
+  env: prod
 
 livenessProbe:
   tcpSocket:
