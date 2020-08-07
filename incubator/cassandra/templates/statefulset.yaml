@@ -188,10 +188,10 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
       {{- end }}
-{{- if .Values.extraVolumes }}
+{{- if or .Values.extraVolumes ( or .Values.configOverrides (not .Values.persistence.enabled) ) }}
       volumes:
 {{- end }}
-{{- if or .Values.extraVolumes ( or .Values.configOverrides (not .Values.persistence.enabled) ) }}
+{{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
 {{- range $key, $value := .Values.configOverrides }}
