@@ -72,7 +72,7 @@ rbac:
   create: true
   serviceAccount:
     create: true
-    name: default
+    name: "" # default
 
     ## Annotations for the Service Account
     annotations: {}
