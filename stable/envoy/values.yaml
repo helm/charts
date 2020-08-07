@@ -48,6 +48,9 @@ service:
       port: 10000
       targetPort: n0
       protocol: TCP
+  ## Used to whitelist certain source CIDRs
+  # loadBalancerSourceRanges:
+  # - 0.0.0.0/0
 
 ports:
   admin:
