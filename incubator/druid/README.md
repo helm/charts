@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `configVars`                              | druid configuration variables for all components         | ``                                         |
 | `gCloudStorage.enabled`                  | look for secret to set google cloud credentials         | `false`                                    |
 | `gCloudStorage.secretName`               | secretName to be mounted as google cloud credentials    | `false`                                    |
+| `google.gcsAPIKey`                       | base64 encoded credentials for google cloud             | ``                                         |
 | `broker.enabled`                         | enable broker                                           | `true`                                     |
 | `broker.name`                            | broker component name                                   | `broker`                                   |
 | `broker.replicaCount`                    | broker node replicas (deployment)                       | `1`                                        |
