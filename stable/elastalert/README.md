@@ -1,5 +1,11 @@
 # Elastalert Helm Chart
 
+## NOTICE: This chart has moved!
+
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. Refer to the [Elastalert-Docker GitHub project](https://github.com/jertel/elastalert-docker) for information on installing this chart from the new repository.
+
+## Overview 
+
 [elastalert](https://github.com/Yelp/elastalert) is a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
 
 ## TL;DR;
@@ -49,40 +55,43 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-| Parameter                         | Description                                                                                                                   | Default                         |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------|---------------------------------|
-| `image.repository`                | docker image                                                                                                                  | jertel/elastalert-docker        |
-| `image.tag`                       | docker image tag                                                                                                              | 0.2.4                           |
-| `image.pullPolicy`                | image pull policy                                                                                                             | IfNotPresent                    |
-| `podAnnotations`                  | Annotations to be added to pods                                                                                               | {}                              |
-| `command`                         | command override for container                                                                                                | `NULL`                          |
-| `args`                            | args override for container                                                                                                   | `NULL`                          |
-| `replicaCount`                    | number of replicas to run                                                                                                     | 1                               |
-| `elasticsearch.host`              | elasticsearch endpoint to use                                                                                                 | elasticsearch                   |
-| `elasticsearch.port`              | elasticsearch port to use                                                                                                     | 80                              |
-| `elasticsearch.useSsl`            | whether or not to connect to es_host using SSL                                                                                | False                           |
-| `elasticsearch.username`          | Username for ES with basic auth                                                                                               | `NULL`                          |
-| `elasticsearch.password`          | Password for ES with basic auth                                                                                               | `NULL`                          |
-| `elasticsearch.verifyCerts`       | whether or not to verify TLS certificates                                                                                     | True                            |
-| `elasticsearch.clientCert`        | path to a PEM certificate to use as the client certificate                                                                    | /certs/client.pem               |
-| `elasticsearch.clientKey`         | path to a private key file to use as the client key                                                                           | /certs/client-key.pem           |
-| `elasticsearch.caCerts`           | path to a CA cert bundle to use to verify SSL connections                                                                     | /certs/ca.pem                   |
-| `elasticsearch.certsVolumes`      | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled                                          | `NULL`                          |
-| `elasticsearch.certsVolumeMounts` | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled                                    | `NULL`                          |
-| `extraConfigOptions`              | Additional options to propagate to all rules, cannot be `alert`, `type`, `name` or `index`                                    | `{}`                            |
-| `optEnv`                          | Additional pod environment variable definitions                                                                               | []                              |
-| `extraVolumes`                    | Additional volume definitions                                                                                                 | []                              |
-| `extraVolumeMounts`               | Additional volumeMount definitions                                                                                            | []                              |
-| `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                          |
-| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
-| `serviceAccount.annotations`      | ServiceAccount annotations                                                                                                    |                                 |
-| `podSecurityPolicy.create`        | Create pod security policy resources                                                                                          | `false`                         |
-| `resources`                       | Container resource requests and limits                                                                                        | {}                              |
-| `rules`                           | Rule and alert configuration for Elastalert                                                                                   | {} example shown in values.yaml |
-| `runIntervalMins`                 | Default interval between alert checks, in minutes                                                                             | 1                               |
-| `realertIntervalMins`             | Time between alarms for same rule, in minutes                                                                                 | `NULL`                          |
-| `alertRetryLimitMins`             | Time to retry failed alert deliveries, in minutes                                                                             | 2880 (2 days)                   |
-| `bufferTimeMins`                  | Default rule buffer time, in minutes                                                                                          | 15                              |
-| `writebackIndex`                  | Name or prefix of elastalert index(es)                                                                                        | elastalert_status               |
-| `nodeSelector`                    | Node selector for deployment                                                                                                  | {}                              |
-| `tolerations`                     | Tolerations for deployment                                                                                                    | []                              |
+| Parameter                                 | Description                                                                                                                   | Default                         |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `image.repository`                        | docker image                                                                                                                  | jertel/elastalert-docker        |
+| `image.tag`                               | docker image tag                                                                                                              | 0.2.4                           |
+| `image.pullPolicy`                        | image pull policy                                                                                                             | IfNotPresent                    |
+| `podAnnotations`                          | Annotations to be added to pods                                                                                               | {}                              |
+| `command`                                 | command override for container                                                                                                | `NULL`                          |
+| `args`                                    | args override for container                                                                                                   | `NULL`                          |
+| `replicaCount`                            | number of replicas to run                                                                                                     | 1                               |
+| `elasticsearch.host`                      | elasticsearch endpoint to use                                                                                                 | elasticsearch                   |
+| `elasticsearch.port`                      | elasticsearch port to use                                                                                                     | 80                              |
+| `elasticsearch.useSsl`                    | whether or not to connect to es_host using SSL                                                                                | False                           |
+| `elasticsearch.username`                  | Username for ES with basic auth                                                                                               | `NULL`                          |
+| `elasticsearch.password`                  | Password for ES with basic auth                                                                                               | `NULL`                          |
+| `elasticsearch.credentialsSecret`            | Specifies an existing secret to be used for the ES username/password auth                                                     | `NULL`                          |
+| `elasticsearch.credentialsSecretUsernameKey` | The key in elasticsearch.credentialsSecret that stores the ES password auth                                                      | `NULL`                          |
+| `elasticsearch.credentialsSecretPasswordKey` | The key in elasticsearch.credentialsSecret that stores the ES username auth                                                      | `NULL`                          |
+| `elasticsearch.verifyCerts`               | whether or not to verify TLS certificates                                                                                     | True                            |
+| `elasticsearch.clientCert`                | path to a PEM certificate to use as the client certificate                                                                    | /certs/client.pem               |
+| `elasticsearch.clientKey`                 | path to a private key file to use as the client key                                                                           | /certs/client-key.pem           |
+| `elasticsearch.caCerts`                   | path to a CA cert bundle to use to verify SSL connections                                                                     | /certs/ca.pem                   |
+| `elasticsearch.certsVolumes`              | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled                                          | `NULL`                          |
+| `elasticsearch.certsVolumeMounts`         | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled                                    | `NULL`                          |
+| `extraConfigOptions`                      | Additional options to propagate to all rules, cannot be `alert`, `type`, `name` or `index`                                    | `{}`                            |
+| `optEnv`                                  | Additional pod environment variable definitions                                                                               | []                              |
+| `extraVolumes`                            | Additional volume definitions                                                                                                 | []                              |
+| `extraVolumeMounts`                       | Additional volumeMount definitions                                                                                            | []                              |
+| `serviceAccount.create`                   | Specifies whether a service account should be created.                                                                        | `true`                          |
+| `serviceAccount.name`                     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                 |
+| `serviceAccount.annotations`              | ServiceAccount annotations                                                                                                    |                                 |
+| `podSecurityPolicy.create`                | Create pod security policy resources                                                                                          | `false`                         |
+| `resources`                               | Container resource requests and limits                                                                                        | {}                              |
+| `rules`                                   | Rule and alert configuration for Elastalert                                                                                   | {} example shown in values.yaml |
+| `runIntervalMins`                         | Default interval between alert checks, in minutes                                                                             | 1                               |
+| `realertIntervalMins`                     | Time between alarms for same rule, in minutes                                                                                 | `NULL`                          |
+| `alertRetryLimitMins`                     | Time to retry failed alert deliveries, in minutes                                                                             | 2880 (2 days)                   |
+| `bufferTimeMins`                          | Default rule buffer time, in minutes                                                                                          | 15                              |
+| `writebackIndex`                          | Name or prefix of elastalert index(es)                                                                                        | elastalert_status               |
+| `nodeSelector`                            | Node selector for deployment                                                                                                  | {}                              |
+| `tolerations`                             | Tolerations for deployment                                                                                                    | []                              |

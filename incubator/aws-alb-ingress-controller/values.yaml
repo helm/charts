@@ -79,7 +79,7 @@ rbac:
 
 image:
   repository: docker.io/amazon/aws-alb-ingress-controller
-  tag: "v1.1.6"
+  tag: "v1.1.8"
   pullPolicy: IfNotPresent
 
 replicaCount: 1

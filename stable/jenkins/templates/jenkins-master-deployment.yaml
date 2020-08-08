@@ -104,13 +104,13 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.passwordKey | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.userKey | default "jenkins-admin-user" }}
             {{- end }}
             {{- if .Values.master.initContainerEnv }}
 {{ toYaml .Values.master.initContainerEnv | indent 12 }}
@@ -138,9 +138,9 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
-            {{- end }}
             {{- if .Values.master.secretsFilesSecret }}
             - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
@@ -193,13 +193,13 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.password | default "jenkins-admin-password" }}
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
+                  name: {{ .Values.master.admin.existingSecret | default (include "jenkins.fullname" .) }}
+                  key: {{ .Values.master.admin.user | default "jenkins-admin-user" }}
             {{- end }}
             {{- if .Values.master.httpsKeyStore.enable }}
             - name: JENKINS_HTTPS_KEYSTORE_PASSWORD
@@ -287,10 +287,10 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- end }}
             - mountPath: {{ .Values.master.jenkinsRef }}/secrets/
               name: secrets-dir
               readOnly: false
-            {{- end }}
             {{- if or .Values.master.secretsFilesSecret }}
             - mountPath: /var/jenkins_secrets
               name: jenkins-secrets
@@ -325,6 +325,8 @@ spec:
               value: "http://localhost:8080{{- .Values.master.jenkinsUriPrefix -}}/reload-configuration-as-code/?casc-reload-token=$(POD_NAME)"
             - name: REQ_METHOD
               value: "POST"
+            - name: REQ_RETRY_CONNECT
+              value: "{{ .Values.master.sidecars.configAutoReload.reqRetryConnect }}"
             {{- if .Values.master.sidecars.configAutoReload.env }}
 {{ toYaml .Values.master.sidecars.configAutoReload.env | indent 12 }}
             {{- end }}
@@ -367,9 +369,9 @@ spec:
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
+      {{- end }}
       - name: secrets-dir
         emptyDir: {}
-      {{- end }}
       {{- if .Values.master.secretsFilesSecret }}
       - name: jenkins-secrets
         secret:

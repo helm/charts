@@ -4,7 +4,7 @@
 {{ $drivesPerNode := .Values.drivesPerNode | int }}
 {{ $scheme := "http" }}
 {{- if .Values.tls.enabled }}
-{{ $scheme := "https" }}
+{{ $scheme = "https" }}
 {{ end }}
 {{ $mountPath := .Values.mountPath }}
 {{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
@@ -66,7 +66,6 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
       annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
@@ -177,6 +176,7 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- include "minio.imagePullSecrets" . | indent 6 }}
     {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}

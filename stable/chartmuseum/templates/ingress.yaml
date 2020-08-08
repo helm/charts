@@ -3,7 +3,11 @@
 {{- $serviceName := include "chartmuseum.fullname" . -}}
 {{- $ingressExtraPaths := .Values.ingress.extraPaths -}}
 ---
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1beta1
+{{- else }}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ include "chartmuseum.fullname" . }}

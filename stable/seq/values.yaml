@@ -4,7 +4,7 @@
 
 image:
   repository: datalust/seq
-  tag: 5
+  tag: 2020
   pullPolicy: IfNotPresent
 
 # By passing the value Y in the ACCEPT_EULA environment variable,
@@ -39,6 +39,18 @@ ingestion:
     enabled: false
     path: /
     hosts: []
+
+# Accept events in the GELF format and forward them to Seq.
+gelf:
+  enabled: false
+  image:
+    repository: datalust/sqelf
+    tag: 2
+    pullPolicy: IfNotPresent
+  service:
+    port: 12201
+    # GELF can be ingested through either TCP or UDP
+    protocol: TCP
 
 service:
   type: ClusterIP
@@ -76,8 +88,7 @@ affinity: {}
 persistence:
   enabled: true
 
-  ## The path the volume will be mounted at, useful when using different
-  ## Redis images.
+  ## The path the volume will be mounted at
   path: /data
 
   ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.

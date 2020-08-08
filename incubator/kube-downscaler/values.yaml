@@ -12,6 +12,19 @@ namespace:
   # Deployment will query all namespaces if left empty:
   active_in: ''
 
+# The resources kinds kube-downscaler is allowed to manage
+downscaleResources:
+  - deployments
+  - statefulsets
+  - horizontalpodautoscalers
+  - cronjobs
+
+# List of namespaces to be excluded from the downscaler
+excludedNamespaces: []
+
+# List of deployments to be excluded from the downscaler
+excludedDeployments: []
+
 # Default is 1 minute.
 interval: 60
 
@@ -23,7 +36,7 @@ rbac:
 
 image:
   repository: hjacobs/kube-downscaler
-  tag: 19.10.1
+  tag: 20.5.0
   pullPolicy: IfNotPresent
 
 resources:

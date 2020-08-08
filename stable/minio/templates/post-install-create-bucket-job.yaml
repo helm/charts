@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
 {{- with .Values.makeBucketJob.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -25,6 +25,7 @@ spec:
 {{- end }}
     spec:
       restartPolicy: OnFailure
+{{- include "minio.imagePullSecrets" . | indent 6 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

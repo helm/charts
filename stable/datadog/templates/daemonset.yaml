@@ -43,11 +43,21 @@ spec:
     spec:
       {{- if .Values.datadog.securityContext }}
       securityContext:
-{{ toYaml .Values.datadog.securityContext | indent 8 }}
+{{ toYaml .Values.datadog.securityContext| indent 8 }}
+      {{- else if or .Values.agents.podSecurity.podSecurityPolicy.create .Values.agents.podSecurity.securityContextConstraints.create -}}
+      {{- if and (.Values.agents.podSecurity.securityContext) .Values.agents.podSecurity.securityContext.seLinuxOptions }}
+      securityContext:
+        seLinuxOptions:
+{{ toYaml .Values.agents.podSecurity.securityContext.seLinuxOptions | indent 10 }}
+      {{- end }}
       {{- end }}
       {{- if .Values.agents.useHostNetwork }}
       hostNetwork: {{ .Values.agents.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- if .Values.agents.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.agents.dnsConfig | indent 8 }}
       {{- end }}
       {{- if .Values.datadog.dogstatsd.useHostPID }}
       hostPID: {{ .Values.datadog.dogstatsd.useHostPID }}
@@ -126,10 +136,9 @@ spec:
 {{ toYaml .Values.agents.affinity | indent 8 }}
       serviceAccountName: {{ if .Values.agents.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.agents.rbac.serviceAccountName }}"{{ end }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
       {{- if .Values.agents.nodeSelector }}
 {{ toYaml .Values.agents.nodeSelector | indent 8 }}
-      {{- else if eq .Values.targetSystem "windows" }}
-        kubernetes.io/os: windows
       {{- end }}
   updateStrategy:
 {{ toYaml .Values.agents.updateStrategy | indent 4 }}

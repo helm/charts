@@ -22,6 +22,10 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
   {{- end }}
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- toYaml .Values.service.loadBalancerSourceRanges | nindent 6 }}
+  {{- end }}
   selector:
     app: {{ template "envoy.name" . }}
     release: {{ .Release.Name }}

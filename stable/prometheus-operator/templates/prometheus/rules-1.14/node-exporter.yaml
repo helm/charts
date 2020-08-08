@@ -9,7 +9,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node-exporter" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -164,10 +164,18 @@ spec:
         severity: warning
     - alert: NodeHighNumberConntrackEntriesUsed
       annotations:
-        description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of conntrack entries are used'
+        description: '{{`{{`}} $value | humanizePercentage {{`}}`}} of conntrack entries are used.'
         runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodehighnumberconntrackentriesused
-        summary: Number of conntrack are getting close to the limit
+        summary: Number of conntrack are getting close to the limit.
       expr: (node_nf_conntrack_entries / node_nf_conntrack_entries_limit) > 0.75
+      labels:
+        severity: warning
+    - alert: NodeTextFileCollectorScrapeError
+      annotations:
+        description: Node Exporter text file collector failed to scrape.
+        runbook_url: {{ .Values.defaultRules.runbookUrl }}alert-name-nodetextfilecollectorscrapeerror
+        summary: Node Exporter text file collector failed to scrape.
+      expr: node_textfile_scrape_error{job="node-exporter"} == 1
       labels:
         severity: warning
     - alert: NodeClockSkewDetected

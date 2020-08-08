@@ -36,6 +36,10 @@ spec:
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "oauth2-proxy.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -69,8 +73,8 @@ spec:
         {{- if .Values.htpasswdFile.enabled }}
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
-        {{- if .Values.proxyVarsAsSecrets }}
         env:
+        {{- if .Values.proxyVarsAsSecrets }}
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
             secretKeyRef:
