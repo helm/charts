@@ -12,6 +12,7 @@ metadata:
 spec:
   size: {{ .Values.etcdCluster.size }}
   version: "{{ .Values.etcdCluster.version }}"
+  repository: "{{ .Values.etcdCluster.image.repository }}"
   pod:
 {{ toYaml .Values.etcdCluster.pod | indent 4 }}
   {{- if .Values.etcdCluster.enableTLS }}

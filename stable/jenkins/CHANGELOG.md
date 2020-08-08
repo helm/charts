@@ -5,6 +5,133 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.5.0
+
+Add an option to specify that Jenkins master should be initialized only once, during first install.
+
+## 2.4.1
+
+Reorder README parameters into sections to facilitate chart usage and maintenance
+
+## 2.4.0 Update default agent image
+
+`jenkins/jnlp-slave` is deprected and `jenkins/inbound-agent` should be used instead.
+Also updated it to newest version (4.3-4).
+
+## 2.3.3 correct templating of master.slaveJenkinsUrl
+
+Fixes #22708
+
+## 2.3.2 Fix wrong value for overwritePluginsFromImage
+
+Fixes #23003
+Fixes #22633
+
+Also fixes indentation for #23114
+
+## 2.3.1
+
+Always mount {{ .Values.master.jenkinsRef }}/secrets/ directory. Previous it
+was mounted only when `master.enableXmlConfig` was enabled.
+
+## 2.3.0
+
+Add an option to specify pod based on labels that can connect to master if NetworkPolicy is enabled
+
+## 2.2.0 increase retry for config auto reload
+
+Configure `REQ_RETRY_CONNECT` to `10` to give Jenkins more time to start up.
+https://github.com/kiwigrid/k8s-sidecar
+
+Value can be configured via `master.sidecars.configAutoReload.reqRetryConnect`
+
+## 2.1.2 updated README
+
+## 2.1.1 update credentials-binding plugin to 1.23
+
+## 2.1.0
+
+Add support to set `runAsUser` and `runAsGroup` for `agent`.
+
+## 2.0.1
+
+Only render authorizationStrategy and securityRealm when values are set.
+
+## 2.0.0 Configuration as Code now default + container does not run as root anymore
+
+The README contains more details for this update.
+Please note that the updated values contain breaking changes.
+
+## 1.27.0 Update plugin versions & sidecar container
+
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.25.3      | 1.25.7      |
+| workflow-job          | 2.38        | 2.39        |
+| credentials-binding   | 1.21        | 1.22        |
+| configuration-as-code | 1.39        | 1.41        |
+
+configAutoReload container updated from `kiwigrid/k8s-sidecar:0.1.132` to `kiwigrid/k8s-sidecar:0.1.144`
+
+## 1.26.0
+
+Add support to override `workingDir` for default pod template
+
+## 1.25.0
+
+Add support for installing plugins in addition to the chart's default plugins via `master.additionalPlugins`
+
+## 1.24.0
+
+Allow configuration of yamlMergeStrategy via `agent.yamlMergeStrategy`
+
+## 1.23.2
+
+In the `jenkins.xml.podTemplate` helper function, allow templating of all string values under `agent.volumes` except `type` by rendering them with the `tpl` function
+
+## 1.23.1
+
+Added auto detection for Ingress API version
+
+## 1.23.0
+
+Allow to use an existing secret for the jenkins admin credentials
+
+## 1.22.0
+
+Add support for UI security in the default JCasC via `master.JCasC.securityRealm` and `master.JCasC.authorizationStrategy` which deny anonymous access by default
+
+## 1.21.3
+
+Render `agent.envVars` in kubernetes pod template JCasC
+
+## 1.21.2
+
+Cleanup `agent.yamlTemplate` rendering in kubernetes pod template XML configuration
+
+## 1.21.1
+
+Render `agent.nodeSelector` in the kubernetes pod template JCasC
+
+## 1.21.0
+
+Add support for overriding Ingress paths via `master.ingress.paths`
+
+## 1.20.0
+
+  Add the following options for configuring the Kubernetes plugin.
+
+ - master.slaveDefaultsProviderTemplate
+ - master.slaveJenkinsUrl
+ - master.slaveJenkinsTunnel
+ - master.slaveConnectTimeout
+ - master.slaveReadTimeout
+
+## 1.19.0
+
+Add support for disabling remember me via `master.disableRememberMe`
+Add support for using a different markup formatter via `master.markupFormatter`
+
 ## 1.18.1
 
 Add support for executor mode configuraton with `master.executorMode`.

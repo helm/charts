@@ -1,3 +1,14 @@
+## This Helm chart is deprecated
+
+Given the [deprecation of `stable`](https://github.com/helm/charts#deprecation-timeline), future Sematext Agent charts will be located at [sematext/helm-charts](https://github.com/sematext/helm-charts/).
+
+To update an existing _stable_ deployment with the chart hosted in the Sematext Agent repository, you should run:
+
+```bash
+$ helm repo add sematext https://cdn.sematext.com/helm-charts/
+$ helm upgrade st-agent sematext/sematext-agent
+```
+
 # Sematext Agent
 
 Sematext Agent collects logs, metrics, events and more info for hosts (CPU, memory, disk, network, processes, ...), containers and orchestrator platforms and ships that to [Sematext Cloud](https://sematext.com/cloud). Sematext Cloud is available in the US and EU regions.
@@ -87,6 +98,7 @@ The following table lists the configuration parameters of the `sematext-agent` c
 | `logagent.extraHostVolumeMounts` | Extra mounts                      | `{}`                                      |
 | `serviceAccount.create`          | Create a service account          | `true`                                    |
 | `serviceAccount.name`            | Service account name              | `Nil` Defaults to chart name              |
+| `priorityClassName`              | Priority class name               | `Nil`                                     |
 | `rbac.create`                    | RBAC enabled                      | `true`                                    |
 | `tolerations`                    | Tolerations                       | `[]`                                      |
 | `nodeSelector`                   | Node selector                     | `{}`                                      |

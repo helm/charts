@@ -1,4 +1,4 @@
-{{- if or .Values.proxy.customSecret .Values.proxy.secret -}}
+{{- if and .Values.proxy.enabled (or .Values.proxy.customSecret .Values.proxy.secret) -}}
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}

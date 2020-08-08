@@ -165,6 +165,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
 | `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
+| `extraContainers`                    | Sidecar containers for the pods                 | `[]`                                                       |
+| `extraVolumes`                       | Additional volumes for the pods                 | `[]`                                                       |
+| `extraVolumeMounts`                  | Extra volume mounts for the pods                | `[]`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

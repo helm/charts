@@ -19,6 +19,9 @@ spec:
   - port: metrics
     interval: {{ .Values.serviceMonitor.interval }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- if .Values.serviceMonitor.metricRelabelings }}
+    metricRelabelings: {{ toYaml .Values.serviceMonitor.metricRelabelings | nindent 4 }}
+    {{- end }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
@@ -26,5 +29,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "prometheus-mongodb-exporter.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{- range .Values.serviceMonitor.targetLabels }}
+    - {{ . }}
+{{- end }}
+{{- end }}
 {{- end }}
 

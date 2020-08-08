@@ -155,7 +155,7 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag  | `v1.13.1`
+`image.tag` | Image tag  | `v1.17.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `image.pullSecrets` | Image pull secrets  | `[]`
 `extraArgs` | additional container arguments | `{}`
@@ -168,7 +168,7 @@ Parameter | Description | Default
 `nameOverride` | String to partially override cluster-autoscaler.fullname template (will maintain the release name) | `""`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.create` | If true, create & use RBAC resources | `true`
 `rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created | `true`
 `rbac.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `nil`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
@@ -208,6 +208,7 @@ Parameter | Description | Default
 `azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
 `azureUseManagedIdentityExtension` | Whether to use Azure's managed identity extension for credentials | false
 `kubeTargetVersionOverride` | Override the .Capabilities.KubeVersion.GitVersion | `""`
+`expanderPriorities` | The expanderPriorities is used if extraArgs.expander is set to priority and expanderPriorities is also set with the priorities.
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 

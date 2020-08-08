@@ -1,3 +1,6 @@
+DEPRECATED!! This version of the chart has been deprecated.
+Please use https://github.com/datawire/ambassador-chart
+
 Congratulations! You've successfully installed Ambassador.
 
 For help, visit our Slack at https://d6e.co/slack or view the documentation online at https://www.getambassador.io.

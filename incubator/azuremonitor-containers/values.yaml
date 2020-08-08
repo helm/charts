@@ -6,9 +6,11 @@
 ## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
 omsagent:
   image:
-    tag: "ciprod04162020"
+    repo: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod"
+    tag: "ciprod07152020"
+    tagWindows: "win-ciprod05262020-2"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "9.0.0-1"
+    dockerProviderVersion: "10.0.0-3"
     agentVersion: "1.10.0.1"
   ## To get your workspace id and key do the following
   ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
@@ -17,6 +19,7 @@ omsagent:
     wsid: <your_workspace_id>
     key: <your_workspace_key>
   domain: opinsights.azure.com
+  proxy: <your_proxy_config>
   env:
     clusterName: <your_cluster_name>
     ## Applicable for only managed clusters hosted in Azure
@@ -27,6 +30,8 @@ omsagent:
     logflushintervalsecs: ""
     tailbufchunksizemegabytes: ""
     tailbufmaxsizemegabytes: ""
+    ## Applicable for only Azure Stack Edge K8s since it has custom mount path for container logs which will have symlink to /var/log path
+    custommountpath: ""
 
   ## Configure node tolerations for scheduling onto nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -49,6 +54,10 @@ omsagent:
           nodeSelectorTerms:
             - labelSelector:
               matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                    - linux
                 - key: type
                   operator: NotIn
                   values:
@@ -60,6 +69,10 @@ omsagent:
           nodeSelectorTerms:
             - labelSelector:
               matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                    - linux
                 - key: type
                   operator: NotIn
                   values:
@@ -68,7 +81,17 @@ omsagent:
                   operator: NotIn
                   values:
                     - master
-
+  daemonsetwindows:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - labelSelector:
+              matchExpressions:
+                - key: beta.kubernetes.io/os
+                  operator: In
+                  values:
+                    - windows
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##

@@ -23,6 +23,8 @@ image:
 
 command: []
 
+containerPort: 9106
+
 service:
   type: ClusterIP
   port: 9106
@@ -113,6 +115,7 @@ affinity: {}
 
 # Configurable health checks against the /healthy and /ready endpoints
 livenessProbe:
+  path: /-/healthy
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5
@@ -120,6 +123,7 @@ livenessProbe:
   failureThreshold: 3
 
 readinessProbe:
+  path: /-/ready
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 5

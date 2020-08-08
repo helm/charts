@@ -101,10 +101,14 @@ Parameter | Description | Default
 `serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended | `10s`
 `serviceMonitor.scheme` | Scheme to use for scraping | `http`
 `serviceMonitor.relabelings` | Relabel configuration for the metrics | `[]`
+`serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
+`serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
 `prometheusRule.enabled` | If true, a PrometheusRule CRD is created for a prometheus operator | `false`
 `prometheusRule.namespace` | If set, the PrometheusRule will be installed in a different namespace  | `""`
 `prometheusRule.labels` | Labels for prometheus operator | `{}`
 `prometheusRule.rules` | List of [PrometheusRules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) to be created, check values for an example. | `[]`
+`log.format` | Format used for the logs. Valid formats are `json` and `logfmt` | `logfmt`
+`log.level` | Logging level to be used. Valid levels are `debug`, `info`, `warn`, `error` | `info`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
