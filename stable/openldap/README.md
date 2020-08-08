@@ -36,9 +36,11 @@ The following table lists the configurable parameters of the openldap chart and 
 | `service.annotations`              | Annotations to add to the service                                                                                                         | `{}`                |
 | `service.clusterIP`                | IP address to assign to the service                                                                                                       | `nil`                |
 | `service.externalIPs`              | Service external IP addresses                                                                                                             | `[]`                |
+| `service.ldapNodePort`             | External service node port for LDAP. Only used if `service.type` is set to `NodePort`.                                                    | `nil`               |
 | `service.ldapPort`                 | External service port for LDAP                                                                                                            | `389`               |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)                                                                                      | `""`                |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)                                                                           | `[]`                |
+| `service.sslLdapNodePort`          | External service node port for SSL+LDAP. Only used if `service.type` is set to `NodePort`.                                                | `nil`               |
 | `service.sslLdapPort`              | External service port for SSL+LDAP                                                                                                        | `636`               |
 | `service.type`                     | Service type                                                                                                                              | `ClusterIP`         |
 | `env`                              | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones | `[see values.yaml]` |

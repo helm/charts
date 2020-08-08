@@ -46,6 +46,10 @@ service:
   ##
   externalIPs: []
 
+  # Node port specifications. Only used if service.type is set to NodePort.
+  # ldapNodePort: 30389
+  # sslLdapNodePort: 30636
+
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   type: ClusterIP

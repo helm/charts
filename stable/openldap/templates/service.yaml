@@ -32,10 +32,16 @@ spec:
   ports:
     - name: ldap-port
       protocol: TCP
+{{- if and (eq .Values.service.type "NodePort") .Values.service.ldapNodePort }}
+      nodePort: {{ .Values.service.ldapNodePort }}
+{{- end }}
       port: {{ .Values.service.ldapPort }}
       targetPort: ldap-port
     - name: ssl-ldap-port
       protocol: TCP
+{{- if and (eq .Values.service.type "NodePort") .Values.service.sslLdapNodePort }}
+      nodePort: {{ .Values.service.sslLdapNodePort }}
+{{- end }}
       port: {{ .Values.service.sslLdapPort }}
       targetPort: ssl-ldap-port
   selector:
