@@ -1,3 +1,8 @@
+*******************************************************************************************************
+* DEPRECATED, please use https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx *
+*******************************************************************************************************
+
+
 The nginx-ingress controller has been installed.
 
 {{- if contains "NodePort" .Values.controller.service.type }}
