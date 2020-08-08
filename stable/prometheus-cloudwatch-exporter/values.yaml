@@ -198,3 +198,4 @@ ingress:
 
 securityContext:
   runAsUser: 65534  # run as nobody user instead of root
+  fsUser: 65534 # use same value as runAsUser to be able to read ServiceAccount token file
