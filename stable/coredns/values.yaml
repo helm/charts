@@ -17,6 +17,34 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+## Create HorizontalPodAutoscaler object.
+##
+# autoscaling:
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       targetAverageUtilization: 60
+#   - type: Resource
+#     resource:
+#       name: memory
+#       targetAverageUtilization: 60
+
+rollingUpdate:
+  maxUnavailable: 1
+  maxSurge: 25%
+
+# Under heavy load it takes more that standard time to remove Pod endpoint from a cluster.
+# This will delay termination of our pod by `preStopSleep`. To make sure kube-proxy has
+# enough time to catch up.
+# preStopSleep: 5
+terminationGracePeriodSeconds: 30
+
+podAnnotations: {}
+#  cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+
 serviceType: "ClusterIP"
 
 prometheus:
@@ -164,6 +192,14 @@ extraSecrets: []
 
 # Custom labels to apply to Deployment, Pod, Service, ServiceMonitor. Including autoscaler if enabled.
 customLabels: {}
+
+## Alternative configuration for HPA deployment if wanted
+#
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  metrics: {}
 
 ## Configue a cluster-proportional-autoscaler for coredns
 # See https://github.com/kubernetes-incubator/cluster-proportional-autoscaler

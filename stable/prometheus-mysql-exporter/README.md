@@ -36,43 +36,44 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the mysql exporter chart and their default values.
 
-| Parameter                              | Description                                         | Default                            |
-| -------------------------------------- | --------------------------------------------------- | ---------------------------------- |
-| `replicaCount`                         | Amount of pods for the deployment                   | `1`                                |
-| `image.repository`                     | Image repository                                    | `prom/mysqld-exporter`             |
-| `image.tag`                            | Image tag                                           | `v0.11.0`                          |
-| `image.pullPolicy`                     | Image pull policy                                   | `IfNotPresent`                     |
-| `service.name`                         | Service name                                        | `mysql-exporter`                   |
-| `service.labels`                       | Additional labels for the service                   | `{}`                               |
-| `service.annotations`                  | Annotations to be added to the service              | `{}`                               |
-| `service.type`                         | Service type                                        | `ClusterIP`                        |
-| `service.externalport`                 | The service port                                    | `9104`                             |
-| `service.internalPort`                 | The target port of the container                    | `9104`                             |
-| `resources`                            | CPU/Memory resource requests/limits                 | `{}`                               |
-| `annotations`                          | pod annotations for easier discovery                | `see values.yaml`                  |
-| `collectors`                           | Collector configuration                             | `see values.yaml`                  |
-| `podLabels`                            | Additional labels to add to each pod                | `{}`                               |
-| `mysql.db`                             | MySQL connection db (optional)                      | `""`                               |
-| `mysql.host`                           | MySQL connection host                               | `localhost`                        |
-| `mysql.param`                          | MySQL connection parameters (optional)              | `"tcp"`                            |
-| `mysql.pass`                           | MySQL connection password                           | `password`                         |
-| `mysql.port`                           | MySQL connection port                               | `3306`                             |
-| `mysql.protocol`                       | MySQL connection protocol (optional)                | `""`                               |
-| `mysql.user`                           | MySQL connection username                           | `exporter`                         |
-| `mysql.existingSecret`                 | Use existing kubernetes secret for DATA_SOURCE_NAME | `false`                            |
-| `cloudsqlproxy.enabled`                | Flag to enable the connection using Cloud SQL Proxy | `false`                            |
-| `cloudsqlproxy.image.repo`             | Cloud SQL Proxy image repository                    | `gcr.io/cloudsql-docker/gce-proxy` |
-| `cloudsqlproxy.image.tag`              | Cloud SQL Proxy image tag                           | `1.14`                             |
-| `cloudsqlproxy.image.pullPolicy`       | Cloud SQL Proxy image pull policy                   | `IfNotPresent`                     |
-| `cloudsqlproxy.instanceConnectionName` | Google Cloud instance connection name               | `project:us-central1:dbname`       |
-| `cloudsqlproxy.port`                   | Cloud SQL Proxy listening port                      | `3306`                             |
-| `cloudsqlproxy.credentials`            | Cloud SQL Proxy service account credentials         | `bogus credential file`            |
-| `serviceMonitor.enabled`               | Integration with prometheus-operator                | `false`                            |
-| `serviceMonitor.interval`              | Interval for polling this exporter                  |                                    |
-| `serviceMonitor.scrapeTimeout`         | Timeout where exporter is considered faulty         |                                    |
-| `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from          | `""`                               |
-| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target     | `[]`                               |
-| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target         | `[]`                               |
+| Parameter                              | Description                                                | Default                            |
+| -------------------------------------- | -----------------------------------------------------------| ---------------------------------- |
+| `replicaCount`                         | Amount of pods for the deployment                          | `1`                                |
+| `image.repository`                     | Image repository                                           | `prom/mysqld-exporter`             |
+| `image.tag`                            | Image tag                                                  | `v0.11.0`                          |
+| `image.pullPolicy`                     | Image pull policy                                          | `IfNotPresent`                     |
+| `service.name`                         | Service name                                               | `mysql-exporter`                   |
+| `service.labels`                       | Additional labels for the service                          | `{}`                               |
+| `service.annotations`                  | Annotations to be added to the service                     | `{}`                               |
+| `service.type`                         | Service type                                               | `ClusterIP`                        |
+| `service.externalport`                 | The service port                                           | `9104`                             |
+| `service.internalPort`                 | The target port of the container                           | `9104`                             |
+| `resources`                            | CPU/Memory resource requests/limits                        | `{}`                               |
+| `annotations`                          | pod annotations for easier discovery                       | `see values.yaml`                  |
+| `collectors`                           | Collector configuration                                    | `see values.yaml`                  |
+| `podLabels`                            | Additional labels to add to each pod                       | `{}`                               |
+| `mysql.db`                             | MySQL connection db (optional)                             | `""`                               |
+| `mysql.host`                           | MySQL connection host                                      | `localhost`                        |
+| `mysql.param`                          | MySQL connection parameters (optional)                     | `"tcp"`                            |
+| `mysql.pass`                           | MySQL connection password                                  | `password`                         |
+| `mysql.port`                           | MySQL connection port                                      | `3306`                             |
+| `mysql.protocol`                       | MySQL connection protocol (optional)                       | `""`                               |
+| `mysql.user`                           | MySQL connection username                                  | `exporter`                         |
+| `mysql.existingSecret`                 | Use existing kubernetes secret for DATA_SOURCE_NAME        | `false`                            |
+| `cloudsqlproxy.enabled`                | Flag to enable the connection using Cloud SQL Proxy        | `false`                            |
+| `cloudsqlproxy.image.repo`             | Cloud SQL Proxy image repository                           | `gcr.io/cloudsql-docker/gce-proxy` |
+| `cloudsqlproxy.image.tag`              | Cloud SQL Proxy image tag                                  | `1.14`                             |
+| `cloudsqlproxy.image.pullPolicy`       | Cloud SQL Proxy image pull policy                          | `IfNotPresent`                     |
+| `cloudsqlproxy.instanceConnectionName` | Google Cloud instance connection name                      | `project:us-central1:dbname`       |
+| `cloudsqlproxy.port`                   | Cloud SQL Proxy listening port                             | `3306`                             |
+| `cloudsqlproxy.credentials`            | Cloud SQL Proxy service account credentials                | `bogus credential file`            |
+| `serviceMonitor.enabled`               | Integration with prometheus-operator                       | `false`                            |
+| `serviceMonitor.interval`              | Interval for polling this exporter                         |                                    |
+| `serviceMonitor.scrapeTimeout`         | Timeout where exporter is considered faulty                |                                    |
+| `serviceMonitor.jobLabel`              | Label to use to retrieve the job name from                 | `""`                               |
+| `serviceMonitor.targetLabels`          | Labels to transfer from service onto the target            | `[]`                               |
+| `serviceMonitor.podTargetLabels`       | Labels to transfor from pod onto the target                | `[]`                               |
+| `serviceMonitor.metricRelabelings`     | MetricRelabelConfigs to apply to samples before ingestion. | `[]`                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

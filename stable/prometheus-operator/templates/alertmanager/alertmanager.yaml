@@ -11,6 +11,9 @@ spec:
 {{- if .Values.alertmanager.alertmanagerSpec.image }}
   baseImage: {{ .Values.alertmanager.alertmanagerSpec.image.repository }}
   version: {{ .Values.alertmanager.alertmanagerSpec.image.tag }}
+  {{- if .Values.alertmanager.alertmanagerSpec.image.sha }}
+  sha: {{ .Values.alertmanager.alertmanagerSpec.image.sha }}
+  {{- end }}
 {{- end }}
   replicas: {{ .Values.alertmanager.alertmanagerSpec.replicas }}
   listenLocal: {{ .Values.alertmanager.alertmanagerSpec.listenLocal }}
@@ -104,5 +107,12 @@ spec:
   additionalPeers:
 {{ toYaml .Values.alertmanager.alertmanagerSpec.additionalPeers | indent 4 }}
 {{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumes }}
+  volumes: {{.Values.alertmanager.alertmanagerSpec.volumes }}
+{{- end }}
+{{- if .Values.alertmanager.alertmanagerSpec.volumeMounts }}
+  volumeMounts: {{.Values.alertmanager.alertmanagerSpec.volumeMounts }}
+{{- end }}
   portName: {{ .Values.alertmanager.alertmanagerSpec.portName }}
 {{- end }}
+
