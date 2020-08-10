@@ -47,4 +47,5 @@ spec:
     - {{ . }}
 {{- end }}
 {{- end }}
+  sampleLimit: {{ .Values.serviceMonitor.sampleLimit }}
 {{- end }}

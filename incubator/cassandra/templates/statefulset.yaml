@@ -65,6 +65,9 @@ spec:
           mountPath: /cassandra-configs/
 {{- end }}
       containers:
+{{- if .Values.extraContainers }}
+{{ tpl (toYaml .Values.extraContainers) . | indent 6}}
+{{- end }}
 {{- if .Values.exporter.enabled }}
       - name: cassandra-exporter
         image: "{{ .Values.exporter.image.repo }}:{{ .Values.exporter.image.tag }}"
@@ -171,6 +174,9 @@ spec:
         - name: cassandra-configs
           mountPath: /etc/cassandra
         {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+        {{- end }}
         {{- if not .Values.persistence.enabled }}
         lifecycle:
           preStop:
@@ -182,8 +188,11 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
       {{- end }}
-{{- if or .Values.configOverrides (not .Values.persistence.enabled) }}
+{{- if or .Values.extraVolumes ( or .Values.configOverrides (not .Values.persistence.enabled) ) }}
       volumes:
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
 {{- range $key, $value := .Values.configOverrides }}
       - configMap:

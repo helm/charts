@@ -1,8 +1,9 @@
 apiVersion: v1
 name: datadog
-version: 2.3.41
+deprecated: true
+version: 2.3.42
 appVersion: "7"
-description: Datadog Agent
+description: DEPRECATED Datadog Agent
 keywords:
 - monitoring
 - alerting
@@ -12,20 +13,3 @@ icon: https://datadog-live.imgix.net/img/dd_logo_70x75.png
 sources:
 - https://app.datadoghq.com/account/settings#agent/kubernetes
 - https://github.com/DataDog/datadog-agent
-maintainers:
-- name: ahmed-mez
-  email: ahmed.mezghani@datadoghq.com
-- name: celenechang
-  email: celene@datadoghq.com
-- name: charlyf
-  email: charly@datadoghq.com
-- name: clamoriniere
-  email: cedric.lamoriniere@datadoghq.com
-- name: irabinovitch
-  email: ilan@datadoghq.com
-- name: L3n41c
-  email: lenaic.huard@datadoghq.com
-- name: vboulineau
-  email: vincent.boulineau@datadoghq.com
-- name: xornivore
-  email: ivan.ilichev@datadoghq.com

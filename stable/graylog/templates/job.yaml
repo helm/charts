@@ -5,6 +5,10 @@ metadata:
   name: {{ template "graylog.fullname" . }}-provisioner-job
   labels:
 {{ include "graylog.metadataLabels" . | indent 4 }}
+{{- with .Values.graylog.provisioner.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   template:
     metadata:
