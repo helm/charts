@@ -148,6 +148,8 @@ prometheusRule:
   enabled: false
   additionalLabels: {}
   namespace: ""
+  # If enabled the rules are passed through the "tpl" function so variables like .Release.Name can be evaluated
+  evaluateRules: true
   rules: []
 
 ## Network policy for chart

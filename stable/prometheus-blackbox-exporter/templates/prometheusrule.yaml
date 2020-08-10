@@ -15,9 +15,14 @@ metadata:
 {{- toYaml . | nindent 4 -}}
     {{- end }}
 spec:
+  {{- $evaluateRules := .Values.prometheusRule.evaluateRules }}
   {{- with .Values.prometheusRule.rules }}
   groups:
     - name: {{ template "prometheus-blackbox-exporter.name" $ }}
+      {{- if $evaluateRules }}
+      rules: {{ tpl (toYaml .) $ | nindent 8 }}
+      {{- else }}
       rules: {{ toYaml . | nindent 8 }}
+      {{- end }}
   {{- end }}
 {{- end }}
