@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.tls_secret_ca_key` | Existing secret key storing TLS CA certificate for the Elastic instance. Specify if tls: on.                           | `` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.es.generate_id`      | When enabled, generate `_id` for outgoing records. This prevents duplicate records when retrying ES. | `Off` |
 | **HTTP Backend**              |
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |

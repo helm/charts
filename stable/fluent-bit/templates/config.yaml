@@ -138,6 +138,9 @@ data:
         Logstash_Format {{ default "On" .Values.backend.es.logstash_format  }}
         Retry_Limit {{ .Values.backend.es.retry_limit }}
         Type  {{ .Values.backend.es.type }}
+{{- if .Values.backend.es.generate_id }}
+        Generate_ID {{ .Values.backend.es.generate_id }}
+{{- end }}
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
 {{- end }}
