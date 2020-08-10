@@ -130,7 +130,7 @@ collectors:
 kubeconfig:
   enabled: false
   # base64 encoded kube-config file
-  secret: XXX
+  secret:
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
