@@ -299,6 +299,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `master.prometheus.enabled`       | Enables prometheus service monitor | `false`                                     |
 | `master.prometheus.serviceMonitorAdditionalLabels` | Additional labels to add to the service monitor object | `{}`                       |
+| `master.prometheus.serviceMonitorName` | Custom name for serviceMonitor | Not set (Helm release name) |
 | `master.prometheus.serviceMonitorNamespace` | Custom namespace for serviceMonitor | Not set (same ns where is Jenkins being deployed) |
 | `master.prometheus.scrapeInterval` | How often prometheus should scrape metrics | `60s`                              |
 | `master.prometheus.scrapeEndpoint` | The endpoint prometheus should get metrics from | `/prometheus`                 |

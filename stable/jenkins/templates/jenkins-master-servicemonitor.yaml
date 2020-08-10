@@ -3,7 +3,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 
 metadata:
+{{- if .Values.master.prometheus.serviceMonitorName }}
+  name: {{ .Values.master.prometheus.serviceMonitorName }}
+{{- else }}
   name: {{ template "jenkins.fullname" . }}
+{{- end }}
 {{- if .Values.master.prometheus.serviceMonitorNamespace }}
   namespace: {{ .Values.master.prometheus.serviceMonitorNamespace }}
 {{- else }}
