@@ -332,7 +332,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -370,7 +370,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -568,7 +568,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.19.2
+    tag: v2.20.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
