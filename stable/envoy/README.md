@@ -45,6 +45,9 @@ Parameter | Description | Default
 `initContainerTemplate` | Golang template of the init container added to Envoy pods| ``
 `sidecarContainersTemplate` | Golang template of additional containers added after the primary container of Envoy pods | ``
 `service.loadBalancerSourceRanges` | An optional list of CIDR-formatted IP ranges for limiting access to the proxy to these source addresses | ``
+`ingress.enabled` | Whether to create an `Ingress` object alongside Envoy | `false`
+`ingress.annotations` | Annotations for the ingress | `{}`
+`ingress.rules` | Non-default rules to be added to the ingress | See [values.yaml](values.yaml)
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).
 

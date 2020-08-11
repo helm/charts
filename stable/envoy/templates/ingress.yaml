@@ -1,0 +1,28 @@
+{{ $ingress := default dict .Values.ingress }}
+{{ if and $ingress $ingress.enabled }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "envoy.fullname" . }}
+  labels:
+    app: {{ template "envoy.name" . }}
+    chart: {{ template "envoy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- if $ingress.annotations }}
+    {{- toYaml $ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+    {{- if $ingress.rules }}
+    {{- toYaml $ingress.rules | nindent 6}}
+    {{- else }}
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: {{ .Values.service.name }}
+              servicePort: n0
+    {{- end }}
+{{ end }}
