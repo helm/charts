@@ -60,7 +60,11 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
+      {{- if .Values.workers.celery.gracefullTermination }}
+      terminationGracePeriodSeconds: {{ add .Values.workers.terminationPeriod .Values.workers.celery.gracefullTerminationPeriod }}
+      {{- else }}
       terminationGracePeriodSeconds: {{ .Values.workers.terminationPeriod }}
+      {{- end }}
       serviceAccountName: {{ include "airflow.serviceAccountName" . }}
       {{- if .Values.workers.nodeSelector }}
       nodeSelector:
@@ -148,7 +152,10 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/home/airflow/scripts/graceful-stop-celery-worker.sh"]
+                command:
+                  - "timeout"
+                  - "{{ .Values.workers.celery.gracefullTerminationPeriod }}s"
+                  - "/home/airflow/scripts/graceful-stop-celery-worker.sh"
           {{- end}}
           envFrom:
             - configMapRef:

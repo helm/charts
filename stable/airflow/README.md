@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.3.X → v7.4.0](UPGRADE.md#v73x--v740)
 * [v7.2.X → v7.3.0](UPGRADE.md#v72x--v730)
 * [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
 * [v7.0.X → v7.1.0](UPGRADE.md#v70x--v710)
@@ -236,11 +237,12 @@ workers:
   celery:
     instances: 10
 
-    # wait until all tasks are finished before SIGTERM of Pod
+    ## wait at most 10min for running tasks to complete
     gracefullTermination: true
+    gracefullTerminationPeriod: 600
 
-  # wait AT MOST 10min for tasks on a worker to finish before SIGKILL
-  terminationPeriod: 600
+  ## how many seconds (after the 10min) to wait before SIGKILL
+  terminationPeriod: 60
 
 dags:
   git:
@@ -592,7 +594,7 @@ __Airflow Worker Values:__
 | `workers.autoscaling.*` | configs for the HorizontalPodAutoscaler of the worker Pods | `<see values.yaml>` |
 | `workers.initialStartupDelay` | the number of seconds to wait (in bash) before starting each worker container | `0` |
 | `workers.celery.*` | configs for the celery worker Pods | `<see values.yaml>` |
-| `workers.terminationPeriod` | how many seconds to wait for tasks on a worker to finish before SIGKILL | `60` |
+| `workers.terminationPeriod` | how many seconds to wait after SIGTERM before SIGKILL of the celery worker | `60` |
 | `workers.secretsDir` | directory in which to mount secrets on worker containers | `/var/airflow/secrets` |
 | `workers.secrets` | secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>` | `[]` |
 | `workers.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`. If you use workers.secretsMap, then it overrides `workers.secrets`.| `""` |
