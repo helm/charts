@@ -27,7 +27,7 @@ spec:
   runAsUser:
     rule: RunAsAny
   seLinux:
-{{ toYaml .Values.datadog.securityContext | indent 4 }}
+{{ toYaml .Values.agents.podSecurity.securityContext | indent 4 }}
   supplementalGroups:
     rule: RunAsAny
 {{- end }}

@@ -36,4 +36,8 @@ spec:
       - min: 1
         max: 65535
   readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+  {{- if .Values.allowIcmp }}
+  allowedCapabilities: 
+  - NET_RAW
+  {{- end }}
 {{- end }}

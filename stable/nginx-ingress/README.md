@@ -47,7 +47,8 @@ The following table lists the configurable parameters of the nginx-ingress chart
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
+`controller.image.registry` | controller container image registry | `us.gcr.io`
+`controller.image.repository` | controller container image repository | `k8s-artifacts-prod/ingress-nginx/controller`
 `controller.image.tag` | controller container image tag | `0.32.0`
 `controller.image.digest` | controller container image digest | `""`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
@@ -89,6 +90,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.podAnnotationConfigChecksum` | add annotation with checksum/config | `false`
 `controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
@@ -196,6 +198,11 @@ Parameter | Description | Default
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
+`defaultBackend.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `1`
+`defaultBackend.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `2`
+`defaultBackend.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | "50"
+`defaultBackend.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | "50"
 `defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
 `defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -409,3 +416,46 @@ Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: In
 Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
 
 As of version `1.26.0` of this chart, by simply not providing any clusterIP value, `invalid: spec.clusterIP: Invalid value: "": field is immutable` will no longer occur since `clusterIP: ""` will not be rendered.
+
+## Using custom default backend
+
+Default can be used to server custom error pages when service endpoints are not available. This is requires custom webserver image build with simmilar configuration as below.
+
+```
+server {
+  listen 80 default_server;
+
+  location /nginx_status {
+    stub_status on;
+    access_log  off;
+    allow 127.0.0.1;
+    allow all;
+    deny all;
+  }
+
+  location /healthz {
+    stub_status on;
+    access_log  off;
+    allow 127.0.0.1;
+    allow all;
+    deny all;
+  }
+
+}
+
+###
+# DefaultBackend application handler block
+server {
+  listen 80;
+  server_name *.example-app.com example-app.com;
+
+  access_log  /var/log/nginx/access.log main;
+  root /usr/share/nginx/html;
+
+  location / {
+    add_header Content-Type application/json;
+    add_header Cache-Control "no-cache, no-store" always;
+    try_files /maintenance.json  =502;
+  }
+}
+```

@@ -159,6 +159,12 @@ data:
     </jenkins.CLI>
 {{- end }}
   apply_config.sh: |-
+{{- if .Values.master.initializeOnce }}
+    if [ -f {{ .Values.master.jenkinsHome }}/initialization-completed ]; then
+      echo "master was previously initialized, refusing to re-initialize"
+      exit 0
+    fi
+{{- end }}
     echo "applying Jenkins configuration"
     mkdir -p {{ .Values.master.jenkinsRef }}/secrets/;
 {{- if .Values.master.enableXmlConfig }}
@@ -210,7 +216,7 @@ data:
     yes n | cp -i {{ .Values.master.jenkinsRef }}/plugins/* /var/jenkins_plugins/;
 {{- end }}
 {{- if .Values.master.scriptApproval }}
-  echo "configure script approval"
+    echo "configure script approval"
   {{- if .Values.master.overwriteConfig }}
     cp /var/jenkins_config/scriptapproval.xml {{ .Values.master.jenkinsHome }}/scriptApproval.xml;
   {{- else }}
@@ -253,6 +259,9 @@ data:
     yes n | cp -i /var/jenkins_secrets/* {{ .Values.master.jenkinsRef }}/secrets/;
 {{- end }}
     echo "finished initialization"
+{{- if .Values.master.initializeOnce }}
+    touch {{ .Values.master.jenkinsHome }}/initialization-completed
+{{- end }}
 {{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
