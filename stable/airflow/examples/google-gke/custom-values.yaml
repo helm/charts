@@ -239,13 +239,17 @@ workers:
     ##
     instances: 10
 
-    ## if we should wait for tasks to finish on a celery worker before SIGTERM of Pod
+    ## if we should wait for tasks to finish before SIGTERM of the celery worker
     ##
     gracefullTermination: true
 
-  ## how many seconds to wait for tasks on a worker to finish before SIGKILL
+    ## how many seconds to wait for tasks to finish before SIGTERM of the celery worker
+    ##
+    gracefullTerminationPeriod: 600
+
+  ## how many seconds to wait after SIGTERM before SIGKILL of the celery worker
   ##
-  terminationPeriod: 600
+  terminationPeriod: 60
 
   ## directory in which to mount secrets on worker containers
   ##
