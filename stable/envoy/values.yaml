@@ -52,6 +52,22 @@ service:
   # loadBalancerSourceRanges:
   # - 0.0.0.0/0
 
+# Optional ingress object to be created with the proxy
+ingress:
+  enabled: false
+  annotations: {}
+  ## Annotations to be added to the Ingress object
+  rules: {}
+  ## Overrides the ingress rules. If not set, creates a rule that proxies all requests to
+  ## Envoy's n0 traffic port
+  ## Example:
+  #  - http:
+  #      paths:
+  #        - path: "/*"
+  #          backend:
+  #            serviceName: envoy-service
+  #            servicePort: n0
+
 ports:
   admin:
     containerPort: 9901
