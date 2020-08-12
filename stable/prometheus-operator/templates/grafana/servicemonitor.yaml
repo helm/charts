@@ -10,7 +10,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: grafana
+      app.kubernetes.io/name: {{ template "prometheus-operator.name" . }}-grafana
       app.kubernetes.io/instance: {{ $.Release.Name | quote }}
   namespaceSelector:
     matchNames:
