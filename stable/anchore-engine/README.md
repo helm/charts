@@ -234,11 +234,163 @@ See the anchore-engine [CHANGELOG](https://github.com/anchore/anchore-engine/blo
 ## Upgrading from previous chart versions
 A Helm post-upgrade hook job will shut down all previously running Anchore services and perform the Anchore DB upgrade process using a kubernetes job. The upgrade will only be considered successful when this job completes successfully. Performing an upgrade will cause the Helm client to block until the upgrade job completes and the new Anchore service pods are started. To view progress of the upgrade process, tail the logs of the upgrade jobs `anchore-engine-upgrade` and `anchore-enterprise-upgrade`. These job resources will be removed upon a successful helm upgrade.
 
-# Chart version 1.7.0
+## Chart version 1.6.0
+Changes with this version include:
+  * Anchore database upgrades will now be handled using a helm post-upgrade hook job
+  * Anchore Engine image updated to v0.7.1
+  * Anchore Enterprise updated to v2.3.0 - see [CHANGELOG](https://docs.anchore.com/current/docs/releasenotes/230/)
+  * Enterprise deployments now use the `anchore/enterprise` image for all components
+  * Added GitHub advisory feeds
+  * Added NuGet .NET feeds to Enterprise feed service
+  * Updated resources to provide better minimum requirements baseline (these are still not production ready)
 
-Starting with version 1.7.0 the anchore-engine chart will be hosted on charts.anchore.io - if you're upgrading from a previous version of the chart, you will need to delete your previous deployment and redeploy Anchore Engine using the chart from the Anchore Charts repository. 
+## Chart version 1.5.0
+Changes to the Helm Chart include:
+  * Anchore Engine image updated to v0.7.0
+  * Enterprise deployments now use a different image for core anchore-engine services - .Values.anchoreEnterpriseGlobal.engineImage
+  * Default feed sync timeout increased to 180s
+  * Added a optional configuration for including imagePullSecret on all anchore-engine images - .Values.anchoreGlobal.imagePullSecretName
 
-This version of the chart includes the dependent Postgresql chart in the charts/ directory rather then pulling it from upstream. All apiVersions were updated for compatibility with kubernetes v1.16+ and the postgresql image has been updated to version 9.6.18. The chart version also updates to the latest version of the Redis chart from Bitnami. These dependency updates require deleting and re-installing your chart. If the following process is performed, no data should be lost.
+## Chart version 1.4.0
+The following features were added with this chart version:
+  * Enterprise notifications service
+  * Numerous QOL improvements to the Enterprise UI service
+
+## Upgrading to Chart version 1.3.0
+The following features were added with this chart version:
+  * Allow custom CA certificates for TLS on all system dependencies (postgresql, ldap, registries)
+  * Customization of the analyzer configuration
+  * Improved authentication methods, allowing SAML/token based auth
+  * Enterprise UI reporting improvements
+  * Enterprise SSO integration
+  * Enterprise vulnerability data enhancement using VulnDB
+
+Internal Service SSL configuration has been changed to support a global certificate storage secret. When upgrading to v1.3.0 of the chart, make sure the values file is updated appropriately.
+
+#### Chart v1.3.0 internal service SSL configuration
+```
+anchoreGlobal:
+  certStoreSecretName: anchore-certs
+  internalServicesSsl:
+    enabled: true
+    verifyCerts: true
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+#### Chart v1.2.0 internal service SSL configuration
+```
+anchoreGlobal:
+  internalServicesSslEnabled: true
+  internalServicesSsl:
+    verifyCerts: true
+    certSecret: anchore-certs
+    certDir: /home/anchore/certs
+    certSecretKeyName: anchore.example.com.key
+    certSecretCertName: anchore.example.com.crt
+```
+
+## Upgrading to Chart version 1.0.0
+The following features were added with this chart version:
+  * Rootless UBI 7 base image
+  * Analyzer image layer caching
+  * Enterprise UI dashboards
+  * Enterprise LDAP integration
+  * Enterprise Reporting API
+
+Scratch volume configs for the analyzer component & the enterprise-feeds component have been moved to the anchoreGlobal section. Update your values.yaml file to reflect this change.
+
+#### Chart v0.13.0 scratch volume config
+```
+anchoreAnalyzer:
+  scratchVolume:
+      mountPath: /analysis_scratch
+      details:
+        # Specify volume configuration here
+        emptyDir: {}
+
+anchoreEnterpriseFeeds:
+  scratchVolume:
+    mountPath: /analysis_scratch
+    details:
+      # Specify volume configuration here
+      emptyDir: {}
+```
+
+#### Chart v1.0.0 scratch volume config
+```
+anchoreGlobal:
+  scratchVolume:
+    mountPath: /analysis_scratch
+    details:
+      # Specify volume configuration here
+      emptyDir: {}
+```
+
+## Upgrading to Chart version 0.12.0
+Redis dependency chart major version updated to v6.1.3 - check redis chart readme for instructions for upgrade.
+
+The ingress configuration has been consolidated to a single global section. This should make it easier to manage the ingress resource. Before performing an upgrade ensure you update your custom values file to reflect this change.
+
+#### Chart v0.12.0 ingress config
+```
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: gce
+  apiPath: /v1/*
+  uiPath: /*
+  apiHosts:
+  - anchore-api.example.com
+  uiHosts:
+  - anchore-ui.example.com
+```
+
+## Upgrading to Chart version 0.11.0
+The image map has been removed in all configuration sections in favor of individual keys. This should make configuration for tools like skaffold simpler. If using a custom values file, update your `image.repository`, `image.tag`, & `image.pullPolicy` values with `image` & `imagePullPolicy`.
+
+#### Chart v0.11.0 image config
+```
+anchoreGlobal:
+  image: docker.io/anchore/anchore-engine:v0.3.2
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseGlobal:
+  image: docker.io/anchore/enterprise:v0.3.3
+  imagePullPolicy: IfNotPresent
+
+anchoreEnterpriseUI:
+  image: docker.io/anchore/enterprise-ui:v0.3.1
+  imagePullPolicy: IfNotPresent
+```
+
+
+## Upgrading to Chart version 0.10.0
+
+Ingress resources have been changed to work natively with NGINX ingress controllers. If you're using a different ingress controller update your values.yaml file accordingly. See the __Using Ingress__ configuration section for examples of NGINX & GCE ingress controller configurations.
+
+Service configs have been moved from the anchoreGlobal section, to individual component sections in the values.yaml file. If you're upgrading from a previous install and are using custom ports or serviceTypes, be sure to update your values.yaml file accordingly.
+
+#### Chart v0.10.0 service config
+```
+anchoreApi:
+  service:
+    type: ClusterIP
+    port: 8228
+```
+
+## Upgrading to Chart version 0.9.0
+
+Version 0.9.0 of the anchore-engine helm chart includes major changes to the architecture, values.yaml file, as well as introduced Anchore Enterprise components. Due to these changes, it is highly recommended that upgrades are handled with caution. Any custom values.yaml files will also need to be adjusted to match the new structure. Version upgrades have only been validated when upgrading from 0.2.6 -> 0.9.0.
+
+`helm upgrade <release_name> stable/anchore-engine`
+
+When upgrading the Chart from version 0.2.6 to version 0.9.0, it will take approximately 5 minutes for anchore-engine to upgrade the database. To ensure that the upgrade has completed, run the `anchore-cli system status` command and verify the engine & db versions match the output below.
+
+```
+Engine DB Version: 0.0.8
+Engine Code Version: 0.3.0
+```
 
 ## Migrating To The New Anchore Charts Repository
 
