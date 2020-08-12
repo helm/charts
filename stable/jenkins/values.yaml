@@ -481,18 +481,21 @@ agent:
   # Possible values: Always, Never, OnFailure
   podRetention: "Never"
   # create a cache for this agent, the chart will create a PVC as per componentName
-  # and storageClass, if defined.
+  # and storageClass, if defined. This PVC can be mounted for use  in the volumes section.
   cache:
-    enabled: false
-    componentName: "{{ .Release.Name }}-cache"
-    mountPath: ""
-    size: "4Gi"
+    # create PVC
+    persistence:
+      enabled: false
+      componentName: "{{ .Release.Name }}-cache"
+      storageClass:
+      size: "4Gi"
     # storageClass:
-    # The clear section defines a job to clear agent caches, its recommended to enable this
-    # and clear the cache when builds are least likely to prevent security issues
+    # create CronJob (mounts an agent volume)
     clear:
       enabled: false
       componentName: "{{ .Release.Name }}-clear-cache"
+      claimName: "{{ .Release.Name }}-cache"
+      mountPath: "/tmp/cache"
       schedule: "0 0 * * SUN"
       image: "maorfr/kube-tasks"
       tag: "0.2.0"
@@ -572,13 +575,13 @@ agent:
   # master.JCasC.defaultConfig: true
   # Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes. The example below creates a python pod template.
   podTemplates: {}
-  #  maven: |
-  #    - name: maven
-  #      label: jenkins-maven
+  #  python: |
+  #    - name: python
+  #      label: jenkins-python
   #      serviceAccount: jenkins
   #      containers:
-  #        - name: maven
-  #          image: jenkins/jnlp-agent-maven:latest
+  #        - name: python
+  #          image: python:3
   #          command: "/bin/sh -c"
   #          args: "cat"
   #          ttyEnabled: true
@@ -587,20 +590,6 @@ agent:
   #          resourceRequestMemory: "512Mi"
   #          resourceLimitCpu: "1"
   #          resourceLimitMemory: "1024Mi"
-  #      cache:
-  #        componentName: "{{ .Release.Name }}-maven-cache"
-  #        mountPath: "/home/jenkins/agent/.m2/repository"
-  #        clear:
-  #          componentName: "{{ .Release.Name }}-clear-maven-cache"
-  #          schedule: "0 2 * * WED"
-  #          image: "maven"
-  #          tag: "3.6.3-openjdk-11"
-  #          command: "mvn dependency:purge-local-repository -DsnapshotOnly=true"
-  #      volumes:
-  #        - persistentVolumeClaim:
-  #            claimName: "{{ .Release.Name }}-maven-cache"
-  #            mountPath: /home/jenkins/agent/.m2/repository
-  #            readOnly: false
 
 # Here you can add additional agents
 # They inherit all values from `agent` so you only need to specify values which differ
@@ -612,22 +601,6 @@ additionalAgents: {}
 #    # sideContainerName: jnlp
 #    image: jenkins/jnlp-agent-maven
 #    tag: latest
-#    cache:
-#      enabled: true
-#      componentName: "{{ .Release.Name }}-maven-cache"
-#      mountPath: "/home/jenkins/agent/.m2/repository"
-#      clear:
-#        enabled: true
-#        componentName: "{{ .Release.Name }}-clear-maven-cache"
-#        schedule: "0 2 * * WED"
-#        image: "maven"
-#        tag: "3.6.3-openjdk-11"
-#        command: "mvn dependency:purge-local-repository -DsnapshotOnly=true"
-#    volumes:
-#    - type: PVC
-#      claimName: "{{ .Release.Name }}-maven-cache"
-#      mountPath: /home/jenkins/agent/.m2/repository
-#      readOnly: false
 #  python:
 #    podName: python
 #    customJenkinsLabels: python

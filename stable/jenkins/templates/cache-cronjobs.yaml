@@ -1,26 +1,16 @@
-{{- $deDup :=  dict }}
-{{- /* deduplication logic to ensure one one cache PVC is created per unique componentName */}}
-{{- if .Values.agent.enabled }}
-  {{- if and .Values.agent.cache.enabled .Values.agent.cache.clear.enabled }}
-    {{- $_ := set $deDup (tpl (.Values.agent.cache.componentName | required "cache componentName is required") $) .Values.agent.cache }}
-  {{- end }}
-  {{- if .Values.additionalAgents }}
-    {{- $agent := .Values.agent }}
-    {{- range $name, $additionalAgent := .Values.additionalAgents }}
-      {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
-      {{- $additionalAgent := merge $additionalAgent $agent }}
-      {{- if and $additionalAgent.cache.enabled $additionalAgent.cache.clear.enabled }}
-        {{- $_ := set $deDup (tpl ($additionalAgent.cache.componentName | required "cache componentName is required") $) $additionalAgent.cache }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-  {{- /* render unique list of cache PVCs */}}
-  {{- range $name, $agentcache := $deDup }}
+{{- /* create list of agents */}}
+{{- $_ := set .Values "agentList" (list .Values.agent) }}
+{{- range $name, $additionalAgent := .Values.additionalAgents }}
+    {{- /* merge .Values.agent into additional agent to ensure it at least has the default values */}}
+    {{- $_ := set $.Values "agentList" (append $.Values.agentList (merge $additionalAgent $.Values.agent)) }}
+{{- end }}
+{{- range $agent := .Values.agentList }}
+{{- if $agent.cache.clear.enabled }}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ tpl ($agentcache.clear.componentName | required "cache clear componentName is required") $ }}
+  name: {{ tpl ($agent.cache.clear.componentName | required "cache clear componentName is required") $ }}
   labels:
     "app.kubernetes.io/name": '{{ template "jenkins.name" $ }}'
     "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
@@ -31,7 +21,7 @@ spec:
   concurrencyPolicy : "Forbid"
   failedJobsHistoryLimit : 5
   successfulJobsHistoryLimit: 5
-  schedule: "{{ $agentcache.clear.schedule }}"
+  schedule: "{{ $agent.cache.clear.schedule }}"
   jobTemplate:
     spec:
       backoffLimit: 6
@@ -47,12 +37,12 @@ spec:
           volumes:
           - name: cache-volume
             persistentVolumeClaim:
-              claimName: {{ tpl ($agentcache.componentName | required "cache componentName is required") $ }}
+              claimName: {{ tpl ($agent.cache.clear.claimName | required "cache clear.claimName is required") $ }}
           containers:
-          - name: {{ tpl ($agentcache.clear.componentName | required "cache clear componentName is required") $ }}
-            image: "docker-registry.default.svc:5000/{{ $agentcache.clear.image }}:{{ $agentcache.clear.tag }}"
+          - name: {{ tpl ($agent.cache.clear.componentName | required "cache clear componentName is required") $ }}
+            image: "docker-registry.default.svc:5000/{{ $agent.cache.clear.image }}:{{ $agent.cache.clear.tag }}"
             volumeMounts:
-            - mountPath: {{ tpl ($agentcache.mountPath | required "cache mountPath is required") $ }}
+            - mountPath: {{ tpl ($agent.cache.clear.mountPath | required "cache mountPath is required") $ }}
               name: cache-volume
             resources:
               limits:
@@ -65,8 +55,9 @@ spec:
             - /bin/sh
             - -c
             - |
-              cd {{ tpl ($agentcache.mountPath | required "cache mountPath is required") $ }}
-              {{- tpl $agentcache.clear.command $ | nindent 14 }}
+              cd {{ tpl ($agent.cache.clear.mountPath | required "cache mountPath is required") $ }}
+              {{- tpl $agent.cache.clear.command $ | nindent 14 }}
           restartPolicy: OnFailure
-  {{- end }}
-{{- end -}}
+{{- end }}
+{{- end }}
+{{- $_ := unset .Values "agentList" }}

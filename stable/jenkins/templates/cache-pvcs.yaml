@@ -1,26 +1,16 @@
-{{- $deDup :=  dict }}
-{{- /* deduplication logic to ensure one one cache PVC is created per unique componentName */}}
-{{- if .Values.agent.enabled }}
-  {{- if .Values.agent.cache.enabled }}
-    {{- $_ := set $deDup (tpl (.Values.agent.cache.componentName | required "cache componentName is required") $) .Values.agent.cache }}
-  {{- end }}
-  {{- if .Values.additionalAgents }}
-    {{- $agent := .Values.agent }}
-    {{- range $name, $additionalAgent := .Values.additionalAgents }}
-      {{- /* merge original .Values.agent into additional agent to ensure it at least has the default values */}}
-      {{- $additionalAgent := merge $additionalAgent $agent }}
-      {{- if $additionalAgent.cache.enabled }}
-        {{- $_ := set $deDup (tpl ($additionalAgent.cache.componentName | required "cache componentName is required") $) $additionalAgent.cache }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-  {{- /* render unique list of cache PVCs */}}
-  {{- range $name, $agentcache := $deDup }}
+{{- /* create list of agents */}}
+{{- $_ := set .Values "agentList" (list .Values.agent) }}
+{{- range $name, $additionalAgent := .Values.additionalAgents }}
+    {{- /* merge .Values.agent into additional agent to ensure it at least has the default values */}}
+    {{- $_ := set $.Values "agentList" (append $.Values.agentList (merge $additionalAgent $.Values.agent)) }}
+{{- end }}
+{{- range $agent := .Values.agentList }}
+{{- if $agent.cache.persistence.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ tpl ($agentcache.componentName | required "cache componentName is required") $ }}
+  name: {{ tpl ($agent.cache.persistence.componentName | required "cache persistence componentName is required") $ }}
   annotations:
     "helm.sh/resource-policy": delete
   labels:
@@ -34,7 +24,8 @@ spec:
     - "ReadWriteMany"
   resources:
     requests:
-      storage: {{ $agentcache.size | required "size is required" }}
-  storageClassName: {{ $agentcache.storageClass | default "" }}
-  {{- end }}
+      storage: {{ $agent.cache.persistence.size | required "size is required" }}
+  storageClassName: {{ $agent.cache.persistence.storageClass | default "" }}
 {{- end }}
+{{- end }}
+{{- $_ := unset .Values "agentList" }}

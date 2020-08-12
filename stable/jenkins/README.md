@@ -379,6 +379,7 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.imagePullSecretName` | Agent image pull secret                        | Not set                |
 | `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
 | `agent.slaveConnectTimeout`| Timeout in seconds for an agent to be online    | 100                    |
+| `agent.cache`              | Defining Cache volumes                          | enabled=false          |
 | `agent.volumes`            | Additional volumes                              | `[]`                   |
 | `agent.yamlTemplate`       | The raw yaml of a Pod API Object to merge into the agent spec | Not set  |
 | `agent.yamlMergeStrategy`   | Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates | `override` |
@@ -392,10 +393,8 @@ Some third-party systems, e.g. GitHub, use HTML-formatted data in their payload 
 | `agent.alwaysPullImage`    | Always pull agent container image before build  | `false`                |
 | `agent.privileged`         | Agent privileged container                      | `false`                |
 | `agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 512m, memory: 512Mi}, limits: {cpu: 512m, memory: 512Mi}}` |
-| `agent.cache`              | Defining Cache volumes                          | `{}`                   |
-| `agent.volumes`            | Additional volumes                              | `[]`                   |
-| `agent.envVars`            | Environment variables for the agent Pod         | `[]`                   |
-| `agent.nodeSelector`       | Node labels for pod assignment                  | `{}`                   |
+| `agent.runAsUser`          | Configure container user                        | Not set                |
+| `agent.runAsGroup`         | Configure container group                       | Not set                |
 | `agent.command`            | Executed command when side container starts     | Not set                |
 | `agent.args`               | Arguments passed to executed command            | `${computer.jnlpmac} ${computer.name}` |
 | `agent.TTYEnabled`         | Allocate pseudo tty to the side container       | false                  |
@@ -417,6 +416,35 @@ $ helm install my-release -f values.yaml stable/jenkins
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+#### Defining Caches for your agent pods
+
+Its possible to define a set of cache volumes that can be mounted by agent pods for storing libraries and other artifacts for build. The volume defined, under `persistence`, will be created as a new `PVC` by the chart. The volume has to be mounted under the `volumes` section. Along with the cache, a `CronJob` can be defined under the `clear` section to perform cache activies, including clearing old libraries, on a periodic basis. The `CronJob` is required both to prevent unused libraries from accumulating over time and to avoid security issues.
+
+> **Tip**: Ensure a PVC and CronJob with a given `componentName` is defined only once
+
+The cache is defined in the format below:
+
+```
+    cache:
+      # create PVC
+      persistence:
+        enabled: true
+        componentName: "{{ .Release.Name }}-maven-cache"
+        storageClass:
+        size: "8Gi"
+      # create CronJob (which mounts all agent volumes)
+      clear:
+        enabled: true
+        componentName: "{{ .Release.Name }}-clear-maven-cache"
+        claimName: "{{ .Release.Name }}-maven-cache"
+        mountPath: "/home/jenkins/agent/.m2/repository"
+        schedule: "0 2 * * WED"
+        image: "maven"
+        tag: "3.6.3-openjdk-11"
+        command: "mvn dependency:purge-local-repository -DsnapshotOnly=true"
+
+```
+
 ## Mounting volumes into your Agent pods
 
 Your Jenkins Agents will run as pods, and it's possible to inject volumes where needed:
@@ -430,31 +458,6 @@ agent:
 ```
 
 The supported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `PVC`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
-
-#### Defining Caches for your agent pods
-
-Its possible to define a set of cache volumes that will be mounted by agent pods for caching libraries and other artifacts for build. The cache will be created as a new `PVC` by the chart. This is automatically mounted on the agent in the `mountPath` defined by using kubernetes pod templates. Along with the cache, a `CronJob` can be defined under the `clear` section to perform cache activies, including clearing old libraries, on a periodic basis. The `CronJob` is required both to prevent unused libraries from accumulating over time and to avoid security issues.
-
-The cache is defined in the format below:
-
-```
-  cache:
-    enabled: false
-    componentName: "{{ .Release.Name }}-cache"
-    mountPath: ""
-    size: "4Gi"
-    storageClass: ""
-    # The clear section defines a job to clear agent caches, its recommended to enable this
-    # and clear the cache when builds are least likely to prevent security issues
-    clear:
-      enabled: false
-      componentName: "{{ .Release.Name }}-clear-cache"
-      schedule: "0 0 * * SUN"
-      image: "maorfr/kube-tasks"
-      tag: "0.2.0"
-      command: "kube-tasks execute --command 'rm -rf'"
-
-```
 
 ## NetworkPolicy
 
