@@ -1,12 +1,12 @@
 dependencies:
 - name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 1.0.0
+  repository: ""
+  version: 1.0.1
 - name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 1.0.0
+  repository: ""
+  version: 1.0.1
 - name: redis
   repository: https://kubernetes-charts.storage.googleapis.com
-  version: 6.4.5
-digest: sha256:0abbedf9d57581e5b956c4048bec6bebf068ca57f33867ef88179dc7c39998ae
-generated: "2020-08-12T16:06:03.18368-07:00"
+  version: 10.5.7
+digest: sha256:106bc6a69eed8b6caf211da47687c16c6415662ea2e83813e268010eb121f4e5
+generated: "2020-08-12T16:15:32.051109-07:00"
