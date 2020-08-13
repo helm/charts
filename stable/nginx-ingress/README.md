@@ -153,6 +153,8 @@ Parameter | Description | Default
 `controller.metrics.serviceMonitor.namespace` | namespace where servicemonitor resource should be created | `the same namespace as nginx ingress`
 `controller.metrics.serviceMonitor.namespaceSelector` | [namespaceSelector](https://github.com/coreos/prometheus-operator/blob/v0.34.0/Documentation/api.md#namespaceselector) to configure what namespaces to scrape | `will scrape the helm release namespace only`
 `controller.metrics.serviceMonitor.scrapeInterval` | interval between Prometheus scraping | `30s`
+`controller.metrics.serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
+`controller.metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]`
 `controller.metrics.prometheusRule.enabled` | Set this to `true` to create prometheusRules for Prometheus operator | `false`
 `controller.metrics.prometheusRule.additionalLabels` | Additional labels that can be used so prometheusRules will be discovered by Prometheus | `{}`
 `controller.metrics.prometheusRule.namespace` | namespace where prometheusRules resource should be created | `the same namespace as nginx ingress`
