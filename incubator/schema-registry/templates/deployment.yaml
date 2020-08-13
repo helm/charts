@@ -78,7 +78,6 @@ spec:
           command:
           - java
           - -XX:+UseContainerSupport
-          - -XX:+UseCGroupMemoryLimitForHeap
           - -XX:MaxRAMFraction=1
           - -XshowSettings:vm
           - -jar
