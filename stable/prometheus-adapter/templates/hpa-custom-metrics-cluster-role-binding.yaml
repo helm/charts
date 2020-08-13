@@ -1,4 +1,8 @@
-{{- if .Values.rbac.create -}}
+{{- /*
+This if must be aligned with custom-metrics-cluster-role.yaml
+as otherwise this binding will point to not existing role.
+*/ -}}
+{{- if and .Values.rbac.create (or .Values.rules.default .Values.rules.custom) -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
