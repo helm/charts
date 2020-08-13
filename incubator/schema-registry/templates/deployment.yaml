@@ -77,6 +77,8 @@ spec:
           image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
           command:
           - java
+          - -XX:+UseContainerSupport
+          - -XX:+UseCGroupMemoryLimitForHeap
           - -XX:MaxRAMFraction=1
           - -XshowSettings:vm
           - -jar
