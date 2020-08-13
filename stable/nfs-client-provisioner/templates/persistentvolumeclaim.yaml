@@ -5,7 +5,7 @@ metadata:
   name: pvc-{{ template "nfs-client-provisioner.fullname" . }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.storageClass.accessModes }}
   volumeMode: Filesystem
   storageClassName: ""
   selector:
