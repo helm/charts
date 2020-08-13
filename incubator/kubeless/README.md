@@ -15,7 +15,7 @@ This chart bootstraps a [Kubeless](https://github.com/kubeless/kubeless) and a [
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.9+
 
 ## Installing the Chart
 

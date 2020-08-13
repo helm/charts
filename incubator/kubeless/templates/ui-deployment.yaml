@@ -1,5 +1,5 @@
 {{- if .Values.ui.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kubeless.fullname" . }}-ui
@@ -7,11 +7,14 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
     component: ui
 spec:
+  selector:
+    matchLabels:
+      kubeless: ui
   replicas: {{ .Values.controller.deployment.replicaCount }}
   template:
     metadata:
       labels:
-        component: ui
+        kubeless: ui
         app: {{ template "kubeless.name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
