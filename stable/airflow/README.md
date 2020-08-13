@@ -107,6 +107,11 @@ scheduler:
         }
 ```
 
+We expose the `scheduler.refreshConnections` value to refresh connections by
+removing them before adding them when they are automatically being imported. The
+default value is true, so if a user wants to add a password after the initial
+deployment, they should set `scheduler.refreshConnections` to false.
+
 __NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
 __WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
@@ -544,6 +549,7 @@ __Airflow Scheduler values:__
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
+| `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
 | `scheduler.variables` | custom airflow variables for the airflow scheduler | `"{}"` |
 | `scheduler.pools` | custom airflow pools for the airflow scheduler | `"{}"` |
 | `scheduler.numRuns` | the value of the `airflow --num_runs` parameter used to run the airflow scheduler | `-1` |
