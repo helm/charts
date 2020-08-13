@@ -144,6 +144,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `extraVolumeMounts`             | Any extra volumes mounts                                                        | `[]`                                        |
 | `extraVolumes`                  | Any extra volumes                                                               | `[]`                                        |
 | `tolerations`                   | List of node taints to tolerate                                                 | `[]`                                        |
+| `psp.create`                    | If true, create & use PSP resources                                             | `true`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
