@@ -82,6 +82,10 @@ backend:
     tls_verify: "off"
     tls_debug: 1
     message_key: "kubernetes"
+  graylog:
+    host: 127.0.0.1
+    port: 12201
+    mode: "tcp"
   stackdriver: {}
 
   ##

@@ -12,4 +12,7 @@ It will forward all container logs to the svc named {{ .Values.backend.http.host
 {{- else if eq .Values.backend.type "splunk" }}
 
 It will forward all container logs to the svc named {{ .Values.backend.splunk.host }} on port: {{ .Values.backend.splunk.port }}
+{{- else if eq .Values.backend.type "graylog" }}
+
+It will forward all container logs to the svc named {{ .Values.backend.graylog.host }} on port: {{ .Values.backend.graylog.port }}
 {{- end }}

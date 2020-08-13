@@ -180,6 +180,14 @@ data:
         service_account_email  {{ .Values.backend.stackdriver.service_account_email }}
         service_account_secret  {{ .Values.backend.stackdriver.service_account_secret }}
 {{- end }}
+{{ else if eq .Values.backend.type "graylog" }}
+    [OUTPUT]
+        Name  gelf
+        Match *
+        Host {{ .Values.backend.graylog.host }}
+        Port {{ .Values.backend.graylog.port }}
+        Mode {{ .Values.backend.graylog.mode }}
+        Gelf_Short_Message_Key log
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http
