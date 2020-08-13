@@ -158,7 +158,7 @@ prometheus:
   jmx:
     enabled: false
     image: solsson/kafka-prometheus-jmx-exporter@sha256
-    imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
+    imageTag: 70852d19ab9182c191684a8b08ac831230006d82e65d1db617479ea27884e4e8
     port: 5556
     resources: {}
       # limits:
