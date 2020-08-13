@@ -79,6 +79,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
+| **Graylog Backend**              |
+| `backend.graylog.host`           | IP address or hostname of the target Graylog (GELF) input | `127.0.0.1` |
+| `backend.graylog.port`           | TCP port of the target Splunk Server | `12201` |
+| `backend.graylog.mode`           | Protocol to be used - TCP or UDD | `TCP` |
 | **Stackdriver Backend**              |
 | `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
 | `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
