@@ -107,6 +107,11 @@ scheduler:
         }
 ```
 
+We expose the `scheduler.refreshConnections` value to refresh connections by
+removing them before adding them when they are automatically being imported. The
+default value is true, so if a user wants to add a password after the initial
+deployment, they should set `scheduler.refreshConnections` to false.
+
 __NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
 __WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
@@ -177,9 +182,9 @@ This chart exposes 2 endpoints on the Ingress:
 
 #### Custom Paths:
 
-This chart enables you to add various paths to the ingress. 
+This chart enables you to add various paths to the ingress.
 It includes two values for you to customize these paths, `precedingPaths` and `succeedingPaths`, which are before and after the default path to `Service/airflow-web`.
-A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one. 
+A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one.
 
 You would set the values of `precedingPaths` as the following:
 ```yaml
@@ -198,7 +203,7 @@ For example, with a url-prefix of `/airflow/`:
 
 
 When customizing this, please note:
-- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value. 
+- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value.
 - Flower requires a URL rewrite mechanism in front of it.
   For specifics on this, see the comments of `flower.urlPrefix` inside `values.yaml`.
 
@@ -311,7 +316,7 @@ __NOTE:__ these work with any pip package that you can install with the `pip ins
 
 ### Kubernetes-Configs/Additional-Manifests
 
-It is possible to add additional manifests into a deployment, to extend the chart. 
+It is possible to add additional manifests into a deployment, to extend the chart.
 One of the reason is to deploy a manifest specific to a cloud provider.
 
 For example, adding a `BackendConfig` on GKE:
@@ -332,7 +337,7 @@ extraManifests:
 
 If the value `scheduler.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
 
-If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
+If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).
 This is rarely necessary but can be so under certain conditions if your synced DAGs include custom database hooks that prevent `initdb` from running successfully.
 For example, if they have dependencies on variables that won't be present yet.
 The initdb initcontainer will retry up to 5 times before giving up.
@@ -427,7 +432,7 @@ __NOTE:__ it is also possible to persist logs by mounting a `PersistentVolume` t
 ### Other/Service-Monitor
 
 The service monitor is something introduced by the [CoresOS Prometheus Operator](https://github.com/coreos/prometheus-operator).
-To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. 
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image.
 A good one is [epoch8/airflow-exporter](https://github.com/epoch8/airflow-exporter), which exposes dag and task based metrics from Airflow.
 For more information: see the `serviceMonitor` section of `values.yaml`.
 
@@ -472,7 +477,7 @@ However, if you want to implicitly trust all repo host signatures set `dags.git.
 In this method you store your DAGs in a Kubernetes Persistent Volume Claim (PVC), and use some external system to ensure this volume has your latest DAGs.
 For example, you could use your CI/CD pipeline system to preform a sync as changes are pushed to a git repo.
 
-Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared. 
+Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared.
 To share a PVC with multiple Pods, the PVC needs to have `accessMode` set to `ReadOnlyMany` or `ReadWriteMany` (Note: different StorageClass support different [access modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 If you are using Kubernetes on a public cloud, a persistent volume controller is likely built in:
 [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html),
@@ -544,6 +549,7 @@ __Airflow Scheduler values:__
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
+| `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
 | `scheduler.variables` | custom airflow variables for the airflow scheduler | `"{}"` |
 | `scheduler.pools` | custom airflow pools for the airflow scheduler | `"{}"` |
 | `scheduler.numRuns` | the value of the `airflow --num_runs` parameter used to run the airflow scheduler | `-1` |
