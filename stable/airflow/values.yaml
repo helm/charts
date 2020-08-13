@@ -236,6 +236,10 @@ scheduler:
   ##
   connections: []
 
+  ## if we remove before adding a connection resulting in a refresh
+  ##
+  refreshConnections: true
+
   ## custom airflow variables for the airflow scheduler
   ##
   ## NOTE:
