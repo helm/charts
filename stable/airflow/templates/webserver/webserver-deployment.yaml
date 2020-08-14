@@ -22,7 +22,7 @@ spec:
     # this is safe - multiple web pods can run concurrently
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 25%
       maxUnavailable: 0
   selector:
     matchLabels:
