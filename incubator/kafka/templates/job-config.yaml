@@ -26,4 +26,8 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: "/usr/local/script"
+{{- if .Values.configJob.affinity }}
+      affinity:
+{{ toYaml .Values.configJob.affinity | indent 8 }}
+{{- end }}
 {{- end -}}
