@@ -626,6 +626,7 @@ __Airflow Flower Values:__
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |
 | `flower.service.*` | configs for the Service of the flower Pods | `<see values.yaml>` |
 | `flower.initialStartupDelay` | the number of seconds to wait (in bash) before starting the flower container | `0` |
+| `flower.minReadySeconds` | the number of seconds to wait before declaring a new Pod available | `5` |
 | `flower.extraConfigmapMounts` | extra ConfigMaps to mount on the flower Pods | `[]` |
 
 __Airflow Logs Values:__

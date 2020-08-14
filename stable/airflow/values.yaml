@@ -728,6 +728,10 @@ flower:
   ##
   initialStartupDelay: 0
 
+  ## the number of seconds to wait before declaring a new Pod available
+  ##
+  minReadySeconds: 5
+
   ## extra ConfigMaps to mount on the flower Pods
   ##
   ## EXAMPLE:

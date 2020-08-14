@@ -18,7 +18,7 @@ metadata:
     {{- end }}
 spec:
   replicas: {{ .Values.flower.replicas }}
-  minReadySeconds: 10
+  minReadySeconds: {{ .Values.flower.minReadySeconds }}
   strategy:
     # this is safe - multiple flower pods can run concurrently
     type: RollingUpdate
