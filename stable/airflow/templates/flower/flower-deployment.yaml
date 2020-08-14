@@ -17,13 +17,13 @@ metadata:
     {{- toYaml .Values.flower.labels | nindent 4 }}
     {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.flower.replicas }}
   minReadySeconds: 10
   strategy:
     # this is safe - multiple flower pods can run concurrently
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 25%
       maxUnavailable: 0
   selector:
     matchLabels:

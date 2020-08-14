@@ -599,6 +599,10 @@ flower:
   ##
   resources: {}
 
+  ## the number of flower Pods to run
+  ##
+  replicas: 1
+
   ## the nodeSelector configs for the flower Pods
   ##
   nodeSelector: {}
