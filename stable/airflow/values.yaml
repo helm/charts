@@ -573,7 +573,7 @@ workers:
     ## NOTE:
     ## - sets AIRFLOW__CELERY__WORKER_CONCURRENCY
     ##
-    instances: 1
+    instances: 16
 
     ## if we should wait for tasks to finish before SIGTERM of the celery worker
     ##
