@@ -559,7 +559,7 @@ __Airflow Scheduler values:__
 | `scheduler.initialStartupDelay` | the number of seconds to wait (in bash) before starting the scheduler container | `0` |
 | `scheduler.extraInitContainers` | extra init containers to run before the scheduler pod | `[]` |
 
-__Airflow WebUI Values:__
+__Airflow Webserver Values:__
 
 | Parameter | Description | Default |
 | --- | --- | --- |
@@ -572,6 +572,7 @@ __Airflow WebUI Values:__
 | `web.podLabels` | Pod labels for the web Deployment | `{}` |
 | `web.annotations` | annotations for the web Deployment | `{}` |
 | `web.podAnnotations` | Pod annotations for the web Deployment | `{}` |
+| `web.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the web Deployment | `<see values.yaml>` |
 | `web.service.*` | configs for the Service of the web pods | `<see values.yaml>` |
 | `web.baseUrl` | sets `AIRFLOW__WEBSERVER__BASE_URL` | `http://localhost:8080` |
 | `web.serializeDAGs` | sets `AIRFLOW__CORE__STORE_SERIALIZED_DAGS` | `false` |
@@ -598,6 +599,7 @@ __Airflow Worker Values:__
 | `workers.podLabels` | Pod labels for the worker StatefulSet | `{}` |
 | `workers.annotations` | annotations for the worker StatefulSet | `{}` |
 | `workers.podAnnotations` | Pod annotations for the worker StatefulSet | `{}` |
+| `workers.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the worker StatefulSet | `<see values.yaml>` |
 | `workers.autoscaling.*` | configs for the HorizontalPodAutoscaler of the worker Pods | `<see values.yaml>` |
 | `workers.initialStartupDelay` | the number of seconds to wait (in bash) before starting each worker container | `0` |
 | `workers.celery.*` | configs for the celery worker Pods | `<see values.yaml>` |
@@ -618,6 +620,7 @@ __Airflow Flower Values:__
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
+| `flower.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the flower Deployment | `<see values.yaml>` |
 | `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
 | `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |

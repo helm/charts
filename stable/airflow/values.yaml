@@ -352,6 +352,25 @@ web:
   ##
   podAnnotations: {}
 
+  ## configs for the PodDisruptionBudget of the web Deployment
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the web Deployment
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `web.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the web Deployment
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the web Deployment
+    ##
+    minAvailable: ""
+
   ## configs for the Service of the web Pods
   ##
   service:
@@ -498,6 +517,28 @@ workers:
   ##
   podAnnotations: {}
 
+  ## configs for the PodDisruptionBudget of the worker StatefulSet
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the worker StatefulSet
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `workers.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ## - if you enable `workers.celery.gracefullTermination`, you should consider
+    ##   specifying a `workers.podDisruptionBudget.minAvailable` to prevent there
+    ##   not being enough available workers during graceful termination waiting periods
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the worker StatefulSet
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the worker StatefulSet
+    ##
+    minAvailable: ""
+
   ## configs for the HorizontalPodAutoscaler of the worker Pods
   ##
   ## EXAMPLE:
@@ -535,6 +576,10 @@ workers:
     instances: 1
 
     ## if we should wait for tasks to finish before SIGTERM of the celery worker
+    ##
+    ## WARNING:
+    ## - consider using `workers.podDisruptionBudget.*` to prevent there not being
+    ##   enough available workers during graceful termination waiting periods
     ##
     gracefullTermination: false
 
@@ -630,6 +675,25 @@ flower:
   ## Pod annotations for the flower Deployment
   ##
   podAnnotations: {}
+
+  ## configs for the PodDisruptionBudget of the flower Deployment
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the flower Deployment
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `flower.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the flower Deployment
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the flower Deployment
+    ##
+    minAvailable: ""
 
   ## the name of a pre-created secret containing the basic authentication value for flower
   ##
