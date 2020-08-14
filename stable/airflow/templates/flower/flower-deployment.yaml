@@ -20,6 +20,7 @@ spec:
   replicas: 1
   minReadySeconds: 10
   strategy:
+    # this is safe - multiple flower pods can run concurrently
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1

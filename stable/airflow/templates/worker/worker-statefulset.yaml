@@ -1,6 +1,6 @@
 {{- if .Values.workers.enabled }}
-## Workers are not in deployment, but in StatefulSet, to allow each worker expose a mini-server
-## that only serve logs, that will be used by the web server.
+## A StatefulSet is used to give workers consistent names for DNS,
+## allowing the web server to access the log files.
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -20,13 +20,11 @@ metadata:
     {{- end }}
 spec:
   serviceName: "{{ include "airflow.fullname" . }}-worker"
-  updateStrategy:
-    ## Kill the workers as soon as possible, the scheduler will restart the failed job later
-    type: RollingUpdate
-  ## Use experimental burst mode for faster StatefulSet scaling
-  ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
-  podManagementPolicy: Parallel
   replicas: {{ .Values.workers.replicas }}
+  updateStrategy:
+    type: RollingUpdate
+  ## we do not need to guarantee the order in which workers are scaled
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       app: {{ include "airflow.labels.app" . }}
