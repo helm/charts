@@ -548,6 +548,7 @@ __Airflow Scheduler values:__
 | `scheduler.podLabels` | Pod labels for the scheduler Deployment | `{}` |
 | `scheduler.annotations` | annotations for the scheduler Deployment | `{}` |
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
+| `scheduler.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
 | `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
@@ -572,6 +573,7 @@ __Airflow Webserver Values:__
 | `web.podLabels` | Pod labels for the web Deployment | `{}` |
 | `web.annotations` | annotations for the web Deployment | `{}` |
 | `web.podAnnotations` | Pod annotations for the web Deployment | `{}` |
+| `web.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `web.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the web Deployment | `<see values.yaml>` |
 | `web.service.*` | configs for the Service of the web pods | `<see values.yaml>` |
 | `web.baseUrl` | sets `AIRFLOW__WEBSERVER__BASE_URL` | `http://localhost:8080` |
@@ -599,6 +601,7 @@ __Airflow Worker Values:__
 | `workers.podLabels` | Pod labels for the worker StatefulSet | `{}` |
 | `workers.annotations` | annotations for the worker StatefulSet | `{}` |
 | `workers.podAnnotations` | Pod annotations for the worker StatefulSet | `{}` |
+| `workers.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `workers.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the worker StatefulSet | `<see values.yaml>` |
 | `workers.autoscaling.*` | configs for the HorizontalPodAutoscaler of the worker Pods | `<see values.yaml>` |
 | `workers.initialStartupDelay` | the number of seconds to wait (in bash) before starting each worker container | `0` |
@@ -620,6 +623,7 @@ __Airflow Flower Values:__
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
+| `flower.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `flower.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the flower Deployment | `<see values.yaml>` |
 | `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
 | `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
@@ -676,6 +680,7 @@ __Airflow Database (Internal PostgreSQL) Values:__
 | `postgresql.existingSecret` | the name of a pre-created secret containing the postgres password | `""` |
 | `postgresql.existingSecretKey` | the key within `postgresql.passwordSecret` containing the password string | `postgresql-password` |
 | `postgresql.persistence.*` | configs for the PVC of postgresql | `<see values.yaml>` |
+| `postgresql.master.*` | configs for the postgres StatefulSet | `<see values.yaml>` |
 
 __Airflow Database (External) Values:__
 

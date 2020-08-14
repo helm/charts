@@ -199,6 +199,10 @@ scheduler:
   ##
   podAnnotations: {}
 
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
+
   ## configs for the PodDisruptionBudget of the scheduler
   ##
   podDisruptionBudget:
@@ -351,6 +355,10 @@ web:
   ## Pod annotations for the web Deployment
   ##
   podAnnotations: {}
+
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
 
   ## configs for the PodDisruptionBudget of the web Deployment
   ##
@@ -517,6 +525,10 @@ workers:
   ##
   podAnnotations: {}
 
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
+
   ## configs for the PodDisruptionBudget of the worker StatefulSet
   ##
   podDisruptionBudget:
@@ -675,6 +687,10 @@ flower:
   ## Pod annotations for the flower Deployment
   ##
   podAnnotations: {}
+
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
 
   ## configs for the PodDisruptionBudget of the flower Deployment
   ##
@@ -1241,6 +1257,13 @@ postgresql:
     ##
     size: 8Gi
 
+  ## configs for the postgres StatefulSet
+  master:
+    ## annotations for the postgres Pod
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+
 ###################################
 # Database - External Database
 # - these configs are only used when `postgresql.enabled` is false
@@ -1329,6 +1352,11 @@ redis:
     ##
     resources: {}
 
+    ## annotations for the master Pod
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+
     ## configs for the PVC of the redis master
     ##
     persistence:
@@ -1361,6 +1389,11 @@ redis:
     ##       memory: "256Mi"
     ##
     resources: {}
+
+    ## annotations for the slave Pods
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     ## configs for the PVC of the redis slaves
     ##

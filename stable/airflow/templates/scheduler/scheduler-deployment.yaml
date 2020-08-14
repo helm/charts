@@ -45,6 +45,9 @@ spec:
         {{- if .Values.scheduler.podAnnotations }}
         {{- toYaml .Values.scheduler.podAnnotations | nindent 8 }}
         {{- end }}
+        {{- if .Values.scheduler.safeToEvict }}
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        {{- end }}
       labels:
         app: {{ include "airflow.labels.app" . }}
         component: scheduler
