@@ -13,6 +13,7 @@ metadata:
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
   concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
   {{- with .Values.cronjob.failedJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ . }}
   {{- end }}
@@ -48,6 +49,7 @@ spec:
                 - "-k"
               {{- end }}
                 - "--fail"
+                - "-m 300"
                 - "-L"
               {{- if .Values.ingress.tls }}
                 - "https://{{ .Values.nextcloud.host }}/cron.php"
