@@ -39,6 +39,9 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.3.X → v7.4.0](UPGRADE.md#v73x--v740)
+* [v7.2.X → v7.3.0](UPGRADE.md#v72x--v730)
+* [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
 * [v7.0.X → v7.1.0](UPGRADE.md#v70x--v710)
 * [v6.X.X → v7.0.0](UPGRADE.md#v6xx--v700)
 * [v5.X.X → v6.0.0](UPGRADE.md#v5xx--v600)
@@ -103,6 +106,11 @@ scheduler:
           "region_name":"eu-central-1"
         }
 ```
+
+We expose the `scheduler.refreshConnections` value to refresh connections by
+removing them before adding them when they are automatically being imported. The
+default value is true, so if a user wants to add a password after the initial
+deployment, they should set `scheduler.refreshConnections` to false.
 
 __NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
@@ -174,9 +182,9 @@ This chart exposes 2 endpoints on the Ingress:
 
 #### Custom Paths:
 
-This chart enables you to add various paths to the ingress. 
+This chart enables you to add various paths to the ingress.
 It includes two values for you to customize these paths, `precedingPaths` and `succeedingPaths`, which are before and after the default path to `Service/airflow-web`.
-A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one. 
+A common use case is enabling https with the `aws-alb-ingress-controller` [ssl-redirect](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/), which needs a redirect path to be hit before the airflow-web one.
 
 You would set the values of `precedingPaths` as the following:
 ```yaml
@@ -195,7 +203,7 @@ For example, with a url-prefix of `/airflow/`:
 
 
 When customizing this, please note:
-- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value. 
+- Airflow WebUI behaves transparently, to configure it one just needs to specify the `web.baseUrl` value.
 - Flower requires a URL rewrite mechanism in front of it.
   For specifics on this, see the comments of `flower.urlPrefix` inside `values.yaml`.
 
@@ -234,11 +242,12 @@ workers:
   celery:
     instances: 10
 
-    # wait until all tasks are finished before SIGTERM of Pod
+    ## wait at most 10min for running tasks to complete
     gracefullTermination: true
+    gracefullTerminationPeriod: 600
 
-  # wait AT MOST 10min for tasks on a worker to finish before SIGKILL
-  terminationPeriod: 600
+  ## how many seconds (after the 10min) to wait before SIGKILL
+  terminationPeriod: 60
 
 dags:
   git:
@@ -307,7 +316,7 @@ __NOTE:__ these work with any pip package that you can install with the `pip ins
 
 ### Kubernetes-Configs/Additional-Manifests
 
-It is possible to add additional manifests into a deployment, to extend the chart. 
+It is possible to add additional manifests into a deployment, to extend the chart.
 One of the reason is to deploy a manifest specific to a cloud provider.
 
 For example, adding a `BackendConfig` on GKE:
@@ -328,7 +337,7 @@ extraManifests:
 
 If the value `scheduler.initdb` is set to `true`, the airflow-scheduler container will run `airflow initdb` before starting the scheduler as part of its startup script.
 
-If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).  
+If the value `scheduler.preinitdb` is set to `true`, the airflow-scheduler pod will run `airflow initdb` as an initContainer, before the git-clone initContainer (if that is enabled).
 This is rarely necessary but can be so under certain conditions if your synced DAGs include custom database hooks that prevent `initdb` from running successfully.
 For example, if they have dependencies on variables that won't be present yet.
 The initdb initcontainer will retry up to 5 times before giving up.
@@ -423,7 +432,7 @@ __NOTE:__ it is also possible to persist logs by mounting a `PersistentVolume` t
 ### Other/Service-Monitor
 
 The service monitor is something introduced by the [CoresOS Prometheus Operator](https://github.com/coreos/prometheus-operator).
-To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image. 
+To be able to expose metrics to prometheus you need install a plugin, this can be added to the docker image.
 A good one is [epoch8/airflow-exporter](https://github.com/epoch8/airflow-exporter), which exposes dag and task based metrics from Airflow.
 For more information: see the `serviceMonitor` section of `values.yaml`.
 
@@ -468,7 +477,7 @@ However, if you want to implicitly trust all repo host signatures set `dags.git.
 In this method you store your DAGs in a Kubernetes Persistent Volume Claim (PVC), and use some external system to ensure this volume has your latest DAGs.
 For example, you could use your CI/CD pipeline system to preform a sync as changes are pushed to a git repo.
 
-Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared. 
+Since ALL Pods MUST HAVE the same collection of DAG files, it is recommended to create just one PVC that is shared.
 To share a PVC with multiple Pods, the PVC needs to have `accessMode` set to `ReadOnlyMany` or `ReadWriteMany` (Note: different StorageClass support different [access modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 If you are using Kubernetes on a public cloud, a persistent volume controller is likely built in:
 [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html),
@@ -538,9 +547,9 @@ __Airflow Scheduler values:__
 | `scheduler.podLabels` | Pod labels for the scheduler Deployment | `{}` |
 | `scheduler.annotations` | annotations for the scheduler Deployment | `{}` |
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
-| `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
+| `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
 | `scheduler.variables` | custom airflow variables for the airflow scheduler | `"{}"` |
 | `scheduler.pools` | custom airflow pools for the airflow scheduler | `"{}"` |
 | `scheduler.numRuns` | the value of the `airflow --num_runs` parameter used to run the airflow scheduler | `-1` |
@@ -591,7 +600,7 @@ __Airflow Worker Values:__
 | `workers.autoscaling.*` | configs for the HorizontalPodAutoscaler of the worker Pods | `<see values.yaml>` |
 | `workers.initialStartupDelay` | the number of seconds to wait (in bash) before starting each worker container | `0` |
 | `workers.celery.*` | configs for the celery worker Pods | `<see values.yaml>` |
-| `workers.terminationPeriod` | how many seconds to wait for tasks on a worker to finish before SIGKILL | `60` |
+| `workers.terminationPeriod` | how many seconds to wait after SIGTERM before SIGKILL of the celery worker | `60` |
 | `workers.secretsDir` | directory in which to mount secrets on worker containers | `/var/airflow/secrets` |
 | `workers.secrets` | secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>` | `[]` |
 | `workers.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`. If you use workers.secretsMap, then it overrides `workers.secrets`.| `""` |
@@ -608,6 +617,8 @@ __Airflow Flower Values:__
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
+| `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
+| `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |
 | `flower.service.*` | configs for the Service of the flower Pods | `<see values.yaml>` |
 | `flower.initialStartupDelay` | the number of seconds to wait (in bash) before starting the flower container | `0` |
@@ -658,7 +669,7 @@ __Airflow Database (Internal PostgreSQL) Values:__
 | `postgresql.postgresqlUsername` | the postgres user to create | `postgres` |
 | `postgresql.postgresqlPassword` | the postgres user's password | `airflow` |
 | `postgresql.existingSecret` | the name of a pre-created secret containing the postgres password | `""` |
-| `postgresql.existingSecretKey` | the name of a pre-created secret containing the postgres password | `postgresql-password` |
+| `postgresql.existingSecretKey` | the key within `postgresql.passwordSecret` containing the password string | `postgresql-password` |
 | `postgresql.persistence.*` | configs for the PVC of postgresql | `<see values.yaml>` |
 
 __Airflow Database (External) Values:__
@@ -680,7 +691,7 @@ __Airflow Redis (Internal) Values:__
 | `redis.enabled` | if the `stable/redis` chart is used | `true` |
 | `redis.password` | the redis password | `airflow` |
 | `redis.existingSecret` | the name of a pre-created secret containing the redis password | `""` |
-| `redis.existingSecretKey` | the key in `redis.existingSecret` containing the password string | `redis-password` |
+| `redis.existingSecretKey` | the key within `redis.existingSecret` containing the password string | `redis-password` |
 | `redis.cluster.*` | configs for redis cluster mode | `<see values.yaml>` |
 | `redis.master.*` | configs for the redis master | `<see values.yaml>` |
 | `redis.slave.*` | configs for the redis slaves | `<see values.yaml>` |
@@ -693,7 +704,7 @@ __Airflow Redis (External) Values:__
 | `externalRedis.port` | the port of the external redis | `6379` |
 | `externalRedis.databaseNumber` | the database number to use within the the external redis | `1` |
 | `externalRedis.passwordSecret` | the name of a pre-created secret containing the external redis password | `""` |
-| `externalRedis.passwordSecretKey` | the name of a pre-created secret containing the external redis password | `redis-password` |
+| `externalRedis.passwordSecretKey` | the key within `externalRedis.passwordSecret` containing the password string | `redis-password` |
 
 __Airflow Prometheus Values:__
 

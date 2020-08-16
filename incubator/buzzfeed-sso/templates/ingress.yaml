@@ -19,9 +19,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if or .Values.auth.tls .Values.ingress.tls }}
+{{- if or (and .Values.auth.enabled .Values.auth.tls) .Values.ingress.tls }}
   tls:
-  {{- if .Values.auth.tls }}
+  {{- if (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
@@ -45,6 +45,7 @@ spec:
               serviceName: {{ $fullName }}-proxy
               servicePort: http
   {{- end }}
+  {{- if and .Values.auth.enabled .Values.auth.ingressEnabled }}
     # Global SSO used in the callback for login
     - host: {{ $authDomain }}
       http:
@@ -53,5 +54,6 @@ spec:
             backend:
               serviceName: {{ $fullName }}-auth
               servicePort: http
+  {{- end }}
 {{- end }}
 {{- end }}

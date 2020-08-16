@@ -45,9 +45,8 @@
 - name: DD_DD_URL
   value: {{ .Values.datadog.dd_url | quote }}
 {{- end }}
-{{- range $value := .Values.datadog.env }}
-- name: {{ $value.name }}
-  value: {{ $value.value | quote }}
+{{- if .Values.datadog.env  }}
+{{ toYaml .Values.datadog.env }}
 {{- end }}
 {{- if .Values.datadog.acInclude }}
 - name: DD_AC_INCLUDE
@@ -56,6 +55,30 @@
 {{- if .Values.datadog.acExclude }}
 - name: DD_AC_EXCLUDE
   value: {{ .Values.datadog.acExclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerInclude }}
+- name: DD_CONTAINER_INCLUDE
+  value: {{ .Values.datadog.containerInclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExclude }}
+- name: DD_CONTAINER_EXCLUDE
+  value: {{ .Values.datadog.containerExclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerIncludeMetrics }}
+- name: DD_CONTAINER_INCLUDE_METRICS
+  value: {{ .Values.datadog.containerIncludeMetrics | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExcludeMetrics }}
+- name: DD_CONTAINER_EXCLUDE_METRICS
+  value: {{ .Values.datadog.containerExcludeMetrics | quote }}
+{{- end }}
+{{- if .Values.datadog.containerIncludeLogs }}
+- name: DD_CONTAINER_INCLUDE_LOGS
+  value: {{ .Values.datadog.containerIncludeLogs | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExcludeLogs }}
+- name: DD_CONTAINER_EXCLUDE_LOGS
+  value: {{ .Values.datadog.containerExcludeLogs | quote }}
 {{- end }}
 {{- if .Values.datadog.criSocketPath }}
 - name: DD_CRI_SOCKET_PATH

@@ -75,8 +75,6 @@ spec:
       dnsConfig:
 {{ toYaml .Values.clusterAgent.dnsConfig | indent 8 }}
       {{- end }}
-      imagePullSecrets:
-{{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       containers:
       - name: cluster-agent
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
@@ -93,7 +91,7 @@ spec:
           name: agentport
           protocol: TCP
         {{- if .Values.clusterAgent.metricsProvider.enabled }}
-        - containerPort: {{ .Values.clusterAgent.metricsProvider.service.port }}
+        - containerPort: {{ template "clusterAgent.metricsProvider.port" . }}
           name: metricsapi
           protocol: TCP
         {{- end }}
@@ -115,9 +113,19 @@ spec:
           - name: DD_EXTERNAL_METRICS_PROVIDER_ENABLED
             value: {{ .Values.clusterAgent.metricsProvider.enabled | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_PORT
-            value: {{ .Values.clusterAgent.metricsProvider.service.port | quote }}
+            value: {{ include "clusterAgent.metricsProvider.port" . | quote }}
           - name: DD_EXTERNAL_METRICS_PROVIDER_WPA_CONTROLLER
             value: {{ .Values.clusterAgent.metricsProvider.wpaController | quote }}
+          - name: DD_EXTERNAL_METRICS_PROVIDER_USE_DATADOGMETRIC_CRD
+            value: {{ .Values.clusterAgent.metricsProvider.useDatadogMetrics | quote }}
+          {{- end }}
+          {{- if .Values.clusterAgent.admissionController.enabled }}
+          - name: DD_ADMISSION_CONTROLLER_ENABLED
+            value: {{ .Values.clusterAgent.admissionController.enabled | quote }}
+          - name: DD_ADMISSION_CONTROLLER_MUTATE_UNLABELLED
+            value: {{ .Values.clusterAgent.admissionController.mutateUnlabelled | quote }}
+          - name: DD_ADMISSION_CONTROLLER_SERVICE_NAME
+            value: {{ template "datadog.fullname" . }}-cluster-agent-admission-controller
           {{- end }}
           {{- if .Values.datadog.clusterChecks.enabled }}
           - name: DD_CLUSTER_CHECKS_ENABLED
@@ -168,6 +176,10 @@ spec:
                 key: token
           - name: DD_KUBE_RESOURCES_NAMESPACE
             value: {{ .Release.Namespace }}
+          {{- if .Values.datadog.orchestratorExplorer.enabled }}
+          - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+            value: "true"
+          {{- end }}
 {{- if .Values.clusterAgent.env }}
 {{ toYaml .Values.clusterAgent.env | indent 10 }}
 {{- end }}
@@ -214,5 +226,8 @@ spec:
 {{ toYaml .Values.clusterAgent.affinity | indent 8 }}
       {{- end }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
+      {{- if .Values.clusterAgent.nodeSelector }}
 {{ toYaml .Values.clusterAgent.nodeSelector | indent 8 }}
+      {{- end }}
 {{ end }}

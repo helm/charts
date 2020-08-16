@@ -166,6 +166,16 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
 {{- end }}
 {{- end }}
 {{- /* ---------------------------- */ -}}
+{{- /* ---------- FLOWER ---------- */ -}}
+{{- /* ---------------------------- */ -}}
+{{- if and (.Values.flower.basicAuthSecret) (not .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH) }}
+- name: AIRFLOW__CELERY__FLOWER_BASIC_AUTH
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.flower.basicAuthSecret }}
+      key: {{ .Values.flower.basicAuthSecretKey }}
+{{- end }}
+{{- /* ---------------------------- */ -}}
 {{- /* ---------- EXTRAS ---------- */ -}}
 {{- /* ---------------------------- */ -}}
 {{- if .Values.airflow.extraEnv }}

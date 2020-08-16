@@ -14,14 +14,12 @@
 
 all: push
 
-TAG = 0.7
+TAG = 0.8
 PREFIX = unguiculus/mongodb-install
+PLATFORM = linux/amd64,linux/arm/v7,linux/arm64/v8
 
 build:
-	docker build -t $(PREFIX):$(TAG) .
+	docker buildx build -t $(PREFIX):$(TAG) --platform $(PLATFORM) .
 
-push: build
-	docker push $(PREFIX):$(TAG)
-
-clean:
-	docker rmi $(PREFIX):$(TAG)
+push:
+	docker buildx build -t $(PREFIX):$(TAG) --platform $(PLATFORM) --push .

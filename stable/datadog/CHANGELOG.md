@@ -1,5 +1,97 @@
 # Datadog changelog
 
+## 2.3.42
+
+* Deprecate current repository, replaced by `helm.datadoghq.com`
+
+## 2.3.41
+
+* Fix issue with Kubernetes <= 1.14 and Cluster Agent's External Metrics Provider (must be 443)
+
+## 2.3.40
+
+* Update documentation for resource requests & limits default values.
+
+## 2.3.39
+
+* Propagate `datadog.checksd` to the clusterchecks runner to support custom checks there.
+
+## 2.3.38
+
+* Add support of DD\_CONTAINER\_{INCLUDE,EXCLUDE}\_{METRICS,LOGS}
+
+## 2.3.37
+
+* Add NET\_BROADCAST capability
+
+## 2.3.36
+
+* Bump default Agent version to `7.21.1`
+
+## 2.3.35
+
+* Add support for configuring the Datadog Admission Controller
+
+## 2.3.34
+
+* Add support for scaling based on `DatadogMetric` CRD
+
+## 2.3.33
+
+* Create new `datadog.podSecurity.securityContext` field to fix windows agent daemonset config.
+
+## 2.3.32
+
+* Always add os in nodeSelector based on `targetSystem`
+
+## 2.3.31
+
+* Fixed daemonset template for go 1.14
+
+## 2.3.29
+
+* Change the default port for the Cluster Agent's External Metrics Provider
+  from 443 to 8443.
+* Document usage of `clusterAgent.env`
+
+## 2.3.28
+
+* fix daemonset template generation if `datadog.securityContext` is set to `nil`
+
+## 2.3.27
+
+* add systemProbe.collectDNSStats option
+
+## 2.3.26
+
+* fix PodSecurityContext configuration
+
+## 2.3.25
+
+* Use directly .env var YAML block for all agents (was already the case for Cluster Agent)
+
+## 2.3.24
+
+* Allow enabling Orchestrator Explorer data collection from the process-agent
+
+## 2.3.23
+
+* Add the possibility to create a `PodSecurityPolicy` or a `SecurityContextConstraints` (Openshift) for the Agent's Daemonset Pods.
+
+## 2.3.22
+
+* Remove duplicate imagePullSecrets
+* Fix DataDog location to useConfigMap in docs
+* Adding explanation for metricsProvider.enabled
+
+## 2.3.21
+
+* Fix additional default values in `values.yaml` to prevent errors with Helm 2.x
+
+## 2.3.20
+
+* Fix process-agent <> system-probe communication
+
 ## 2.3.19
 
 * Fix the container-trace-agent.yaml template creates invalid yaml when  `useSocketVolume` is enabled.

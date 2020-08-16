@@ -71,3 +71,15 @@ config:
   # random 64 length string
   secret: ''
   tlsVerify: true
+  # tlsCaCert: /opt/cerebro/conf/certs/ca.crt
+
+# volumeMounts:
+#   - mountPath: /opt/cerebro/conf/certs/
+#     name: ca_cert_volume
+#     readOnly: true
+# volumes:
+#   - name: ca_cert_volume
+#     secret:
+#       defaultMode: 420
+#       optional: false
+#       secretName: cerebro_ca_cert_secret
