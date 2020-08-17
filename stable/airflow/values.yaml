@@ -236,6 +236,10 @@ scheduler:
   ##
   connections: []
 
+  ## if we remove before adding a connection resulting in a refresh
+  ##
+  refreshConnections: true
+
   ## custom airflow variables for the airflow scheduler
   ##
   ## NOTE:
@@ -530,14 +534,26 @@ workers:
     ##
     instances: 1
 
-    ## if we should wait for tasks to finish on a celery worker before SIGTERM of Pod
-    ##
-    ## NOTE:
-    ## - `workers.terminationPeriod` is still the overall timeout before worker Pods are killed using SIGKILL
+    ## if we should wait for tasks to finish before SIGTERM of the celery worker
     ##
     gracefullTermination: false
 
-  ## how many seconds to wait for tasks on a worker to finish before SIGKILL
+    ## how many seconds to wait for tasks to finish before SIGTERM of the celery worker
+    ##
+    ## graceful shutdown lifecycle:
+    ##   1. prevent worker accepting new tasks
+    ##   2. wait AT MOST `workers.celery.gracefullTerminationPeriod` for tasks to finish
+    ##   3. send SIGTERM to worker
+    ##   4. wait AT MOST `workers.terminationPeriod` for kill to finish
+    ##   5. send SIGKILL to worker
+    ##
+    gracefullTerminationPeriod: 600
+
+  ## how many seconds to wait after SIGTERM before SIGKILL of the celery worker
+  ##
+  ## WARNING:
+  ## - tasks that are still running during SIGKILL will be orphaned, this is important
+  ##   to understand with KubernetesPodOperator(), as Pods may continue running
   ##
   terminationPeriod: 60
 

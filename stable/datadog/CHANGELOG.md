@@ -1,5 +1,9 @@
 # Datadog changelog
 
+## 2.3.42
+
+* Deprecate current repository, replaced by `helm.datadoghq.com`
+
 ## 2.3.41
 
 * Fix issue with Kubernetes <= 1.14 and Cluster Agent's External Metrics Provider (must be 443)
