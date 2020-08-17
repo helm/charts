@@ -43,6 +43,8 @@ rules:
     - "replicationcontrollers"
     - "componentstatuses"
     - "resourcequotas"
+    - "persistentvolumes"
+    - "persistentvolumeclaims"
   verbs: ["get", "list", "watch"]
 - apiGroups: [""]
   resources:
