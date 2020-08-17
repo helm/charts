@@ -301,10 +301,13 @@ controller:
 
 ## AWS L7 ELB with SSL Termination
 
-Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/aws/l7/service-l7.yaml):
+Annotate the controller as shown in the [nginx-ingress AWS TLS deployment example](https://github.com/kubernetes/ingress-nginx/blob/beae32b6fe9e60a1e3d7976665112eb39fa86612/deploy/static/provider/aws/deploy-tls-termination.yaml):
 
 ```yaml
 controller:
+  config:
+    use-forwarded-headers: "true"
+    use-proxy-protocol: "false"
   service:
     targetPorts:
       http: http
