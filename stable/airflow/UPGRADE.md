@@ -4,6 +4,7 @@
 
 __The following IMPROVEMENTS have been made:__
 
+* Added an ability to setup external database connection propertites with the value `externalDatabase.properties` for TLS or other advanced parameters
 * Reduced how likely it is for a celery worker to receive SIGKILL with graceful termination enabled.
   * Celery worker graceful shutdown lifecycle:
     1. prevent worker accepting new tasks
@@ -17,6 +18,7 @@ __The following IMPROVEMENTS have been made:__
 __The following values have been ADDED:__
 
 * `workers.celery.gracefullTerminationPeriod`
+* `externalDatabase.properties`
 
 ## `v7.2.X` → `v7.3.0`
 
