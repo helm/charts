@@ -114,6 +114,8 @@ imagePullPolicy: IfNotPresent
 # and livenessProbe
 port: 443
 
+extraArgs: []
+
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
