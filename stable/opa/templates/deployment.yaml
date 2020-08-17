@@ -105,6 +105,9 @@ spec:
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
             - "/bootstrap"
 {{- end }}
+{{- range .Values.extraArgs }}
+            - {{ . }}
+{{- end }}
           volumeMounts:
             - name: certs
               readOnly: true
