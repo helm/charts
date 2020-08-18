@@ -101,7 +101,7 @@ spec:
         - containerPort: {{ .Values.historical.port }}
           name: http
         volumeMounts:
-        - mountPath: /var/druid/
+        - mountPath: /opt/druid/var/druid/
           name: data
   {{- if .Values.gCloudStorage.enabled }}
         - name: google-cloud-key
