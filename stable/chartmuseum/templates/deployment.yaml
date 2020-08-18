@@ -160,7 +160,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.serviceAccount.create }}
+    {{- if .Values.deployment.schedulerName }}
       schedulerName: {{ .Values.deployment.schedulerName }}
     {{- end -}}
     {{- if .Values.serviceAccount.create }}
