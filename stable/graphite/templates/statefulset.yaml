@@ -43,6 +43,12 @@ spec:
         env:
         - name: "STATSD_INTERFACE"
           value: {{ .Values.statsd.interface | lower }}
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /
