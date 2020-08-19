@@ -30,6 +30,9 @@ spec:
         replacement: {{ .url }}
       - targetLabel: target
         replacement: {{ .name }}
+      {{- if or $.Values.serviceMonitor.defaults.extraRelabelings .extraRelabelings }}
+      {{- toYaml (.extraRelabelings | default $.Values.serviceMonitor.defaults.extraRelabelings) | nindent 6 }}
+      {{- end }}
   jobLabel: "{{ $.Release.Name }}"
   selector:
     matchLabels:

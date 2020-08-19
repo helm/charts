@@ -141,6 +141,9 @@ serviceMonitor:
 #      interval: 60s                    # Scraping interval. Overrides value set in `defaults`
 #      scrapeTimeout: 60s               # Scrape timeout. Overrides value set in `defaults`
 #      module: http_2xx                 # Module used for scraping. Overrides value set in `defaults`
+#      extraRelabelings:
+#        - targetLabel: app
+#          replacement: web
 
 ## Custom PrometheusRules to be defined
 ## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
