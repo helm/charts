@@ -64,7 +64,7 @@ defaultRules:
   ## Annotations for default rules
   annotations: {}
 
-## Provide custom recording or alerting rules to be deployed into the cluster.
+## Deprecated way to provide custom recording or alerting rules to be deployed into the cluster.
 ##
 additionalPrometheusRules: []
 #  - name: my-rule-file
@@ -73,6 +73,16 @@ additionalPrometheusRules: []
 #        rules:
 #        - record: my_record
 #          expr: 100 * my_record
+
+## Provide custom recording or alerting rules to be deployed into the cluster.
+##
+# additionalPrometheusRulesMap:
+#  rule-name:
+#    groups:
+#    - name: my_group
+#      rules:
+#      - record: my_record
+#        expr: 100 * my_record
 
 ##
 global:
