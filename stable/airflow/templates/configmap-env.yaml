@@ -22,6 +22,7 @@ data:
   DATABASE_PORT: "{{ .Values.externalDatabase.port }}"
   DATABASE_USER: "{{ .Values.externalDatabase.user }}"
   DATABASE_DB: "{{ .Values.externalDatabase.database }}"
+  DATABASE_PROPERTIES: "{{.Values.externalDatabase.properties}}"
   {{- end }}
 
   {{- if (eq .Values.airflow.executor "CeleryExecutor") }}

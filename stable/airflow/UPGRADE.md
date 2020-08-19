@@ -1,5 +1,15 @@
 # Upgrading Steps
 
+## `v7.4.X` → `v7.5.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to setup external database connection propertites with the value `externalDatabase.properties` for TLS or other advanced parameters
+
+__The following values have been ADDED:__
+
+* `externalDatabase.properties`
+
 ## `v7.3.X` → `v7.4.0`
 
 __The following IMPROVEMENTS have been made:__

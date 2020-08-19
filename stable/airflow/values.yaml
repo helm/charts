@@ -1202,6 +1202,9 @@ externalDatabase:
   ##
   passwordSecretKey: "postgresql-password"
 
+  ## the connection properties for external database, e.g. "?sslmode=require"
+  properties: ""
+
 ###################################
 # Database - Redis Chart
 # - https://github.com/helm/charts/tree/master/stable/redis

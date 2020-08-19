@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.4.X → v7.5.0](UPGRADE.md#v74x--v750)
 * [v7.3.X → v7.4.0](UPGRADE.md#v73x--v740)
 * [v7.2.X → v7.3.0](UPGRADE.md#v72x--v730)
 * [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
@@ -683,6 +684,7 @@ __Airflow Database (External) Values:__
 | `externalDatabase.user` | the user of the external database | `airflow` |
 | `externalDatabase.passwordSecret` | the name of a pre-created secret containing the external database password | `""` |
 | `externalDatabase.passwordSecretKey` | the key within `externalDatabase.passwordSecret` containing the password string | `postgresql-password` |
+| `externalDatabase.properties` | the connection properties e.g. "?sslmode=require" | `""` |
 
 __Airflow Redis (Internal) Values:__
 
