@@ -30,6 +30,10 @@ spec:
       serviceAccountName: {{ include "rundeck.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
       containers:
         - name: nginx
           image: nginx:stable
