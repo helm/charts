@@ -13,8 +13,9 @@ spec:
       component: halyard
   template:
     metadata:
-      {{- if .Values.halyard.annotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-init-script.yaml") . | sha256sum }}
+      {{- if .Values.halyard.annotations }}
 {{ toYaml .Values.halyard.annotations | indent 8 }}
       {{- end }}
       labels:
