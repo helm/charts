@@ -81,17 +81,6 @@ omsagent:
                   operator: NotIn
                   values:
                     - master
-  daemonsetwindows:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - labelSelector:
-              matchExpressions:
-                - key: beta.kubernetes.io/os
-                  operator: In
-                  values:
-                    - windows
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##

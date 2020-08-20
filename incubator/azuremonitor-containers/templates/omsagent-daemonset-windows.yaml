@@ -25,6 +25,8 @@ spec:
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
     schema-versions: "v1"
   spec:
+   nodeSelector:
+      beta.kubernetes.io/os: windows
    {{- if .Values.omsagent.rbac }}
    serviceAccountName: omsagent
    {{- end }}
@@ -73,9 +75,6 @@ spec:
               - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
           periodSeconds: 60
           initialDelaySeconds: 180
-   {{- with .Values.omsagent.daemonsetwindows.affinity }}
-   affinity: {{- toYaml . | nindent 8 }}
-   {{- end }}
    {{- with .Values.omsagent.tolerations }}
    tolerations: {{- toYaml . | nindent 8 }}
    {{- end }}
