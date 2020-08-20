@@ -8,8 +8,8 @@ metadata:
    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
    release: {{ .Release.Name }}
    heritage: {{ .Release.Service }}
-   component: oms-agent
-   tier: node
+   component: oms-agent-win
+   tier: node-win
 spec:
  updateStrategy:
   type: RollingUpdate
@@ -93,4 +93,8 @@ spec:
     - name: omsagent-secret
       secret:
        secretName: omsagent-secret
+    - name: omsagent-adx-secret
+      secret:
+       secretName: omsagent-adx-secret
+       optional: true
 {{- end }}

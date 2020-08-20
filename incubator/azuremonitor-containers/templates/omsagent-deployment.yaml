@@ -90,6 +90,9 @@ spec:
         - mountPath: {{ .Values.omsagent.logsettings.custommountpath }}
           name: custom-mount-path
         {{- end }}
+        - mountPath: /etc/config/settings/adx
+          name: omsagent-adx-secret
+          readOnly: true
        livenessProbe:
         exec:
          command:
@@ -135,4 +138,8 @@ spec:
       hostPath:
        path: {{ .Values.omsagent.logsettings.custommountpath }}
     {{- end }}
+    - name: omsagent-adx-secret
+      secret:
+       secretName: omsagent-adx-secret
+       optional: true
 {{- end }}
