@@ -19,7 +19,7 @@ postgresql:
     resourcePolicy: nil
     size: 20Gi
 
-  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # If running on OpenShift - uncomment the image, imageTag & extraEnv values below.
   # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
   # imageTag: latest
   # extraEnv:
@@ -59,15 +59,22 @@ ingress:
   enabled: false
   labels: {}
   # Use the following paths for GCE/ALB ingress controller
+  # feedsPath: /v1/feeds/*
   # apiPath: /v1/*
   # uiPath: /*
+  # Exposing the feeds API w/ ingress is for special cases only, uncomment feedsPath if external access to the feeds API is needed
+  # feedsPath: /v1/feeds/
   apiPath: /v1/
   uiPath: /
+  # uncomment `feedsPath` to add an ingress endpoint for the feeds api
+
   # Uncomment the following lines to bind on specific hostnames
   # apiHosts:
   #   - anchore-api.example.com
   # uiHosts:
   #   - anchore-ui.example.com
+  # feedsHosts:
+  #   - anchore-feeds.example.com
   annotations:
     # kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.class: nginx
@@ -83,8 +90,10 @@ ingress:
 # Global configuration shared by all anchore-engine services.
 anchoreGlobal:
   # Image used for all anchore engine deployments (excluding enterprise components).
-  image: docker.io/anchore/anchore-engine:v0.6.0
+  image: docker.io/anchore/anchore-engine:v0.7.3
   imagePullPolicy: IfNotPresent
+  # Set image pull secret name if using an anchore-engine image from a private registry
+  imagePullSecretName:
 
   # Set this value to True to setup the chart for OpenShift deployment compatibility.
   openShiftDeployment: False
@@ -248,11 +257,11 @@ anchoreAnalyzer:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -285,11 +294,11 @@ anchoreApi:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 6Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
   #    cpu: 100m
-  #    memory: 4Gi
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -388,11 +397,11 @@ anchoreCatalog:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 2G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 500M
 
   labels: {}
   annotations: {}
@@ -425,11 +434,11 @@ anchorePolicyEngine:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 1G
 
   labels: {}
   annotations: {}
@@ -455,11 +464,11 @@ anchoreSimpleQueue:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 2Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -474,7 +483,7 @@ anchoreEnterpriseGlobal:
   # Create this secret with the following command - kubectl create secret generic anchore-license --from-file=license.yaml=<PATH TO LICENSE.YAML>
   licenseSecretName: anchore-enterprise-license
 
-  image: docker.io/anchore/enterprise:v0.6.0
+  image: docker.io/anchore/enterprise:v2.3.2
   imagePullPolicy: IfNotPresent
   # Name of the kubernetes secret containing your dockerhub creds with access to the anchore enterprise images.
   # Create this secret with the following command - kubectl create secret docker-registry anchore-dockerhub-creds --docker-server=docker.io --docker-username=<USERNAME> --docker-password=<PASSWORD> --docker-email=<EMAIL_ADDRESS>
@@ -500,7 +509,7 @@ anchore-feeds-db:
     resourcePolicy: nil
     size: 20Gi
 
-  # If running operator on OpenShift - uncomment the image, imageTag & extraEnv values below.
+  # If running on OpenShift - uncomment the image, imageTag & extraEnv values below.
   # image: registry.access.redhat.com/rhscl/postgresql-96-rhel7
   # imageTag: latest
   # extraEnv:
@@ -521,6 +530,18 @@ anchore-feeds-db:
 anchoreEnterpriseFeeds:
   # If enabled is set to false, set anchore-feeds-db.enabled to false to ensure that helm doesn't stand up a unneccessary postgres instance.
   enabled: true
+
+  # Enable github advisory feeds
+  githubDriverEnabled: false
+  # GitHub advisory feeds require a github developer personal access token with no permission scopes selected.
+  githubDriverToken: null
+
+  # Enable microsoft feeds
+  msrcDriverEnabled: false
+  msrcApiKey: null
+  # Uncomment to add MSRC product IDs for generating their feed data, this extends the pre-defined list of product IDs
+  # msrcWhitelist:
+  # - 12345
 
   # Set extra environment variables. These will be set on all feeds containers.
   extraEnv: []
@@ -551,11 +572,11 @@ anchoreEnterpriseFeeds:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 4G
   #  requests:
-  #    cpu: 100m
-  #    memory: 3Gi
+  #    cpu: 1
+  #    memory: 2G
 
   labels: {}
   annotations: {}
@@ -581,19 +602,19 @@ anchoreEnterpriseRbac:
 
   # authResources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   # managerResources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
 # Configure the Anchore Enterprise reporting component.
 anchoreEnterpriseReports:
@@ -625,11 +646,11 @@ anchoreEnterpriseReports:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -656,11 +677,11 @@ anchoreEnterpriseNotifications:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}
@@ -672,7 +693,7 @@ anchoreEnterpriseNotifications:
 anchoreEnterpriseUi:
   # If enabled is set to false, set anchore-ui-redis.enabled to false to ensure that helm doesn't stand up a unneccessary redis instance.
   enabled: true
-  image: docker.io/anchore/enterprise-ui:v0.6.0
+  image: docker.io/anchore/enterprise-ui:v2.3.2
   imagePullPolicy: IfNotPresent
 
   # Set extra environment variables. These will be set on all UI containers.
@@ -685,8 +706,10 @@ anchoreEnterpriseUi:
 
   # Specifies whether to trust a reverse proxy when setting secure cookies (via the `X-Forwarded-Proto` header).
   enableProxy: false
+
   # Specifies if SSL is enabled in the web app container.
   enableSsl: false
+
   # Specifies if a single set of user credentials can be used to start multiple Anchore Enterprise UI sessions; for
   # example, by multiple users across different systems, or by a single user on a single system across multiple browsers.
   #
@@ -694,10 +717,12 @@ anchoreEnterpriseUi:
   # sessions that are using the same set of credentials. Note that setting this property to `false` does not prevent a
   # single session from being viewed within multiple *tabs* inside the same browser.
   enableSharedLogin: true
+
   # The redisFlushdb` key specifies if the Redis datastore containing
   # user session keys and data is emptied on application startup. If the datastore
   # is flushed, any users with active sessions will be required to re-authenticate.
   redisFlushdb: true
+
   # The (optional) `policy_hub_uri` key specifies the address of a Policy Hub
   # service. The value must be a string containing a properly-formed 'http' or
   # 'https' URI, and can be overridden by using the `ANCHORE_POLICY_HUB_URI`
@@ -707,8 +732,53 @@ anchoreEnterpriseUi:
   # Policy Manager view (`/policy`). Note that the availability and integrity of
   # Policy Hub data is determined by this component at run-time when this
   # component is accessed.
-  #
   policyHubUri: 'http://hub.anchore.io'
+
+  # The (optional) `custom_links` key allows a list of up to 10 external links to
+  # be provided (additional items will be excluded). The top-level `title` key
+  # provided the label for the menu (if present, otherwise the string "Custom
+  # External Links" will be used instead).
+  #
+  #  Each link entry must have a title of greater than 0-length and a valid URI.
+  #  If either item is invalid, the entry will be excluded.
+  #
+  # Uncomment customLinks and specify your custom config as per the example below
+  # customLinks:
+  #   title: Custom External Links
+  #   links:
+  #   - title: Example Link 1
+  #     uri: https://example.com
+  #   - title: Example Link 2
+  #     uri: https://example.com
+  #   - title: Example Link 3
+  #     uri: https://example.com
+  #   - title: Example Link 4
+  #     uri: https://example.com
+  #   - title: Example Link 5
+  #     uri: https://example.com
+  #   - title: Example Link 6
+  #     uri: https://example.com
+  #   - title: Example Link 7
+  #     uri: https://example.com
+  #   - title: Example Link 8
+  #     uri: https://example.com
+  #   - title: Example Link 9
+  #     uri: https://example.com
+  #   - title: Example Link 10
+  #     uri: https://example.com
+
+  # The (optional) `enable_add_repositories` key specifies if repositories can be
+  # added via the application interface by either administrative users or standard
+  # users. In the absence of this key, the default is `True`.
+  #
+  # In the absence of one or all of the properties, the default is also `True`.
+  # Thus, this key and a child key corresponding to an account type must be
+  # explicitly set to `False` for the feature to be disabled for that account.
+  #
+  # Uncomment enableAddRepositories and set the config as per the example below
+  # enableAddRepositories:
+  #   admin: True
+  #   standard: True
 
   # kubernetes service configuration for anchore UI
   service:
@@ -720,11 +790,11 @@ anchoreEnterpriseUi:
 
   # resources:
   #  limits:
-  #    cpu: 100m
-  #    memory: 8Gi
+  #    cpu: 1
+  #    memory: 1G
   #  requests:
   #    cpu: 100m
-  #    memory: 3Gi
+  #    memory: 256M
 
   labels: {}
   annotations: {}

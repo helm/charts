@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: prom/pushgateway
-  tag: v1.0.1
+  tag: v1.2.0
   pullPolicy: IfNotPresent
 
 service:
@@ -16,6 +16,9 @@ podAnnotations: {}
 
 # Optional pod labels
 podLabels: {}
+
+# Optional service annotations
+serviceAnnotations: {}
 
 # Optional service labels
 serviceLabels: {}
@@ -64,6 +67,8 @@ ingress:
   ## Enable Ingress.
   ##
   enabled: false
+  # AWS ALB requires path of /*
+  path: /
 
     ## Annotations.
     ##
@@ -129,6 +134,10 @@ serviceMonitor:
 # The values to set in the PodDisruptionBudget spec (minAvailable/maxUnavailable)
 # If not set then a PodDisruptionBudget will not be created
 podDisruptionBudget: {}
+
+# Deployment Strategy type
+strategy:
+  type: Recreate
 
 persistentVolume:
   ## If true, pushgateway will create/use a Persistent Volume Claim

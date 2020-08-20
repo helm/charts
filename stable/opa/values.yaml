@@ -1,10 +1,9 @@
 # Default values for opa.
 # -----------------------
 #
-# The 'opa' key embeds an OPA configuration file. See
-# https://www.openpolicyagent.org/docs/configuration.html for more details.
-# Default value is no default config. For custom config, the opa key
-# needs to include the opa config yaml, eg:
+# The 'opa' key embeds an OPA configuration file. See https://www.openpolicyagent.org/docs/configuration.html for more details.
+# Use 'opa: false' to disable the OPA configuration and rely on configmaps for policy loading.
+# See https://www.openpolicyagent.org/docs/latest/kubernetes-admission-control/#3-deploy-opa-on-top-of-kubernetes and the `mgmt.configmapPolicies` section below for more details.
 opa:
   services:
     controller:
@@ -101,6 +100,10 @@ authz:
   # Mostly useful for debugging.
   enabled: true
 
+# Use hostNetwork setting on OPA pod
+hostNetwork:
+  enabled: false
+
 # Docker image and tag to deploy.
 image: openpolicyagent/opa
 imageTag: 0.15.1
@@ -110,6 +113,8 @@ imagePullPolicy: IfNotPresent
 # NOTE IF you use a different port make sure it maches the ones in the readinessProbe
 # and livenessProbe
 port: 443
+
+extraArgs: []
 
 mgmt:
   enabled: true
@@ -146,11 +151,27 @@ logFormat: text
 # or more replicas.
 replicas: 1
 
-# To control how the OPA is scheduled on the cluster, set the tolerations and
-# nodeSelector values below. For example, to deploy OPA onto the master nodes:
+# To control how the OPA is scheduled on the cluster, set the affinity,
+# tolerations and nodeSelector values below. For example, to deploy OPA onto
+# the master nodes, 1 replica per node:
 #
-# tolerations: [{key: "node-role.kubernetes.io/master", effect: NoSchedule, operator: Exists}]
-# nodeSelector: {"kubernetes.io/role": "master"}
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: "app"
+#           operator: In
+#           values:
+#           - opa
+#       topologyKey: "kubernetes.io/hostname"
+# tolerations:
+# - key: "node-role.kubernetes.io/master"
+#   effect: NoSchedule
+#   operator: Exists
+# nodeSelector:
+#   kubernetes.io/role: "master"
+affinity: {}
 tolerations: []
 nodeSelector: {}
 
@@ -224,3 +245,33 @@ deploymentStrategy: {}
   #   maxSurge: 1
   #   maxUnavailable: 0
   # type: RollingUpdate
+
+extraContainers: []
+## Additional containers to be added to the opa pod.
+# - name: example-app
+#   image: example/example-app:latest
+#   args:
+#     - "run"
+#     - "--port=11811"
+#     - "--config=/etc/example-app-conf/config.yaml"
+#     - "--opa-endpoint=https://localhost:443"
+#   ports:
+#     - name: http
+#       containerPort: 11811
+#       protocol: TCP
+#   volumeMounts:
+#     - name: example-app-auth-config
+#       mountPath: /etc/example-app-conf
+
+extraVolumes: []
+## Additional volumes to the opa pod.
+# - name: example-app-auth-config
+#   secret:
+#     secretName: example-app-auth-config
+
+extraPorts: []
+## Additional ports to the opa services. Useful to expose extra container ports.
+# - port: 11811
+#   protocol: TCP
+#   name: http
+#   targetPort: http

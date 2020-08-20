@@ -17,6 +17,8 @@ spec:
   endpoints:
   - port: {{ .Values.service.portName }}
     interval: {{ .Values.serviceMonitor.interval }}
+    path: {{ .Values.serviceMonitor.path }}
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{.Release.Namespace}}
 {{ end }} 

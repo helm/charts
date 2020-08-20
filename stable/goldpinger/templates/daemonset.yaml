@@ -24,8 +24,12 @@ spec:
     spec:
       priorityClassName: {{ .Values.priorityClassName }}
       serviceAccountName: {{ template "goldpinger.serviceAccountName" . }}
+      {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecrets }}
+        {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       containers:
       - name: goldpinger-daemon
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

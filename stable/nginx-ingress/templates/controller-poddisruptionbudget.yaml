@@ -5,15 +5,15 @@ metadata:
   labels:
     app: {{ template "nginx-ingress.name" . }}
     chart: {{ template "nginx-ingress.chart" . }}
-    component: "{{ .Values.controller.name }}"
+    {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
     heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+    release: {{ template "nginx-ingress.releaseLabel" . }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ingress.name" . }}
-      release: {{ .Release.Name }}
-      component: "{{ .Values.controller.name }}"
+      release: {{ template "nginx-ingress.releaseLabel" . }}
+      {{ .Values.controller.componentLabelKeyOverride | default "app.kubernetes.io/component" }}: controller
   minAvailable: {{ .Values.controller.minAvailable }}
 {{- end }}

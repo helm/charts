@@ -3,29 +3,19 @@ kind: StatefulSet
 metadata:
   name: {{ template "graylog.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
 spec:
-  serviceName: {{ template "graylog.fullname" . }}
+  serviceName: {{ template "graylog.service.headless.name" . }}
   replicas: {{ .Values.graylog.replicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "graylog.name" . }}
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
-      app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+{{ include "graylog.selectorLabels" . | indent 6 }}
   updateStrategy:
     type: {{ .Values.graylog.updateStrategy }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "graylog.name" . }}
-        helm.sh/chart: {{ template "graylog.chart" . }}
-        app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
-        app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 8 }}
       annotations:
       {{- if .Values.graylog.podAnnotations }}
       {{- range $key, $value := .Values.graylog.podAnnotations }}
@@ -51,6 +41,10 @@ spec:
       tolerations:
 {{ toYaml .Values.graylog.tolerations | indent 8 }}
 {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
         - name: "setup"
           image: "alpine"
@@ -98,27 +92,53 @@ spec:
             - name: GRAYLOG_SERVER_JAVA_OPTS
               {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
               {{- if .Values.graylog.heapSize }}
-              value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}}"
+              value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}} {{ .Values.graylog.additionalJavaOpts }}"
               {{- else }}
-              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap {{ .Values.graylog.additionalJavaOpts }}"
               {{- end }}
             - name: GRAYLOG_PASSWORD_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-secret
             - name: GRAYLOG_ROOT_PASSWORD_SHA2
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.existingRootSecret | default (include "graylog.fullname" .) }}
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
                   key: graylog-password-sha2
+            {{- if .Values.graylog.elasticsearch.uriSecretKey }}
+            - name: GRAYLOG_ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.elasticsearch.uriSecretName | default (printf "%s-es" (include "graylog.fullname" .)) }}
+                  key: {{ .Values.graylog.elasticsearch.uriSecretKey }}
+            {{- end }}
+            {{- if .Values.graylog.mongodb.uriSecretKey }}
+            - name: GRAYLOG_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.mongodb.uriSecretName | default (printf "%s-mongodb" (include "graylog.fullname" .)) }}
+                  key: {{ .Values.graylog.mongodb.uriSecretKey }}
+            {{- end }}
             {{- range $key, $value := .Values.graylog.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+            {{- if .Values.graylog.envRaw }}
+            {{- with .Values.graylog.envRaw }}
+                {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- end }}
+          securityContext:
+            privileged: {{ .Values.graylog.privileged }}
           ports:
             - containerPort: 9000
               name: graylog
+          {{- range .Values.graylog.service.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name}}
+              protocol: {{ .protocol }}
+          {{- end }}
           {{- with .Values.graylog.input }}
           {{- if .udp }}
           {{- range .udp.ports }}
@@ -141,6 +161,9 @@ spec:
             httpGet:
               path: /api/system/lbstatus
               port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
             initialDelaySeconds: 120
             periodSeconds: 30
             failureThreshold: 3
@@ -150,6 +173,9 @@ spec:
             httpGet:
               path: /api/system/lbstatus
               port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
@@ -179,7 +205,13 @@ spec:
                   - bash
                   - -ec
                   - |
-                    curl -XPOST -sS -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" -H "X-Requested-By: {{ template "graylog.fullname" . }}" "localhost:9000/api/system/shutdown/shutdown"
+                    curl {{ if .Values.graylog.tls.enabled }}-k{{ end }} -XPOST -sS \
+                      -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" \
+                      -H "X-Requested-By: {{ template "graylog.fullname" . }}" \
+                      {{ template "graylog.formatUrl" (list . "localhost:9000/api/system/shutdown/shutdown") }}
+      {{- if .Values.graylog.sidecarContainers }}
+        {{ toYaml .Values.graylog.sidecarContainers | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
       volumes:
         - name: config
@@ -207,7 +239,7 @@ spec:
         - name: kubectl
           emptyDir: {}
 {{- if .Values.graylog.extraVolumes }}
-{{ toYaml .Values.graylog.extraVolumes | indent 8}}
+{{ toYaml .Values.graylog.extraVolumes | indent 8 }}
 {{- end }}
 {{- if not .Values.graylog.persistence.enabled }}
         - name: journal

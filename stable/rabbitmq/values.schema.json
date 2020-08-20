@@ -15,6 +15,13 @@
           "title": "RabbitMQ password",
           "form": true,
           "description": "Defaults to a random 10-character alphanumeric string if not set"
+        },
+        "extraConfiguration": {
+          "type": "string",
+          "title": "Extra RabbitMQ Configuration",
+          "form": true,
+          "render": "textArea",
+          "description": "Extra configuration to be appended to RabbitMQ Configuration"
         }
       }
     },

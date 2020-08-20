@@ -1,4 +1,5 @@
-apiVersion: apps/v1beta2
+{{- $apiVersion := include "satisfy.deployAPIVersion" . -}}
+apiVersion: {{ $apiVersion }}
 kind: Deployment
 metadata:
   name: {{ include "satisfy.fullname" . }}

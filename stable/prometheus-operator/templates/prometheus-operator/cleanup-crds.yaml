@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator-cleanup
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-weight": "3"
@@ -24,7 +24,11 @@ spec:
     {{- end }}
       containers:
         - name: kubectl
+          {{- if .Values.prometheusOperator.hyperkubeImage.sha }}
+          image: {{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Values.prometheusOperator.hyperkubeImage.tag }}@sha256:{{ .Values.prometheusOperator.hyperkubeImage.sha }}
+          {{- else }}
           image: "{{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Values.prometheusOperator.hyperkubeImage.tag }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.prometheusOperator.hyperkubeImage.pullPolicy }}"
           command:
           - /bin/sh
@@ -40,5 +44,6 @@ spec:
               kubectl delete crd prometheusrules.monitoring.coreos.com;
               kubectl delete crd servicemonitors.monitoring.coreos.com;
               kubectl delete crd podmonitors.monitoring.coreos.com;
+              kubectl delete crd thanosrulers.monitoring.coreos.com;
       restartPolicy: OnFailure
 {{- end }}

@@ -2,10 +2,31 @@
 
 [Redmine](http://www.redmine.org) is a free and open source, web-based project management and issue tracking tool.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Redmine Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```bash
-$ helm install stable/redmine
+$ helm install my-release stable/redmine
 ```
 
 ## Introduction
@@ -28,7 +49,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/redmine
+$ helm install my-release stable/redmine
 ```
 
 The command deploys Redmine on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -50,7 +71,7 @@ The command removes all the Kubernetes components associated with the chart and 
 This chart includes the option to use a PostgreSQL database for Redmine instead of MariaDB. To use this, set the `databaseType` parameter to `postgresql`:
 
 ```
-helm install --name my-release stable/redmine --set databaseType=postgresql
+helm install my-release stable/redmine --set databaseType=postgresql
 ```
 
 ## Parameters
@@ -144,7 +165,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `mailReceiver.suspend`               | Whether to create suspended CronJob                                                                                                                                                                                                                                                                                                                                                                  | `true`                                                  |
 | `mailReceiver.image.registry`        | Mail to Task image registry                                                                                                                                                                                                                                                                                                                                                                          | `docker.io`                                             |
 | `mailReceiver.image.repository`      | Mail to Task image repository                                                                                                                                                                                                                                                                                                                                                                        | `bitnami/redmine`                                       |
-| `mailReceiver.image.tag`             | Mail to Task image tag                                                                                                                                                                                                                                                                                                                                                                               | `4.0.5-debian-9-r28`                                    |
+| `mailReceiver.image.tag`             | Mail to Task image tag                                                                                                                                                                                                                                                                                                                                                                               | `{TAG_NAME}`                                            |
 | `mailReceiver.image.pullPolicy`      | Mail to Task image pull policy                                                                                                                                                                                                                                                                                                                                                                       | `IfNotPresent`                                          |
 | `mailReceiver.mailProtocol`          | Mail protocol to use for reading emails: `IMAP` or `POP3`                                                                                                                                                                                                                                                                                                                                            | `IMAP`                                                  |
 | `mailReceiver.host`                  | Server to receive emails from                                                                                                                                                                                                                                                                                                                                                                        | `""`                                                    |
@@ -174,7 +195,7 @@ The above parameters map to the env variables defined in [bitnami/redmine](http:
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release \
+$ helm install my-release \
   --set redmineUsername=admin,redminePassword=password,mariadb.mariadbRootPassword=secretpassword \
     stable/redmine
 ```
@@ -184,7 +205,7 @@ The above command sets the Redmine administrator account username and password t
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/redmine
+$ helm install my-release -f values.yaml stable/redmine
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -219,7 +240,7 @@ The following example includes two PVCs, one for Redmine and another for MariaDB
 1. Install the chart
 
 ```bash
-$ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
+$ helm install test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB stable/redmine
 ```
 
 ## Upgrading

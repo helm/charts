@@ -76,12 +76,6 @@ data:
     {{ end }}
     {{- if eq .Values.filestore.backend "s3" }}
     filestore.options:
-      {{- if .Values.filestore.s3.accessKey }}
-      access_key: '{{ .Values.filestore.s3.accessKey }}'
-      {{- end }}
-      {{- if .Values.filestore.s3.secretKey }}
-      secret_key: '{{ .Values.filestore.s3.secretKey }}'
-      {{- end }}
       {{- if .Values.filestore.s3.bucketName }}
       bucket_name: '{{ .Values.filestore.s3.bucketName }}'
       {{- end }}

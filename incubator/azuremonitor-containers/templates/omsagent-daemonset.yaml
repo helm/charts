@@ -31,9 +31,9 @@ spec:
    containers:
      - name: omsagent
        {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
-       image: "dockerhub.azk8s.cn/microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       image: "mcr.azk8s.cn/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
        {{- else }}
-       image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tag }}"
+       image: {{ printf "%s:%s" .Values.omsagent.image.repo .Values.omsagent.image.tag }}
        {{- end }}
        imagePullPolicy: IfNotPresent
        resources:
@@ -56,6 +56,8 @@ spec:
          valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+       - name: USER_ASSIGNED_IDENTITY_CLIENT_ID
+         value: ""
        {{- if .Values.omsagent.logsettings.logflushintervalsecs }}
        - name: FBIT_SERVICE_FLUSH_INTERVAL
          value: {{ .Values.omsagent.logsettings.logflushintervalsecs | quote }}
@@ -93,6 +95,10 @@ spec:
         - mountPath: /etc/config/settings
           name: settings-vol-config
           readOnly: true
+        {{- if .Values.omsagent.logsettings.custommountpath }}
+        - mountPath: {{ .Values.omsagent.logsettings.custommountpath }}
+          name: custom-mount-path
+        {{- end }}
        livenessProbe:
         exec:
          command:
@@ -101,9 +107,7 @@ spec:
          - "/opt/livenessprobe.sh"
         initialDelaySeconds: 60
         periodSeconds: 60
-   nodeSelector:
-    beta.kubernetes.io/os: linux
-   {{- with .Values.omsagent.affinity }}
+   {{- with .Values.omsagent.daemonset.affinity }}
    affinity: {{- toYaml . | nindent 8 }}
    {{- end }}
    {{- with .Values.omsagent.tolerations }}
@@ -135,4 +139,9 @@ spec:
       configMap:
         name: container-azm-ms-agentconfig
         optional: true
+    {{- if .Values.omsagent.logsettings.custommountpath }}
+    - name: custom-mount-path
+      hostPath:
+       path: {{ .Values.omsagent.logsettings.custommountpath }}
+    {{- end }}
 {{- end }}

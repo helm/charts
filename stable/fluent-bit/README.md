@@ -46,7 +46,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.retry_limit`   | Max number of retries to attempt (False == no limit) | `False` |
 | `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_format`          | Enable Logstash format compatibility. | `On` |
-| `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
+| `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equal to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
+| `backend.es.logstash_prefix_key`  | Index Prefix key. When included, the value in the record that belongs to the key will be looked up and overwrite `Logstash_Prefix` for index generation. If `Logstash_Prefix_Key` = 'mydata' the index becomes 'mydata-YYYY.MM.DD'. | `` |
+| `backend.es.logstash_dateformat`  | Time format (based on strftime) to generate the second part of the Index name. Fluent-bit by default use %Y.%m.%d | `` |
 | `backend.es.replace_dots`     | Enable/Disable Replace_Dots option. | `On` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd`      | Password for user defined in HTTP_User. | `` |
@@ -93,6 +95,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `audit.enable`                     | Enable collection of audit logs                         | `false`                             |
 | `audit.input.memBufLimit`          | Specify Mem_Buf_Limit in tail input                     | `35mb`                              |
 | `audit.input.parser`               | Specify Parser in tail input                            | `docker`                            |
+| `audit.input.tag`                  | Specify Tag in tail input                               | `audit.*`                           |
 | `audit.input.path`                 | Specify log file(s) through the use of common wildcards | `/var/log/kube-apiserver-audit.log` |
 | `audit.input.bufferChunkSize`      | Specify Buffer_Chunk_Size in tail                       | `2MB`                               |
 | `audit.input.bufferMaxSize`        | Specify Buffer_Max_Size in tail                         | `10MB`                              |
@@ -105,9 +108,11 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.input`               |    Extra entries for existing [INPUT] section                     | ``                    |
 | `extraEntries.filter`              |    Extra entries for existing [FILTER] section                     | ``                    |
 | `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
+| `extraEntries.service`             |   Extra entries for existing [SERVICE] section                   | ``                    |
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `initContainers`                   | Init containers                            | `{}`                                           |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`             | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -121,8 +126,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.mergeLogKey`               | If set, append the processed log keys under a new root key specified by this variable. | `nil` |
 | `filter.useJournal`                | If true, the filter reads logs coming in Journald format.  | `false` |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `1.3.5`                                           |
+| `image.fluent_bit.tag`             | Image tag                                  | `1.3.7`                                           |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Image pull secrets                         | `nil`                                             |
 | `nameOverride`                     | Override name of app                   | `nil`                                        |
 | `fullnameOverride`                 | Override full name of app              | `nil`                                        |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
@@ -130,6 +136,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.parser`                | Specify Parser in tail input.        | `docker`                                             |
 | `input.tail.path`                  | Specify log file(s) through the use of common wildcards.        | `/var/log/containers/*.log`                                             |
 | `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
+| `input.tail.dockerMode`            | Recombine split Docker log lines before passing them to the parser.        | `false`                                             |
+| `input.tail.dockerModeFlush`       | Wait period time in seconds to flush queued unfinished split lines in docker mode.        | `4`                                             |
+| `input.tail.exclude_path`          | Exclude paths from tail input (`Exclude_Path` configuration parameter).        | ``                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
@@ -140,12 +149,14 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `rbac.pspEnabled`                  | Specifies whether a PodSecurityPolicy should be created. | `false`                             |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
+| `serviceAccount.annotations`       | Annotations to add to the service account. | `{}`                                              |
 | `rawConfig`                        | Raw contents of fluent-bit.conf            | `@INCLUDE fluent-bit-service.conf`<br>`@INCLUDE fluent-bit-input.conf`<br>`@INCLUDE fluent-bit-filter.conf`<br>` @INCLUDE fluent-bit-output.conf`                                                                         |
 | `resources`                        | Pod resource requests & limits                                 | `{}`                          |
 | `securityContext`                  | [Security settings for a container](https://kubernetes.io/docs/concepts/policy/security-context) | `{}` |
 | `podSecurityContext`               | [Security settings for a pod](https://kubernetes.io/docs/concepts/policy/security-context)       | `{}` |
 | `hostNetwork`                      | Use host's network                         | `false`                                           |
 | `dnsPolicy`                        | Specifies the dnsPolicy to use             | `ClusterFirst`                                    |
+| `dnsConfig`                        | Specifies the custom dnsConfig to use      | `NULL`                                            |
 | `priorityClassName`                | Specifies the priorityClassName to use     | `NULL`                                            |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
@@ -162,6 +173,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
+| `testFramework.pullSecrets`        | `test-framework` image pull secrets        | `nil`                                             |
 | `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
 
 

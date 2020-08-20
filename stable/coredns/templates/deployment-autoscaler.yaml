@@ -1,0 +1,77 @@
+{{- if and (.Values.autoscaler.enabled) (not .Values.hpa.enabled) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "coredns.fullname" . }}-autoscaler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name }}-autoscaler
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      {{- if .Values.isClusterService }}
+      k8s-app: {{ .Chart.Name }}-autoscaler
+      {{- end }}
+      app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+  template:
+    metadata:
+      labels:
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name }}-autoscaler
+        {{- end }}
+        app.kubernetes.io/name: {{ template "coredns.name" . }}-autoscaler
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        {{- if .Values.customLabels }}
+        {{ toYaml .Values.customLabels | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap-autoscaler.yaml") . | sha256sum }}
+        {{- if .Values.isClusterService }}
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "coredns.fullname" . }}-autoscaler
+      {{- $priorityClassName := default .Values.priorityClassName .Values.autoscaler.priorityClassName }}
+      {{- if $priorityClassName }}
+      priorityClassName: {{ $priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.autoscaler.affinity }}
+      affinity:
+{{ toYaml .Values.autoscaler.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.autoscaler.tolerations }}
+      tolerations:
+{{ toYaml .Values.autoscaler.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.autoscaler.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.autoscaler.nodeSelector | indent 8 }}
+      {{- end }}
+      containers:
+      - name: autoscaler
+        image: "{{ .Values.autoscaler.image.repository }}:{{ .Values.autoscaler.image.tag }}"
+        imagePullPolicy: {{ .Values.autoscaler.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.autoscaler.resources | indent 10 }}
+        command:
+          - /cluster-proportional-autoscaler
+          - --namespace={{ .Release.Namespace }}
+          - --configmap={{ template "coredns.fullname" . }}-autoscaler
+          - --target=Deployment/{{ template "coredns.fullname" . }}
+          - --logtostderr=true
+          - --v=2
+{{- end }}

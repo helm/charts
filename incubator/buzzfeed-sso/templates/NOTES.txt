@@ -11,7 +11,7 @@ The email domain is required for the auth and proxy deployments.
 
 {{- end }}
 
-{{- if eq .Values.rootDomain "<your_root_domain>" }}
+{{- if and .Values.auth.enabled (eq .Values.rootDomain "<your_root_domain>") }}
 
 ###############################################################################
 ####   ERROR: You did not provide a root domain.                           ####
@@ -33,7 +33,7 @@ For instance, "sso-auth.mydomain.foo".
 
 {{- end }}
 
-{{- if not (or .Values.auth.secret .Values.auth.customSecret) }}
+{{- if and .Values.auth.enabled (not (or .Values.auth.secret .Values.auth.customSecret)) }}
 
 ###############################################################################
 ####   ERROR: You did not provide proper auth secrets.                     ####

@@ -39,16 +39,12 @@ spec:
           httpGet:
             path: /management/health
             port: http
-          initialDelaySeconds: 120
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         readinessProbe:
           httpGet:
-            path: /management/health
+            path: /management/info
             port: http
-          initialDelaySeconds: 60
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         env:
         - name: KUBERNETES_NAMESPACE
           valueFrom:
@@ -84,8 +80,12 @@ spec:
           value: {{ .Values.features.batch.enabled | quote }}
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
           value: {{ .Values.features.batch.enabled | quote }}
-        - name: SPRING_CLOUD_DATAFLOW_TASK_SCHEDULER_TASK_LAUNCHER_URL
-          value: 'docker://springcloud/spring-cloud-dataflow-scheduler-task-launcher:{{ .Values.server.version }}'
+        - name: SPRING_CLOUD_DATAFLOW_TASK_COMPOSED_TASK_RUNNER_URI
+          value: 'docker://springcloud/spring-cloud-dataflow-composed-task-runner:2.6.0'
+        {{- range $key, $value := .Values.server.extraEnv }}
+        - name: {{ $key }}
+          value: "{{ $value }}"
+        {{- end }}
       volumes:
         - name: database
           secret:

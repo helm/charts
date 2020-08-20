@@ -7,6 +7,10 @@ rbac:
   ##
   create: true
 
+  resources:
+    - pods
+    - secrets
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   ##
@@ -21,6 +25,16 @@ tags:
   install-elasticsearch: true
   # If true, this chart will install MongoDB replicaset from requirement dependencies
   install-mongodb: true
+
+## Enable only if your current release was migrated from helm2 (using 2to3 plugin).
+##
+## Because Kubernetes considers some StatefulSets fields/labels immutable,
+## this flag preserves the values rendered by helm2. This allows helm3
+## to upgrade the current release without a complete purge/reinstall.
+##
+## Further details: https://github.com/helm/charts/issues/20306
+##
+# helm2Compatibility: true
 
 graylog:
   ## Graylog image version
@@ -40,6 +54,19 @@ graylog:
   ## Additional environment variables to be added to Graylog pods
   ##
   env: {}
+
+  ## Additional environment variables in raw yaml format
+  ## - name: POD_IP
+  ##   valueFrom:
+  ##     fieldRef:
+  ##       fieldPath: status.podIP
+  ## - name: SERVICE_8000_NAME
+  ##   value: servicename
+  envRaw: {}
+
+  ## Run as privileged container
+  ##
+  privileged: false
 
   ## Pod affinity
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -96,6 +123,10 @@ graylog:
     # - name: graylog-plugin-auth-sso-3.0.0.jar
     #   url: https://github.com/Graylog2/graylog-plugin-auth-sso/releases/download/3.0.0/graylog-plugin-auth-sso-3.0.0.jar
 
+  ## Sidecar containers
+  ##
+  sidecarContainers: []
+
   ## Additional init containers
   ##
   extraInitContainers: []
@@ -113,8 +144,19 @@ graylog:
   service:
     type: ClusterIP
     port: 9000
+    ## Add additional ports for the service/statefulset to expose
+    ##
+    ports: []
+
+    headless:
+      ## Add suffix to headless service name
+      ##
+      suffix: ""
 
     master:
+      ## Enable Graylog master service
+      ##
+      enabled: true
       ## Graylog master service Ingress annotations
       ##
       annotations: {}
@@ -140,6 +182,21 @@ graylog:
     #   ports:
     #     - name: syslog
     #       port: 12222
+
+  tls:
+    ## If true, Graylog server will run with TLS enabled
+    ##
+    enabled: false
+    ## TLS certificate key file
+    ##
+    keyFile: /etc/graylog/server/server.key
+    ## TLS certificate file
+    ##
+    certFile: /etc/graylog/server/server.cert
+
+  ## External URL to access Graylog at
+  ##
+  externalUri: ""
 
   ingress:
     ## If true, Graylog server Ingress will be created
@@ -203,6 +260,9 @@ graylog:
     ## If true, Maxmind GeoLite2 will be installed to ${GRAYLOG_HOME}/geoip location
     ##
     enabled: false
+    ## If true, mmdbUri points to the URI where to find the DB
+    # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+    mmdbUri: ""
 
   ## Graylog root user name
   ##
@@ -233,12 +293,21 @@ graylog:
     ##
     # hosts: http://elasticsearch-client.graylog.svc.cluster.local:9200
     hosts: ""
+    # Allow elasticsearch hosts to be fetched from a k8s secret
+    # {{ graylog.fullname }}-es will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
+    uriSSL: false
 
   mongodb:
     ## MongoDB connection string
     ## See https://docs.mongodb.com/manual/reference/connection-string/ for details
     # uri: mongodb://user:pass@host1:27017,host2:27017,host3:27017/graylog?replicaSet=rs01
     uri: ""
+    # Allow mongodb uri to be fetched from a k8s secret
+    # {{ graylog.fullname }}-mongodb will be used as uriSecretName if left empty
+    uriSecretName: ""
+    uriSecretKey: ""
 
     ## Increase this value according to the maximum connections your MongoDB server can handle from a single client
     ## if you encounter MongoDB connection problems.
@@ -288,14 +357,19 @@ graylog:
   ## For example, you can put server certificates or authorized clients certificates here
   ##
   serverFiles: {}
-    # graylog-server.key: |
-    # graylog-server.cert: |
+    # server.key: |
+    # server.cert: |
+
+  ## Configure whether Graylog pods should log in JSON (one event per line)
+  logInJson: false
 
   ## Specify a Bash script to run as Kubernetes Job (running on Alpine with curl and bash packages already installed).
   ## Useful for calling the API to pre-configure some aspect of Graylog, as in the example.
   ##
   provisioner:
     enabled: false
+    annotations: {}
+    useGraylogServiceAccount: false
     # script: |
     #  json='{
     #    "username_header": "X-Auth-Request-User",
@@ -310,7 +384,11 @@ graylog:
     #    "roles_header": "Roles"
     #  }'
     #  curl -v -u "admin:$GRAYLOG_PASSWORD_SECRET" -X PUT --header 'Content-Type: application/json' --header 'X-Requested-By: localhost' --data-binary "${json}" http://graylog-master:9000/api/plugins/org.graylog.plugins.auth.sso/config
-
+## Specify image pull secrets used in the deployment
+imagePullSecrets: []
+## imagePullSecrets:
+##   - name: some-registry
+##   - name: another-registry
 ## Specify Elasticsearch version from requirement dependencies. Ignore this seection if you install Elasticsearch manually.
 ## Note: Graylog 2.4 requires Elasticsearch version <= 5.6
 elasticsearch:

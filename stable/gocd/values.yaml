@@ -130,8 +130,6 @@ server:
     type: "NodePort"
     # server.service.httpPort is the GoCD Server HTTP port
     httpPort: 8153
-    # server.service.httpPort is the GoCD Server HTTPS port
-    httpsPort: 8154
     # Provide the nodeHttpPort and nodeHttpsPort if you want the service to be exposed on specific ports. Without this, random node ports will be assigned.
     # server.service.nodeHttpPort is the GoCD Server Service Node HTTP port
     nodeHttpPort:
@@ -224,6 +222,8 @@ server:
       enabled: false
       # server.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
       secretName: gocd-server-ssh
+      # server.security.ssh.defaultMode specifies the permission of the files in ~/.ssh directory
+      defaultMode:
 
 agent:
   # specifies overrides for agent specific service account creation
@@ -373,6 +373,8 @@ agent:
       enabled: false
       # agent.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
       secretName: gocd-agent-ssh
+      # agent.security.ssh.defaultMode specifies the permission of the files in ~/.ssh directory
+      defaultMode:
 
   ## Configure GoCD agent resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

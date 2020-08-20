@@ -1,0 +1,19 @@
+{{- if .Values.hpa.enabled -}}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "nextcloud.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+    helm.sh/chart: {{ include "nextcloud.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    apiVersion: apps/v1
+    name: {{ template "nextcloud.fullname" . }}
+  minReplicas: {{ .Values.hpa.minPods }}
+  maxReplicas: {{ .Values.hpa.maxPods }}
+  targetCPUUtilizationPercentage: {{ .Values.hpa.cputhreshold }}
+{{- end }}

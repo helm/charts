@@ -5,7 +5,7 @@ image: "percona"
 ## percona image version
 ## ref: https://hub.docker.com/r/library/percona/tags/
 ##
-imageTag: "5.7.17"
+imageTag: "5.7.26"
 
 ## Specify password for root user
 ##

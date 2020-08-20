@@ -1,6 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if .Values.managementcenter.service.annotations }}
+  annotations:
+  {{ toYaml .Values.managementcenter.service.annotations | indent 4 }}
+  {{- end }}
   name: {{ template "hazelcast-jet-management-center.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ template "hazelcast-jet.name" . }}
@@ -21,3 +25,7 @@ spec:
     port: {{ .Values.managementcenter.service.port }}
     targetPort: mc-port
     name: mc-port
+  - protocol: TCP
+    port: {{ .Values.managementcenter.service.httpsPort }}
+    targetPort: mc-port
+    name: mc-https-port

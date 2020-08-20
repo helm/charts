@@ -1,0 +1,15 @@
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+  clusterChecks:
+    enabled: true
+
+clusterAgent:
+  enabled: true
+
+clusterChecksRunner:
+  enabled: true
+  rbac:
+    dedicated: true
+    serviceAccountAnnotations:
+      "eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/datadog-clusterchecker"

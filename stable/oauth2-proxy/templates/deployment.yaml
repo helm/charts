@@ -20,6 +20,9 @@ spec:
         checksum/config-emails: {{ include (print $.Template.BasePath "/configmap-authenticated-emails-file.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         checksum/google-secret: {{ include (print $.Template.BasePath "/google-secret.yaml") . | sha256sum }}
+{{- if .Values.htpasswdFile.enabled }}
+        checksum/htpasswd: {{ include (print $.Template.BasePath "/configmap-htpasswd-file.yaml") . | sha256sum }}
+{{- end }}
     {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
@@ -33,6 +36,11 @@ spec:
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "oauth2-proxy.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -66,6 +74,7 @@ spec:
           - --htpasswd-file=/etc/oauth2_proxy/htpasswd/users.txt
         {{- end }}
         env:
+        {{- if .Values.proxyVarsAsSecrets }}
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -81,6 +90,7 @@ spec:
             secretKeyRef:
               name:  {{ template "oauth2-proxy.secretName" . }}
               key: cookie-secret
+        {{- end }}
         {{- if .Values.extraEnv }}
 {{ toYaml .Values.extraEnv | indent 8 }}
         {{- end }}
@@ -144,7 +154,7 @@ spec:
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
       - name: google-secret
         secret:
-          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" . }}{{ end }}
+          secretName: {{ if .existingSecret }}{{ .existingSecret }}{{ else }} {{ template "oauth2-proxy.secretName" $ }}{{ end }}
 {{- end }}
 {{- end }}
 

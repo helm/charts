@@ -5,7 +5,7 @@ image:
   # repository is the Hazelcast Jet image name
   repository: "hazelcast/hazelcast-jet"
   # tag is the Hazelcast Jet image tag
-  tag: "3.1"
+  tag: "4.1"
   # pullPolicy is the Docker image pull policy
   # It's recommended to change this to 'Always' if the image tag is 'latest'
   # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -24,13 +24,18 @@ cluster:
 
 # Hazelcast Jet properties
 jet:
-  # rest is a flag used to enable REST endpoints for Hazelcast Jet member
-  rest: true
   # javaOpts are additional JAVA_OPTS properties for Hazelcast Jet member
   javaOpts:
+
+  # loggingLevel is the level of Hazelcast logs (SEVERE, WARNING, INFO,
+  # CONFIG, FINE, FINER, and FINEST) Note that changing this value
+  # requires setting securityContext.runAsUser to 0.
+  # loggingLevel:
+
   # Jet and Hazelcast IMDG YAML configuration files
   yaml:
     hazelcast:
+      cluster-name: jet
       network:
         join:
           multicast:
@@ -40,6 +45,11 @@ jet:
             service-name: ${serviceName}
             namespace: ${namespace}
             resolve-not-ready-addresses: true
+        rest-api:
+          enabled: true
+          endpoint-groups:
+            HEALTH_CHECK:
+              enabled: true
       management-center:
         enabled: ${hazelcast.mancenter.enabled}
         url: ${hazelcast.mancenter.url}
@@ -81,9 +91,33 @@ jet:
   # configurationFiles are any additional Hazelcast Jet configuration files
   # configurationFiles:
 
+# affinity specifies the affinity/anti-affinity of different pods. The commented out
+# example below shows how you could ensure your hazelcast jet pods are scheduled on
+# different Kubernetes nodes
+# affinity:
+#  podAntiAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#    - labelSelector:
+#        matchExpressions:
+#        - key: app.kubernetes.io/name
+#          operator: In
+#          values:
+#          - hazelcast-jet
+#        - key: role
+#          operator: In
+#          values:
+#          - hazelcast-jet
+#      topologyKey: kubernetes.io/hostname
+
+# tolerations enable Hazelcast Jet PODs to be able to run on nodes with taints
+# tolerations:
+
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+# hostPort is a port under which Hazelcast Jet PODs are exposed on the host machines
+# hostPort:
 
 gracefulShutdown:
   enabled: true
@@ -103,6 +137,12 @@ livenessProbe:
   successThreshold: 1
   # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
   failureThreshold: 3
+  # url path that will be called to check liveness
+  path: /hazelcast/health/node-state
+  # port that will be used in liveness probe calls
+  # port:
+  # HTTPS or HTTP scheme
+  scheme: HTTP
 
 # Hazelcast Readiness probe
 readinessProbe:
@@ -118,6 +158,12 @@ readinessProbe:
   successThreshold: 1
   # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
   failureThreshold: 3
+  # url path that will be called to check readiness
+  path: /hazelcast/health/ready
+  # port that will be used in readiness probe calls
+  # port:
+  # HTTPS or HTTP scheme
+  scheme: HTTP
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -135,8 +181,7 @@ service:
   port: 5701
   # clusterIP set to None makes the service headless
   # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
-  # clusterIP: "None"
-
+  clusterIP: "None"
 
 # Role-based Access Control
 rbac:
@@ -156,9 +201,13 @@ securityContext:
   # enabled is a flag to enable Security Context
   enabled: true
   # runAsUser is the user ID used to run the container
-  runAsUser: 1001
+  runAsUser: 65534
+  # runAsGroup is the primary group ID used to run all processes within any container of the pod
+  runAsGroup: 65534
   # fsGroup is the group ID associated with the container
-  fsGroup: 1001
+  fsGroup: 65534
+  # readOnlyRootFilesystem is a flag to enable readOnlyRootFilesystem for the Hazelcast security context
+  readOnlyRootFilesystem: true
 
 # Allows to enable a Prometheus to scrape pods
 metrics:
@@ -169,6 +218,10 @@ metrics:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/path: "/metrics"
+      prometheus.io/port: "8080"
+
+# customVolume is the configuration for a volume will be mounted as '/data/custom/' (e.g. to mount a volume with custom JARs)
+# customVolume:
 
 # Hazelcast Jet Management Center application properties
 managementcenter:
@@ -181,7 +234,7 @@ managementcenter:
     # repository is the Hazelcast Jet Management Center image name
     repository: "hazelcast/hazelcast-jet-management-center"
     # tag is the Hazelcast Jet Management Center image tag
-    tag: "3.1"
+    tag: "4.1"
     # pullPolicy is the Docker image pull policy
     # It's recommended to change this to 'Always' if the image tag is 'latest'
     # ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -202,6 +255,12 @@ managementcenter:
   # licenseKeySecretName is the name of the secret where the Hazelcast Jet Management Center License Key is stored (can be used instead of licenseKey)
   # licenseKeySecretName:
 
+  # affinity specifies the Hazelcast Jet Management Center affinity/anti-affinity of different pods
+  # affinity:
+
+  # tolerations enable Hazelcast Jet Management Center POD to be able to run on nodes with taints
+  # tolerations:
+
   # nodeSelector is an array of Hazelcast Jet Management Center Node labels for POD assignments
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   nodeSelector: {}
@@ -209,6 +268,7 @@ managementcenter:
   # Jet Client configuration YAML file which will be used by Hazelcast Jet Management Center
   yaml:
     hazelcast-client:
+      cluster-name: jet
       network:
         kubernetes:
           enabled: true
@@ -233,6 +293,10 @@ managementcenter:
     type: LoadBalancer
     # port is the Kubernetes service port
     port: 8081
+    # service https port
+    httpsPort: 443
+    # service annotations for management center
+    annotations: {}
 
   # Hazelcast Jet Management Center Liveness probe
   livenessProbe:

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "k8s-spot-rescheduler.fullname" . }}
@@ -32,7 +32,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - rescheduler
+            - k8s-spot-rescheduler
             - --namespace={{ .Release.Namespace }}
           {{- range $key, $value := .Values.cmdOptions }}
             - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}

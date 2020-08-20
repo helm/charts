@@ -91,7 +91,7 @@ spec:
         # to ensure nats could run with non-root user, we put the configuration
         # file under `/opt/bitnami/nats/{{ .Values.natsFilename }}.conf`, please check the link below
         # for the implementation inside Dockerfile:
-        # - https://github.com/bitnami/bitnami-docker-nats/blob/master/1/debian-9/Dockerfile#L12
+        # - https://github.com/bitnami/bitnami-docker-nats#configuration
         {{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 8 }}
         {{- end }}

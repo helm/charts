@@ -69,12 +69,14 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `podDisruptionBudget.enabled` | Enables creation of a PodDisruptionBudget for OPA. | `false` |
 | `podDisruptionBudget.minAvailable` | Sets the minimum number of pods to be available. Cannot be set at the same time as maxUnavailable. | `1` |
 | `podDisruptionBudget.maxUnavailable` | Sets the maximum number of pods to be unavailable. Cannot be set at the same time as minAvailable. | Unset |
+| `hostNetwork.enabled` | Use hostNetwork setting on OPA pod | `false` |
 | `image` | OPA image to deploy. | `openpolicyagent/opa` |
 | `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
 | `port` | Port in the pod to which OPA will bind itself. | `443` |
 | `logLevel` | Log level that OPA outputs at, (`debug`, `info` or `error`) | `info` |
 | `logFormat` | Log format that OPA produces (`text` or `json`) | `text` |
 | `replicas` | Number of admission controller replicas to deploy. | `1` |
+| `affinity` | Pod/Node affinity and anti-affinity | `{}` |
 | `tolerations` | List of node taint tolerations. | `[]` |
 | `nodeSelector` | Node labels for pod assignment. | `{}` |
 | `resources` | CPU and memory limits for OPA container. | `{}` |
@@ -93,3 +95,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `timeoutSeconds` | Timeout for a webhook call in seconds. | `` |
 | `securityContext` | Security context for the containers | `{enabled: false, runAsNonRoot: true, runAsUser: 1}` |
 | `deploymentStrategy` | Specify deployment spec rollout strategy | `{}` |
+| `extraArgs` | Additional arguments to be added to the opa container | `[]` |
+| `extraContainers` | Additional containers to be added to the deployment | `[]` |
+| `extraVolumes` | Additional volumes to be added to the deployment | `[]` |
+| `extraPorts` | Additional ports to OPA service. Useful to expose `extraContainer` ports. | `[]` |

@@ -1,9 +1,10 @@
+{{- $namespace := printf "%s" (include "prometheus-operator.namespace" .) }}
 {{- if .Values.prometheusOperator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -31,9 +32,16 @@ spec:
     {{- end }}
       containers:
         - name: {{ template "prometheus-operator.name" . }}
+          {{- if .Values.prometheusOperator.image.sha }}
+          image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}@sha256:{{ .Values.prometheusOperator.image.sha }}"
+          {{- else }}
           image: "{{ .Values.prometheusOperator.image.repository }}:{{ .Values.prometheusOperator.image.tag }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.prometheusOperator.image.pullPolicy }}"
           args:
+          {{- if semverCompare "< v0.39.0" .Values.prometheusOperator.image.tag }}
+            - --manage-crds={{ .Values.prometheusOperator.manageCrds }}
+          {{- end }}
           {{- if .Values.prometheusOperator.kubeletService.enabled }}
             - --kubelet-service={{ .Values.prometheusOperator.kubeletService.namespace }}/{{ template "prometheus-operator.fullname" . }}-kubelet
           {{- end }}
@@ -49,14 +57,22 @@ spec:
           {{- with $.Values.prometheusOperator.namespaces }}
           {{ $ns := .additional }}
           {{- if .releaseNamespace }}
-          {{- $ns = append $ns $.Release.Namespace }}
+          {{- $ns = append $ns $namespace }}
           {{- end }}
             - --namespaces={{ $ns | join "," }}
           {{- end }}
             - --logtostderr=true
             - --localhost=127.0.0.1
+            {{- if .Values.prometheusOperator.prometheusConfigReloaderImage.sha }}
+            - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}@sha256:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.sha }}
+            {{- else }}
             - --prometheus-config-reloader={{ .Values.prometheusOperator.prometheusConfigReloaderImage.repository }}:{{ .Values.prometheusOperator.prometheusConfigReloaderImage.tag }}
+            {{- end }}
+            {{- if .Values.prometheusOperator.configmapReloadImage.sha }}
+            - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}@sha256:{{ .Values.prometheusOperator.configmapReloadImage.sha }}
+            {{- else }}
             - --config-reloader-image={{ .Values.prometheusOperator.configmapReloadImage.repository }}:{{ .Values.prometheusOperator.configmapReloadImage.tag }}
+            {{- end }}
             - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
             - --config-reloader-memory={{ .Values.prometheusOperator.configReloaderMemory }}
           ports:
@@ -69,7 +85,11 @@ spec:
             readOnlyRootFilesystem: true
         {{- if .Values.prometheusOperator.tlsProxy.enabled }}
         - name: tls-proxy
+          {{- if .Values.prometheusOperator.tlsProxy.image.sha }}
+          image: {{ .Values.prometheusOperator.tlsProxy.image.repository }}:{{ .Values.prometheusOperator.tlsProxy.image.tag }}@sha256:{{ .Values.prometheusOperator.tlsProxy.image.sha }}
+          {{- else }}
           image: {{ .Values.prometheusOperator.tlsProxy.image.repository }}:{{ .Values.prometheusOperator.tlsProxy.image.tag }}
+          {{- end }}
           imagePullPolicy: {{ .Values.prometheusOperator.tlsProxy.image.pullPolicy }}
           args:
             - server
@@ -103,6 +123,10 @@ spec:
 {{ toYaml .Values.prometheusOperator.securityContext | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "prometheus-operator.operator.serviceAccountName" . }}
+{{- if .Values.prometheusOperator.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
     {{- with .Values.prometheusOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

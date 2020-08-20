@@ -10,6 +10,7 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}-init
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 data:
   on-start.sh: |
 {{ .Files.Get "init/on-start.sh" | indent 4 }}

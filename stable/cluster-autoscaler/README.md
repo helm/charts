@@ -2,6 +2,8 @@
 
 [The cluster autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup.
 
+Cluster Autoscaler version: **v1.17.1**
+
 ## TL;DR:
 
 ```console
@@ -153,7 +155,7 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure AKS | `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag  | `v1.13.1`
+`image.tag` | Image tag  | `v1.17.1`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `image.pullSecrets` | Image pull secrets  | `[]`
 `extraArgs` | additional container arguments | `{}`
@@ -166,14 +168,18 @@ Parameter | Description | Default
 `nameOverride` | String to partially override cluster-autoscaler.fullname template (will maintain the release name) | `""`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.create` | If true, create & use RBAC resources | `true`
+`rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created | `true`
+`rbac.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `nil`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`
 `rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
 `priorityClassName` | priorityClassName | `nil`
 `dnsPolicy` | dnsPolicy | `nil`
+`securityContext` | [Security context for pod](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
+`containerSecurityContext` | [Security context for container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) | `nil`
 `resources` | pod resource requests & limits | `{}`
+`updateStrategy` | [Deployment update strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) | `nil`
 `service.annotations` | annotations to add to service | none
 `service.externalIPs` | service external IP addresses | `[]`
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -190,6 +196,7 @@ Parameter | Description | Default
 `serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
 `serviceMonitor.interval` | Interval that Prometheus scrapes Cluster Autoscaler metrics | `10s`
 `serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.path` | The path to scrape for metrics | `/metrics`
 `serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 `azureClientID` | Service Principal ClientID with contributor permission to Cluster and Node ResourceGroup | none
 `azureClientSecret` | Service Principal ClientSecret with contributor permission to Cluster and Node ResourceGroup | none
@@ -201,6 +208,7 @@ Parameter | Description | Default
 `azureNodeResourceGroup` | azure resource group where the clusters Nodes are located, typically set as `MC_<cluster-resource-group-name>_<cluster-name>_<location>` | none
 `azureUseManagedIdentityExtension` | Whether to use Azure's managed identity extension for credentials | false
 `kubeTargetVersionOverride` | Override the .Capabilities.KubeVersion.GitVersion | `""`
+`expanderPriorities` | The expanderPriorities is used if extraArgs.expander is set to priority and expanderPriorities is also set with the priorities.
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 

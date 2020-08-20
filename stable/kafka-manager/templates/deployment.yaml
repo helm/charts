@@ -51,6 +51,30 @@ spec:
                 secretKeyRef:
                   name: {{ template "kafka-manager.fullname" . }}
                   key: basicAuthPassword
+            - name: KAFKA_MANAGER_LDAP_ENABLED
+              value: {{ .Values.basicAuth.ldap.enabled | quote }}
+            - name: KAFKA_MANAGER_LDAP_SERVER
+              value: {{ .Values.basicAuth.ldap.server | quote }}
+            - name: KAFKA_MANAGER_LDAP_PORT
+              value: {{ .Values.basicAuth.ldap.port | quote }}
+            - name: KAFKA_MANAGER_LDAP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthLDAPUsername
+            - name: KAFKA_MANAGER_LDAP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kafka-manager.fullname" . }}
+                  key: basicAuthLDAPPassword
+            - name: KAFKA_MANAGER_LDAP_SEARCH_BASE_DN
+              value: {{ .Values.basicAuth.ldap.searchBaseDn | quote }}
+            - name: KAFKA_MANAGER_LDAP_SEARCH_FILTER
+              value: {{ .Values.basicAuth.ldap.searchFilter | quote }}
+            - name: KAFKA_MANAGER_LDAP_CONNECTION_POOL_SIZE
+              value: {{ .Values.basicAuth.ldap.connectionPoolSize | quote }}
+            - name: KAFKA_MANAGER_LDAP_SSL
+              value: {{ .Values.basicAuth.ldap.ssl | quote }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:

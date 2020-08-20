@@ -55,6 +55,9 @@ spec:
               export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
               export STOLON_DATA=/stolon-data
               chown stolon:stolon $STOLON_DATA
+              {{- if .Values.shmVolume.enabled }}
+              chmod -R 777 /dev/shm
+              {{- end }}
               exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
           env:
             - name: POD_NAME
@@ -62,7 +65,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STKEEPER_CLUSTER_NAME
-              value: {{ template "stolon.fullname" . }}
+              value: {{ template "stolon.clusterName" . }}
             - name: STKEEPER_STORE_BACKEND
               value: {{ .Values.store.backend | quote }}
             {{- if eq .Values.store.backend "kubernetes" }}
@@ -84,6 +87,8 @@ spec:
             - name: STKEEPER_PG_REPL_PASSWORDFILE
 {{ if not (empty .Values.replicationSecret.name) }}
               value: /etc/secrets/stolon-{{ .Values.replicationSecret.name }}/{{ .Values.replicationSecret.passwordKey }}
+{{ else if not (empty .Values.replicationPasswordFile) }}
+              value: {{ .Values.replicationPasswordFile }}
 {{ else }}
               value: "/etc/secrets/stolon/pg_repl_password"
 {{ end }}
@@ -99,6 +104,8 @@ spec:
             - name: STKEEPER_PG_SU_PASSWORDFILE
 {{ if not (empty .Values.superuserSecret.name) }}
               value: /etc/secrets/stolon-{{ .Values.superuserSecret.name }}/{{ .Values.superuserSecret.passwordKey }}
+{{ else if not (empty .Values.superuserPasswordFile) }}
+              value: {{ .Values.superuserPasswordFile }}
 {{ else }}
               value: "/etc/secrets/stolon/pg_su_password"
 {{ end }}
@@ -117,13 +124,17 @@ spec:
           resources:
 {{ toYaml .Values.keeper.resources | indent 12 }}
           volumeMounts:
+{{- if .Values.shmVolume.enabled }}
+          - name: dshm
+            mountPath: /dev/shm
+{{- end }}
           - name: data
             mountPath: /stolon-data
 {{- if .Values.tls.enabled }}
           - name: certs
             mountPath: /certs
 {{- end }}
-{{ if or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name) }}
+{{ if and (or (empty .Values.superuserSecret.name) (empty .Values.replicationSecret.name)) (or (empty .Values.superuserPasswordFile) (empty .Values.replicationPasswordFile)) }}
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
 {{ end }}
@@ -173,6 +184,11 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.shmVolume.enabled }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+{{- end }}
 {{- if .Values.tls.enabled }}
         - name: certs
           secret:

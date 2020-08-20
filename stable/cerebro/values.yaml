@@ -8,11 +8,19 @@ image:
   repository: lmenezes/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
-  tag: 0.8.5
+  tag: 0.9.2
   pullPolicy: IfNotPresent
 
 deployment:
+  # additional labels
+  labels: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
 
 service:
   type: ClusterIP
@@ -39,6 +47,8 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 1000
 
+priorityClassName: ""
+
 resources: {}
 
 nodeSelector: {}
@@ -60,3 +70,16 @@ config:
   # Secret used to sign session cookies. If empty it will be replaced with a
   # random 64 length string
   secret: ''
+  tlsVerify: true
+  # tlsCaCert: /opt/cerebro/conf/certs/ca.crt
+
+# volumeMounts:
+#   - mountPath: /opt/cerebro/conf/certs/
+#     name: ca_cert_volume
+#     readOnly: true
+# volumes:
+#   - name: ca_cert_volume
+#     secret:
+#       defaultMode: 420
+#       optional: false
+#       secretName: cerebro_ca_cert_secret

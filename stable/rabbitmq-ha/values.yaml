@@ -68,6 +68,14 @@ definitions:
 #     "write": ".*",
 #     "read": ".*"
 #   }
+  topicPermissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "exchange": "myexchange",
+#     "write": ".*",
+#     "read": ".*"
+#   }
   queues: |-
 #    {
 #       "name":"myName",
@@ -296,7 +304,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.8.0-alpine
+  tag: 3.8.7-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -323,6 +331,7 @@ service:
   externalIPs: []
 
   loadBalancerIP: ""
+  externalTrafficPolicy: ""
   loadBalancerSourceRanges: []
   type: ClusterIP
 
@@ -332,6 +341,13 @@ service:
   epmdNodePort: null
   amqpNodePort: null
   managerNodePort: null
+
+  ## Custom annotations for discovery service
+  ## Will fallback to `service.annotations` while `separateAnnotations: false`
+  ##
+  discovery:
+    separateAnnotations: false
+    annotations: {}
 
 podManagementPolicy: OrderedReady
 
@@ -361,6 +377,12 @@ resources: {}
   #   cpu: 100m
   #   memory: 1Gi
 initContainer:
+  enabled: true
+  securityContext:
+    runAsGroup: 0
+    runAsNonRoot: false
+    runAsUser: 0
+  chownFiles: true
   resources: {}
   #   limits:
   #     cpu: 100m
@@ -390,11 +412,14 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## selector can be used to match an existing PersistentVolume
+  selector: {}
   name: data
   accessModes:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+  labels: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -416,6 +441,12 @@ statefulSetAnnotations: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
 podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+## Affinity settings
+## Defining 'affinity' will disable any podAntiAffinity settings.
+## If you still need anti-affinity, you must include the configuration here.
+##
+affinity: {}
 
 ## Create default configMap
 ##
@@ -474,7 +505,7 @@ livenessProbe:
     command:
       - /bin/sh
       - -c
-      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+      - 'timeout 5 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
   initialDelaySeconds: 20
@@ -485,7 +516,7 @@ readinessProbe:
     command:
       - /bin/sh
       - -c
-      - 'wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
+      - 'timeout 3 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 # Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""

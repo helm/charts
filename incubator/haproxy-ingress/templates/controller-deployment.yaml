@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
@@ -20,7 +20,7 @@ spec:
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   selector:
     matchLabels:
-      app: {{ template "haproxy-ingress.name" . }}
+      app: {{ template "haproxy-ingress.labels.app.controller" . }}
       component: "{{ .Values.controller.name }}"
       release: {{ .Release.Name }}
   template:
@@ -33,7 +33,7 @@ spec:
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
       {{- end }}
       labels:
-        app: {{ template "haproxy-ingress.name" . }}
+        app: {{ template "haproxy-ingress.labels.app.controller" . }}
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.controller.podLabels }}
@@ -171,7 +171,7 @@ spec:
           configMap:
             name: {{ template "haproxy-ingress.controller.fullname" . }}-template
 {{- end }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}

@@ -9,7 +9,7 @@ metadata:
     component: cloud-controller
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 {{- if .Values.daemonset.annotations }}
   annotations:
 {{ toYaml .Values.daemonset.annotations | indent 4 }}
@@ -36,15 +36,28 @@ spec:
 {{- end }}
     spec:
       nodeSelector:
+{{- if .Values.daemonset.nodeSelector }}
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+{{- else }}
         node-role.kubernetes.io/master: ""
+{{- end }}
       securityContext:
         runAsUser: 0
       tolerations:
+{{- if .Values.daemonset.tolerations }}
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{- else }}
       - key: node.cloudprovider.kubernetes.io/uninitialized
         value: "true"
         effect: NoSchedule
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
+ {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: true

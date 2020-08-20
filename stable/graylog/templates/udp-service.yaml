@@ -8,11 +8,7 @@ metadata:
 {{- end }}
   name: {{ template "graylog.fullname" . }}-udp
   labels:
-    app.kubernetes.io/name: {{ template "graylog.name" . }}
-    helm.sh/chart: {{ template "graylog.chart" . }}
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+{{ include "graylog.metadataLabels" . | indent 4 }}
     app.kubernetes.io/component: "UDP"
 spec:
   ports:
@@ -41,6 +37,7 @@ spec:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
   type: "{{ .Values.graylog.input.udp.service.type }}"
 {{- if eq "LoadBalancer" .Values.graylog.input.udp.service.type }}
+  externalTrafficPolicy: {{ .Values.graylog.input.udp.service.externalTrafficPolicy | default "Cluster" }}
   {{- if .Values.graylog.input.udp.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.graylog.input.udp.service.loadBalancerIP }}
   {{- end -}}

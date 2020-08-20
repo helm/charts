@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the Rocket.Chat chart a
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `docker.io/rocketchat/rocket.chat`
-`image.tag` | Image tag | `1.3.1`
+`image.tag` | Image tag | `3.2.2`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `host` | Hostname for Rocket.Chat. Also used for ingress (if enabled) | `""`
 `replicaCount` | Number of replicas to run | `1`
@@ -65,6 +65,7 @@ Parameter | Description | Default
 `persistence.storageClass` | Storage class of the PVC to use | `""`
 `persistence.accessMode` | Access mode of the PVC | `ReadWriteOnce`
 `persistence.size` | Size of the PVC | `8Gi`
+`persistence.existingClaim` | An Existing PVC name for rocketchat volume | `""`
 `resources` | Pod resource requests and limits | `{}`
 `securityContext.enabled` | Enable security context for the pod | `true`
 `securityContext.runAsUser` | User to run the pod as | `999`
@@ -75,6 +76,18 @@ Parameter | Description | Default
 `ingress.annotations` | Annotations for the ingress | `{}`
 `ingress.path` | Path of the ingress | `/`
 `ingress.tls` | A list of [IngressTLS](https://kubernetes.io/docs/reference/federation/extensions/v1beta1/definitions/#_v1beta1_ingresstls) items | `[]`
+`livenessProbe.enabled` | Turn on and off liveness probe | `true`
+`livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | `60`
+`livenessProbe.periodSeconds` | How often to perform the probe | `15`
+`livenessProbe.timeoutSeconds` | When the probe times out | `5`
+`livenessProbe.failureThreshold` | Minimum consecutive failures for the probe | `3`
+`livenessProbe.successThreshold` | Minimum consecutive successes for the probe | `1`
+`readinessProbe.enabled` | Turn on and off readiness probe | `true`
+`readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | `10`
+`readinessProbe.periodSeconds` | How often to perform the probe | `15`
+`readinessProbe.timeoutSeconds` | When the probe times out | `5`
+`readinessProbe.failureThreshold` | Minimum consecutive failures for the probe | `3`
+`readinessProbe.successThreshold` | Minimum consecutive successes for the probe | `1`
 `service.annotations` | Annotations for the Rocket.Chat service | `{}`
 `service.labels` | Additional labels for the Rocket.Chat service | `{}`
 `service.type` | The service type to use | `ClusterIP`

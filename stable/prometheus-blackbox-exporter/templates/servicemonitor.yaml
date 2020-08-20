@@ -1,5 +1,6 @@
 {{- if .Values.serviceMonitor.enabled }}
 {{- range .Values.serviceMonitor.targets }}
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -25,10 +26,8 @@ spec:
       target:
       - {{ .url }}
     metricRelabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
+      - targetLabel: instance
+        replacement: {{ .url }}
       - targetLabel: target
         replacement: {{ .name }}
   jobLabel: "{{ $.Release.Name }}"

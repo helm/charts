@@ -1,5 +1,14 @@
 # Verdaccio
 
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline). We will move this to an official repository [here](https://github.com/verdaccio/charts)*
+
+Please make PRs / Issues here from now on
+
+No further updates should be added to this chart, but we will be notifying people to submit PRs here from now on instead. If you have any questions, feel free to get in touch with either of the maintainers. 
+----------------------------------------
+
 [Verdaccio](http://www.verdaccio.org) is a lightweight private
 [NPM](https://www.npmjs.com) proxy registry.
 
@@ -77,6 +86,7 @@ and their default values.
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
 | `service.nodePort`                 | Service port to expose                                          | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
+| `extraEnvVars`                     | Define environment variables to be passed to the container                                       | `{}`  
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
