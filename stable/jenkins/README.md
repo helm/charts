@@ -270,6 +270,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
 | `master.ingress.hostName`         | Ingress host name                    | Not set                                   |
+| `master.ingress.resourceRootUrl`  | Hostname to serve assets from        | Not set                                   |
 | `master.ingress.annotations`      | Ingress annotations                  | `{}`                                      |
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |
