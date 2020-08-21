@@ -1,5 +1,7 @@
 # ![](https://raw.githubusercontent.com/stakater/Reloader/master/assets/web/reloader-round-100px.png) RELOADER
 
+> This chart has been **DEPRECATED**.  Please use the Chart found [here](https://github.com/stakater/Reloader#helm-charts) instead.
+
 A Kubernetes controller to watch changes in ConfigMap and Secrets and then restart pods for Deployment, StatefulSet and DaemonSet
 
 [![Get started with Stakater](https://stakater.github.io/README/stakater-github-banner.png)](http://stakater.com/?utm_source=Reloader&utm_medium=github)
