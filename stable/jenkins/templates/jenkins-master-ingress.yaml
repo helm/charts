@@ -38,6 +38,14 @@ spec:
 {{- if .Values.master.ingress.hostName }}
     host: {{ .Values.master.ingress.hostName | quote }}
 {{- end }}
+{{- if .Values.master.ingress.resourceRootUrl }}
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ template "jenkins.fullname" . }}
+          servicePort: {{ .Values.master.servicePort }}
+    host: {{ .Values.master.ingress.resourceRootUrl | quote }}
+{{- end }}
 {{- if .Values.master.ingress.tls }}
   tls:
 {{ toYaml .Values.master.ingress.tls | indent 4 }}
