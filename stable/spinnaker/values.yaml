@@ -7,6 +7,8 @@ halyard:
   # Set to false to disable persistence data volume for halyard
   persistence:
     enabled: true
+  # Uncomment to add storage class for the persistence data volume
+  # storageClass: <storageclass_name>
   # Provide additional parameters to halyard deploy apply command
   additionalInstallParameters: []
   # Provide a config map with Hal commands that will be run the core config (storage)
@@ -202,6 +204,11 @@ kubeConfig:
   # omittedKinds:
   # -
 
+  # When true, clouddriver will query manifest status during pipeline executions using live
+  # data rather than the cache. This eliminates all time spent in the “force cache refresh”
+  # task in pipelines, greatly reducing execution time.
+  liveManifestCalls: false
+
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
   enabled: false
@@ -239,6 +246,10 @@ spinnakerFeatureFlags:
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 # nodeSelector to provide to each of the Spinnaker components
 nodeSelector: {}
+
+# Node tolerations
+# Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+tolerations: []
 
 # Redis password to use for the in-cluster redis service
 # Enable redis to use in-cluster redis

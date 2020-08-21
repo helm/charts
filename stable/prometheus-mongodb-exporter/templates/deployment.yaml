@@ -34,7 +34,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ include "prometheus-mongodb-exporter.secretName" . }}
-                key: mongodb-uri
+                key: {{ .Values.existingSecret.key }}
         {{- if .Values.env }}
         {{- range $key, $value := .Values.env }}
           - name: "{{ $key }}"
@@ -70,4 +70,3 @@ spec:
       terminationGracePeriodSeconds: 30
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
-

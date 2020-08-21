@@ -33,9 +33,12 @@ alertmanager:
   enabled: true
 
   ## Use a ClusterRole (and ClusterRoleBinding)
-  ## - If set to false, we define a Role and RoleBinding in the defined namespaces ONLY
+  ## - If set to false - we define a Role and RoleBinding in the defined namespaces ONLY
   ## This makes alertmanager work - for users who do not have ClusterAdmin privs, but wants alertmanager to operate on their own namespaces, instead of clusterwide.
   useClusterRole: true
+
+  ## Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to the rolename set here.
+  useExistingRole: false
 
   ## alertmanager container name
   ##
@@ -45,7 +48,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.20.0
+    tag: v0.21.0
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -329,7 +332,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -367,7 +370,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -565,14 +568,17 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.19.0
+    tag: v2.20.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
   ##
   priorityClassName: ""
 
-  # EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links.
+  ## EnableServiceLinks indicates whether information about services should be injected
+  ## into pod's environment variables, matching the syntax of Docker links.
+  ## WARNING: the field is unsupported and will be skipped in K8s prior to v1.13.0.
+  ##
   enableServiceLinks: true
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug

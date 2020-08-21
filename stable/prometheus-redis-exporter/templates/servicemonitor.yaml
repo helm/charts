@@ -23,6 +23,10 @@ spec:
 {{- if .Values.serviceMonitor.timeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
 {{- end }}
+{{- if .Values.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ toYaml .Values.serviceMonitor.metricRelabelings | indent 4 }}
+{{- end }}
   jobLabel: {{ template "prometheus-redis-exporter.fullname" . }}
   namespaceSelector:
     matchNames:

@@ -46,7 +46,7 @@ Generate the list of ports automatically from the server definitions
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
                 {{/* Optionally enable tcp for this service as well */}}
-                {{- if eq .use_tcp true }}
+                {{- if eq (default false .use_tcp) true }}
                     {{- $innerdict := set $innerdict "istcp" true -}}
                 {{- end }}
                 {{- $innerdict := set $innerdict "isudp" true -}}
@@ -105,7 +105,7 @@ Generate the list of ports automatically from the server definitions
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
                 {{/* Optionally enable tcp for this service as well */}}
-                {{- if eq .use_tcp true }}
+                {{- if eq (default false .use_tcp) true }}
                     {{- $innerdict := set $innerdict "istcp" true -}}
                 {{- end }}
                 {{- $innerdict := set $innerdict "isudp" true -}}

@@ -91,6 +91,7 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": false,
+                                "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
                                 "pattern": "Value #A",
@@ -109,6 +110,7 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": false,
+                                "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
                                 "pattern": "Value #B",
@@ -127,6 +129,7 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": false,
+                                "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
                                 "pattern": "instance",
@@ -145,6 +148,7 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": false,
+                                "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
                                 "pattern": "job",
@@ -163,6 +167,7 @@ data:
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
                                 "decimals": 2,
                                 "link": false,
+                                "linkTargetBlank": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
                                 "pattern": "version",
@@ -1215,7 +1220,7 @@ data:
             ]
         },
         "timezone": "utc",
-        "title": "Prometheus",
+        "title": "Prometheus Overview",
         "uid": "",
         "version": 0
     }

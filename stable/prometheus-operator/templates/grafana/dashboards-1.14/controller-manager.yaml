@@ -603,7 +603,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-controller-manager\", instance=~\"$instance\", verb=\"POST\"}[5m])) by (verb, url, le))",
+                                "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{job=\"kube-controller-manager\", instance=~\"$instance\", verb=\"POST\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
@@ -708,7 +708,7 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-controller-manager\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
+                                "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{job=\"kube-controller-manager\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
                                 "format": "time_series",
                                 "intervalFactor": 2,
                                 "legendFormat": "{{`{{`}}verb{{`}}`}} {{`{{`}}url{{`}}`}}",
