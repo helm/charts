@@ -101,14 +101,14 @@ spec:
               containerPort: 4440
           livenessProbe:
             httpGet:  
-              path: /
+              path: /user/login
               port: 4440
               scheme: HTTP
             initialDelaySeconds: 120
             periodSeconds: 120
           readinessProbe:
             httpGet:
-              path: /
+              path: /user/login
               port: 4440
               scheme: HTTP
             initialDelaySeconds: 60
