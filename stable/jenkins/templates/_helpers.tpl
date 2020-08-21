@@ -175,13 +175,13 @@ Returns kubernetes pod template configuration as code
     command: {{ .Values.agent.command }}
     {{- end }}
     envVars:
-    - containerEnvVar:
-        key: "JENKINS_URL"
-    {{- if .Values.master.slaveJenkinsUrl }}
-        value: {{ tpl .Values.master.slaveJenkinsUrl . }}
-    {{- else }}
-        value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
-    {{- end }}
+      - envVar:
+          key: "JENKINS_URL"
+          {{- if .Values.master.slaveJenkinsUrl }}
+          value: {{ tpl .Values.master.slaveJenkinsUrl . }}
+          {{- else }}
+          value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+          {{- end }}
     {{- if .Values.agent.imageTag }}
     image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}"
     {{- else }}
