@@ -214,6 +214,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.hyperkubeImage.pullPolicy` | Image pull policy for hyperkube image used to perform maintenance tasks | `IfNotPresent` |
 | `prometheusOperator.hyperkubeImage.repository` | Repository for hyperkube image used to perform maintenance tasks | `k8s.gcr.io/hyperkube` |
+| `prometheusOperator.hyperkubeImage.autoTagVersion` | Automatically set hyperkube image tag equal to the cluster's Kubernetes version | `false` |
 | `prometheusOperator.hyperkubeImage.tag` | Tag for hyperkube image used to perform maintenance tasks | `v1.16.12` |
 | `prometheusOperator.hyperkubeImage.sha` | Sha for hyperkube image used to perform maintenance tasks | `` |
 | `prometheusOperator.image.pullPolicy` | Pull policy for prometheus operator image | `IfNotPresent` |

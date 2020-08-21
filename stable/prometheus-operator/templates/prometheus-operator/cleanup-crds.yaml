@@ -24,7 +24,9 @@ spec:
     {{- end }}
       containers:
         - name: kubectl
-          {{- if .Values.prometheusOperator.hyperkubeImage.sha }}
+          {{- if .Values.prometheusOperator.hyperkubeImage.autoTagVersion}}
+          image: "{{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Capabilities.KubeVersion.GitVersion }}"
+          {{- else if .Values.prometheusOperator.hyperkubeImage.sha }}
           image: {{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Values.prometheusOperator.hyperkubeImage.tag }}@sha256:{{ .Values.prometheusOperator.hyperkubeImage.sha }}
           {{- else }}
           image: "{{ .Values.prometheusOperator.hyperkubeImage.repository }}:{{ .Values.prometheusOperator.hyperkubeImage.tag }}"

@@ -1366,6 +1366,9 @@ prometheusOperator:
   ##
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
+    ## When autoTagVersion is enabled, tag will default to the deployed Kubernetes version
+    ##
+    autoTagVersion: false
     tag: v1.16.12
     sha: ""
     pullPolicy: IfNotPresent
