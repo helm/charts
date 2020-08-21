@@ -359,6 +359,10 @@
     {{- end }}
 
     {{- if .Values.master.deploymentAnnotations }}
-       {{ fail "`master.deploymentAnnotations` does no longer exist. It has been renamed to `master.statefulSetAnnotations`" }}
+        {{ fail "`master.deploymentAnnotations` does no longer exist. It has been renamed to `master.statefulSetAnnotations`" }}
+    {{- end }}
+
+    {{- if .Values.master.rollingUpdate }}
+        {{ fail "`master.rollingUpdate` does no longer exist. It is no longer relevant, since a StatefulSet is used for the Jenkins master" }}
     {{- end }}
 {{- end }}
