@@ -2,7 +2,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := default "gogs" .Values.service.nameOverride -}}
 {{- $httpPort := .Values.service.httpPort -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: {{ template "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ template "gogs.gogs.fullname" . }}
