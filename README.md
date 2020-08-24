@@ -25,7 +25,7 @@ Note that this project has been under active development for some time, so you m
 
 ## Where to Find Us
 
-For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes Slack instance](http://slack.kubernetes.io/).
+For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes Slack instance](https://slack.kubernetes.io/).
 
 For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.md#support-channels).
 
