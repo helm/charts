@@ -36,6 +36,10 @@ service:
 
 persistence:
   enabled: false
+  
+  ## Existing Persistent Volume Claim
+  ## If not set, the PVC will be deployed with the chart
+  # existingClaim: "myClaim"
 
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>

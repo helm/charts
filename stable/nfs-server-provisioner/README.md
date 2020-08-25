@@ -67,6 +67,7 @@ their default values.
 | `service.mountdNodePort`       | if `service.type` is `NodePort` and this is non-empty, sets the nfs-server-provisioner node port of the mountd service | `nil`                                                    |
 | `service.rpcbindNodePort`      | if `service.type` is `NodePort` and this is non-empty, sets the nfs-server-provisioner node port of the RPC service    | `nil`                                                    |
 | `persistence.enabled`          | Enable config persistence using PVC                                                                             | `false`                                                  |
+| `persistence.existingClaim`    | Uses an existing Persistent Volume Claim for persistence                                                        | `nil`                                                    |
 | `persistence.storageClass`     | PVC Storage Class for config volume                                                                             | `nil`                                                    |
 | `persistence.accessMode`       | PVC Access Mode for config volume                                                                               | `ReadWriteOnce`                                          |
 | `persistence.size`             | PVC Storage Request for config volume                                                                           | `1Gi`                                                    |
