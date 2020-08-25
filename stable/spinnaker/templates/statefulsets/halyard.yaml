@@ -14,7 +14,19 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-init-script.yaml") . | sha256sum }}
+        {{ if .Values.halyard.additionalConfigMaps.create -}}
+        checksum/config/additional-configmaps: {{ include (print $.Template.BasePath "/configmap/additional-configmaps.yaml") . | sha256sum }}
+        {{- end}}
+        checksum/config/additional-profile-configmaps: {{ include (print $.Template.BasePath "/configmap/additional-profile-configmaps.yaml") . | sha256sum }}
+        {{ if .Values.halyard.additionalScripts.create -}}
+        checksum/config/additional-scripts: {{ include (print $.Template.BasePath "/configmap/additional-scripts.yaml") . | sha256sum }}
+        {{- end}}
+        checksum/config/halyard-config: {{ include (print $.Template.BasePath "/configmap/halyard-config.yaml") . | sha256sum }}
+        checksum/config/halyard-init-script: {{ include (print $.Template.BasePath "/configmap/halyard-init-script.yaml") . | sha256sum }}
+        {{ if .Values.halyard.serviceConfigs -}}
+        checksum/config/service-configs: {{ include (print $.Template.BasePath "/configmap/service-configs.yaml") . | sha256sum }}
+        {{- end}}
+        checksum/config/service-settings: {{ include (print $.Template.BasePath "/configmap/service-settings.yaml") . | sha256sum }}
       {{- if .Values.halyard.annotations }}
 {{ toYaml .Values.halyard.annotations | indent 8 }}
       {{- end }}
