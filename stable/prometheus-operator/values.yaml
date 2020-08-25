@@ -98,6 +98,11 @@ global:
 ## Configuration for alertmanager
 ## ref: https://prometheus.io/docs/alerting/alertmanager/
 ##
+
+enableWindowsMonitoring:
+  ## Deploy the windows specific dashboards and rules
+  enabled: false
+
 alertmanager:
 
   ## Deploy alertmanager

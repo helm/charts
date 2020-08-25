@@ -1,0 +1,59 @@
+# Generated from 'node-exporter.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if .Values.enableWindowsMonitoring.enabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "windows-pod.rules" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: windows.pod.rules
+    rules:
+    - expr: |-
+        wmi_container_available{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_available'
+    - expr: |-
+        wmi_container_cpu_usage_seconds_total{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_total_runtime'
+    - expr: |-
+        wmi_container_memory_usage_commit_bytes{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_memory_usage'
+    - expr: |-
+        wmi_container_memory_usage_private_working_set_bytes{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_private_working_set_usage'
+    - expr: |-
+        wmi_container_network_receive_bytes_total{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_network_receive_bytes_total'
+    - expr: wmi_container_network_transmit_bytes_total{job="wmi-exporter"} * on(container_id) group_left(container, pod, namespace) max(kube_pod_container_info{job="kube-state-metrics"}) by(container, container_id, pod, namespace)
+      record: 'windows_container_network_transmit_bytes_total'
+    - expr: kube_pod_container_resource_requests_memory_bytes {job="kube-state-metrics"} * on(container,pod,namespace) (windows_container_available)
+      record: 'kube_pod_windows_container_resource_memory_request'
+    - expr: kube_pod_container_resource_limits_memory_bytes {job="kube-state-metrics"} * on(container,pod,namespace) (windows_container_available)
+      record: 'kube_pod_windows_container_resource_memory_limit'
+    - expr: |-
+        kube_pod_container_resource_requests_cpu_cores  {job="kube-state-metrics"} * on(container,pod,namespace) (windows_container_available)
+      record: 'kube_pod_windows_container_resource_cpu_cores_request'
+    - expr: |-
+        kube_pod_container_resource_limits_cpu_cores  {job="kube-state-metrics"} * on(container,pod,namespace) (windows_container_available)
+      record: 'kube_pod_windows_container_resource_cpu_cores_limit'
+    - expr: |-
+        sum by (namespace, pod, container) (
+                rate(windows_container_total_runtime{}[5m])
+        )
+      record: 'namespace_pod_container:windows_container_cpu_usage_seconds_total:sum_rate'
+{{- end }}
+{{- end }}

@@ -1,0 +1,125 @@
+# Generated from 'node-exporter.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- if .Values.enableWindowsMonitoring.enabled }}
+{{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
+{{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.defaultRules.create .Values.nodeExporter.enabled .Values.defaultRules.rules.node }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "windows-node.rules" | trunc 63 | trimSuffix "-" }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+{{- if .Values.defaultRules.labels }}
+{{ toYaml .Values.defaultRules.labels | indent 4 }}
+{{- end }}
+{{- if .Values.defaultRules.annotations }}
+  annotations:
+{{ toYaml .Values.defaultRules.annotations | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  - name: windows.node.rules
+    rules:
+    - expr: |-
+        count (
+          wmi_system_system_up_time{job="wmi-exporter"}
+        )
+      record: 'node:windows_node:sum'
+    - expr: |-
+        count by (instance) (sum by (instance, core) (
+          wmi_cpu_time_total{job="wmi-exporter"}
+        ))
+      record: 'node:windows_node_num_cpu:sum'
+    - expr: |-
+        1 - avg(rate(wmi_cpu_time_total{job="wmi-exporter",mode="idle"}[1m]))
+      record: ':windows_node_cpu_utilisation:avg1m'
+    - expr: |-
+        1 - avg by (instance) (
+          rate(wmi_cpu_time_total{job="wmi-exporter",mode="idle"}[1m])
+        )
+      record: 'node:windows_node_cpu_utilisation:avg1m'
+    - expr: |-
+        1 -
+           sum(wmi_memory_available_bytes{job="wmi-exporter"})
+           /
+          sum(wmi_os_visible_memory_bytes{job="wmi-exporter"})
+      record: ':windows_node_memory_utilisation:'
+    - expr: sum(wmi_memory_available_bytes{job="wmi-exporter"} + wmi_memory_cache_bytes{job="wmi-exporter"})
+      record: ':windows_node_memory_MemFreeCached_bytes:sum'
+    - expr: (wmi_memory_cache_bytes{job="wmi-exporter"} + wmi_memory_modified_page_list_bytes{job="wmi-exporter"} + wmi_memory_standby_cache_core_bytes{job="wmi-exporter"} + wmi_memory_standby_cache_normal_priority_bytes{job="wmi-exporter"} + wmi_memory_standby_cache_reserve_bytes{job="wmi-exporter"})
+      record: 'node:windows_node_memory_totalCached_bytes:sum'
+    - expr: sum(wmi_os_visible_memory_bytes{job="wmi-exporter"})
+      record: ':windows_node_memory_MemTotal_bytes:sum'
+    - expr: |-
+        sum by (instance) (
+        (wmi_memory_available_bytes{job="wmi-exporter"})
+        )
+      record: 'node:windows_node_memory_bytes_available:sum'
+    - expr: |-
+        sum by (instance) (
+        wmi_os_visible_memory_bytes{job="wmi-exporter"}
+        )
+      record: 'node:windows_node_memory_bytes_total:sum'
+    - expr: |-
+        (node:windows_node_memory_bytes_total:sum - node:windows_node_memory_bytes_available:sum)
+        /
+        scalar(sum(node:windows_node_memory_bytes_total:sum))
+      record: 'node:windows_node_memory_utilisation:ratio'
+    - expr: |-
+        1 - (node:windows_node_memory_bytes_available:sum / node:windows_node_memory_bytes_total:sum)
+      record: 'node:windows_node_memory_utilisation:'
+
+    - expr: |-
+        irate(wmi_memory_swap_page_operations_total{job="wmi-exporter"}[5m])
+      record: 'node:windows_node_memory_swap_io_pages:irate'
+
+    - expr: |-
+          avg(irate(wmi_logical_disk_read_seconds_total{job="wmi-exporter"}[1m]) + 
+              irate(wmi_logical_disk_write_seconds_total{job="wmi-exporter"}[1m])
+          )
+      record: ':windows_node_disk_utilisation:avg_irate'
+    - expr: |-
+        avg by (instance) (
+          (irate(wmi_logical_disk_read_seconds_total{job="wmi-exporter"}[1m]) +
+           irate(wmi_logical_disk_write_seconds_total{job="wmi-exporter"}[1m]))
+        )
+      record: 'node:windows_node_disk_utilisation:avg_irate'
+
+    - expr: |-
+        max by (instance,volume)(
+              (wmi_logical_disk_size_bytes{job="wmi-exporter"}
+              - wmi_logical_disk_free_bytes{job="wmi-exporter"})
+              / wmi_logical_disk_size_bytes{job="wmi-exporter"}
+        )
+      record: 'node:windows_node_filesystem_usage:'
+
+    - expr: |-
+        max by (instance, volume) (wmi_logical_disk_free_bytes{job="wmi-exporter"} / wmi_logical_disk_size_bytes{job="wmi-exporter"})
+      record: 'node:windows_node_filesystem_avail:'
+
+    - expr: |-
+        sum(irate(wmi_net_bytes_total{job="wmi-exporter"}[1m]))
+      record: ':windows_node_net_utilisation:sum_irate'
+
+    - expr: |-
+        sum by (instance) (
+           (irate(wmi_net_bytes_total{job="wmi-exporter"}[1m]))
+        )
+      record: 'node:windows_node_net_utilisation:sum_irate'
+
+    - expr: |-
+        sum(irate(wmi_net_packets_received_discarded{job="wmi-exporter"}[1m])) +
+        sum(irate(wmi_net_packets_outbound_discarded{job="wmi-exporter"}[1m]))
+      record: ':windows_node_net_saturation:sum_irate'
+
+    - expr: |-
+        sum by (instance) (
+           (irate(wmi_net_packets_received_discarded{job="wmi-exporter"}[1m]) +
+            irate(wmi_net_packets_outbound_discarded{job="wmi-exporter"}[1m]))
+        )
+      record: 'node:windows_node_net_saturation:sum_irate'
+{{- end }}
+{{- end }}
