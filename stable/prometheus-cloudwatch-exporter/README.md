@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `ingress.hosts`                   | Ingress accepted hostnames                                              | `[]`                        |
 | `ingress.tls`                     | Ingress TLS configuration                                               | `[]`                        |
 | `securityContext`                 | Security Context for the pod                                            | `{}`                        |
+| `priorityClassName`               | Set to ensure your pods survive resource shortages                      | `""`                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
