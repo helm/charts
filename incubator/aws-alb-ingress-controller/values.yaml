@@ -82,6 +82,10 @@ image:
   tag: "v1.1.8"
   pullPolicy: IfNotPresent
 
+# One or more secrets to be used when pulling images
+imagePullSecrets: []
+# - registrySecretName
+
 replicaCount: 1
 nameOverride: ""
 fullnameOverride: ""
