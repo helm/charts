@@ -3,12 +3,16 @@
 [Airflow](https://airflow.apache.org/) is a platform to programmatically author, schedule and monitor workflows.
 
 ## Installation
+First add the repo if it's not done already
+
+```bash
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+```
 
 To install the Airflow Helm Chart:
 ```bash
-helm install stable/airflow \
+helm install airflow stable/airflow \
   --version "X.X.X" \
-  --name "airflow" \
   --namespace "airflow" \
   --values ./custom-values.yaml
 ```
