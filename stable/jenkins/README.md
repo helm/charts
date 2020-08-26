@@ -591,6 +591,9 @@ Adds a backup CronJob for jenkins, along with required RBAC resources.
 | `backup.env`                             | Backup environment variables                                      | `[]`                              |
 | `backup.resources`                       | Backup CPU/Memory resource requests/limits                        | Memory: `1Gi`, CPU: `1`           |
 | `backup.destination`                     | Destination to store backup artifacts                             | `s3://jenkins-data/backup`        |
+| `backup.usePodSecurityContext`           | Enable pod security context (must be `true` if `runAsUser` or `fsGroup` are set) | `true` |
+| `backup.runAsUser`                | uid that jenkins runs with           | `1000`                                    |
+| `backup.fsGroup`                  | uid that will be used for persistent volume | `1000`                             |
 
 ### Restore from backup
 
