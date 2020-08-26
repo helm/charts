@@ -1,6 +1,6 @@
 # ⚠️ DEPRECATED
 
-This chart was moced to https://github.com/jenkinsci/helm-charts
+This chart was moved to https://github.com/jenkinsci/helm-charts
 
 # Jenkins Helm Chart
 
