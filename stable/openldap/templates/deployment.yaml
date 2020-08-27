@@ -79,8 +79,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -l
+            - {{ .Values.logLevel }}
 {{- if .Values.customLdifFiles }}
-          args: [--copy-service]
+            - --copy-service
 {{- end }}
           ports:
             - name: ldap-port

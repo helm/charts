@@ -13,8 +13,9 @@ spec:
       component: halyard
   template:
     metadata:
-      {{- if .Values.halyard.annotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-init-script.yaml") . | sha256sum }}
+      {{- if .Values.halyard.annotations }}
 {{ toYaml .Values.halyard.annotations | indent 8 }}
       {{- end }}
       labels:
@@ -29,6 +30,14 @@ spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       initContainers:
       - name: "create-halyard-local"
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}

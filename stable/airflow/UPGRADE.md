@@ -1,5 +1,43 @@
 # Upgrading Steps
 
+## `v7.4.X` → `v7.5.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to setup external database connection propertites with the value `externalDatabase.properties` for TLS or other advanced parameters
+
+__The following values have been ADDED:__
+
+* `externalDatabase.properties`
+
+## `v7.3.X` → `v7.4.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Reduced how likely it is for a celery worker to receive SIGKILL with graceful termination enabled.
+  * Celery worker graceful shutdown lifecycle:
+    1. prevent worker accepting new tasks
+    2. wait AT MOST `workers.celery.gracefullTerminationPeriod` for tasks to finish
+    3. send `SIGTERM` to worker
+    4. wait AT MOST `workers.terminationPeriod` for kill to finish
+    5. send `SIGKILL` to worker
+  * NOTE: 
+    * if you currently use a high value of `workers.terminationPeriod`, consider lowering it to `60` and setting a high value for `workers.celery.gracefullTerminationPeriod`
+
+__The following values have been ADDED:__
+
+* `workers.celery.gracefullTerminationPeriod`
+
+## `v7.2.X` → `v7.3.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to specify a specific port for Flower when using NodePort service type with the value `flower.service.nodePort.http`
+
+__The following values have been ADDED:__
+
+* `flower.service.nodePort.http`
+
 ## `v7.1.X` → `v7.2.0`
 
 __The following IMPROVEMENTS have been made:__

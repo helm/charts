@@ -1,5 +1,33 @@
 # Datadog changelog
 
+## 2.3.42
+
+* Deprecate current repository, replaced by `helm.datadoghq.com`
+
+## 2.3.41
+
+* Fix issue with Kubernetes <= 1.14 and Cluster Agent's External Metrics Provider (must be 443)
+
+## 2.3.40
+
+* Update documentation for resource requests & limits default values.
+
+## 2.3.39
+
+* Propagate `datadog.checksd` to the clusterchecks runner to support custom checks there.
+
+## 2.3.38
+
+* Add support of DD\_CONTAINER\_{INCLUDE,EXCLUDE}\_{METRICS,LOGS}
+
+## 2.3.37
+
+* Add NET\_BROADCAST capability
+
+## 2.3.36
+
+* Bump default Agent version to `7.21.1`
+
 ## 2.3.35
 
 * Add support for configuring the Datadog Admission Controller

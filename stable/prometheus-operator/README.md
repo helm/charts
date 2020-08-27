@@ -376,6 +376,13 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheus.servicePerReplica.port` |  Port for Prometheus per replica Service to listen on | `9090` |
 | `prometheus.servicePerReplica.targetPort` |  Prometheus per replica Service internal port | `9090` |
 | `prometheus.servicePerReplica.type` |  Prometheus per replica Service type | `ClusterIP` |
+| `prometheus.thanosIngress.enabled` |  Enable Ingress for Thanos Sidecar * ingress controller needs to support [gRPC](https://thanos.io/quick-tutorial.md/#store-api) | `false` |
+| `prometheus.thanosIngress.servicePort` |  Ingress Service Port for Thanos Sidecar | `10901` |
+| `prometheus.thanosIngress.paths` |  Ingress paths for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.annotations` |  Ingress annotations for Thanos Sidecar | `{}` |
+| `prometheus.thanosIngress.labels` |  Ingress labels for Thanos Sidecar | `{}` |
+| `prometheus.thanosIngress.hosts |  Ingress hosts for Thanos Sidecar | `[]` |
+| `prometheus.thanosIngress.tls |  Ingress tls for Thanos Sidecar | `[]` |
 
 ### Alertmanager
 | Parameter | Description | Default |
@@ -407,6 +414,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `alertmanager.alertmanagerSpec.storage` | Storage is the definition of how storage will be used by the Alertmanager instances. | `{}` |
 | `alertmanager.alertmanagerSpec.tolerations` | If specified, the pod's tolerations. | `[]` |
 | `alertmanager.alertmanagerSpec.useExistingSecret` | Use an existing secret for configuration (all defined config from values.yaml will be ignored) | `false` |
+| `alertmanager.alertmanagerSpec.volumes` | Volumes allows configuration of additional volumes on the output StatefulSet definition. Volumes specified will be appended to other volumes that are generated as a result of StorageSpec objects. |  |
+| `alertmanager.alertmanagerSpec.volumeMounts` | VolumeMounts allows configuration of additional VolumeMounts on the output StatefulSet definition. VolumeMounts specified will be appended to other VolumeMounts in the alertmanager container, that are generated as a result of StorageSpec objects. |  |
 | `alertmanager.apiVersion` | Api that prometheus will use to communicate with alertmanager. Possible values are v1, v2 | `v2` |
 | `alertmanager.config` | Provide YAML to configure Alertmanager. See https://prometheus.io/docs/alerting/configuration/#configuration-file. The default provided works to suppress the Watchdog alert from `defaultRules.create` | `{"global":{"resolve_timeout":"5m"},"route":{"group_by":["job"],"group_wait":"30s","group_interval":"5m","repeat_interval":"12h","receiver":"null","routes":[{"match":{"alertname":"Watchdog"},"receiver":"null"}]},"receivers":[{"name":"null"}]}` |
 | `alertmanager.enabled` | Deploy alertmanager | `true` |
@@ -585,6 +594,7 @@ For a full list of configurable values please refer to the [Grafana chart](https
 | `kubelet.serviceMonitor.resourceRelabelings` | The `relabel_configs` for scraping cAdvisor. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `kubelet.serviceMonitor.https` | Enable scraping of the kubelet over HTTPS. For more information, see https://github.com/coreos/prometheus-operator/issues/926 | `true` |
 | `kubelet.serviceMonitor.interval` | Scrape interval. If not set, the Prometheus default scrape interval is used | `nil` |
+| `kubelet.serviceMonitor.scrapeTimeout` | Scrape timeout. If not set, the Prometheus default scrape timeout is used | `nil` |
 | `kubelet.serviceMonitor.metricRelabelings` | The `metric_relabel_configs` for scraping kubelet. | `` |
 | `kubelet.serviceMonitor.relabelings` | The `relabel_configs` for scraping kubelet. | `[{"sourceLabels":["__metrics_path__"], "targetLabel":"metrics_path"}]` |
 | `nodeExporter.enabled` | Deploy the `prometheus-node-exporter` and scrape it | `true` |
