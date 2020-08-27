@@ -31,6 +31,12 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
