@@ -101,7 +101,9 @@ ingress:
   extraLabels: {}
   hosts: []
   #  - domain: mybackend.mydomain.foo
-  #    path: /
+  #    paths:
+  #      - /endpoint1
+  #      - /endpoint2
   tls: []
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
