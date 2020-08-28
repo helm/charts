@@ -27,6 +27,12 @@ spec:
     {{- if .Values.service.nodePort }}
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
+  {{- if .Values.mysqlx.port.enabled }}
+  - name: mysqlx
+    port: 33060
+    targetPort: mysqlx
+    protocol: TCP
+  {{- end }}
   {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9104
