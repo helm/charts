@@ -201,6 +201,8 @@ data:
         Host {{ .Values.backend.graylog.host }}
         Port {{ .Values.backend.graylog.port }}
         Mode {{ .Values.backend.graylog.mode }}
+        # Workaround: https://github.com/fluent/fluent-bit/issues/1897
+        Gelf_Host_Key             stream
         Gelf_Short_Message_Key log
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
