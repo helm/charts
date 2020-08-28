@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | podAnnotations                   | controller pods annotations                                 | {}                |
 | podLabels                        | extra pods labels                                           | {}                |
 | image.repository                 | controller container image repository                       | metabase/metabase |
-| image.tag                        | controller container image tag                              | v0.34.0           |
+| image.tag                        | controller container image tag                              | v0.36.3           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
 | fullnameOverride                 | String to fully override metabase.fullname template         | null              |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
@@ -85,12 +85,13 @@ The following table lists the configurable parameters of the Metabase chart and 
 | service.loadBalancerSourceRanges | Array of Source Ranges                                      | null              |
 | service.externalPort             | Service external port                                       | 80                |
 | service.internalPort             | Service internal port, should be the same as `listen.port`  | 3000              |
+| service.nodePort                 | Service node port                                           | null              |
 | service.annotations              | Service annotations                                         | {}                |
 | ingress.enabled                  | Enable ingress controller resource                          | false             |
 | ingress.hosts                    | Ingress resource hostnames                                  | null              |
 | ingress.path                     | Ingress path                                                | /                 |
 | ingress.labels                   | Ingress labels configuration                                | null              |
-| ingress.annotations              | Ingress annotations configuration                           | null              |
+| ingress.annotations              | Ingress annotations configuration                           | {}                |
 | ingress.tls                      | Ingress TLS configuration                                   | null              |
 | log4jProperties                  | Custom `log4j.properties` file                              | null              |
 | resources                        | Server resource requests and limits                         | {}                |
@@ -101,8 +102,9 @@ The following table lists the configurable parameters of the Metabase chart and 
 | jetty.minThreads                 | Jetty min number of threads                                 | null              |
 | jetty.maxQueued                  | Jetty max queue size                                        | null              |
 | jetty.maxIdleTime                | Jetty max idle time                                         | null              |
+| siteUrl                          | Base URL, useful for serving behind a reverse proxy         | null              |
 
-The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.34.0/).
+The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.36.3/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

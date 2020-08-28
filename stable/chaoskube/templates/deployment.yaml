@@ -1,8 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "apps/v1beta1" }}
-apiVersion: apps/v1beta1
-{{- else }}
 apiVersion: apps/v1
-{{- end }}
 kind: Deployment
 metadata:
   name: {{ include "chaoskube.fullname" . }}
@@ -18,6 +14,9 @@ spec:
     metadata:
       labels:
 {{ include "labels.standard" . | indent 8 }}
+    {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+    {{- end }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}

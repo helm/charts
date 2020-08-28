@@ -1,0 +1,111 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+{{- $fullName := include "minio.fullname" . -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $fullName }}-update-prometheus-secret
+  labels:
+    app: {{ template "minio.name" . }}-update-prometheus-secret
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  {{ toYaml .Values.updatePrometheusJob.annotations | indent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "minio.name" . }}-update-prometheus-secret
+        release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ $fullName }}-update-prometheus-secret
+{{- end }}
+      restartPolicy: OnFailure
+{{- include "minio.imagePullSecrets" . | indent 6 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      volumes:
+        - name: workdir
+          emptyDir: {}
+      initContainers:
+        - name: minio-mc
+          image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
+          imagePullPolicy: {{ .Values.mcImage.pullPolicy }}
+          command:
+            - /bin/sh
+            - "-c"
+            - mc admin prometheus generate target --json --no-color -q > /workdir/mc.json
+          env:
+            # mc admin prometheus generate don't really connect to remote server, TLS cert isn't required
+            - name: MC_HOST_target
+              value: http{{ if .Values.tls.enabled }}s{{ end }}://{{ .Values.accessKey }}:{{ .Values.secretKey }}@{{ $fullName }}:{{ .Values.service.port }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        # extract bearerToken from mc admin output
+        - name: jq
+          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
+          command:
+            - /bin/sh
+            - "-c"
+            - jq -e -c -j -r .bearerToken < /workdir/mc.json > /workdir/token
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        - name: kubectl-create
+          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
+          command:
+            - /bin/sh
+            - "-c"
+            # The following script does:
+            # - get the servicemonitor that need this secret and copy some metadata and create the ownerreference for the secret file
+            # - create the secret
+            # - merge both json
+            - >
+              kubectl -n {{ .Release.Namespace }} get servicemonitor {{ $fullName }} -o json |
+                jq -c '{metadata: {name: "{{ $fullName }}-prometheus", namespace: .metadata.namespace, labels: {app: .metadata.labels.app, release: .metadata.labels.release}, ownerReferences: [{apiVersion: .apiVersion, kind: .kind, blockOwnerDeletion: true, controller: true, uid: .metadata.uid, name: .metadata.name}]}}' > /workdir/metadata.json &&
+              kubectl create secret generic {{ $fullName }}-prometheus --from-file=token=/workdir/token --dry-run -o json > /workdir/secret.json &&
+              cat /workdir/secret.json /workdir/metadata.json | jq -s add > /workdir/object.json
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      containers:
+        - name: kubectl-apply
+          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
+          command:
+            - kubectl
+            - apply
+            - "-f"
+            - /workdir/object.json
+          volumeMounts:
+            - name: workdir
+              mountPath: /workdir
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}

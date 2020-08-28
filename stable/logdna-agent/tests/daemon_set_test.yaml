@@ -1,0 +1,31 @@
+suite: test daemon_set
+templates:
+  - daemon_set.yaml
+tests:
+  - it: should use service account \"logdna-agent\"
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: logdna-agent
+  - it: should use overridden service account name
+    set:
+      serviceAccount.name: my-service-account
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: my-service-account
+  - it: should use overriden service account name if not created
+    set:
+      serviceAccount.create: false
+      serviceAccount.name: my-service-account
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: my-service-account
+  - it: should use \"default\" service account name if not created and no name is supplied
+    set:
+      serviceAccount.create: false
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: default

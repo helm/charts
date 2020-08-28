@@ -23,6 +23,8 @@ spec:
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
         role: hazelcast
+      annotations:
+        checksum/hazelcast-config: {{ toYaml .Values.hazelcast.yaml | sha256sum }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -40,10 +42,13 @@ spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
+      {{- if .Values.securityContext.enabled }}
       securityContext:
         runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -100,6 +105,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        {{- if .Values.customVolume }}
+        - name: CLASSPATH
+          value: "/data/custom:/data/custom/*"
+        {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: PROMETHEUS_PORT
           value: "{{ .Values.metrics.service.port }}"
@@ -114,6 +123,7 @@ spec:
         securityContext:
           runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
           runAsUser: {{ .Values.securityContext.runAsUser }}
+          runAsGroup: {{ .Values.securityContext.runAsGroup }}
           privileged: false
           readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
           allowPrivilegeEscalation: false

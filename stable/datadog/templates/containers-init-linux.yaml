@@ -1,0 +1,51 @@
+{{- define "containers-init-linux" -}}
+- name: init-volume
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["bash", "-c"]
+  args:
+    - cp -r /etc/datadog-agent /opt
+  volumeMounts:
+    - name: config
+      mountPath: /opt/datadog-agent
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+- name: init-config
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["bash", "-c"]
+  args:
+    - for script in $(find /etc/cont-init.d/ -type f -name '*.sh' | sort) ; do bash $script ; done
+  volumeMounts:
+    - name: config
+      mountPath: /etc/datadog-agent
+    {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+    - name: confd
+      mountPath: /conf.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.checksd }}
+    - name: checksd
+      mountPath: /checks.d
+      readOnly: true
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
+    {{- end }}
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    {{- if and (not .Values.clusterAgent.enabled) .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote }}
+    {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+{{- end -}}

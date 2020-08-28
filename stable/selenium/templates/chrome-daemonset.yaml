@@ -1,0 +1,142 @@
+{{- if and (eq true .Values.chrome.enabled) (eq true .Values.chrome.runAsDaemonSet) -}}
+apiVersion: {{ template "deployment.apiVersion" . }}
+kind: DaemonSet
+metadata:
+  name: {{ template "selenium.chrome.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "selenium.chrome.fullname" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "selenium.chrome.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      {{- with .Values.chrome.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}
+      {{- if .Values.chrome.podAnnotations }}
+      annotations:
+{{ toYaml .Values.chrome.podAnnotations | indent 8 }}
+      {{- end}}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.chrome.image }}:{{ .Values.chrome.tag }}"
+          imagePullPolicy: {{ .Values.chrome.pullPolicy }}
+          ports:
+            {{- if .Values.hub.jmxPort }}
+            - containerPort: {{ .Values.hub.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
+          {{- if .Values.chrome.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.chrome.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.chrome.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.chrome.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "selenium.hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.servicePort | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ default "" .Values.chrome.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.chrome.seOpts | quote }}
+            {{- if .Values.chrome.chromeVersion }}
+            - name: CHROME_VERSION
+              value: {{ .Values.chrome.chromeVersion | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.chrome.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.chrome.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.chrome.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.chrome.nodePort | quote }}
+            {{- end }}
+            {{- if .Values.chrome.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.chrome.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.chrome.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.chrome.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.chrome.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.chrome.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.chrome.display }}
+            - name: DISPLAY
+              value: {{ .Values.chrome.display | quote }}
+            {{- end }}
+            {{- if .Values.chrome.timeZone }}
+            - name: TZ
+              value: {{ .Values.chrome.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.chrome.extraEnvs }}
+{{ toYaml .Values.chrome.extraEnvs | indent 12 }}
+            {{- end }}
+          volumeMounts:
+{{ if .Values.chrome.volumeMounts -}}
+{{ toYaml .Values.chrome.volumeMounts | trim | indent 12 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.chrome.resources | trim | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chrome.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.chrome.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.chrome.volumes -}}
+{{ toYaml .Values.chrome.volumes | trim | indent 8 }}
+{{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | trim | indent 8 }}
+      nodeSelector:
+{{- if .Values.chrome.nodeSelector }}
+{{ toYaml .Values.chrome.nodeSelector | trim | indent 8  }}
+{{- else if .Values.global.nodeSelector }}
+{{ toYaml .Values.global.nodeSelector | trim | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.chrome.affinity }}
+{{ toYaml .Values.chrome.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.chrome.tolerations }}
+{{ toYaml .Values.chrome.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
+{{- end }}
+{{- end -}}

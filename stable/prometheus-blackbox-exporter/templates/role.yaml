@@ -1,0 +1,20 @@
+{{- if .Values.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
+  name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+rules:
+  - apiGroups:
+    - policy
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ template "prometheus-blackbox-exporter.fullname" . }}-psp
+    verbs:
+    - use
+{{- end -}}

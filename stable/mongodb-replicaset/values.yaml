@@ -2,6 +2,11 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# Override the deployment namespace
+global: {}
+# global:
+#   namespaceOverride: ""
+
 replicas: 3
 port: 27017
 
@@ -13,6 +18,9 @@ replicaSetName: rs0
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
+
+# updateStrategy:
+  # type: RollingUpdate
 
 auth:
   enabled: false
@@ -60,17 +68,17 @@ metrics:
   enabled: false
   image:
     repository: bitnami/mongodb-exporter
-    tag: 0.10.0-debian-9-r71
+    tag: 0.11.0
     pullPolicy: IfNotPresent
   port: 9216
   path: "/metrics"
-  socketTimeout: 3s
-  syncTimeout: 1m
   prometheusServiceDiscovery: true
   resources: {}
   securityContext:
     enabled: true
     runAsUser: 1001
+
+serviceAccount: ""
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
@@ -101,7 +109,27 @@ affinity: {}
 
 tolerations: []
 
+# Additional containers to add to the StatefulSet
+extraContainers: []
+#  - name: mongo-sidecar
+#    image: stefanprodan/mgob:latest
+#    ports:
+#    - name: sidecar-http
+#      containerPort: 8090
+#    volumeMounts:
+#    - mountPath: /config/test1.yml
+#      name: mgob-config
+#      subPath: test1.yml
+#    - name: mgob-storage
+#      mountPath: /storage
+
 extraLabels: {}
+
+## Additional volumes which can be used by sidecar containers
+extraVolumes: []
+# - name: mgob-config
+#   configMap:
+#     name: mgob-config
 
 priorityClassName: ""
 
@@ -119,6 +147,9 @@ persistentVolume:
     - ReadWriteOnce
   size: 10Gi
   annotations: {}
+
+# Annotations to be added to the secrets
+secretAnnotations: {}
 
 # Annotations to be added to the service
 serviceAnnotations: {}
@@ -168,3 +199,16 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+# Startup probe, will only be added since Kubernetes v1.16 or higher
+# When you have a lot of collections/indices, MongoDB need some time to start
+startupProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 60
+  periodSeconds: 10
+  successThreshold: 2
+
+# Enables/disables the headless client service
+clientService:
+  enabled: true

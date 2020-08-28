@@ -82,6 +82,7 @@ Parameters introduced starting from v2
 | `config.web.address` | dex http/https listen address | `0.0.0.0` |
 | `config.web.tlsCert` | Maps to the dex config `web.tlsCert` param | `/etc/dex/tls/https/server/tls.crt` |
 | `config.web.tlsKey` | Maps to the dex config `web.tlsKey` param | `/etc/dex/tls/https/server/tls.key` |
+| `config.web.allowedOrigins` | Maps to the dex config `web.allowedOrigins` param | `[]` |
 | `config.expiry.signingKeys` | Maps to the dex config `expiry.signingKeys` param | `6h` |
 | `config.expiry.idTokens` | Maps to the dex config `expiry.idTokens` param | `24h` |
 | `crd.present` | Whether dex's CRDs are already present (if not cluster role and cluster role binding will be created to enable dex to create them). Depends on `rbac.create` | `false` |
@@ -95,6 +96,7 @@ Parameters introduced starting from v2
 | `ports.web.nodePort` | K8S Service node port for the dex http/https listener | `32000` |
 | `ports.web.servicePort` | K8S Service port for the dex http/https listener | `32000` |
 | `rbac.create` | If `true`, create & use RBAC resources | `true` |
+| `securityContext` | Allow setting the securityContext of the main dex deployment | `` |
 | `service.loadBalancerIP` | IP override for K8S LoadBalancer Service | `""` |
 | `livenessProbe.enabled` | k8s liveness probe enabled (cannot be enabled when `https = true`) | `false` |
 | `livenessProbe.path` |  k8s liveness probe http path | `"/healthz"`  |
@@ -108,6 +110,7 @@ Parameters introduced starting from v2
 | `readinessProbe.periodSeconds` | How often (in seconds) to perform the probe  |  `10` |
 | `readinessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
 | `readinessProbe.failureThreshold` | Times to perform probe before marking the container `Unready` |  `3` |
+| `imagePullSecrets` | Allows to run containers based on images in private registries. |  `{}` |
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.

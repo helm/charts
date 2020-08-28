@@ -54,9 +54,15 @@ condition_map = {
     'general.rules': ' .Values.defaultRules.rules.general',
     'k8s.rules': ' .Values.defaultRules.rules.k8s',
     'kube-apiserver.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserver',
+    'kube-apiserver-availability.rules': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverAvailability',
+    'kube-apiserver-error': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverError',
+    'kube-apiserver-slos': ' .Values.kubeApiServer.enabled .Values.defaultRules.rules.kubeApiserverSlos',
+    'kube-prometheus-general.rules': ' .Values.defaultRules.rules.kubePrometheusGeneral',
     'kube-prometheus-node-alerting.rules': ' .Values.defaultRules.rules.kubePrometheusNodeAlerting',
     'kube-prometheus-node-recording.rules': ' .Values.defaultRules.rules.kubePrometheusNodeRecording',
     'kube-scheduler.rules': ' .Values.kubeScheduler.enabled .Values.defaultRules.rules.kubeScheduler',
+    'kube-state-metrics': ' .Values.kubeStateMetrics.enabled .Values.defaultRules.rules.kubeStateMetrics',
+    'kubelet.rules': ' .Values.kubelet.enabled .Values.defaultRules.rules.kubelet',
     'kubernetes-absent': ' .Values.defaultRules.rules.kubernetesAbsent',
     'kubernetes-resources': ' .Values.defaultRules.rules.kubernetesResources',
     'kubernetes-storage': ' .Values.defaultRules.rules.kubernetesStorage',
@@ -101,7 +107,7 @@ replacement_map = {
         'init': '{{- $alertmanagerJob := printf "%s-%s" (include "prometheus-operator.fullname" .) "alertmanager" }}'},
     'namespace="monitoring"': {
         'replacement': 'namespace="{{ $namespace }}"',
-        'init': '{{- $namespace := .Release.Namespace }}'},
+        'init': '{{- $namespace := printf "%s" (include "prometheus-operator.namespace" .) }}'},
     'alertmanager-$1': {
         'replacement': '$1',
         'init': ''},
@@ -119,16 +125,18 @@ replacement_map = {
 }
 
 # standard header
-header = '''# Generated from '%(name)s' group from %(url)s
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+header = '''{{- /*
+Generated from '%(name)s' group from %(url)s
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=%(min_kubernetes)s" $kubeTargetVersion) (semverCompare "<%(max_kubernetes)s" $kubeTargetVersion) .Values.defaultRules.create%(condition)s }}%(init_line)s
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%%s-%%s" (include "prometheus-operator.fullname" .) "%(name)s" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -150,7 +158,7 @@ def init_yaml_styles():
 
 
 def escape(s):
-    return s.replace("{{", "{{`{{").replace("}}", "}}`}}")
+    return s.replace("{{", "{{`{{").replace("}}", "}}`}}").replace("{{`{{", "{{`{{`}}").replace("}}`}}", "{{`}}`}}")
 
 
 def fix_expr(rules):

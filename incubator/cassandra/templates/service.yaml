@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "cassandra.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   clusterIP: None
   type: {{ .Values.service.type }}

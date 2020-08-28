@@ -1,12 +1,17 @@
-# Generated from 'namespace-by-pod' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
-# Do not change in-place! In order to change this file first read following link:
-# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+{{- /*
+Generated from 'namespace-by-pod' from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/grafana-dashboardDefinitions.yaml
+Do not change in-place! In order to change this file first read following link:
+https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+*/ -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if and (semverCompare ">=1.14.0-0" $kubeTargetVersion) (semverCompare "<9.9.9-9" $kubeTargetVersion) .Values.grafana.enabled .Values.grafana.defaultDashboardsEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: {{ template "prometheus-operator.namespace" . }}
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) "namespace-by-pod" | trunc 63 | trimSuffix "-" }}
+  annotations:
+{{ toYaml .Values.grafana.sidecar.dashboards.annotations | indent 4 }}
   labels:
     {{- if $.Values.grafana.sidecar.dashboards.label }}
     {{ $.Values.grafana.sidecar.dashboards.label }}: "1"
@@ -322,36 +327,36 @@ data:
             {
                 "columns": [
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Time",
+                        "value": "Time"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #A",
+                        "value": "Value #A"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #B",
+                        "value": "Value #B"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #C",
+                        "value": "Value #C"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #D",
+                        "value": "Value #D"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #E",
+                        "value": "Value #E"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "Value #F",
+                        "value": "Value #F"
                     },
                     {
-                        "text": "",
-                        "value": ""
+                        "text": "pod",
+                        "value": "pod"
                     }
                 ],
                 "datasource": "$datasource",
@@ -579,8 +584,9 @@ data:
                         "step": 10
                     }
                 ],
+                "timeFrom": null,
+                "timeShift": null,
                 "title": "Current Status",
-                "transform": "table",
                 "type": "table"
             },
             {
@@ -630,6 +636,7 @@ data:
                     "min": false,
                     "rightSide": false,
                     "show": true,
+                    "sideWidth": null,
                     "total": false,
                     "values": false
                 },
@@ -658,7 +665,7 @@ data:
                         "expr": "sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -729,6 +736,7 @@ data:
                     "min": false,
                     "rightSide": false,
                     "show": true,
+                    "sideWidth": null,
                     "total": false,
                     "values": false
                 },
@@ -757,7 +765,7 @@ data:
                         "expr": "sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{pod}}`}}",
+                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -839,6 +847,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -867,7 +876,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -938,6 +947,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -966,7 +976,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1057,6 +1067,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -1085,7 +1096,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1156,6 +1167,7 @@ data:
                             "min": false,
                             "rightSide": false,
                             "show": true,
+                            "sideWidth": null,
                             "total": false,
                             "values": false
                         },
@@ -1184,7 +1196,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{pod}}`}}",
+                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1239,7 +1251,7 @@ data:
                 "type": "row"
             }
         ],
-        "refresh": "30s",
+        "refresh": "10s",
         "rows": [
 
         ],
@@ -1252,13 +1264,15 @@ data:
             "list": [
                 {
                     "current": {
-                        "text": "Prometheus",
-                        "value": "Prometheus"
+                        "text": "default",
+                        "value": "default"
                     },
                     "hide": 0,
                     "label": null,
                     "name": "datasource",
-                    "options": [],
+                    "options": [
+
+                    ],
                     "query": "prometheus",
                     "refresh": 1,
                     "regex": "",
@@ -1407,7 +1421,7 @@ data:
                 "30d"
             ]
         },
-        "timezone": "",
+        "timezone": "UTC",
         "title": "Kubernetes / Networking / Namespace (Pods)",
         "uid": "8b7a8b326d7a6f1f04244066368c67af",
         "version": 0

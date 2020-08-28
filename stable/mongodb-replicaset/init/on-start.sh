@@ -172,7 +172,7 @@ log "Initialized."
 for peer in "${peers[@]}"; do
     log "Checking if ${peer} is primary"
     # Check rs.status() first since it could be in primary catch up mode which db.isMaster() doesn't show
-    if [[ $(mongo admin --host "${peer}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState") == "1" ]]; then
+    if [[ $(mongo admin --host "${peer}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState" | tail -n1) == "1" ]]; then
         retry_until "${peer}" "db.isMaster().ismaster" "true"
         log "Found primary: ${peer}"
         primary="${peer}"
@@ -183,7 +183,7 @@ done
 if [[ "${primary}" = "${service_name}" ]]; then
     log "This replica is already PRIMARY"
 elif [[ -n "${primary}" ]]; then
-    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')") == "-1" ]]; then
+    if [[ $(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.conf().members.findIndex(m => m.host == '${service_name}:${port}')" | tail -n1) == "-1" ]]; then
       log "Adding myself (${service_name}) to replica set..."
       if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
           log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
@@ -214,7 +214,7 @@ fi
 
 # User creation
 if [[ -n "${primary}" && "$AUTH" == "true" && "$METRICS" == "true" ]]; then
-    metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet)
+    metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet | tail -n1)
     if [[ "${metric_user_count}" == "0" ]]; then
         log "Creating clusterMonitor user..."
         mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '${metrics_user}', pwd: '${metrics_password}', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"

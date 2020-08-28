@@ -42,16 +42,16 @@ To access Hazelcast Management Center:
 {{- if contains "LoadBalancer" .Values.mancenter.service.type }}
   *) Check Management Center external IP:
      $ export MANCENTER_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mancenter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  *) Open Browser at: http://$MANCENTER_IP:{{ .Values.mancenter.service.port }}/hazelcast-mancenter
+  *) Open Browser at: http://$MANCENTER_IP:{{ .Values.mancenter.service.port }}{{ .Values.mancenter.contextPath }}
 {{- else if contains "ClusterIP" .Values.mancenter.service.type }}
   *) Forward port from POD:
      $ export POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ template "hazelcast.name" . }},role=mancenter" -o jsonpath="{.items[0].metadata.name}")
      $ kubectl port-forward --namespace {{ .Release.Namespace }} $POD 8080:8080
-  *) Open Browser at: http://127.0.0.1:8080/hazelcast-mancenter
+  *) Open Browser at: http://127.0.0.1:8080{{ .Values.mancenter.contextPath }}
 {{- else if contains "NodePort" .Values.mancenter.service.type }}
   *) Check Node IP and Port:
      $ export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
      $ export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mancenter.fullname" . }})
-  *) Open Browser at: http://$NODE_IP:$NODE_PORT/hazelcast-mancenter
+  *) Open Browser at: http://$NODE_IP:$NODE_PORT{{ .Values.mancenter.contextPath }}
 {{- end }}
 {{- end }}

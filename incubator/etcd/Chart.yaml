@@ -1,7 +1,7 @@
 apiVersion: v1
 name: etcd
 home: https://github.com/coreos/etcd
-version: 0.7.3
+version: 0.7.5
 appVersion: 3.2.26
 description: Distributed reliable key-value store for the most critical data of a
   distributed system.

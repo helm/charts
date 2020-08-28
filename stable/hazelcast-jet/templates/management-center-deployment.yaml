@@ -36,10 +36,23 @@ spec:
       nodeSelector:
 {{ toYaml .Values.managementcenter.nodeSelector | indent 8 }}
       {{- end }}
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
       {{- if .Values.securityContext.enabled }}
       securityContext:
+        runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
+        {{- if .Values.managementcenter.affinity }}
+      affinity:
+{{ toYaml .Values.managementcenter.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.managementcenter.tolerations }}
+      tolerations:
+{{ toYaml .Values.managementcenter.tolerations | indent 8 }}
       {{- end }}
       containers:
       - name: {{ template "hazelcast-jet-management-center.fullname" . }}
@@ -50,6 +63,8 @@ spec:
         ports:
         - name: mc-port
           containerPort: 8081
+        - name: mc-https-port
+          containerPort: 443
         {{- if .Values.managementcenter.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -87,6 +102,18 @@ spec:
         {{- end }}
         - name: JAVA_OPTS
           value: " -Djet.clientConfig=/data/hazelcast-jet-management-center/hazelcast-client.yaml -DserviceName={{ template "hazelcast-jet.fullname" . }} -Dnamespace={{ .Release.Namespace }} {{ .Values.managementcenter.javaOpts }}"
+      {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsNonRoot: {{ if eq (int .Values.securityContext.runAsUser) 0 }}false{{ else }}true{{ end }}
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          runAsGroup: {{ .Values.securityContext.runAsGroup }}
+          privileged: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        {{- end }}
       serviceAccountName: {{ template "hazelcast-jet.serviceAccountName" . }}
       volumes:
       - name: hazelcast-jet-management-center-storage

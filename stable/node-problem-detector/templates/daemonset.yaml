@@ -7,6 +7,9 @@ metadata:
     helm.sh/chart: {{ include "node-problem-detector.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end}}
 spec:
   selector:
     matchLabels:
@@ -39,9 +42,11 @@ spec:
           command:
             - "/bin/sh"
             - "-c"
-            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }} --prometheus-address={{ .Values.settings.prometheus_address }} --prometheus-port={{ .Values.settings.prometheus_port }}"
+            - "exec /node-problem-detector --logtostderr --config.system-log-monitor={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- if .Values.settings.custom_plugin_monitors }} --custom-plugin-monitors={{- range $index, $monitor := .Values.settings.custom_plugin_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }} {{- end }} --prometheus-address={{ .Values.settings.prometheus_address }} --prometheus-port={{ .Values.settings.prometheus_port }} --k8s-exporter-heartbeat-period={{ .Values.settings.heartBeatPeriod }}"
+{{- if .Values.securityContext }}
           securityContext:
-            privileged: true
+{{ toYaml .Values.securityContext | indent 12 }}
+{{- end }}
           env:
             - name: NODE_NAME
               valueFrom:
@@ -52,13 +57,16 @@ spec:
 {{- end }}
           volumeMounts:
             - name: log
-              mountPath: /var/log
+              mountPath: {{ .Values.hostpath.logdir }}
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
             - name: custom-config
               mountPath: /custom-config
               readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12 }}
+{{- end }}
           ports:
             - containerPort: {{ .Values.settings.prometheus_port }}
               name: exporter
@@ -87,3 +95,6 @@ spec:
         - name: custom-config
           configMap:
             name: {{ include "node-problem-detector.customConfig" . }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}

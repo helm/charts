@@ -43,18 +43,14 @@ spec:
 {{ toYaml .Values.skipper.resources | indent 10 }}
         livenessProbe:
           httpGet:
-            path: /api/about
+            path: /actuator/health
             port: http
-          initialDelaySeconds: 90
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         readinessProbe:
           httpGet:
-            path: /api/about
+            path: /actuator/info
             port: http
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 5
+          initialDelaySeconds: 45
         env:
         - name: KUBERNETES_NAMESPACE
           valueFrom:
@@ -85,6 +81,10 @@ spec:
         {{- end }}
         - name: KUBERNETES_TRUST_CERTIFICATES
           value: {{ .Values.skipper.trustCerts | quote }}
+        {{- range $key, $value := .Values.skipper.extraEnv }}
+        - name: {{ $key }}
+          value: "{{ $value }}"
+        {{- end }}
       volumes:
         {{- if or .Values.rabbitmq.enabled (index .Values "rabbitmq-ha" "enabled") }}
         - name: rabbitmq

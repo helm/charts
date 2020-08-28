@@ -1,69 +1,68 @@
-# Oauth client configuration specifics
-config:
-  # OAuth client ID
-  clientID: "XXXXXXX"
-  # OAuth client secret
-  clientSecret: "XXXXXXXX"
-  # Create a new secret with the following command
-  # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
-  cookieSecret: "XXXXXXXXXX"
+# Default values for oauth-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
 
 image:
-  repository: "a5huynh/oauth2_proxy"
-  tag: "2.2"
-  pullPolicy: "IfNotPresent"
+  repository: nginx
+  tag: stable
+  pullPolicy: IfNotPresent
 
-# Optionally specify an array of imagePullSecrets.
-# Secrets must be manually created in the namespace.
-# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-# imagePullSecrets:
-  # - name: myRegistryKeySecretName
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
 
-extraArgs:
-  email-domain: "*"
-  upstream: "file:///dev/null"
-  http-address: "0.0.0.0:4180"
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
   type: ClusterIP
-  externalPort: 443
-  internalPort: 4180
+  port: 80
 
 ingress:
   enabled: false
-  path: /
-  # Used to create an Ingress record.
-  # hosts:
-    # - chart-example.local
-  # annotations:
-  #   kubernetes.io/ingress.class: nginx
-  #   kubernetes.io/tls-acme: "true"
-  # tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 100m
-  #   memory: 300Mi
+  #   memory: 128Mi
   # requests:
   #   cpu: 100m
-  #   memory: 300Mi
+  #   memory: 128Mi
 
-# Affinity for pod assignment
-# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-# affinity: {}
-
-# Tolerations for pod assignment
-# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-tolerations: []
-
-# Node labels for pod assignment
-# Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-podAnnotations: {}
-podLabels: {}
-replicaCount: 1
+tolerations: []
+
+affinity: {}

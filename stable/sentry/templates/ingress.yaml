@@ -8,6 +8,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
  annotations:
    {{- range $key, $value := .Values.ingress.annotations }}
      {{ $key }}: {{ $value | quote }}
@@ -17,6 +20,12 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
+          {{- range .Values.ingress.extraPaths }}
+          - path: {{ .path | quote }}
+            backend:
+              serviceName: {{ .backend.serviceName }}
+              servicePort: {{ .backend.servicePort}}
+          {{- end }}
           - path: {{ default "/" .Values.ingress.path | quote }}
             backend:
               serviceName: {{ template "sentry.fullname" . }}

@@ -1,4 +1,4 @@
-{{- if eq true .Values.chromeDebug.enabled -}}
+{{- if and (eq true .Values.chromeDebug.enabled) (eq false .Values.chromeDebug.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -18,11 +18,18 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.chromeDebug.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
       {{- if .Values.chromeDebug.podAnnotations }}
       annotations:
 {{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.chromeDebug.securityContext }}
+      securityContext:
+{{ toYaml .Values.chromeDebug.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.chromeDebug.image }}:{{ .Values.chromeDebug.tag }}"
@@ -35,6 +42,24 @@ spec:
             {{- end }}
             - containerPort: 5900
               name: vnc
+          {{- if .Values.chromeDebug.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.chromeDebug.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.chromeDebug.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.chromeDebug.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}

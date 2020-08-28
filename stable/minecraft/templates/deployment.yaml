@@ -3,12 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "minecraft.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
   labels:
     app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  strategy:
+    type: {{ .Values.strategyType }}
   selector:
     matchLabels:
       app: {{ template "minecraft.fullname" . }}
@@ -38,12 +46,18 @@ spec:
 {{ toYaml .Values.readinessProbe.command | indent 14 }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         livenessProbe:
           exec:
             command:
 {{ toYaml .Values.livenessProbe.command | indent 14 }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
@@ -187,7 +201,11 @@ spec:
       - name: datadir
       {{- if .Values.persistence.dataDir.enabled }}
         persistentVolumeClaim:
+        {{- if .Values.persistence.dataDir.existingClaim }}
+          claimName: {{ .Values.persistence.dataDir.existingClaim }}
+        {{- else }}
           claimName: {{ template "minecraft.fullname" . }}-datadir
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

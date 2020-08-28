@@ -14,4 +14,7 @@ spec:
       - sh
       - -c
       - redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.redis.port }} info server
+  {{- if .Values.imagePullSecrets }}
+  imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 4 }}
+  {{- end }}
   restartPolicy: Never

@@ -19,10 +19,10 @@ metadata:
     heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
-  resources: ["pods", "events", "nodes", "nodes/stats", "nodes/metrics", "namespaces", "services"]
+  resources: ["pods", "events", "nodes", "nodes/stats", "nodes/metrics", "nodes/spec", "nodes/proxy", "namespaces", "services"]
   verbs: ["list", "get", "watch"]
-- apiGroups: ["apps", "extensions"]
-  resources: ["replicasets"]
+- apiGroups: ["apps", "extensions", "autoscaling"]
+  resources: ["replicasets", "deployments", "horizontalpodautoscalers"]
   verbs: ["list"]
 - apiGroups: ["azmon.container.insights"]
   resources: ["healthstates"]
@@ -47,4 +47,3 @@ roleRef:
   name: omsagent-reader
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
-

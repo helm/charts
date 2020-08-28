@@ -4,8 +4,9 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.21.0"
+imageTag: "v2.24.0"
 imagePullPolicy: "IfNotPresent"
+imagePullSecrets: {}
 
 inMiniKube: false
 
@@ -25,6 +26,18 @@ tolerations: []
   #   value: bar
   #   effect: NoSchedule
 
+securityContext:
+  # Rejecting containers trying to run with root privileges
+  # runAsNonRoot: true
+  # Preventing privilege escalation to root privileges
+  # allowPrivilegeEscalation: false
+  # Set the user ID used to run the container
+  # runAsUser: 1001
+  # Set the primary group ID used to run all processes within any container of the pod
+  # runAsGroup: 1001
+  # Set the group ID associated with the container
+  # fsGroup: 1001
+
 replicas: 1
 
 # resources:
@@ -41,6 +54,9 @@ grpc: true
 # https termination by dex itself
 https: false
 
+# expose prometheus metrics ?
+telemetry: false
+
 ports:
   web:
     containerPort: 5556
@@ -53,6 +69,11 @@ ports:
     # for service.type: NodePort
     nodePort: 35000
     servicePort: 35000
+  telemetry:
+    containerPort: 5558
+    # for service.type: NodePort
+    nodePort: 37000
+    servicePort: 37000
 
 livenessProbe:
   enabled: true
@@ -108,7 +129,7 @@ certs:
     caDays: 10000
     certDays: 10000
     altNames:
-      - dex.io
+      - dex.example.com
     altIPs: {}
     secret:
       tlsName: dex-web-server-tls
@@ -120,7 +141,7 @@ certs:
     create: true
     activeDeadlineSeconds: 300
     altNames:
-      - dex.io
+      - dex.example.com
     altIPs: {}
     secret:
       serverTlsName: dex-grpc-server-tls
@@ -162,7 +183,7 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
 
 config:
-  issuer: http://dex.io:8080
+  issuer: http://dex.example.com:8080
   storage:
     type: kubernetes
     config:
@@ -174,6 +195,7 @@ config:
     address: 0.0.0.0
     tlsCert: /etc/dex/tls/https/server/tls.crt
     tlsKey: /etc/dex/tls/https/server/tls.key
+    allowedOrigins: []
 # Section below is relevant only when grpc support is enabled
   grpc:
     # port is taken from ports section above

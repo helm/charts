@@ -13,8 +13,9 @@ spec:
       component: halyard
   template:
     metadata:
-      {{- if .Values.halyard.annotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-init-script.yaml") . | sha256sum }}
+      {{- if .Values.halyard.annotations }}
 {{ toYaml .Values.halyard.annotations | indent 8 }}
       {{- end }}
       labels:
@@ -29,6 +30,14 @@ spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         fsGroup: {{ .Values.securityContext.fsGroup }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       initContainers:
       - name: "create-halyard-local"
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
@@ -68,7 +77,7 @@ spec:
       - name: halyard-home
         emptyDir: {}
       {{- end }}
-      {{- if .Values.kubeConfig.enabled }}
+      {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
       - name: kube-config
         secret:
           secretName: {{ .Values.kubeConfig.secretName }}
@@ -166,7 +175,7 @@ spec:
         - name: s3-secrets
           mountPath: /opt/s3
         {{- end }}
-        {{- if .Values.kubeConfig.enabled }}
+        {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
         - name: kube-config
           mountPath: /opt/kube
         {{- end }}
@@ -201,6 +210,9 @@ spec:
 {{ include "spinnaker.standard-labels-base" . | indent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      {{- with .Values.halyard.persistence.storageClass }}
+      storageClassName: {{ . }}
+      {{- end }}
       resources:
         requests:
           storage: 10Gi

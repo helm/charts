@@ -16,10 +16,10 @@ Similar to the [Helm 2 Support Plan](https://helm.sh/blog/2019-10-22-helm-2150-r
 | | |
 | - | - |
 | **Nov 13, 2019** | At [Helm 3's public release](https://helm.sh/blog/helm-3-released/), new charts are no longer accepted to `stable` or `incubator`. Patches to existing charts may continue to be submitted by the community, and (time permitting) reviewed by chart OWNERS for acceptance |
-| **May 13, 2020** | At 6 months – when helm v2 goes security fix only – the `stable` and `incubator` repos will be de-listed from the Helm Hub. Chart OWNERS are encouraged to accept security fixes only |
+| **Aug 13, 2020** | At 9 months – when Helm v2 goes security fix only – the `stable` and `incubator` repos will be de-listed from the Helm Hub. Chart OWNERS are encouraged to accept security fixes only. ℹ️ _Note: the original date has been extended 3 months to match Helm v2 support. See [COVID-19: Extending Helm v2 Bug Fixes](https://helm.sh/blog/covid-19-extending-helm-v2-bug-fixes/)_ |
 | **Nov 13, 2020** | At 1 year, support for this project will formally end, and this repo will be marked obsolete |
 
-This gives the community (chart OWNERS, organizations, groups or individuals who want to host charts) 6 months to move charts to new Helm repos, and list these new repos on the Helm Hub before `stable` and `incubator` are de-listed.
+This timeline gives the community (chart OWNERS, organizations, groups or individuals who want to host charts) 9 months to move charts to new Helm repos, and list these new repos on the Helm Hub before `stable` and `incubator` are de-listed.
 
 Note that this project has been under active development for some time, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature (within the deprecation timeline of course). Also be aware the repo and chart OWNERS are volunteers so reviews are as time allows, and acceptance is up to the chart OWNERS - you may [reach out](#where-to-find-us) but please be patient and courteous.
 
@@ -49,7 +49,7 @@ $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 To add the Incubator charts for your local client, run `helm repo add`:
 
 ```
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 "incubator" has been added to your repositories
 ```
 

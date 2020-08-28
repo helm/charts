@@ -311,11 +311,11 @@ spec:
           secret:
             secretName: {{ if .Values.rabbitmq.tls.existingSecret }}{{ .Values.rabbitmq.tls.existingSecret }}{{- else }}{{ template "rabbitmq.fullname" . }}-certs{{- end }}
             items:
-            - key: ca_certificate.pem
+            - key: ca.crt
               path: ca_certificate.pem
-            - key: server_certificate.pem
+            - key: tls.crt
               path: server_certificate.pem
-            - key: server_key.pem
+            - key: tls.key
               path: server_key.pem
         {{- end }}
         - name: config-volume

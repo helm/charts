@@ -12,3 +12,6 @@ spec:
     protocol: TCP
     port: 443
     targetPort: {{ .Values.port }}
+{{- if .Values.extraPorts }}
+{{ toYaml .Values.extraPorts | indent 2}}
+{{- end }}

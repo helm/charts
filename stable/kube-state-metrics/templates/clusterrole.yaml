@@ -165,10 +165,10 @@ rules:
     - validatingwebhookconfigurations
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.volumeattachements }}
-- apiGroups: ["storageclasses.k8s.io"]
+{{ if .Values.collectors.volumeattachments }}
+- apiGroups: ["storage.k8s.io"]
   resources:
-    - storageclasses
+    - volumeattachments
   verbs: ["list", "watch"]
 {{ end -}}
 {{ if .Values.collectors.verticalpodautoscalers }}

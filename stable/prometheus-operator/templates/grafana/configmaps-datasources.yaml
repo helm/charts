@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-grafana-datasource
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
 {{- if .Values.grafana.sidecar.datasources.annotations }}
   annotations:
 {{ toYaml .Values.grafana.sidecar.datasources.annotations | indent 4 }}
@@ -33,6 +33,6 @@ data:
 {{- end }}
 {{- end }}
 {{- if .Values.grafana.additionalDataSources }}
-{{ toYaml .Values.grafana.additionalDataSources | indent 4}}
+{{ tpl (toYaml .Values.grafana.additionalDataSources | indent 4) . }}
 {{- end }}
 {{- end }}

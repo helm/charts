@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}
@@ -23,6 +24,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "sealed-secrets.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
@@ -56,12 +60,16 @@ spec:
               port: 8080
           securityContext:
             readOnlyRootFilesystem: true
+            {{- if .Values.securityContext.runAsUser }}
             runAsNonRoot: true
             runAsUser: {{ .Values.securityContext.runAsUser }}
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.securityContext.fsGroup }}
       securityContext:
-        fsGroup: 65534
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       volumes:
       - name: tmp
         emptyDir: {}
