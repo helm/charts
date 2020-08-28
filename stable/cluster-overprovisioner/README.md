@@ -1,3 +1,23 @@
+# **DEPRECATED** This repository has moved
+
+With upcoming deprecation of `helm/charts` repository, the cluster-overprovisioner Helm Chart has moved to Delivery Hero's Helm Repository: https://github.com/deliveryhero/helm-charts
+
+You can use this new Helm repository by doing:
+
+```bash
+helm repo add deliveryhero https://charts.deliveryhero.io/public
+helm search repo deliveryhero
+```
+
+You can now use `deliveryhero/cluster-overprovisioner` instead of `stable/cluster-overprovisioner` in all your Helm commands, e.g.:
+
+```bash
+# New installation
+helm install --name <RELEASE_NAME> deliveryhero/cluster-overprovisioner
+# Upgrade existing installation
+helm upgrade --name <RELEASE_NAME> deliveryhero/cluster-overprovisioner
+```
+
 # Cluster overprovisioner
 
 This chart provide a buffer for cluster autoscaling to allow overprovisioning of cluster nodes. This is desired when you have work loads that need to scale up quickly without waiting for the new cluster nodes to be created and join the cluster.
