@@ -5,11 +5,6 @@ name: cluster-overprovisioner
 home: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler
 version: 0.4.1
 deprecated: true
-maintainers:
-- name: max-rocket-internet
-  email: max.williams@deliveryhero.com
-- name: mmingorance-dh
-  email: miguel.mingorance@deliveryhero.com
 engine: gotpl
 icon: https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png
 keywords:
