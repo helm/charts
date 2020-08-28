@@ -4,6 +4,7 @@ description: Installs the a deployment that overprovisions the cluster
 name: cluster-overprovisioner
 home: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler
 version: 0.4.1
+deprecated: true
 maintainers:
 - name: max-rocket-internet
   email: max.williams@deliveryhero.com
