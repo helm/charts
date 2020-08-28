@@ -170,7 +170,7 @@ data:
 {{- if .Values.backend.es.tls_ca }}
         tls.ca_file /secure/es-tls-ca.crt
 {{- end }}
-{{- end }}
+{{ end }}
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk
