@@ -1,3 +1,8 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the Nextcloud maintained Helm chart is now located at nextcloud/helm (https://github.com/nextcloud/helm/tree/master/charts/nextcloud).
+
+
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
 {{- if empty .Values.nextcloud.host -}}
