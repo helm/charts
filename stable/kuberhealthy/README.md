@@ -22,52 +22,9 @@ Some examples of errors Kuberhealthy has detected in production:
   - kube-dns
 
 
-### Helm Variables
+# This chart is no longer in use!
 
-It is possible to configure Kuberhealthy's Prometheus integration with Helm variables.  Variable breakdown is below:
-
-```
-prometheus:
-  enabled: true # do we deploy a ServiceMonitor spec?
-  name: "prometheus" # the name of the Prometheus deployment in your environment.
-  enableScraping: true # add the Prometheus scrape annotation to Kuberhealthy pods
-  serviceMonitor: false # use a ServiceMonitor configuration, for if using Prometheus Operator
-  enableAlerting: true # enable default Kuberhealthy alerts configuration
-app:
-  name: "kuberhealthy" # what to name the kuberhealthy deployment
-image:
-  repository: quay.io/comcast/kuberhealthy
-  tag: v1.0.2
-resources:
-  requests:
-    cpu: 100m
-    memory: 80Mi
-  limits:
-    cpu: 400m
-    memory: 200Mi
-tolerations:
-  # change to true to tolerate and deploy to masters annotated with node-role.kubernetes.io/master
-  master: true
-deployment:
-  replicas: 2 # any number of replicas are supported, but only act in a failover capacity
-  maxSurge: 0
-  maxUnavailable: 1
-  imagePullPolicy: IfNotPresent
-  namespace: kuberhealthy
-  podAnnotations: {} # Annotations to be added to pods created by the deployment
-  command:
-  - /app/kuberhealthy
-  # use this to override location of the test-image, see: https://github.com/Comcast/kuberhealthy/blob/master/docs/FLAGS.md
-  # args:
-  # - -dsPauseContainerImageOverride
-  # - your-repo/google_containers/pause:0.8.0
-securityContext: # default container security context
-  runAsNonRoot: true
-  runAsUser: 999
-  fsGroup: 999
-  allowPrivilegeEscalation: false
-```
-
+Please see [the official documentation](https://github.com/Comcast/kuberhealthy#installation) for current installation instructions.
 
 For more details, see the [Kuberhealthy web site](https://comcast.github.io/kuberhealthy/).
 
