@@ -6,7 +6,7 @@ Data processing pipelines consist of [Spring Boot](https://projects.spring.io/sp
 
 ## This Helm chart is deprecated
 
-Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Redis Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Spring Cloud Data Flow Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
 
 The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
 
