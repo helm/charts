@@ -206,6 +206,23 @@ ingress:
     readOnly: false
 ```
 
+### Example of extraVolumeMounts with extraContainerVolumes
+
+If you want to trust system's certificates in Grafana, so that you can add SSL URIs to your datasources for example,
+you can use a construction like this:
+
+```yaml
+extraVolumeMounts:
+- name: etc-ssl-certs
+  mountPath: /etc/ssl/certs
+
+extraContainerVolumes:
+- name: etc-ssl-certs
+  hostPath:
+    path: /etc/ssl/certs
+    type: Directory
+```
+
 ## Import dashboards
 
 There are a few methods to import dashboards to Grafana. Below are some examples and explanations as to how to use each method:

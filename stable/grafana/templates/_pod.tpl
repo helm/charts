@@ -434,9 +434,11 @@ volumes:
       defaultMode: {{ .defaultMode }}
 {{- end }}
 {{- range .Values.extraVolumeMounts }}
+  {{- if .existingClaim }}
   - name: {{ .name }}
     persistentVolumeClaim:
       claimName: {{ .existingClaim }}
+  {{- end }}
 {{- end }}
 {{- range .Values.extraEmptyDirMounts }}
   - name: {{ .name }}
