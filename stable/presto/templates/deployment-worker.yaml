@@ -27,6 +27,7 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.worker" . }}
+      terminationGracePeriodSeconds: {{ .Values.server.shutdownGracePeriod }}
       containers:
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -34,6 +35,12 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/bash
+                  - {{ .Values.server.config.path }}/graceful_shutdown.sh
           livenessProbe:
             exec:
               command:

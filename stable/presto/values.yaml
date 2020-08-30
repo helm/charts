@@ -1,5 +1,6 @@
 server:
   workers: 2
+  shutdownGracePeriod: 600
   node:
     environment: production
     dataDir: /data/presto

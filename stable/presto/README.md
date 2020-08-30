@@ -22,24 +22,25 @@ $ helm install --name my-release stable/presto
 
 Configurable values are documented in the `values.yaml`:
 
-| Parameter                               | Description                                                                 | Default                  |
-|-----------------------------------------|-----------------------------------------------------------------------------|--------------------------|
-| `server.workers`                        | Numbers of prestosql worker nodes.                                          | `2`                      |
-| `server.node.environment`               | The name of the environment.                                                | `production`             |
-| `server.node.dataDir`                   | The location (filesystem path) of the data directory.                       | `/data/presto`           |
-| `server.note.pluginDir`                 | The location of the plugin directory.                                       | `/usr/lib/presto/plugin` |
-| `server.log.presto.level`               | The minimum log level of named logger `io.prestosql`.                       | `INFO`                   |
-| `server.config.path`                    | The location of customize configuration.                                    | `/usr/lib/presto/etc`    |
-| `server.config.http.port`               | The port number of coordinator service                                      | `8080`                   |
-| `server.config.query.maxMemory`         | The maximum amount of distributed memory, that a query may use.             | `4GB`                    |
+| Parameter                               | Description                                                  | Default                  |
+| --------------------------------------- | ------------------------------------------------------------ | ------------------------ |
+| `server.workers`                        | Numbers of prestosql worker nodes.                           | `2`                      |
+| `server.node.environment`               | The name of the environment.                                 | `production`             |
+| `server.node.dataDir`                   | The location (filesystem path) of the data directory.        | `/data/presto`           |
+| `server.note.pluginDir`                 | The location of the plugin directory.                        | `/usr/lib/presto/plugin` |
+| `server.log.presto.level`               | The minimum log level of named logger `io.prestosql`.        | `INFO`                   |
+| `server.config.path`                    | The location of customize configuration.                     | `/usr/lib/presto/etc`    |
+| `server.config.http.port`               | The port number of coordinator service                       | `8080`                   |
+| `server.config.query.maxMemory`         | The maximum amount of distributed memory, that a query may use. | `4GB`                    |
 | `server.config.query.maxMemoryPerNode`  | The maximum amount of user memory, that a query may use on any one machine. | `1GB`                    |
-| `server.jvm.maxHeapSize`                | The value for JVM option `-Xmx`                                             | `8G`                     |
-| `server.jvm.gcMethod.type`              | Portion of the value for JVM option `-XX:`                                  | `UseG1GC`                |
-| `server.jvm.gcMethod.g1.heapRegionSize` | The value for JVM option `-XX:G1HeapRegionSize=`                            | `32M`                    |
-| `image.repository`                      | `prestosql` image repository.                                               | `prestosql/presto`       |
-| `image.tag`                             | `prestosql` image tag.                                                      | `329`                    |
-| `image.securityContext.runAsUser`       | The `uid` of `prestosql` image repository.                                  | `1000`                   |
-| `image.securityContext.runAsGroup`      | The `gid` of `prestosql` image repository.                                  | `1000`                   |
+| `server.jvm.maxHeapSize`                | The value for JVM option `-Xmx`                              | `8G`                     |
+| `server.jvm.gcMethod.type`              | Portion of the value for JVM option `-XX:`                   | `UseG1GC`                |
+| `server.jvm.gcMethod.g1.heapRegionSize` | The value for JVM option `-XX:G1HeapRegionSize=`             | `32M`                    |
+| server.shutdownGracePeriod              | The grace period of shutting down presto workers (in seconds) | `600`                    |
+| `image.repository`                      | `prestosql` image repository.                                | `prestosql/presto`       |
+| `image.tag`                             | `prestosql` image tag.                                       | `329`                    |
+| `image.securityContext.runAsUser`       | The `uid` of `prestosql` image repository.                   | `1000`                   |
+| `image.securityContext.runAsGroup`      | The `gid` of `prestosql` image repository.                   | `1000`                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
