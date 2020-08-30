@@ -153,6 +153,15 @@ spec:
         - --pod=$(POD_NAME)
         - --pod-namespace=$(POD_NAMESPACE)
 {{ end }}
+{{ if .Values.kubeconfig.enabled }}
+        - --kubeconfig=/opt/k8s/.kube/config
+{{ end }}
+{{- if .Values.kubeconfig.enabled }}
+        volumeMounts:
+        - name: kubeconfig
+          mountPath: /opt/k8s/.kube/
+          readOnly: true
+{{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
@@ -188,4 +197,10 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.kubeconfig.enabled}}
+      volumes:
+        - name: kubeconfig
+          secret:
+            secretName: {{ template "kube-state-metrics.fullname" . }}-kubeconfig
 {{- end }}

@@ -221,7 +221,7 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
-{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
           startupProbe:
             exec:
               command:
@@ -316,7 +316,7 @@ spec:
                   --test
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
           startupProbe:
             exec:
               command:

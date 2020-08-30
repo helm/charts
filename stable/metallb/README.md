@@ -4,6 +4,12 @@ MetalLB
 MetalLB is a load-balancer implementation for bare metal [Kubernetes][k8s-home]
 clusters, using standard routing protocols.
 
+Deprecated chart
+----------------
+
+This chart is deprecated in favour of the [bitnami maintained chart](https://github.com/bitnami/charts/tree/master/bitnami/metallb).
+
+
 TL;DR;
 ------
 

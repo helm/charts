@@ -75,9 +75,9 @@ Construct the AIRFLOW__CORE__SQL_ALCHEMY_CONN connection string.
 {{- if .Values.postgresql.enabled -}}
 postgresql+psycopg2://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
 {{- else if and (not .Values.postgresql.enabled) (eq "postgres" .Values.externalDatabase.type) -}}
-postgresql+psycopg2://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+postgresql+psycopg2://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}
 {{- else if and (not .Values.postgresql.enabled) (eq "mysql" .Values.externalDatabase.type) -}}
-mysql+mysqldb://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+mysql+mysqldb://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}
 {{- end -}}
 {{- end -}}
 
@@ -88,9 +88,9 @@ Construct the AIRFLOW__CELERY__RESULT_BACKEND connection string.
 {{- if .Values.postgresql.enabled -}}
 db+postgresql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
 {{- else if and (not .Values.postgresql.enabled) (eq "postgres" .Values.externalDatabase.type) -}}
-db+postgresql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+db+postgresql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}
 {{- else if and (not .Values.postgresql.enabled) (eq "mysql" .Values.externalDatabase.type) -}}
-db+mysql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+db+mysql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}
 {{- end -}}
 {{- end -}}
 

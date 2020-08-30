@@ -204,6 +204,11 @@ kubeConfig:
   # omittedKinds:
   # -
 
+  # When true, clouddriver will query manifest status during pipeline executions using live
+  # data rather than the cache. This eliminates all time spent in the “force cache refresh”
+  # task in pipelines, greatly reducing execution time.
+  liveManifestCalls: false
+
 # Change this if youd like to expose Spinnaker outside the cluster
 ingress:
   enabled: false
