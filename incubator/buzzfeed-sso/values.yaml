@@ -101,7 +101,12 @@ ingress:
   extraLabels: {}
   hosts: []
   #  - domain: mybackend.mydomain.foo
+  #    # The "path" field is deprecated and will be removed in the
+  #    # next major release. Use "paths" instead.
   #    path: /
+  #    paths:
+  #      - /endpoint1
+  #      - /endpoint2
   tls: []
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
