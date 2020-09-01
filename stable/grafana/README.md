@@ -1,3 +1,7 @@
+# ⚠️ DEPRECATED
+
+This chart was moved to https://github.com/grafana/helm2-grafana
+
 # Grafana Helm Chart
 
 * Installs the web dashboarding system [Grafana](http://grafana.org/)
