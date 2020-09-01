@@ -223,11 +223,17 @@ For a worker pod you can calculate it: `WORKER_CONCURRENCY * 200Mi`, so for `10 
 Here is the `values.yaml` config for that example:
 ```yaml
 workers:
-  replicas: 1
+  # the initial/minimum number of workers
+  replicas: 2
 
   resources:
     requests:
       memory: "2Gi"
+
+  podDisruptionBudget:
+    enabled: true
+    ## prevents losing more than 20% of current worker task slots in a voluntary disruption
+    maxUnavailable: "20%"
 
   autoscaling:
     enabled: true
@@ -243,11 +249,14 @@ workers:
   celery:
     instances: 10
 
-    ## wait at most 10min for running tasks to complete
+    ## wait at most 9min for running tasks to complete before SIGTERM
+    ## WARNING: 
+    ##  - some cluster-autoscaler (GKE) will not respect graceful 
+    ##    termination periods over 10min
     gracefullTermination: true
-    gracefullTerminationPeriod: 600
+    gracefullTerminationPeriod: 540
 
-  ## how many seconds (after the 10min) to wait before SIGKILL
+  ## how many seconds (after the 9min) to wait before SIGKILL
   terminationPeriod: 60
 
 dags:
