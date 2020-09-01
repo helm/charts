@@ -1,5 +1,26 @@
 {{- $root := . }}
 {{- if and (.Values.master.JCasC.enabled) (.Values.master.sidecars.configAutoReload.enabled) }}
+{{- if .Values.master.JCasC.configFiles }}
+{{- $files := .Files }}
+{{- range $key, $val := .Values.master.JCasC.configFiles }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "jenkins.fullname" $ }}-jenkins-config-file-{{ $key }}
+  namespace: {{ template "jenkins.namespace" $ }}
+  labels:
+    "app.kubernetes.io/name": {{ template "jenkins.name" $ }}
+    "helm.sh/chart": {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    "app.kubernetes.io/managed-by": "{{ $.Release.Service }}"
+    "app.kubernetes.io/instance": "{{ $.Release.Name }}"
+    "app.kubernetes.io/component": "{{ $.Values.jenkins.master.componentName }}"
+    {{ template "jenkins.fullname" $ }}-jenkins-config: "true"
+data:
+  {{ $key }}.yaml: |-
+    {{- $files.Get $val | nindent 4 -}}
+{{- end -}}
+{{- end -}}
 {{- range $key, $val := .Values.master.JCasC.configScripts }}
 ---
 apiVersion: v1
