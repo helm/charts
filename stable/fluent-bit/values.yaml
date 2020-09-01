@@ -108,6 +108,21 @@ backend:
     # json_date_format: double or iso8601
     headers: []
 
+  ##
+  ## Ref: https://docs.fluentbit.io/manual/pipeline/outputs/gelf
+  ##
+  gelf:
+    host: 127.0.0.1
+    port: 12201
+    mode: "udp"
+    short_message_key: "short_message"
+    timestamp_key: "timestamp"
+    host_key: "host"
+    full_message_key: "full_message"
+    level_key: "level"
+    packet_size: 1420
+    compress: true
+
 parsers:
   enabled: false
   ## List the respective parsers in key: value format per entry

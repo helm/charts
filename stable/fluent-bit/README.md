@@ -85,6 +85,17 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.stackdriver.google_service_credentials`           | Contents of a Google Cloud credentials JSON file. | `` |
 | `backend.stackdriver.service_account_email`           | Account email associated to the service. Only available if no credentials file has been provided. | `` |
 | `backend.stackdriver.service_account_secret`            | Private key content associated with the service account. Only available if no credentials file has been provided. | `` |
+| **GELF Backend**              |
+| `backend.gelf.host` | IP address or hostname of the target Graylog server. | `127.0.0.1` |
+| `backend.gelf.port` | The port that your Graylog GELF input is listening on. | `12201` |
+| `backend.gelf.mode` | The protocol to use (`tls`, `tcp` or `udp`). | `udp` |
+| `backend.gelf.short_message_key` | A short descriptive message. | `short_message` |
+| `backend.gelf.timestamp_key` | Your log timestamp. | `timestamp` |
+| `backend.gelf.host_key` | Key which its value is used as the name of the host, source or application that sent this message. | `host` |
+| `backend.gelf.full_message_key` | Key to use as the long message that can i.e. contain a backtrace. | `full_message` |
+| `backend.gelf.level_key` | Key to be used as the log level. Its value must be in [standard syslog levels](https://en.wikipedia.org/wiki/Syslog#Severity_level) (between 0 and 7). | `level` |
+| `backend.gelf.packet_size` | If transport protocol is `udp`, you can set the size of packets to be sent. | `1420` |
+| `backend.gelf.compress` | If transport protocol is `udp`, you can set this if you want your UDP packets to be compressed. | `true` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |

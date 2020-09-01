@@ -219,6 +219,22 @@ data:
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}
 {{- end }}
+{{ else if eq .Values.backend.type "gelf" }}
+    [OUTPUT]
+        Name  gelf
+        Match *
+        Host {{ .Values.backend.gelf.host }}
+        Port {{ .Values.backend.gelf.port }}
+        Mode {{ .Values.backend.gelf.mode }}
+        Gelf_Short_Message_Key {{ .Values.backend.gelf.short_message_key }}
+        Gelf_Timestamp_Key {{ .Values.backend.gelf.timestamp_key }}
+        Gelf_Host_Key {{ .Values.backend.gelf.host_key }}
+        Gelf_Full_Message_Key {{ .Values.backend.gelf.full_message_key }}
+        Gelf_Level_Key {{ .Values.backend.gelf.level_key }}
+{{- if eq .Values.backend.gelf.mode "udp" }}
+        Packet_Size {{ .Values.backend.gelf.packet_size }}
+        Compress {{ .Values.backend.gelf.compress }}
+{{- end }}
 {{ .Values.extraEntries.output | indent 8 }}
 
 
