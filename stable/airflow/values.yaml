@@ -85,7 +85,7 @@ airflow:
   ##
   ## EXAMPLE:
   ##   podAnnotations:
-  ##     iam.amazonaws.com/role: airflow-Role
+  ##     iam.amazonaws.com/role: "airflow-Role"
   ##
   podAnnotations: {}
 
