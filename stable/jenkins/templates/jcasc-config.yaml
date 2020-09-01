@@ -37,7 +37,9 @@ metadata:
     {{ template "jenkins.fullname" $root }}-jenkins-config: "true"
 data:
   {{ $key }}.yaml: |-
-{{ tpl $val $| indent 4 }}
+    {{- with $ -}}
+    {{- tpl $val . | nindent 4 -}}
+    {{- end -}}
 {{- end }}
 {{- if .Values.master.JCasC.defaultConfig }}
 ---
