@@ -32,6 +32,10 @@ agent:
     #   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     tolerations: []
 
+    # agent.pod.affinity are affinities to influence agent pod assignment.
+    # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    affinity: {}
+
     requests:
       # agent.pod.requests.memory is the requested memory allocation in MiB for the agent pods.
       memory: 512

@@ -176,6 +176,10 @@ spec:
       tolerations:
         {{- toYaml .Values.agent.pod.tolerations | nindent 8 }}
       {{- end }}
+      {{- if .Values.agent.pod.affinity }}
+      affinity:
+        {{- toYaml .Values.agent.pod.affinity | nindent 8 }}
+      {{- end }}
       volumes:
         - name: dev
           hostPath:
