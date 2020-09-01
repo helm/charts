@@ -33,7 +33,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+        checksum/config-env: {{ include (print $.Template.BasePath "/config/configmap-env.yaml") . | sha256sum }}
         {{- if .Values.flower.podAnnotations }}
         {{- toYaml .Values.flower.podAnnotations | nindent 8 }}
         {{- end }}

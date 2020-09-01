@@ -19,4 +19,3 @@ spec:
   metrics:
     {{- toYaml .Values.workers.autoscaling.metrics | nindent 4 }}
 {{- end }}
-{{- end }}

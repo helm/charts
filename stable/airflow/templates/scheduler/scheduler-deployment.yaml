@@ -31,11 +31,11 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
-        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-scripts-git.yaml") . | sha256sum }}
-        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
-        checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
-        checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
+        checksum/config-env: {{ include (print $.Template.BasePath "/config/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/config/configmap-scripts-git.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/config/configmap-scripts.yaml") . | sha256sum }}
+        checksum/config-variables-pools: {{ include (print $.Template.BasePath "/config/configmap-variables-pools.yaml") . | sha256sum }}
+        checksum/secret-connections: {{ include (print $.Template.BasePath "/config/secret-connections.yaml") . | sha256sum }}
         {{- if and (.Values.dags.git.url) (.Values.dags.git.ref) }}
         checksum/dags-git-ref: {{ .Values.dags.git.ref | sha256sum }}
         {{- end }}
