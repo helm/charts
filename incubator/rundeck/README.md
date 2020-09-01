@@ -43,6 +43,7 @@ serviceAccount.name | Name of the service account the Rundeck pod should use | "
 volumes | volumes made available to all containers | ""
 volumeMounts | volumeMounts to add to the rundeck container | ""
 initContainers | can be used to download plugins or customise your rundeck installation | ""
+sideCars | can be used to run additional containers in the pod | ""
 
 ## AWS & K8s Permissions
 
