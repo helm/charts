@@ -153,6 +153,14 @@ initializationFiles: {}
 #  second-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 
+# To enaable the mysql X Protocol's port
+# .. will expose the port 33060
+# .. Note the X Plugin needs installation
+# ref: https://dev.mysql.com/doc/refman/8.0/en/x-plugin-checking-installation.html
+mysqlx:
+  port:
+    enabled: false
+
 metrics:
   enabled: false
   image: prom/mysqld-exporter
