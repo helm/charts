@@ -63,7 +63,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.clusterIP`                     | IP address to assign to service                                                       | `""`                                                        |
 | `service.loadBalancerIP`                | IP address to assign to load balancer (if supported)                                  | `""`                                                        |
 | `service.externalIPs`                   | External IP addresses                                                                 | []                                                          |
-
 | `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | []                                                          |
 | `service.annotations`                   | Annotations to add to service                                                         | {}                                                          |
 | `serviceAccount.create`                 | If true, create & use serviceAccount                                                  | false                                                       |
