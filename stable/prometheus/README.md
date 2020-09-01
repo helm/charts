@@ -339,9 +339,7 @@ Parameter | Description | Default
 `server.statefulSet.headless.annotations` | annotations for Prometheus server headless service | `{}`
 `server.statefulSet.headless.labels` | labels for Prometheus server headless service | `{}`
 `server.statefulSet.headless.servicePort` | Prometheus server headless service port | `80`
-`server.statefulSet.headless.gRPC.enabled` | If true, open a second port on the service for gRPC | `false`
-`server.statefulSet.headless.gRPC.servicePort` | Prometheus service gRPC port, (ignored if `server.service.gRPC.enabled` is not `true`) | `10901`
-`server.statefulSet.headless.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
+`server.statefulSet.headless.additionalPorts` | Additional Prometheus Service ports to add for NodePort service type | `[]` |
 `server.readinessProbeInitialDelay` | the initial delay for the Prometheus server readiness probe | `30`
 `server.readinessProbePeriodSeconds` | how often (in seconds) to perform the Prometheus server readiness probe | `5`
 `server.readinessProbeTimeout` | the timeout for the Prometheus server readiness probe | `30`
@@ -364,9 +362,7 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.sessionAffinity` | Session Affinity for server service, can be `None` or `ClientIP` | `None`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
-`server.service.gRPC.enabled` | If true, open a second port on the service for gRPC | `false`
-`server.service.gRPC.servicePort` | Prometheus service gRPC port, (ignored if `server.service.gRPC.enabled` is not `true`) | `10901`
-`server.service.gRPC.nodePort` | Port to be used as gRPC nodePort in the prometheus service | `0`
+`server.service.additionalPorts` | Additional Prometheus Service ports to add for NodePort service type | `[]` |
 `server.service.statefulsetReplica.enabled` | If true, send the traffic from the service to only one replica of the replicaset | `false`
 `server.service.statefulsetReplica.replica` | Which replica to send the traffice to | `0`
 `server.hostAliases` | /etc/hosts-entries in container(s) | []
