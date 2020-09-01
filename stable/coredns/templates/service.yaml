@@ -27,6 +27,10 @@ spec:
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
+  {{- if .Values.service.externalIPs }}
+  externalIPs:
+  {{ toYaml .Values.service.externalIPs | indent 4 }}
+  {{- end }}
   {{- if .Values.service.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
   {{- end }}
