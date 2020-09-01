@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.5.X → v7.6.0](UPGRADE.md#v75x--v760)
 * [v7.4.X → v7.5.0](UPGRADE.md#v74x--v750)
 * [v7.3.X → v7.4.0](UPGRADE.md#v73x--v740)
 * [v7.2.X → v7.3.0](UPGRADE.md#v72x--v730)
@@ -223,11 +224,17 @@ For a worker pod you can calculate it: `WORKER_CONCURRENCY * 200Mi`, so for `10 
 Here is the `values.yaml` config for that example:
 ```yaml
 workers:
-  replicas: 1
+  # the initial/minimum number of workers
+  replicas: 2
 
   resources:
     requests:
       memory: "2Gi"
+
+  podDisruptionBudget:
+    enabled: true
+    ## prevents losing more than 20% of current worker task slots in a voluntary disruption
+    maxUnavailable: "20%"
 
   autoscaling:
     enabled: true
@@ -243,11 +250,14 @@ workers:
   celery:
     instances: 10
 
-    ## wait at most 10min for running tasks to complete
+    ## wait at most 9min for running tasks to complete before SIGTERM
+    ## WARNING: 
+    ##  - some cluster-autoscaler (GKE) will not respect graceful 
+    ##    termination periods over 10min
     gracefullTermination: true
-    gracefullTerminationPeriod: 600
+    gracefullTerminationPeriod: 540
 
-  ## how many seconds (after the 10min) to wait before SIGKILL
+  ## how many seconds (after the 9min) to wait before SIGKILL
   terminationPeriod: 60
 
 dags:
@@ -548,6 +558,7 @@ __Airflow Scheduler values:__
 | `scheduler.podLabels` | Pod labels for the scheduler Deployment | `{}` |
 | `scheduler.annotations` | annotations for the scheduler Deployment | `{}` |
 | `scheduler.podAnnotations` | Pod Annotations for the scheduler Deployment | `{}` |
+| `scheduler.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
 | `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
@@ -559,7 +570,7 @@ __Airflow Scheduler values:__
 | `scheduler.initialStartupDelay` | the number of seconds to wait (in bash) before starting the scheduler container | `0` |
 | `scheduler.extraInitContainers` | extra init containers to run before the scheduler pod | `[]` |
 
-__Airflow WebUI Values:__
+__Airflow Webserver Values:__
 
 | Parameter | Description | Default |
 | --- | --- | --- |
@@ -572,6 +583,8 @@ __Airflow WebUI Values:__
 | `web.podLabels` | Pod labels for the web Deployment | `{}` |
 | `web.annotations` | annotations for the web Deployment | `{}` |
 | `web.podAnnotations` | Pod annotations for the web Deployment | `{}` |
+| `web.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
+| `web.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the web Deployment | `<see values.yaml>` |
 | `web.service.*` | configs for the Service of the web pods | `<see values.yaml>` |
 | `web.baseUrl` | sets `AIRFLOW__WEBSERVER__BASE_URL` | `http://localhost:8080` |
 | `web.serializeDAGs` | sets `AIRFLOW__CORE__STORE_SERIALIZED_DAGS` | `false` |
@@ -598,6 +611,8 @@ __Airflow Worker Values:__
 | `workers.podLabels` | Pod labels for the worker StatefulSet | `{}` |
 | `workers.annotations` | annotations for the worker StatefulSet | `{}` |
 | `workers.podAnnotations` | Pod annotations for the worker StatefulSet | `{}` |
+| `workers.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
+| `workers.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the worker StatefulSet | `<see values.yaml>` |
 | `workers.autoscaling.*` | configs for the HorizontalPodAutoscaler of the worker Pods | `<see values.yaml>` |
 | `workers.initialStartupDelay` | the number of seconds to wait (in bash) before starting each worker container | `0` |
 | `workers.celery.*` | configs for the celery worker Pods | `<see values.yaml>` |
@@ -618,11 +633,14 @@ __Airflow Flower Values:__
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
+| `flower.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
+| `flower.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the flower Deployment | `<see values.yaml>` |
 | `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
 | `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |
 | `flower.service.*` | configs for the Service of the flower Pods | `<see values.yaml>` |
 | `flower.initialStartupDelay` | the number of seconds to wait (in bash) before starting the flower container | `0` |
+| `flower.minReadySeconds` | the number of seconds to wait before declaring a new Pod available | `5` |
 | `flower.extraConfigmapMounts` | extra ConfigMaps to mount on the flower Pods | `[]` |
 
 __Airflow Logs Values:__
@@ -672,6 +690,7 @@ __Airflow Database (Internal PostgreSQL) Values:__
 | `postgresql.existingSecret` | the name of a pre-created secret containing the postgres password | `""` |
 | `postgresql.existingSecretKey` | the key within `postgresql.passwordSecret` containing the password string | `postgresql-password` |
 | `postgresql.persistence.*` | configs for the PVC of postgresql | `<see values.yaml>` |
+| `postgresql.master.*` | configs for the postgres StatefulSet | `<see values.yaml>` |
 
 __Airflow Database (External) Values:__
 
