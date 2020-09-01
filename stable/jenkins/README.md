@@ -1,3 +1,7 @@
+# ⚠️ DEPRECATED
+
+This chart was moved to https://github.com/jenkinsci/helm-charts
+
 # Jenkins Helm Chart
 
 Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
