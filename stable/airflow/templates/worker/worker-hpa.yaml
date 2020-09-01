@@ -1,5 +1,4 @@
-{{- if .Values.workers.enabled -}}
-{{- if .Values.workers.autoscaling.enabled -}}
+{{- if and (.Values.workers.enabled) (.Values.workers.autoscaling.enabled) }}
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -19,5 +18,4 @@ spec:
   maxReplicas: {{ .Values.workers.autoscaling.maxReplicas }}
   metrics:
     {{- toYaml .Values.workers.autoscaling.metrics | nindent 4 }}
-{{- end }}
 {{- end }}

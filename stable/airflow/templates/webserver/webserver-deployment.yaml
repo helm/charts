@@ -1,57 +1,58 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "airflow.fullname" . }}-scheduler
-  {{- if .Values.scheduler.annotations }}
+  name: {{ include "airflow.fullname" . }}-web
+  {{- if .Values.web.annotations }}
   annotations:
-    {{- toYaml .Values.scheduler.annotations | nindent 4 }}
+    {{- toYaml .Values.web.annotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ include "airflow.labels.app" . }}
-    component: scheduler
+    component: web
     chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    {{- if .Values.scheduler.labels }}
-    {{- toYaml .Values.scheduler.labels | nindent 4 }}
+    {{- if .Values.web.labels }}
+    {{- toYaml .Values.web.labels | nindent 4 }}
     {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
+  minReadySeconds: {{ .Values.web.minReadySeconds }}
   strategy:
-    # Kill the scheduler as soon as possible.
-    # It will restart quickly with all the workers, minimizing the time they are not synchronized.
+    # this is safe - multiple web pods can run concurrently
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 100%
+      maxSurge: 25%
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: {{ include "airflow.labels.app" . }}
-      component: scheduler
+      component: web
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
-        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
-        checksum/config-git-clone: {{ include (print $.Template.BasePath "/configmap-scripts-git.yaml") . | sha256sum }}
-        checksum/config-scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
-        checksum/config-variables-pools: {{ include (print $.Template.BasePath "/configmap-variables-pools.yaml") . | sha256sum }}
-        checksum/secret-connections: {{ include (print $.Template.BasePath "/secret-connections.yaml") . | sha256sum }}
+        checksum/config-env: {{ include (print $.Template.BasePath "/config/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/config/configmap-scripts-git.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/config/configmap-scripts.yaml") . | sha256sum }}
         {{- if and (.Values.dags.git.url) (.Values.dags.git.ref) }}
         checksum/dags-git-ref: {{ .Values.dags.git.ref | sha256sum }}
         {{- end }}
         {{- if .Values.airflow.podAnnotations }}
         {{- toYaml .Values.airflow.podAnnotations | nindent 8 }}
         {{- end }}
-        {{- if .Values.scheduler.podAnnotations }}
-        {{- toYaml .Values.scheduler.podAnnotations | nindent 8 }}
+        {{- if .Values.web.podAnnotations }}
+        {{- toYaml .Values.web.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.web.safeToEvict }}
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         {{- end }}
       labels:
         app: {{ include "airflow.labels.app" . }}
-        component: scheduler
+        component: web
         release: {{ .Release.Name }}
-        {{- if .Values.scheduler.podLabels }}
-        {{- toYaml .Values.scheduler.podLabels | nindent 8 }}
+        {{- if .Values.web.podLabels }}
+        {{- toYaml .Values.web.podLabels | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.airflow.image.pullSecret }}
@@ -59,48 +60,25 @@ spec:
         - name: {{ .Values.airflow.image.pullSecret }}
       {{- end }}
       restartPolicy: Always
-      {{- if .Values.scheduler.nodeSelector }}
+      {{- if .Values.web.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.scheduler.nodeSelector | nindent 8 }}
+        {{- toYaml .Values.web.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.scheduler.affinity }}
+      {{- if .Values.web.affinity }}
       affinity:
-        {{- toYaml .Values.scheduler.affinity | nindent 8 }}
+        {{- toYaml .Values.web.affinity | nindent 8 }}
       {{- end }}
-      {{- if .Values.scheduler.tolerations }}
+      {{- if .Values.web.tolerations }}
       tolerations:
-        {{- toYaml .Values.scheduler.tolerations | nindent 8 }}
-      {{- end }}
-      {{- if .Values.scheduler.securityContext }}
-      securityContext:
-        {{- toYaml .Values.scheduler.securityContext | nindent 8 }}
+        {{- toYaml .Values.web.tolerations | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "airflow.serviceAccountName" . }}
-      {{- if or (.Values.dags.initContainer.enabled) (.Values.scheduler.preinitdb) (.Values.scheduler.extraInitContainers) }}
+      {{- if .Values.web.securityContext }}
+      securityContext:
+        {{- toYaml .Values.web.securityContext | nindent 8 }}
+      {{- end }}
+      {{- if and ( .Values.dags.initContainer.enabled ) ( not .Values.web.serializeDAGs ) }}
       initContainers:
-        {{- if .Values.scheduler.preinitdb }}
-        - name: {{ .Chart.Name }}-preinitdb
-          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
-          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
-          command:
-            - "/usr/bin/dumb-init"
-            - "--"
-          args:
-            - "/bin/bash"
-            - "-c"
-            - "/home/airflow/scripts/preinit-db.sh"
-          envFrom:
-            - configMapRef:
-                name: "{{ include "airflow.fullname" . }}-env"
-          env:
-            {{- include "airflow.mapenvsecrets" . | indent 12 }}
-          resources:
-            {{- toYaml .Values.scheduler.resources | nindent 12 }}
-          volumeMounts:
-            - name: scripts
-              mountPath: /home/airflow/scripts
-        {{- end }}
-        {{- if .Values.dags.initContainer.enabled }}
         - name: git-clone
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }}
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
@@ -129,13 +107,9 @@ spec:
             - name: git-clone-secret
               mountPath: /keys
             {{- end }}
-        {{- end }}
-        {{- if .Values.scheduler.extraInitContainers }}
-        {{- toYaml .Values.scheduler.extraInitContainers | nindent 8 }}
-        {{- end }}
       {{- end }}
       containers:
-        {{- if .Values.dags.git.gitSync.enabled }}
+        {{- if and ( .Values.dags.git.gitSync.enabled ) ( not .Values.web.serializeDAGs ) }}
         - name: git-sync
           image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }}
           imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
@@ -166,19 +140,34 @@ spec:
           resources:
             {{- toYaml .Values.dags.git.gitSync.resources | nindent 12 }}
         {{- end }}
-        - name: {{ .Chart.Name }}-scheduler
+        - name: {{ .Chart.Name }}-web
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
           envFrom:
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
             {{- include "airflow.mapenvsecrets" . | indent 12 }}
           resources:
-            {{- toYaml .Values.scheduler.resources | nindent 12 }}
+            {{- toYaml .Values.web.resources | nindent 12 }}
           volumeMounts:
             - name: scripts
               mountPath: /home/airflow/scripts
+            {{- if .Values.web.secretsMap }}
+            - name: {{ .Values.web.secretsMap }}-volume
+              readOnly: true
+              mountPath: {{ $.Values.web.secretsDir }}
+            {{- else }}
+            {{- range .Values.web.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $.Values.web.secretsDir }}/{{ . }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.dags.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -192,14 +181,6 @@ spec:
               mountPath: {{ .Values.logs.path }}
               subPath: {{ .Values.logs.persistence.subPath }}
             {{- end }}
-            {{- if .Values.scheduler.connections }}
-            - name: connections
-              mountPath: /home/airflow/connections
-            {{- end}}
-            {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
-            - name: variables-pools
-              mountPath: /home/airflow/variables-pools/
-            {{- end}}
             {{- range .Values.airflow.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -219,9 +200,9 @@ spec:
             - "-c"
             - >
               true \
-              {{- if gt .Values.scheduler.initialStartupDelay 0.0 }}
-               && echo "*** waiting {{ .Values.scheduler.initialStartupDelay }}s..." \
-               && sleep {{ .Values.scheduler.initialStartupDelay }} \
+              {{- if gt .Values.web.initialStartupDelay 0.0 }}
+               && echo "*** waiting {{ .Values.web.initialStartupDelay }}s..." \
+               && sleep {{ .Values.web.initialStartupDelay }} \
               {{- end }}
                && mkdir -p /home/airflow/.local/bin \
                && echo 'export PATH="/home/airflow/.local/bin:$PATH"' >> /home/airflow/airflow_env.sh \
@@ -241,24 +222,40 @@ spec:
                && echo "*** installing global extra pip packages..." \
                && pip install --user {{ range .Values.airflow.extraPipPackages }} {{ . | quote }} {{ end }} \
               {{- end }}
-              {{- if .Values.scheduler.initdb }}
-               && echo "*** executing Airflow initdb..." \
-               && airflow initdb \
+              {{- if .Values.web.extraPipPackages }}
+               && echo "*** installing extra pip packages..." \
+               && pip install --user {{ range .Values.web.extraPipPackages }} {{ . | quote }} {{ end }} \
               {{- end }}
-              {{- if .Values.scheduler.variables }}
-               && echo "*** adding Airflow variables..." \
-               && airflow variables -i /home/airflow/variables-pools/variables.json \
+               && echo "*** running webserver..." \
+               && exec airflow webserver
+          {{- if .Values.web.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              scheme: {{ .Values.web.livenessProbe.scheme }}
+              {{- if .Values.ingress.web.livenessPath }}
+              path: "{{ .Values.ingress.web.livenessPath }}"
+              {{- else }}
+              path: "{{ .Values.ingress.web.path }}/health"
               {{- end }}
-              {{- if .Values.scheduler.connections }}
-               && echo "*** adding Airflow connections..." \
-               && /home/airflow/connections/add-connections.sh \
-              {{- end }}
-              {{- if .Values.scheduler.pools }}
-               && echo "*** adding Airflow pools..." \
-               && airflow pool -i /home/airflow/variables-pools/pools.json \
-              {{- end }}
-               && echo "*** running scheduler..." \
-               && exec airflow scheduler -n {{ .Values.scheduler.numRuns }}
+              port: web
+            initialDelaySeconds: {{ .Values.web.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.web.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              scheme: {{ .Values.web.readinessProbe.scheme }}
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
+          {{- end }}
         {{- if .Values.airflow.extraContainers }}
         {{- toYaml .Values.airflow.extraContainers | nindent 8 }}
         {{- end }}
@@ -267,6 +264,17 @@ spec:
           configMap:
             name: {{ include "airflow.fullname" . }}-scripts
             defaultMode: 0755
+        {{- if .Values.web.secretsMap }}
+        - name: {{ .Values.web.secretsMap }}-volume
+          secret:
+            secretName: {{ .Values.web.secretsMap }}
+        {{- else }}
+        {{- range .Values.web.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
+        {{- end }}
         {{- if .Values.dags.persistence.enabled }}
         - name: dags-data
           persistentVolumeClaim:
@@ -292,23 +300,11 @@ spec:
             defaultMode: 0700
         {{- end }}
         {{- end }}
-        {{- if .Values.scheduler.connections }}
-        - name: connections
-          secret:
-            secretName: {{ include "airflow.fullname" . }}-connections
-            defaultMode: 0755
-        {{- end }}
-        {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
-        - name: variables-pools
-          configMap:
-            name: {{ include "airflow.fullname" . }}-variables-pools
-            defaultMode: 0755
-        {{- end }}
         {{- range .Values.airflow.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
         {{- end }}
-       {{- if .Values.airflow.extraVolumes }}
-       {{- toYaml .Values.airflow.extraVolumes | nindent 8 }}
-       {{- end }}
+        {{- if .Values.airflow.extraVolumes }}
+        {{- toYaml .Values.airflow.extraVolumes | nindent 8 }}
+        {{- end }}

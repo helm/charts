@@ -1,0 +1,24 @@
+{{- if and (.Values.workers.enabled) (.Values.workers.podDisruptionBudget.enabled) }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "airflow.fullname" . }}-worker
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: worker
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if .Values.workers.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.workers.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if .Values.workers.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.workers.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: worker
+      release: {{ .Release.Name }}
+{{- end }}
