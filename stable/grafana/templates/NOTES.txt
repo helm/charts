@@ -1,7 +1,7 @@
 *******************
 ****DEPRECATED*****
 *******************
-* The Jenkins chart is deprecated. Future development has been moved to https://github.com/grafana/helm2-grafana
+* The chart is deprecated. Future development has been moved to https://github.com/grafana/helm2-grafana
 
 1. Get your '{{ .Values.adminUser }}' user password by running:
 
