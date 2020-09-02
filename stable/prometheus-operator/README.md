@@ -199,6 +199,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `nil` |
 | `prometheusOperator.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `nil` |
 | `prometheusOperator.affinity` | Assign custom affinity rules to the prometheus operator https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ | `{}` |
+| `prometheusOperator.alertmanagerInstanceNamespaces` | Namespaces where Alertmanager custom resources and corresponding StatefulSets are watched/created. If set this takes precedence over `namespaces` or `denyNamespaces` for Alertmanager custom resources | `[]` |
 | `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.configReloaderCpu` | Set the prometheus config reloader side-car CPU limit. If unset, uses the prometheus-operator project default | `nil` |
 | `prometheusOperator.configReloaderMemory` | Set the prometheus config reloader side-car memory limit. If unset, uses the prometheus-operator project default | `nil` |
@@ -232,6 +233,7 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.prometheusConfigReloaderImage.repository` | Repository for config-reloader image | `quay.io/coreos/prometheus-config-reloader` |
 | `prometheusOperator.prometheusConfigReloaderImage.tag` | Tag for config-reloader image | `v0.38.1` |
 | `prometheusOperator.prometheusConfigReloaderImage.sha` | Sha for config-reloader image (optional) | `` |
+| `prometheusOperator.prometheusInstanceNamespaces` | Namespaces where Prometheus custom resources and corresponding Secrets, Configmaps and StatefulSets are watched/created. If set this takes precedence over `namespaces` or `denyNamespaces` for Prometheus custom resources | `[]` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.securityContext` | SecurityContext for prometheus operator | `{"fsGroup": 65534, "runAsGroup": 65534, "runAsNonRoot": true, "runAsUser": 65534}` |
 | `prometheusOperator.service.annotations` | Annotations to be added to the prometheus operator service | `{}` |
@@ -255,8 +257,8 @@ The following tables list the configurable parameters of the prometheus-operator
 | `prometheusOperator.tlsProxy.image.sha` | Sha for the TLS proxy container (optional) | `` |
 | `prometheusOperator.tlsProxy.image.pullPolicy` | Image pull policy for the TLS proxy container | `IfNotPresent` |
 | `prometheusOperator.tlsProxy.resources` | Resource requests and limits for the TLS proxy container | `{}` |
+| `prometheusOperator.thanosInstanceNamespaces` | Namespaces where ThanosRuler custom resources and corresponding StatefulSets are watched/created. If set this takes precedence over `namespaces` or `denyNamespaces` for ThanosRuler custom resources | `[]` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
-
 
 ### Prometheus
 | Parameter | Description | Default |

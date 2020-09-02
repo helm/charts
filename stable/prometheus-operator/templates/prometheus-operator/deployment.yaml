@@ -75,6 +75,15 @@ spec:
             {{- end }}
             - --config-reloader-cpu={{ .Values.prometheusOperator.configReloaderCpu }}
             - --config-reloader-memory={{ .Values.prometheusOperator.configReloaderMemory }}
+          {{- if .Values.prometheusOperator.alertmanagerInstanceNamespaces }}
+            - --alertmanager-instance-namespaces={{ .Values.prometheusOperator.alertmanagerInstanceNamespaces | join "," }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.prometheusInstanceNamespaces }}
+            - --prometheus-instance-namespaces={{ .Values.prometheusOperator.prometheusInstanceNamespaces | join "," }}
+          {{- end }}
+          {{- if .Values.prometheusOperator.athanosInstanceNamespaces }}
+            - --thanos-instance-namespaces={{ .Values.prometheusOperator.thanosInstanceNamespaces | join "," }}
+          {{- end }}
           ports:
             - containerPort: 8080
               name: http

@@ -1181,6 +1181,12 @@ prometheusOperator:
   ##
   denyNamespaces: []
 
+  ## Filter namespaces to look for prometheus-operator component custom resources
+  ##
+  alertmanagerInstanceNamespaces: []
+  prometheusInstanceNamespaces: []
+  thanosInstanceNamespaces: []
+
   ## Service account for Alertmanager to use.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
   ##
