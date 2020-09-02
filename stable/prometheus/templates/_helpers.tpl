@@ -153,6 +153,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Return the appropriate k8s version.
+*/}}
+{{- define "prometheus.capabilities.kubeVersion" -}}
+{{- printf "%s.%s" .Capabilities.KubeVersion.Major .Capabilities.KubeVersion.Minor -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for deployment.
 */}}
 {{- define "prometheus.deployment.apiVersion" -}}
