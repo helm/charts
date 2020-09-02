@@ -16,6 +16,7 @@ image:
 
 service:
   type: LoadBalancer
+  # nodePort: 32000
   port:
     number: 18080
     name: http-historyport
