@@ -125,6 +125,8 @@ mgmt:
   image: openpolicyagent/kube-mgmt
   imageTag: "0.10"
   imagePullPolicy: IfNotPresent
+# NOTE insecure http port conjointly used for mgmt access and prometheus metrics export
+  port: 8181
   extraArgs: []
   resources: {}
   data:
