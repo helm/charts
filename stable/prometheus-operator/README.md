@@ -43,6 +43,11 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/prometheus-operator
 ```
 
+Helm 3+
+```console
+helm install my-release stable/prometheus-operator
+```
+
 The command deploys prometheus-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 The default installation includes Prometheus Operator, Alertmanager, Grafana, and configuration for scraping Kubernetes infrastructure.
