@@ -1,5 +1,5 @@
 dependencies:
   - name: postgresql
-    version: 0.6.0
+    version: 8.6.4
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: postgresql.install
