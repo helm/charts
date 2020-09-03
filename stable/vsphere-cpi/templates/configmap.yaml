@@ -1,4 +1,4 @@
-{{- if .Values.config.enabled -}}
+{{- if .Values.config.enabled | default .Values.global.config.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,15 +13,19 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   vsphere.conf: |
-    [Global]
-    # properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
-    port = "443" #Optional
-    insecure-flag = "1" #set to 1 if the vCenter uses a self-signed cert
-    # settings for using k8s secret
-    secret-name = "vsphere-cpi"
-    secret-namespace = "{{ .Release.Namespace }}"
+    # Global properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
+    global:
+      port: 443
+      # set insecure-flag to true if the vCenter uses a self-signed cert
+      insecureFlag: true
+      # settings for using k8s secret
+      secretName: vsphere-cpi
+      secretNamespace: {{ .Release.Namespace }}
 
-    [VirtualCenter "{{ .Values.config.vcenter }}"]
-    datacenters = "{{ .Values.config.datacenter }}"
-    # port, insecure-flag will be used from Global section.
+    # VirtualCenter section
+    vcenter:
+      {{ .Release.Name }}:
+        server: {{ .Values.config.vcenter | default .Values.global.config.vcenter }}
+        datacenters:
+          - {{ .Values.config.datacenter | default .Values.global.config.datacenter }}
 {{- end -}}
