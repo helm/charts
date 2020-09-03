@@ -2,9 +2,9 @@
 apiVersion: v1
 name: jenkins
 home: https://jenkins.io/
-version: 2.5.3
+version: 2.5.4
 appVersion: lts
-description: Open source continuous integration server. It supports multiple SCM tools
+description: DEPRECATED - Open source continuous integration server. It supports multiple SCM tools
   including CVS, Subversion and Git. It can execute Apache Ant and Apache Maven-based
   projects as well as arbitrary scripts.
 sources:
