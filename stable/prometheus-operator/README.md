@@ -39,9 +39,17 @@ This chart bootstraps a [prometheus-operator](https://github.com/coreos/promethe
 
 To install the chart with the release name `my-release`:
 
+**Helm 2.12+** 
 ```console
 $ helm install --name my-release stable/prometheus-operator
 ```
+
+**Helm 3** 
+
+```console
+$ helm install my-release stable/prometheus-operator
+```
+
 
 The command deploys prometheus-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
