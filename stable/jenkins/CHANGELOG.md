@@ -5,6 +5,14 @@ numbering uses [semantic versioning](http://semver.org).
 
 NOTE: The change log until version 1.5.7 is auto generated based on git commits. Those include a reference to the git commit to be able to get more details.
 
+## 2.5.4
+
+Added "DEPRECATED - " prefix in chart description
+
+## 2.5.3 deprecated the chart
+
+It's moved to https://github.com/jenkinsci/helm-charts
+
 ## 2.5.2
 
 Fix as per JENKINS-47112
