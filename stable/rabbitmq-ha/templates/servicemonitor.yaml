@@ -25,5 +25,6 @@ spec:
     port: exporter
   {{- end }}
   namespaceSelector:
-    any: true
+    matchNames:
+    - {{ .Release.Namespace }}
 {{- end }}
