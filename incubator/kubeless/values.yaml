@@ -544,8 +544,13 @@ kafkaTrigger:
   enabled: false
   deployment:
     image:
-      repository: bitnami/kafka-trigger-controller
-      tag: v1.0.1
+      repository: kubeless/kafka-trigger-controller
+      tag: v1.0.4
       pullPolicy: IfNotPresent
   env:
     kafkaBrokers: localhost:9092
+    KafkaTlsEnable: "false"
+    KafkaTlsInsecure: "false"
+    KafkaSaslEnable: "false"
+    KafkaSaslSecret: ""
+    LogLevel: INFO
