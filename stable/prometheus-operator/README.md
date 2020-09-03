@@ -55,6 +55,27 @@ The command deploys prometheus-operator on the Kubernetes cluster in the default
 
 The default installation includes Prometheus Operator, Alertmanager, Grafana, and configuration for scraping Kubernetes infrastructure.
 
+## Access Dashboards
+**Access Prometheus Dashboard**
+```console
+$ kubectl  port-forward svc/my-release-prometheus-oper-prometheus 9090:9090
+```
+Then you can access the dashboard on http://localhost:9090
+
+**Access Grafana Dashboard**
+```console
+$ kubectl  port-forward svc/my-release-grafana 3000:80
+```
+Use the **`username: admin` and `password: prom-operator`** to access the dashboard on http://localhost:3000
+
+**Access Alert Manager Dashboard**
+```console
+$ kubectl  port-forward svc/my-release-prometheus-oper-alertmanager  9093:9093
+```
+Then you can access the dashboard on http://localhost:9093
+
+
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
