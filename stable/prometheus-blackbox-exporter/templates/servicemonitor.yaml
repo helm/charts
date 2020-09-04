@@ -30,6 +30,10 @@ spec:
         replacement: {{ .url }}
       - targetLabel: target
         replacement: {{ .name }}
+        {{- range $targetLabel, $replacement := .additionalMetricsRelabels }}
+      - targetLabel: {{ $targetLabel }}
+        replacement: {{ $replacement }}
+        {{- end }}
   jobLabel: "{{ $.Release.Name }}"
   selector:
     matchLabels:
