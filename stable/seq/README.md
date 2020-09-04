@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the Seq chart and their
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                                                                             | `ReadWriteOnce`                       |
 | `persistence.subPath`                | Mount a sub directory of the persistent volume if set                                                 | `""`                                  |
 | `resources`                          | CPU/Memory resource requests/limits                                                                   | `{}`                                  |
+| `cache.targetSize`                   | The target amount of RAM to use for the in-memory cache                                               | `0.7`                                 |
 | `nodeSelector`                       | Node labels for pod assignment                                                                        | `{}`                                  |
 | `affinity`                           | Affinity settings for pod assignment                                                                  | `{}`                                  |
 | `tolerations`                        | Toleration labels for pod assignment                                                                  | `[]`                                  |
