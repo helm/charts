@@ -5,7 +5,7 @@ kind: StatefulSet
 metadata:
 {{- if .Values.server.statefulSet.annotations }}
   annotations:
-{{ toYaml .Values.server.statefulSet.annotations | indent 4 }}
+    {{ toYaml .Values.server.statefulSet.annotations | nindent 4 }}
 {{- end }}
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
@@ -25,12 +25,12 @@ spec:
     metadata:
     {{- if .Values.server.podAnnotations }}
       annotations:
-{{ toYaml .Values.server.podAnnotations | indent 8 }}
+        {{ toYaml .Values.server.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}
-        {{- if .Values.server.statefulSet.labels}}
-        {{ toYaml .Values.server.statefulSet.labels | nindent 8 }}
+        {{- if .Values.server.podLabels}}
+        {{ toYaml .Values.server.podLabels | nindent 8 }}
         {{- end}}
     spec:
 {{- if .Values.server.priorityClassName }}

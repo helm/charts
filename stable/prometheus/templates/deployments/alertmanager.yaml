@@ -2,6 +2,10 @@
 apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
+{{- if .Values.alertmanager.deploymentAnnotations }}
+  annotations:
+    {{ toYaml .Values.alertmanager.deploymentAnnotations | nindent 4 }}
+{{- end }}
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
@@ -20,7 +24,7 @@ spec:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
       annotations:
-{{ toYaml .Values.alertmanager.podAnnotations | indent 8 }}
+        {{ toYaml .Values.alertmanager.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "prometheus.alertmanager.labels" . | nindent 8 }}

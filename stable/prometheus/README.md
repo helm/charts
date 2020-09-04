@@ -161,9 +161,12 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.podLabels` | labels to be added to Prometheus AlertManager pods | `{}`
-`alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`alertmanager.deploymentAnnotations` | annotations to be added to alertmanager deployment | `{}`
+`alertmanager.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
+`alertmanager.statefulSet.annotations` | annotations to be added to alertmanager stateful set | `{}`
+`alertmanager.statefulSet.labels` | labels to be added to alertmanager stateful set | `{}`
 `alertmanager.statefulSet.podManagementPolicy` | podManagementPolicy of alertmanager pods | `OrderedReady`
 `alertmanager.statefulSet.headless.annotations` | annotations for alertmanager headless service | `{}`
 `alertmanager.statefulSet.headless.labels` | labels for alertmanager headless service | `{}`
@@ -224,7 +227,7 @@ Parameter | Description | Default
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
 `nodeExporter.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
 `nodeExporter.podDisruptionBudget.maxUnavailable` | Maximum unavailable instances in PDB | `1`
-`nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`nodeExporter.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}`
 `nodeExporter.podSecurityPolicy.enabled` | Specify if a Pod Security Policy for node-exporter must be created | `false`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.priorityClassName` | node-exporter priorityClassName | `nil`
@@ -253,7 +256,9 @@ Parameter | Description | Default
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
-`pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`pushgateway.podLabels` | labels to be added to pushgateway pods | `{}`
+`pushgateway.deploymentAnnotations` | annotations to be added to pushgateway deployment | `{}`
+`pushgateway.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}`
 `pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
 `pushgateway.podDisruptionBudget.enabled` | If true, create a PodDisruptionBudget | `false`
@@ -330,7 +335,7 @@ Parameter | Description | Default
 `server.podLabels` | labels to be added to Prometheus server pods | `{}`
 `server.alertmanagers` | Prometheus AlertManager configuration for the Prometheus server | `{}`
 `server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
-`server.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}` |
+`server.podSecurityPolicy.annotations` | Specify pod annotations in the pod security policy | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.statefulSet.enabled` | If true, use a statefulset instead of a deployment for pod management | `false`
 `server.statefulSet.annotations` | annotations to be added to Prometheus server stateful set | `{}`
@@ -394,7 +399,7 @@ Parameter | Description | Default
 `extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `alertRelabelConfigs` | Prometheus server [alert relabeling configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs) for H/A prometheus | ""
 `networkPolicy.enabled` | Enable NetworkPolicy | `false`
-`forceNamespace` | Force resources to be namespaced | `null` |
+`forceNamespace` | Force resources to be namespaced | `null`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

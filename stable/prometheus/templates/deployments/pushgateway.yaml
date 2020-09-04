@@ -2,6 +2,10 @@
 apiVersion: {{ template "prometheus.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
+{{- if .Values.pushgateway.deploymentAnnotations }}
+  annotations:
+    {{ toYaml .Values.pushgateway.deploymentAnnotations | nindent 4 }}
+{{- end }}
   labels:
     {{- include "prometheus.pushgateway.labels" . | nindent 4 }}
   name: {{ template "prometheus.pushgateway.fullname" . }}
@@ -23,10 +27,13 @@ spec:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}
       annotations:
-{{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
+        {{ toYaml .Values.pushgateway.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "prometheus.pushgateway.labels" . | nindent 8 }}
+        {{- if .Values.pushgateway.podLabels}}
+        {{ toYaml .Values.pushgateway.podLabels | nindent 8 }}
+        {{- end}}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
       {{- if .Values.pushgateway.extraInitContainers }}

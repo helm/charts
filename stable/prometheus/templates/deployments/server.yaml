@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
 {{- if .Values.server.deploymentAnnotations }}
   annotations:
-{{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
+    {{ toYaml .Values.server.deploymentAnnotations | nindent 4 }}
 {{- end }}
   labels:
     {{- include "prometheus.server.labels" . | nindent 4 }}
@@ -25,7 +25,7 @@ spec:
     metadata:
     {{- if .Values.server.podAnnotations }}
       annotations:
-{{ toYaml .Values.server.podAnnotations | indent 8 }}
+        {{ toYaml .Values.server.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "prometheus.server.labels" . | nindent 8 }}

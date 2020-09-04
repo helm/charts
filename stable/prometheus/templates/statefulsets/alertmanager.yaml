@@ -2,8 +2,15 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+{{- if .Values.alertmanager.statefulSet.annotations }}
+  annotations:
+    {{ toYaml .Values.alertmanager.statefulSet.annotations | nindent 4 }}
+{{- end }}
   labels:
     {{- include "prometheus.alertmanager.labels" . | nindent 4 }}
+    {{- if .Values.alertmanager.statefulSet.labels}}
+    {{ toYaml .Values.alertmanager.statefulSet.labels | nindent 4 }}
+    {{- end}}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 {{ include "prometheus.namespace" . | indent 2 }}
 spec:
@@ -17,10 +24,13 @@ spec:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
       annotations:
-{{ toYaml .Values.alertmanager.podAnnotations | indent 8 }}
+        {{ toYaml .Values.alertmanager.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "prometheus.alertmanager.labels" . | nindent 8 }}
+        {{- if .Values.alertmanager.podLabels}}
+        {{ toYaml .Values.alertmanager.podLabels | nindent 8 }}
+        {{- end}}
     spec:
 {{- if .Values.alertmanager.affinity }}
       affinity:
