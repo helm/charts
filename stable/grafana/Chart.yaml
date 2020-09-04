@@ -1,11 +1,12 @@
-# This chart is deprecated and moved to https://github.com/grafana/helm2-grafana
 apiVersion: v1
 name: grafana
+# This chart is deprecated and moved to https://github.com/grafana/helm-charts
+# For details including how to un-deprecate a chart see the PROCESSES.md file.
 deprecated: true
-version: 5.5.6
+version: 5.5.7
 appVersion: 7.1.1
 kubeVersion: "^1.8.0-0"
-description: The leading tool for querying and visualizing time series and metrics.
+description: DEPRECATED - The leading tool for querying and visualizing time series and metrics.
 home: https://grafana.net
 icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_transparent_400x.png
 sources:
