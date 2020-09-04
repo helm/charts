@@ -6,7 +6,7 @@ deprecated: true
 version: 5.5.7
 appVersion: 7.1.1
 kubeVersion: "^1.8.0-0"
-description: DEPRECATED: The leading tool for querying and visualizing time series and metrics.
+description: DEPRECATED - The leading tool for querying and visualizing time series and metrics.
 home: https://grafana.net
 icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_transparent_400x.png
 sources:
