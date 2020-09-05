@@ -1,3 +1,4 @@
+{{- if .Values.testFramework.enabled }}
 {{- if or (eq .Values.backend.type "forward") (and (eq .Values.backend.type "es") (eq .Values.backend.es.tls "off")) }}
 apiVersion: v1
 kind: Pod
@@ -31,9 +32,9 @@ spec:
   containers:
     - name: {{ .Release.Name }}-test
       {{- if eq .Values.backend.type "forward"}}
-      image: "fluent/fluentd:v1.4-debian-1"
+      image: "{{ .Values.testFramework.fluentd.image }}:{{ .Values.testFramework.fluentd.tag }}"
       {{- else }}
-      image: "dwdraju/alpine-curl-jq"
+      image: "{{ .Values.testFramework.curlJq.image }}:{{ .Values.testFramework.curlJq.tag }}"
       {{- end }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       {{- if and (eq .Values.backend.forward.tls "on") (eq .Values.backend.type "forward") }}
@@ -54,4 +55,5 @@ spec:
   - name: tools
     emptyDir: {}
   restartPolicy: Never
+{{- end }}
 {{- end }}
