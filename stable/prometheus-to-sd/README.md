@@ -1,5 +1,7 @@
 # prometheus-to-sd
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 [prometheus-to-sd](https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd) is a simple component that can scrape metrics stored in prometheus text format from one or multiple components and push them to the Stackdriver
 
 ## TL;DR;
