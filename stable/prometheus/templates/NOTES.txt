@@ -1,3 +1,5 @@
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 {{- if .Values.server.enabled -}}
 The Prometheus server can be accessed via port {{ .Values.server.service.servicePort }} on the following DNS name from within your cluster:
 {{ template "prometheus.server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
