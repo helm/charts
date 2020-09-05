@@ -1,5 +1,7 @@
 # Prometheus MongoDB Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Installs the [MongoDB Exporter](https://github.com/percona/mongodb_exporter) for [Prometheus](https://prometheus.io/). The
 MongoDB Exporter collects and exports oplog, replica set, server status, sharding and storage engine metrics.
 
