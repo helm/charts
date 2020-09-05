@@ -1,5 +1,7 @@
 # Consul Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Prometheus exporter for Consul metrics.
 Learn more: https://github.com/prometheus/consul_exporter
 
