@@ -1,5 +1,7 @@
 # Prometheus Blackbox Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Prometheus exporter for blackbox testing
 
 Learn more: [https://github.com/prometheus/blackbox_exporter](https://github.com/prometheus/blackbox_exporter)
