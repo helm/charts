@@ -1,3 +1,5 @@
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 The Prometheus Operator has been installed. Check its status by running:
   kubectl --namespace {{ template "prometheus-operator.namespace" . }} get pods -l "release={{ $.Release.Name }}"
 
