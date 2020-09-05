@@ -1,3 +1,5 @@
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 {{ template "k8s-prometheus-adapter.fullname" .  }} has been deployed.
 In a few minutes you should be able to list metrics using the following command(s):
 {{ if .Values.rules.resource }}
