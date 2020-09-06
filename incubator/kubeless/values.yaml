@@ -549,8 +549,8 @@ kafkaTrigger:
       pullPolicy: IfNotPresent
   env:
     kafkaBrokers: localhost:9092
-    KafkaTlsEnable: "false"
+    KafkaTlsEnable: False
     KafkaTlsInsecure: "false"
-    KafkaSaslEnable: "false"
+    KafkaSaslEnable: False
     KafkaSaslSecret: ""
     LogLevel: INFO
