@@ -550,7 +550,7 @@ kafkaTrigger:
   env:
     kafkaBrokers: localhost:9092
     KafkaTlsEnable: False
-    KafkaTlsInsecure: "false"
+    KafkaTlsInsecure: False
     KafkaSaslEnable: False
-    KafkaSaslSecret: ""
+    KafkaSaslSecret: kafka-secret
     LogLevel: INFO
