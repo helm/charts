@@ -25,7 +25,7 @@ spec:
         - name: KAFKA_ENABLE_TLS
           value: "true"
         - name: KAFKA_INSECURE
-          value: {{ .Values.kafkaTrigger.env.KafkaTlsInsecure }}
+          value: "{{ .Values.kafkaTrigger.env.KafkaTlsInsecure }}"
         - name: KAFKA_ENABLE_SASL
           value: "true"
         - name: KAFKA_USERNAME
