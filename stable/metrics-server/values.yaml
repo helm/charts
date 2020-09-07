@@ -107,3 +107,8 @@ podDisruptionBudget:
   enabled: false
   minAvailable:
   maxUnavailable:
+
+testImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: IfNotPresent
