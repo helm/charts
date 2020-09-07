@@ -1,4 +1,9 @@
-# Ubiquiti Network's Unifi Controller
+# DEPRECATED - Network's Unifi Controller
+
+|**This chart has been deprecated and moved to its new home:**
+|
+|- **GitHub repo:** https://github.com/k8s-at-home/charts/tree/master/charts/unifi
+|- **Charts repo:** https://k8s-at-home.com/charts/
 
 This is a helm chart for [Ubiquiti Network's][ubnt] [Unifi Controller][ubnt 2].
 
