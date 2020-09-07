@@ -22,5 +22,33 @@ spec:
         env:
         - name: KAFKA_BROKERS
           value: {{ .Values.kafkaTrigger.env.kafkaBrokers }}
+        {{- if .Values.kafkaTrigger.env.KafkaTlsEnable }}
+        - name: KAFKA_ENABLE_TLS
+          value: "true"
+        - name: KAFKA_INSECURE
+          value: "{{ .Values.kafkaTrigger.env.KafkaTlsInsecure }}"
+        {{- end }}
+        {{- if .Values.kafkaTrigger.env.KafkaSaslEnable }}
+        - name: KAFKA_ENABLE_SASL
+          value: "true"
+        - name: KAFKA_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: {{ .Values.kafkaTrigger.env.KafkaSaslSecret }}
+        - name: KAFKA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: {{ .Values.kafkaTrigger.env.KafkaSaslSecret }}
+        {{- end }}
+        - name: KUBELESS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KUBELESS_CONFIG
+          value: kubeless-config
+        - name: KUBELESS_LOG_LEVEL
+          value: {{ .Values.kafkaTrigger.env.LogLevel }}
       serviceAccountName: controller-acct
 {{- end }}

@@ -10,7 +10,7 @@ controller:
     functionController:
       image:
         repository: kubeless/function-controller
-        tag: v1.0.5
+        tag: v1.0.7
         pullPolicy: IfNotPresent
     httpTriggerController:
       image:
@@ -44,465 +44,555 @@ config:
   provisionImage: kubeless/unzip@sha256:f162c062973cca05459834de6ed14c039d45df8cdb76097f50b028a1621b3697
   provisionImagePullSecret: ""
   runtimeImages: '[
+ {
+   "ID":"ballerina",
+   "depName":"",
+   "fileNameSuffix":".bal",
+   "versions":[
    {
-      "ID": "ballerina",
-      "depName": "",
-      "fileNameSuffix": ".bal",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/compile-function.sh $KUBELESS_FUNC_NAME",
-                  "image": "ballerina/kubeless-ballerina-init@sha256:a04ca9d289c62397d0b493876f6a9ff4cc425563a47aa7e037c3b850b8ceb3e8",
-                  "phase": "compilation"
-               },
-               {
-                  "image": "ballerina/kubeless-ballerina@sha256:a025841010cfdf8136396efef31d4155283770d331ded6a9003e6e55f02db2e5",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "ballerina0.981.0",
-            "version": "0.981.0"
-         }
-      ]
+     "images":[
+     {
+       "command":"/compile-function.sh $KUBELESS_FUNC_NAME",
+       "image":"ballerina/kubeless-ballerina-init@sha256:a04ca9d289c62397d0b493876f6a9ff4cc425563a47aa7e037c3b850b8ceb3e8",
+       "phase":"compilation"
+     },
+     {
+       "image":"ballerina/kubeless-ballerina@sha256:a025841010cfdf8136396efef31d4155283770d331ded6a9003e6e55f02db2e5",
+       "phase":"runtime"
+     }
+     ],
+     "name":"ballerina0.981.0",
+     "version":"0.981.0"
+   }
+   ]
+ },
+   {
+     "ID":"dotnetcore",
+     "depName":"project.csproj",
+     "fileNameSuffix":".cs",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
+         "image":"allantargino/aspnetcore-build@sha256:0d60f845ff6c9c019362a68b87b3920f3eb2d32f847f2d75e4d190cc0ce1d81c",
+         "phase":"compilation"
+       },
+       {
+         "env":{
+           "DOTNETCORE_HOME":"$(KUBELESS_INSTALL_VOLUME)/packages"
+         },
+         "image":"allantargino/kubeless-dotnetcore@sha256:1699b07d9fc0276ddfecc2f823f272d96fd58bbab82d7e67f2fd4982a95aeadc",
+         "phase":"runtime"
+       }
+       ],
+       "name":"dotnetcore2.0",
+       "version":"2.0"
+     },
+     {
+       "images":[
+       {
+         "command":"/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
+         "image":"allantargino/aspnetcore-build@sha256:36123cf0279b87c5d27d69558062678a5353cc6db238af46bd5c0e508109f659",
+         "phase":"compilation"
+       },
+       {
+         "env":{
+           "DOTNETCORE_HOME":"$(KUBELESS_INSTALL_VOLUME)/packages"
+         },
+         "image":"allantargino/kubeless-dotnetcore@sha256:6d6c659807881e9dac7adde305867163ced5711ef77a3a76e50112bca1ba14cf",
+         "phase":"runtime"
+       }
+       ],
+       "name":"dotnetcore2.1",
+       "version":"2.1"
+     },
+     {
+       "images":[
+       {
+         "command":"/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
+         "image":"lennartquerter/kubless_compile_dotnetcore22:4761f204190ad59807b9231e096cbcb3901226cd",
+         "phase":"compilation"
+       },
+       {
+         "env":{
+           "DOTNETCORE_HOME":"$(KUBELESS_INSTALL_VOLUME)/packages"
+         },
+         "image":"lennartquerter/kubless_runtime_dotnetcore22:4761f204190ad59807b9231e096cbcb3901226cd",
+         "phase":"runtime"
+       }
+       ],
+       "name":"dotnetcore2.2",
+       "version":"2.2"
+     },
+     {
+       "images":[
+       {
+         "command":"/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
+         "image":"lorenzoangelini3/kubeless-compile-dotnetcore31@sha256:4e6adfe873f7c4cd5e0d582bb5122f94c6d6ea73baa03b486dd93b8406deb8ca",
+         "phase":"compilation"
+       },
+       {
+         "env":{
+           "DOTNETCORE_HOME":"$(KUBELESS_INSTALL_VOLUME)/packages"
+         },
+         "image":"lorenzoangelini3/kubeless-runtime-dotnetcore31@sha256:4a2d94bd6da4aee612a2009d863beb554c43e61199d8d3fc4bf2d28b5673940b",
+         "phase":"runtime"
+       }
+       ],
+       "name":"dotnetcore3.1",
+       "version":"3.1"
+     }
+     ]
    },
    {
-      "ID": "dotnetcore",
-      "depName": "project.csproj",
-      "fileNameSuffix": ".cs",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
-                  "image": "allantargino/aspnetcore-build@sha256:0d60f845ff6c9c019362a68b87b3920f3eb2d32f847f2d75e4d190cc0ce1d81c",
-                  "phase": "compilation"
-               },
-               {
-                  "env": {
-                     "DOTNETCORE_HOME": "$(KUBELESS_INSTALL_VOLUME)/packages"
-                  },
-                  "image": "allantargino/kubeless-dotnetcore@sha256:1699b07d9fc0276ddfecc2f823f272d96fd58bbab82d7e67f2fd4982a95aeadc",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "dotnetcore2.0",
-            "version": "2.0"
+     "ID":"go",
+     "depName":"go.mod",
+     "fileNameSuffix":".go",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/compile-function.sh",
+         "env":{
+           "GOCACHE":"$(KUBELESS_INSTALL_VOLUME)/.cache"
          },
-         {
-            "images": [
-               {
-                  "command": "/app/compile-function.sh $KUBELESS_INSTALL_VOLUME",
-                  "image": "allantargino/aspnetcore-build@sha256:36123cf0279b87c5d27d69558062678a5353cc6db238af46bd5c0e508109f659",
-                  "phase": "compilation"
-               },
-               {
-                  "env": {
-                     "DOTNETCORE_HOME": "$(KUBELESS_INSTALL_VOLUME)/packages"
-                  },
-                  "image": "allantargino/kubeless-dotnetcore@sha256:6d6c659807881e9dac7adde305867163ced5711ef77a3a76e50112bca1ba14cf",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "dotnetcore2.1",
-            "version": "2.1"
-         }
-      ]
+         "image":"kubeless/go-init:1.13@sha256:7cdebecd772639c2238e6414101195cb8634c8eee73a6b473b7e39f3e094eb7c",
+         "phase":"compilation"
+       },
+       {
+         "image":"kubeless/go@sha256:55759228714d7080b3dd858e56530d4e1f539d071906e88d88b454ee3b3c9b16",
+         "phase":"runtime"
+       }
+       ],
+       "name":"go1.13",
+       "version":"1.13"
+     },
+     {
+       "images":[
+       {
+         "command":"/compile-function.sh",
+         "env":{
+           "GOCACHE":"$(KUBELESS_INSTALL_VOLUME)/.cache"
+         },
+         "image":"kubeless/go-init:1.14@sha256:403164254efabf735e98e73b7f6f65f14333ed792798c7c3d3d9a33ca91acf7a",
+         "phase":"compilation"
+       },
+       {
+         "image":"kubeless/go@sha256:55759228714d7080b3dd858e56530d4e1f539d071906e88d88b454ee3b3c9b16",
+         "phase":"runtime"
+       }
+       ],
+       "name":"go1.14",
+       "version":"1.14"
+     }
+     ]
    },
    {
-      "ID": "go",
-      "depName": "Gopkg.toml",
-      "fileNameSuffix": ".go",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/compile-function.sh",
-                  "image": "kubeless/go-init@sha256:88104a60bcd4c67fd6aa92fffa46062396c08bc2632529ee435517e7628a2f95",
-                  "phase": "compilation"
-               },
-               {
-                  "command": "cd $GOPATH/src/kubeless && dep ensure > /dev/termination-log 2>&1",
-                  "image": "kubeless/go-init@sha256:88104a60bcd4c67fd6aa92fffa46062396c08bc2632529ee435517e7628a2f95",
-                  "phase": "installation"
-               },
-               {
-                  "image": "kubeless/go@sha256:f5d449f830ac8727c0b9c05e458b6dd0a0822743cb19a87343e0fd00b041eea9",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "go1.10",
-            "version": "1.10"
-         }
-      ]
+     "ID":"java",
+     "depName":"pom.xml",
+     "fileNameSuffix":".java",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/compile-function.sh",
+         "image":"kubeless/java-init@sha256:e8e7b55b79240f315f104604ec0685dbb1b584664772e1f0fe78c7b6369159fe",
+         "phase":"compilation"
+       },
+       {
+         "image":"kubeless/java@sha256:f8f2c72b0c6218f25eef762aa9e8957ea2b8f448bd4b54fbb7acbb0ab64c1b0f",
+         "phase":"runtime"
+       }
+       ],
+       "name":"java1.8",
+       "version":"1.8"
+     },
+     {
+       "images":[
+       {
+         "command":"/compile-function.sh",
+         "image":"kubeless/java-init@sha256:971cb482b47d644e28d3d9ceaa3a20bb0f914f2efaee0348f189840466cce663",
+         "phase":"compilation"
+       },
+       {
+         "image":"kubeless/java@sha256:b983f701e1796f3d9a3455f8f08c057bae493835364b08b5cdfac582a2b91d70",
+         "phase":"runtime"
+       }
+       ],
+       "name":"java11",
+       "version":"11"
+     }
+     ]
    },
    {
-      "ID": "java",
-      "depName": "pom.xml",
-      "fileNameSuffix": ".java",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/compile-function.sh",
-                  "image": "kubeless/java-init@sha256:36cc37836437aaa5ac82f49ba20781d45bd5efcd9e2d022fcaae487a058572c2",
-                  "phase": "compilation"
-               },
-               {
-                  "image": "kubeless/java@sha256:2dbc44c0e2467a27558776edb2aed85055361e2f0b74443800851ee658576a88",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "java1.8",
-            "version": "1.8"
-         }
-      ]
+     "ID":"nodejs",
+     "depName":"package.json",
+     "fileNameSuffix":".js",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:d36e13e876d0d92cbf4b9a62e181b27bfdaed5b9ec0b7c46759f9e11fce68c6e",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
+         },
+         "image":"kubeless/nodejs@sha256:d36e13e876d0d92cbf4b9a62e181b27bfdaed5b9ec0b7c46759f9e11fce68c6e",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node6",
+       "version":"6"
+     },
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:40df41562637802e34129f31e66f6e0ab388da6d8a33c9849bb9ea652d44dc3d",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
+         },
+         "image":"kubeless/nodejs@sha256:40df41562637802e34129f31e66f6e0ab388da6d8a33c9849bb9ea652d44dc3d",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node8",
+       "version":"8"
+     },
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:74f8428ba9e98b6849ab34d2d1b5c38381b1de471090f7cc3dc9f72322f8c921",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
+         },
+         "image":"kubeless/nodejs@sha256:74f8428ba9e98b6849ab34d2d1b5c38381b1de471090f7cc3dc9f72322f8c921",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node10",
+       "version":"10"
+     },
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:2a0824cba4486dcc0508b6424b29878ccf57057023c391c1a30ddb09fa9b8503",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
+         },
+         "image":"kubeless/nodejs@sha256:2a0824cba4486dcc0508b6424b29878ccf57057023c391c1a30ddb09fa9b8503",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node12",
+       "version":"12"
+     }
+     ]
    },
    {
-      "ID": "nodejs",
-      "depName": "package.json",
-      "fileNameSuffix": ".js",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:4d8f5d6ad51676e8faffc0da6fabe8e12cf8cf34ae0ce8e94ee4e510f9876d2e",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "kubeless/nodejs@sha256:4d8f5d6ad51676e8faffc0da6fabe8e12cf8cf34ae0ce8e94ee4e510f9876d2e",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node6",
-            "version": "6"
-         },
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:5c3c21cf29231f25a0d7d2669c6f18c686894bf44e975fcbbbb420c6d045f7e7",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "kubeless/nodejs@sha256:5c3c21cf29231f25a0d7d2669c6f18c686894bf44e975fcbbbb420c6d045f7e7",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node8",
-            "version": "8"
-         },
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:9594e9d601cfe3868b54cccf1cd8763b2430493fed3e06d7dc128a69b263dfaf",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "kubeless/nodejs@sha256:9594e9d601cfe3868b54cccf1cd8763b2430493fed3e06d7dc128a69b263dfaf",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node10",
-            "version": "10"
-         },
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:1c45cda56384adc7deae9bf99e221b8e159ec25980c05b947939096bf91800e6",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "kubeless/nodejs@sha256:1c45cda56384adc7deae9bf99e221b8e159ec25980c05b947939096bf91800e6",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node12",
-            "version": "12"
-         }
-      ]
+     "ID":"php",
+     "depName":"composer.json",
+     "fileNameSuffix":".php",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"composer install -d $KUBELESS_INSTALL_VOLUME",
+         "image":"composer:1.6",
+         "phase":"installation"
+       },
+       {
+         "image":"kubeless/php@sha256:a22a88fc7e0f46d185224a0179451187d6ab44b89c070807bf92a305ce416e4a",
+         "phase":"runtime"
+       }
+       ],
+       "name":"php72",
+       "version":"7.2"
+     },
+     {
+       "images":[
+       {
+         "command":"composer install -d $KUBELESS_INSTALL_VOLUME",
+         "image":"composer:1.6",
+         "phase":"installation"
+       },
+       {
+         "image":"kubeless/php@sha256:eec60c68440ca2e09dbac63718916ffbaa68e2d123a3faaca1bca2d7646f250f",
+         "phase":"runtime"
+       }
+       ],
+       "name":"php73",
+       "version":"7.3"
+     }
+     ]
    },
    {
-      "ID": "php",
-      "depName": "composer.json",
-      "fileNameSuffix": ".php",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "composer install -d $KUBELESS_INSTALL_VOLUME",
-                  "image": "composer:1.6",
-                  "phase": "installation"
-               },
-               {
-                  "image": "kubeless/php@sha256:8f7f8aa9980a14126d9b9e8b3742258efd2591b0e152b4d65e0d7b5faf61a041",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "php73",
-            "version": "7.3"
-         }
-      ]
+     "ID":"python",
+     "depName":"requirements.txt",
+     "fileNameSuffix":".py",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
+         "image":"python:2.7",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "PYTHONPATH":"$(KUBELESS_INSTALL_VOLUME)/lib/python2.7/site-packages:$(KUBELESS_INSTALL_VOLUME)"
+         },
+         "image":"kubeless/python@sha256:ce8181c88ea093659d79e0f33b2be5dd3b8c75d25c0f465fdedf7dfc3a6a1e5a",
+         "phase":"runtime"
+       }
+       ],
+       "name":"python27",
+       "version":"2.7"
+     },
+     {
+       "images":[
+       {
+         "command":"pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
+         "image":"python:3.4",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "PYTHONPATH":"$(KUBELESS_INSTALL_VOLUME)/lib/python3.4/site-packages:$(KUBELESS_INSTALL_VOLUME)"
+         },
+         "image":"kubeless/python@sha256:55e1169c69df25960dd4434566c72a4c6da8e43a7abd8e3d3f5638a6c186e9fe",
+         "phase":"runtime"
+       }
+       ],
+       "name":"python34",
+       "version":"3.4"
+     },
+     {
+       "images":[
+       {
+         "command":"pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
+         "image":"python:3.6",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "PYTHONPATH":"$(KUBELESS_INSTALL_VOLUME)/lib/python3.6/site-packages:$(KUBELESS_INSTALL_VOLUME)"
+         },
+         "image":"kubeless/python@sha256:63dc8e71d6e6f39561121763c23640373ee00eecfa630db1c01edf247c2204d9",
+         "phase":"runtime"
+       }
+       ],
+       "name":"python36",
+       "version":"3.6"
+     },
+     {
+       "images":[
+       {
+         "command":"pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
+         "image":"python:3.7",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "PYTHONPATH":"$(KUBELESS_INSTALL_VOLUME)/lib/python3.7/site-packages:$(KUBELESS_INSTALL_VOLUME)"
+         },
+         "image":"kubeless/python@sha256:76a32b0f4e11f02cd9e51147f4c3fed870c1ee2c9463167e9ef0e6856de99794",
+         "phase":"runtime"
+       }
+       ],
+       "name":"python37",
+       "version":"3.7"
+     }
+     ]
    },
    {
-      "ID": "python",
-      "depName": "requirements.txt",
-      "fileNameSuffix": ".py",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
-                  "image": "python:2.7",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "PYTHONPATH": "$(KUBELESS_INSTALL_VOLUME)/lib/python2.7/site-packages:$(KUBELESS_INSTALL_VOLUME)"
-                  },
-                  "image": "kubeless/python@sha256:34332f4530508a810f491838a924c36ceac0ec7cab487520e2db2b037800ecda",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "python27",
-            "version": "2.7"
+     "ID":"ruby",
+     "depName":"Gemfile",
+     "fileNameSuffix":".rb",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
+         "image":"bitnami/ruby:2.3",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "GEM_HOME":"$(KUBELESS_INSTALL_VOLUME)/ruby/2.3.0"
          },
-         {
-            "images": [
-               {
-                  "command": "pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
-                  "image": "python:3.4",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "PYTHONPATH": "$(KUBELESS_INSTALL_VOLUME)/lib/python3.4/site-packages:$(KUBELESS_INSTALL_VOLUME)"
-                  },
-                  "image": "kubeless/python@sha256:5c93a60b83dba9324ad8358e66952232746ef9d477266d6a199617d7344c2053",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "python34",
-            "version": "3.4"
+         "image":"kubeless/ruby@sha256:67870b57adebc4dc749a8a19795da801da2d05fc6e8324168ac1b227bb7c77f7",
+         "phase":"runtime"
+       }
+       ],
+       "name":"ruby23",
+       "version":"2.3"
+     },
+     {
+       "images":[
+       {
+         "command":"bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
+         "image":"bitnami/ruby:2.4",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "GEM_HOME":"$(KUBELESS_INSTALL_VOLUME)/ruby/2.4.0"
          },
-         {
-            "images": [
-               {
-                  "command": "pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
-                  "image": "python:3.6",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "PYTHONPATH": "$(KUBELESS_INSTALL_VOLUME)/lib/python3.6/site-packages:$(KUBELESS_INSTALL_VOLUME)"
-                  },
-                  "image": "kubeless/python@sha256:8c49bfa1c6aa5fbcd0f7d99d97280c161247fc94c06d26c04e39ac341c3f75e5",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "python36",
-            "version": "3.6"
+         "image":"kubeless/ruby@sha256:f56ec50fafee09ae0ced9c8393b6874dc5072e4786c62d52b62b3f395643b423",
+         "phase":"runtime"
+       }
+       ],
+       "name":"ruby24",
+       "version":"2.4"
+     },
+     {
+       "images":[
+       {
+         "command":"bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
+         "image":"bitnami/ruby:2.5",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "GEM_HOME":"$(KUBELESS_INSTALL_VOLUME)/ruby/2.5.0"
          },
-         {
-            "images": [
-               {
-                  "command": "pip install --prefix=$KUBELESS_INSTALL_VOLUME -r $KUBELESS_DEPS_FILE",
-                  "image": "python:3.7",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "PYTHONPATH": "$(KUBELESS_INSTALL_VOLUME)/lib/python3.7/site-packages:$(KUBELESS_INSTALL_VOLUME)"
-                  },
-                  "image": "kubeless/python@sha256:dbf616cb06a262482c00f5b53e1de17571924032e0ad000865ec6b5357ff35bf",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "python37",
-            "version": "3.7"
-         }
-      ]
+         "image":"kubeless/ruby@sha256:9a1b51da87617024ef33fc131fe673d35fe2600f06137e40301d7a4552669c7b",
+         "phase":"runtime"
+       }
+       ],
+       "name":"ruby25",
+       "version":"2.5"
+     },
+     {
+       "images":[
+       {
+         "command":"bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
+         "image":"bitnami/ruby:2.6",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "GEM_HOME":"$(KUBELESS_INSTALL_VOLUME)/ruby/2.6.0"
+         },
+         "image":"kubeless/ruby@sha256:e93ec41f43392cc1aaf6763f484aa66850b852c4a8d6841afbe8cb72aab7d810",
+         "phase":"runtime"
+       }
+       ],
+       "name":"ruby26",
+       "version":"2.6"
+     }
+     ]
    },
    {
-      "ID": "ruby",
-      "depName": "Gemfile",
-      "fileNameSuffix": ".rb",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
-                  "image": "bitnami/ruby:2.3",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "GEM_HOME": "$(KUBELESS_INSTALL_VOLUME)/ruby/2.3.0"
-                  },
-                  "image": "kubeless/ruby@sha256:67870b57adebc4dc749a8a19795da801da2d05fc6e8324168ac1b227bb7c77f7",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "ruby23",
-            "version": "2.3"
-         },
-         {
-            "images": [
-               {
-                  "command": "bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
-                  "image": "bitnami/ruby:2.4",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "GEM_HOME": "$(KUBELESS_INSTALL_VOLUME)/ruby/2.4.0"
-                  },
-                  "image": "kubeless/ruby@sha256:aaa9c7f3dfd4f866a527c04171c32dae2efa420d770a6af9c517771137ab4011",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "ruby24",
-            "version": "2.4"
-         },
-         {
-            "images": [
-               {
-                  "command": "bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
-                  "image": "bitnami/ruby:2.5",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "GEM_HOME": "$(KUBELESS_INSTALL_VOLUME)/ruby/2.5.0"
-                  },
-                  "image": "kubeless/ruby@sha256:577e35724996ba340ff0a18366bce99586b0be58e4d27fa3e8038f977caf1559",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "ruby25",
-            "version": "2.5"
-         },
-         {
-            "images": [
-               {
-                  "command": "bundle install --gemfile=$KUBELESS_DEPS_FILE --path=$KUBELESS_INSTALL_VOLUME",
-                  "image": "bitnami/ruby:2.6",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "GEM_HOME": "$(KUBELESS_INSTALL_VOLUME)/ruby/2.6.0"
-                  },
-                  "image": "kubeless/ruby@sha256:6a79d335bec224d820f149a6eb293e2bbab333ad63581e747ec644fd1af19c61",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "ruby26",
-            "version": "2.6"
-         }
-      ]
+     "ID":"jvm",
+     "depName":"",
+     "fileNameSuffix":".jar",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"mv /kubeless/*
+     /kubeless/payload.jar && cp /opt/*.jar /kubeless/ > /dev/termination-log 2>&1",
+         "image":"caraboides/jvm-init@sha256:e57dbf3f56570a196d68bce1c0695102b2dbe3ae2ca6d1c704476a7a11542f1d",
+         "phase":"compilation"
+       },
+       {
+         "image":"caraboides/jvm@sha256:2870c4f48df4feb2ee7478a152b44840d781d4b1380ad3fa44b3c7ff314faded",
+         "phase":"runtime"
+       }
+       ],
+       "name":"jvm1.8",
+       "version":"1.8"
+     }
+     ]
    },
    {
-      "ID": "jvm",
-      "depName": "",
-      "fileNameSuffix": ".jar",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "mv /kubeless/* /kubeless/payload.jar && cp /opt/*.jar /kubeless/ > /dev/termination-log 2>&1",
-                  "image": "caraboides/jvm-init@sha256:e57dbf3f56570a196d68bce1c0695102b2dbe3ae2ca6d1c704476a7a11542f1d",
-                  "phase": "compilation"
-               },
-               {
-                  "image": "caraboides/jvm@sha256:2870c4f48df4feb2ee7478a152b44840d781d4b1380ad3fa44b3c7ff314faded",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "jvm1.8",
-            "version": "1.8"
+     "ID":"nodejs_distroless",
+     "depName":"package.json",
+     "fileNameSuffix":".js",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:424add88dc2a7fdc45012593159794d59a6ea4aafadfffb632d21ae53b1d262b",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
          },
-         {
-            "images": [
-               {
-                  "command": "mv /kubeless/* /kubeless/payload.jar && cp /opt/*.jar /kubeless/ > /dev/termination-log 2>&1",
-                  "image": "kubeless/java-init@sha256:b7a8ae3c17b7cefaa28364348d2f504a02c936d38aee57f46b61f3745c784c17",
-                  "phase": "compilation"
-               },
-               {
-                  "image": "kubeless/java@sha256:b04e8e1f4a1acb8a94778320df8fd13aaf1eed22034007bf6d9109e55a4aa0c8",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "jvm11",
-            "version": "11"
-         }
-      ]
+         "image":"kubeless/nodejs-distroless@sha256:1fa0469c5520f4e08d89b1fafd2cacf03f098b96ea04997fa52bb9ef2a180fb3",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node8",
+       "version":"8"
+     }
+     ]
    },
    {
-      "ID": "nodejs_distroless",
-      "depName": "package.json",
-      "fileNameSuffix": ".js",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:424add88dc2a7fdc45012593159794d59a6ea4aafadfffb632d21ae53b1d262b",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "kubeless/nodejs-distroless@sha256:1fa0469c5520f4e08d89b1fafd2cacf03f098b96ea04997fa52bb9ef2a180fb3",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node8",
-            "version": "8"
-         }
-      ]
+     "ID":"nodejsCE",
+     "depName":"package.json",
+     "fileNameSuffix":".js",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/kubeless-npm-install.sh",
+         "image":"kubeless/nodejs@sha256:456d98f6f15588b21f5110facf1cc203065840d4c227afa61d17c6c1fa98b3b6",
+         "phase":"installation"
+       },
+       {
+         "env":{
+           "NODE_PATH":"$(KUBELESS_INSTALL_VOLUME)/node_modules"
+         },
+         "image":"andresmgot/nodejs-ce@sha256:708c265d22a8a1599e05da844d26bc63e2f66f859ffecd2fcb541ecac9c66780",
+         "phase":"runtime"
+       }
+       ],
+       "name":"node8",
+       "version":"8"
+     }
+     ]
    },
    {
-      "ID": "nodejsCE",
-      "depName": "package.json",
-      "fileNameSuffix": ".js",
-      "versions": [
-         {
-            "images": [
-               {
-                  "command": "/kubeless-npm-install.sh",
-                  "image": "kubeless/nodejs@sha256:456d98f6f15588b21f5110facf1cc203065840d4c227afa61d17c6c1fa98b3b6",
-                  "phase": "installation"
-               },
-               {
-                  "env": {
-                     "NODE_PATH": "$(KUBELESS_INSTALL_VOLUME)/node_modules"
-                  },
-                  "image": "andresmgot/nodejs-ce@sha256:708c265d22a8a1599e05da844d26bc63e2f66f859ffecd2fcb541ecac9c66780",
-                  "phase": "runtime"
-               }
-            ],
-            "name": "node8",
-            "version": "8"
-         }
-      ]
+     "ID":"vertx",
+     "depName":"pom.xml",
+     "fileNameSuffix":".java",
+     "versions":[
+     {
+       "images":[
+       {
+         "command":"/compile-function.sh",
+         "image":"oscardovao/vertx-init@sha256:6665629b3239eb1d81654381b02c3dd4b87ddb0a1b0b49acc165f0ff53264e0b",
+         "phase":"compilation"
+       },
+       {
+         "image":"oscardovao/vertx@sha256:96243e5937a875422d6165e59f1fdb350f1a6d5befbd89f26968abea4345ade1",
+         "phase":"runtime"
+       }
+       ],
+       "name":"vertx1.8",
+       "version":"1.8"
+     }
+     ]
    }]'
 
 ## UI configuration
@@ -544,8 +634,13 @@ kafkaTrigger:
   enabled: false
   deployment:
     image:
-      repository: bitnami/kafka-trigger-controller
-      tag: v1.0.1
+      repository: kubeless/kafka-trigger-controller
+      tag: v1.0.4
       pullPolicy: IfNotPresent
   env:
     kafkaBrokers: localhost:9092
+    KafkaTlsEnable: False
+    KafkaTlsInsecure: False
+    KafkaSaslEnable: False
+    KafkaSaslSecret: kafka-secret
+    LogLevel: INFO
