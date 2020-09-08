@@ -1,5 +1,13 @@
 # Upgrading Steps
 
+## `v7.6.X` → `v7.7.0`
+
+__If you are using an INTERNAL redis database, some configs have changed:__
+
+| 7.6.x | 7.7.x | Notes |
+| --- | --- | ---|
+| `redis.existingSecretKey` | `redis.existingSecretPasswordKey` | Changed to align with [stable/redis](https://github.com/helm/charts/tree/master/stable/redis) |
+
 ## `v7.5.X` → `v7.6.0`
 
 > __WARNING:__ 
