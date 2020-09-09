@@ -40,7 +40,7 @@ EOL
         -CA "$CACRT_FILE" -CAkey "$CAKEY_FILE" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
     cat mongo.crt mongo.key > $MONGOPEM
-    MONGOARGS="$MONGOARGS --ssl --sslCAFile $CACRT_FILE --sslPEMKeyFile $MONGOPEM"
+    MONGOARGS="$MONGOARGS $SSL_ARGS"
 fi
 
 if [[ "${AUTH}" == "true" ]]; then

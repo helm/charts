@@ -71,7 +71,7 @@ Create the name for the key secret.
   {{- end -}}
 
   {{- if .Values.tls.enabled }}
-  {{- printf "%s/?ssl=true&tlsCertificateKeyFile=/work-dir/mongo.pem&tlsCAFile=/ca/tls.crt" $string | quote -}}
+  {{- printf "%s/?%s" $string (include "mongodb-replicaset.client-tls-flags-uri-options" .) | quote -}}
   {{- else -}}
   {{- printf $string | quote -}}
   {{- end -}}
@@ -89,5 +89,81 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
     {{- end -}}
   {{- else -}}
     {{- .Release.Namespace -}}
-  {{- end -}}    
+  {{- end -}}
+{{- end -}}
+
+
+{{/*
+Common tls flags
+*/}}
+{{- define "mongodb-replicaset.tls-flags" -}}
+{{- $prefix := ternary "ssl" "tls" (semverCompare "<4.2.0" (toString .Values.image.tag)) -}}
+
+{{- /*
+This is always needed
+*/ -}}
+--{{ $prefix }}CAFile=/data/configdb/tls.crt
+
+{{- if eq $prefix "ssl" }} --sslPEMKeyFile=/work-dir/mongo.pem
+{{- else }} --tlsCertificateKeyFile=/work-dir/mongo.pem
+{{- end }}
+
+{{- end -}}
+
+
+{{/*
+Server-specific flags
+*/}}
+
+{{- define "mongodb-replicaset.server-tls-flags" -}}
+{{- $prefix := ternary "ssl" "tls" (semverCompare "<4.2.0" (toString .Values.image.tag)) }}
+
+{{- if .Values.tls.enabled -}}
+--{{ $prefix }}Mode={{ .Values.tls.mode }}{{ ternary "" ($prefix | upper) (eq .Values.tls.mode "disabled") }}
+{{- if .Values.tls.allowConnectionsWithoutCertificates }} --{{ $prefix }}AllowConnectionsWithoutCertificates
+{{- end -}}
+
+{{/* Include common flags */}}
+{{- cat " " (include "mongodb-replicaset.tls-flags" .) }}
+
+{{- end }}
+
+{{- end -}}
+
+
+{{/*
+Client-specific flags
+*/}}
+{{- define "mongodb-replicaset.client-tls-flags" -}}
+{{- $prefix := ternary "ssl" "tls" (semverCompare "<4.2.0" (toString .Values.image.tag)) }}
+
+{{- if .Values.tls.enabled -}}
+--{{ $prefix }}
+{{- cat " " (include "mongodb-replicaset.tls-flags" .) }}
+{{- end }}
+
+{{- end -}}
+
+
+{{/*
+Server-specific flags as yaml list
+*/}}
+{{- define "mongodb-replicaset.server-tls-flags-list" }}
+{{ regexSplit " +" (include "mongodb-replicaset.server-tls-flags" .) -1 | toYaml | trim }}
+{{- end -}}
+
+
+{{/*
+Client-specific flags as yaml list
+*/}}
+{{- define "mongodb-replicaset.client-tls-flags-list" }}
+{{ regexSplit " +" (include "mongodb-replicaset.client-tls-flags" .) -1 | toYaml | trim }}
+{{- end -}}
+
+
+{{/*
+Client-specific flags as connection URI options
+*/}}
+{{- define "mongodb-replicaset.client-tls-flags-uri-options" }}
+{{- regexReplaceAll "(tls|ssl)&" (regexSplit " +" (include "mongodb-replicaset.client-tls-flags" . | replace "--" "") -1 | join "&" | trim) "${1}=true&" }}
 {{- end -}}

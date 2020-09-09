@@ -6,6 +6,18 @@
 * Kubernetes beta APIs enabled only if `podDisruptionBudget` is enabled
 * PV support on the underlying infrastructure
 
+### Upgrading the chart from 3.x to 4.x
+
+Starting in version 4.2, MongoDB provides `net.tls` settings and
+[deprecates old `net.ssl`](https://docs.mongodb.com/manual/release-notes/4.2/#tls)
+settings. In order to support version across this deprecation boundary, we
+renamed `tls.mode` parameter values:
+
+ * `disable` does not change
+ * `allowSSL` become `allow`
+ * `preferSSL` become `prefer`
+ * `requireSSL` become `require`
+
 ## StatefulSet Details
 
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
@@ -65,7 +77,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
-| `tls.mode`                          | Set the SSL operation mode (disabled, allowSSL, preferSSL, requireSSL)    | `requireSSL`                                        |
+| `tls.mode`                          | Set the SSL operation mode (disabled, allow, prefer, require)             | `require`                                           |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `init.resources`                    | Pod resource requests and limits (for init containers)                    | `{}`                                                |

@@ -60,6 +60,8 @@ spec:
       {{- if .Values.tls.enabled }}
         - name: tls
           mountPath: /tls
+        - name: SSL_ARGS
+          value: {{ include "mongodb-replicaset.client-tls-flags" . }}
       {{- end }}
   volumes:
     - name: tools

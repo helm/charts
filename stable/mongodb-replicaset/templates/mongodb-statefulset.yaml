@@ -134,8 +134,10 @@ spec:
               value: "{{ .Values.init.timeout }}"
             - name: SKIP_INIT
               value: "{{ .Values.skipInitialization }}"
-            - name: TLS_MODE
-              value: {{ .Values.tls.mode }}
+            - name: SSL_ARGS
+              value: {{ include "mongodb-replicaset.client-tls-flags" . }}
+            - name: SSL_SERVER_ARGS
+              value: {{ include "mongodb-replicaset.server-tls-flags" . }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -200,20 +202,12 @@ spec:
             - --auth
             - --keyFile=/data/configdb/key.txt
           {{- end }}
-          {{- if .Values.tls.enabled }}
-            - --sslMode={{ .Values.tls.mode }}
-            - --sslCAFile=/data/configdb/tls.crt
-            - --sslPEMKeyFile=/work-dir/mongo.pem
-          {{- end }}
+          {{- include "mongodb-replicaset.server-tls-flags-list" . | indent 12 }}
           livenessProbe:
             exec:
               command:
                 - mongo
-              {{- if .Values.tls.enabled }}
-                - --ssl
-                - --sslCAFile=/data/configdb/tls.crt
-                - --sslPEMKeyFile=/work-dir/mongo.pem
-              {{- end }}
+              {{- include "mongodb-replicaset.client-tls-flags-list" . | indent 16 }}
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -226,11 +220,7 @@ spec:
             exec:
               command:
                 - mongo
-              {{- if .Values.tls.enabled }}
-                - --ssl
-                - --sslCAFile=/data/configdb/tls.crt
-                - --sslPEMKeyFile=/work-dir/mongo.pem
-              {{- end }}
+              {{- include "mongodb-replicaset.client-tls-flags-list" . | indent 16 }}
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
@@ -243,11 +233,7 @@ spec:
             exec:
               command:
                 - mongo
-              {{- if .Values.tls.enabled }}
-                - --ssl
-                - --sslCAFile=/data/configdb/tls.crt
-                - --sslPEMKeyFile=/work-dir/mongo.pem
-              {{- end }}
+              {{- include "mongodb-replicaset.client-tls-flags-list" . | indent 16 }}
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
