@@ -43,6 +43,10 @@ agent:
       # agent.pod.limits.cpu sets the CPU units allocation limits for the agent pods.
       cpu: 1.5
 
+    # agent.priorityClassName is to for binding a PriorityClass to the pods of the instana agent's daemonset
+    #   https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
+    # priorityClassName: null
+
   # agent.proxyHost sets the INSTANA_AGENT_PROXY_HOST environment variable.
   # proxyHost: null
   # agent.proxyPort sets the INSTANA_AGENT_PROXY_PORT environment variable.

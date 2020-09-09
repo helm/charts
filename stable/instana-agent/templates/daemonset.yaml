@@ -30,6 +30,9 @@ spec:
       hostIPC: true
       hostNetwork: true
       hostPID: true
+      {{- if .Values.agent.pod.priorityClassName }}
+      priorityClassName: "{{ .Values.agent.pod.priorityClassName }}"
+      {{- end }}
       containers:
         - name: instana-agent
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
