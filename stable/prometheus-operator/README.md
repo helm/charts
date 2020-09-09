@@ -1,3 +1,7 @@
+# ⚠️  DEPRECATED
+
+Further development has moved to [prometheus-community/helm-charts](https://github.com/prometheus-community/helm-charts). The chart has been renamed [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to more clearly reflect that it installs the `kube-prometheus` project stack, within which Prometheus Operator is only one component.
+
 # prometheus-operator
 
 Installs [prometheus-operator](https://github.com/coreos/prometheus-operator) to create/configure/manage Prometheus clusters atop Kubernetes. This chart includes multiple components and is suitable for a variety of use-cases.
