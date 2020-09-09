@@ -73,6 +73,10 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
