@@ -449,7 +449,7 @@ redis:
 
   ## the key in `redis.existingSecret` containing the password string
   ##
-  existingSecretKey: "redis-password"
+  existingSecretPasswordKey: "redis-password"
 
   ## configs for redis cluster mode
   ##

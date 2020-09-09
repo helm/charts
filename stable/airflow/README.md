@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.6.X → v7.7.0](UPGRADE.md#v76x--v770)
 * [v7.5.X → v7.6.0](UPGRADE.md#v75x--v760)
 * [v7.4.X → v7.5.0](UPGRADE.md#v74x--v750)
 * [v7.3.X → v7.4.0](UPGRADE.md#v73x--v740)
@@ -712,7 +713,7 @@ __Airflow Redis (Internal) Values:__
 | `redis.enabled` | if the `stable/redis` chart is used | `true` |
 | `redis.password` | the redis password | `airflow` |
 | `redis.existingSecret` | the name of a pre-created secret containing the redis password | `""` |
-| `redis.existingSecretKey` | the key within `redis.existingSecret` containing the password string | `redis-password` |
+| `redis.existingSecretPasswordKey` | the key within `redis.existingSecret` containing the password string | `redis-password` |
 | `redis.cluster.*` | configs for redis cluster mode | `<see values.yaml>` |
 | `redis.master.*` | configs for the redis master | `<see values.yaml>` |
 | `redis.slave.*` | configs for the redis slaves | `<see values.yaml>` |
