@@ -5,13 +5,13 @@ metadata:
   name: {{ template "cpi.name" . }}
   labels:
     app: {{ template "cpi.name" . }}
-    component: cloud-controller
-    release: {{ .Release.Name }}
     vsphere-cpi-infra: pod-security-policy
-{{- if .Values.podSecurityPolicy.annotations }}
+    component: cloud-controller-manager
+    release: {{ .Release.Name }}
+  {{- if .Values.podSecurityPolicy.annotations }}
   annotations:
-{{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
-{{- end }}
+  {{- toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
+  {{- end }}
 spec:
   allowPrivilegeEscalation: false
   privileged: false

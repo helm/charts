@@ -1,5 +1,57 @@
 # Upgrading Steps
 
+## `v7.6.X` → `v7.7.0`
+
+__If you are using an INTERNAL redis database, some configs have changed:__
+
+| 7.6.x | 7.7.x | Notes |
+| --- | --- | ---|
+| `redis.existingSecretKey` | `redis.existingSecretPasswordKey` | Changed to align with [stable/redis](https://github.com/helm/charts/tree/master/stable/redis) |
+
+## `v7.5.X` → `v7.6.0`
+
+> __WARNING:__ 
+>
+> We now annotate all pods with `cluster-autoscaler.kubernetes.io/safe-to-evict` by default.
+> 
+> If you want to disable this:
+>  - Set: `flower.safeToEvict`, `scheduler.safeToEvict`, `web.safeToEvict`, `workers.safeToEvict` to `false`
+>  - Set: `postgresql.master.podAnnotations`, `redis.master.podAnnotations`, `redis.slave.podAnnotations` to `{}`
+>
+> Note for GKE:
+>  - GKE's cluster-autoscaler will not honor a `gracefulTerminationPeriod` of more than 10min,
+>    if your jobs need more than this amount of time to finish, please set `workers.safeToEvict` to `false`
+> 
+
+__The following IMPROVEMENTS have been made:__
+* The chart YAML has been refactored
+* You can now configure `safe-to-evict` annotations (so that pods with emptyDir Volumes can be evicted by cluster-autoscaler)
+* You can now create PodDisruptionBudgets for all components: {flower, webserver, worker}
+* The chart now forces the correct ports to be used (NOTE: this will not prevent you changing Service/Ingress ports)
+* You can now run multiple instances of flower
+* You can now specify minReadySeconds for flower
+
+__The following values have CHANGED DEFAULTS:__
+* `workers.celery.instances`:
+    * Is now `16` by default (letting each worker take 16 tasks)
+* `postgresql.master.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+* `redis.master.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+* `redis.slave.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+
+__The following values have been ADDED:__
+* `flower.minReadySeconds`
+* `flower.podDisruptionBudget.*`
+* `flower.replicas`
+* `flower.safeToEvict`
+* `scheduler.safeToEvict`
+* `web.podDisruptionBudget.*`
+* `web.safeToEvict`
+* `workers.podDisruptionBudget.*`
+* `workers.safeToEvict`
+
 ## `v7.4.X` → `v7.5.0`
 
 __The following IMPROVEMENTS have been made:__
@@ -15,18 +67,17 @@ __The following values have been ADDED:__
 __The following IMPROVEMENTS have been made:__
 
 * Reduced how likely it is for a celery worker to receive SIGKILL with graceful termination enabled.
-  * Celery worker graceful shutdown lifecycle:
+  New celery worker graceful shutdown lifecycle:
     1. prevent worker accepting new tasks
     2. wait AT MOST `workers.celery.gracefullTerminationPeriod` for tasks to finish
     3. send `SIGTERM` to worker
     4. wait AT MOST `workers.terminationPeriod` for kill to finish
     5. send `SIGKILL` to worker
-  * NOTE: 
-    * if you currently use a high value of `workers.terminationPeriod`, consider lowering it to `60` and setting a high value for `workers.celery.gracefullTerminationPeriod`
 
 __The following values have been ADDED:__
 
-* `workers.celery.gracefullTerminationPeriod`
+* `workers.celery.gracefullTerminationPeriod`:
+    * if you currently use a high value of `workers.terminationPeriod`, consider lowering it to `60` and setting a high value for `workers.celery.gracefullTerminationPeriod`
 
 ## `v7.2.X` → `v7.3.0`
 

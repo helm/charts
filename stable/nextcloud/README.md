@@ -1,4 +1,9 @@
-# nextcloud
+# DEPRECATED - nextcloud
+
+|**This chart has been deprecated and moved to its new home:**
+|
+|- **GitHub repo:** https://github.com/nextcloud/helm/tree/master/charts/nextcloud
+|- **Charts repo:** https://nextcloud.github.io/helm/
 
 [nextcloud](https://nextcloud.com/) is a file sharing server that puts the control and security of your own data back into your hands.
 

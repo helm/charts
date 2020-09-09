@@ -1,4 +1,4 @@
-{{- if .Values.flower.enabled }}
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") }}
 apiVersion: v1
 kind: Service
 metadata:

@@ -216,6 +216,21 @@ workers:
   ##
   replicas: 2
 
+  ## configs for the PodDisruptionBudget of the worker StatefulSet
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the worker StatefulSet
+    ##
+    enabled: true
+
+    ## the maximum unavailable pods/percentage for the worker StatefulSet
+    ##
+    ## NOTE:
+    ## - prevents loosing more than 20% of current worker task slots in a voluntary
+    ##   disruption
+    ##
+    maxUnavailable: "20%"
+
   ## configs for the HorizontalPodAutoscaler of the worker Pods
   ##
   autoscaling:
@@ -245,7 +260,12 @@ workers:
 
     ## how many seconds to wait for tasks to finish before SIGTERM of the celery worker
     ##
-    gracefullTerminationPeriod: 600
+    ## WARNING:
+    ## - GKE cluster-autoscaler will not respect graceful termination period over 10min
+    ## NOTE:
+    ## - this gives any running tasks AT MOST 9min to complete
+    ##
+    gracefullTerminationPeriod: 540
 
   ## how many seconds to wait after SIGTERM before SIGKILL of the celery worker
   ##
@@ -429,7 +449,7 @@ redis:
 
   ## the key in `redis.existingSecret` containing the password string
   ##
-  existingSecretKey: "redis-password"
+  existingSecretPasswordKey: "redis-password"
 
   ## configs for redis cluster mode
   ##

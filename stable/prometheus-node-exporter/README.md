@@ -1,5 +1,7 @@
 # Prometheus Node Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [node exporter](https://github.com/prometheus/node_exporter)
 
 ## TL;DR;

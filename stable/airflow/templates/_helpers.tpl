@@ -145,7 +145,7 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
   valueFrom:
     secretKeyRef:
       name: {{ .Values.redis.existingSecret }}
-      key: {{ .Values.redis.existingSecretKey }}
+      key: {{ .Values.redis.existingSecretPasswordKey }}
 {{- else }}
 - name: REDIS_PASSWORD
   valueFrom:

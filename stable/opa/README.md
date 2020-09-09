@@ -84,6 +84,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `livenessProbe` | HTTP liveness probe for OPA container. | See [values.yaml](values.yaml) |
 | `opa` | OPA configuration. | See [values.yaml](values.yaml) |
 | `mgmt` | kube-mgmt configuration. | See [values.yaml](values.yaml) |
+| `mgmt.port` | kube-mgmt/prometheus port used to communicate with opa. | See [values.yaml](values.yaml) |
 | `sar.resources` | CPU and memory limits for the sar container. | `{}` |
 | `priorityClassName` | The name of the priorityClass for the pods. | Unset |
 | `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` |
