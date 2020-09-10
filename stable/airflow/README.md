@@ -569,6 +569,7 @@ __Airflow Scheduler values:__
 | `scheduler.initdb` | if we run `airflow initdb` when the scheduler starts | `true` |
 | `scheduler.preinitdb` | if we run `airflow initdb` inside a special initContainer | `false` |
 | `scheduler.initialStartupDelay` | the number of seconds to wait (in bash) before starting the scheduler container | `0` |
+| `scheduler.livenessProbe.*` | configs for the scheduler liveness probe | `<see values.yaml>` |
 | `scheduler.extraInitContainers` | extra init containers to run before the scheduler pod | `[]` |
 
 __Airflow Webserver Values:__

@@ -297,6 +297,24 @@ scheduler:
   ##
   initialStartupDelay: 0
 
+  ## configs for the scheduler liveness probe
+  ##
+  ## NOTE:
+  ## - the maximum number of seconds the scheduler can be unhealthy =
+  ##   `livenessProbe.periodSeconds` x `livenessProbe.failureThreshold`
+  ##
+  livenessProbe:
+    enabled: true
+    ## the number of seconds to wait before checking pod health
+    ##
+    ## NOTE:
+    ## - make larger if you are installing many packages with:
+    ##   `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+    ##
+    initialDelaySeconds: 300
+    periodSeconds: 30
+    failureThreshold: 5
+
   ## extra init containers to run before the scheduler Pod
   ##
   ## EXAMPLE:
