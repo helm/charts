@@ -2,10 +2,9 @@ name: rabbitmq-ha
 apiVersion: v1
 appVersion: 3.8.7
 version: 1.47.1
-# Ths chart is deprecated and no longer maintained. For details,
-# including how to un-deprecate a chart see the PROCESSES.md file.
+# Ths chart is deprecated and no longer maintained.
 deprecated: true
-description: DEPRECATED Highly available RabbitMQ cluster, the open source message broker
+description: DEPRECATED - Highly available RabbitMQ cluster, the open source message broker
   software that implements the Advanced Message Queuing Protocol (AMQP).
 keywords:
 - rabbitmq
