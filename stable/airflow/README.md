@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.8.X → v7.9.0](UPGRADE.md#v78x--v790)
 * [v7.7.X → v7.8.0](UPGRADE.md#v77x--v780)
 * [v7.6.X → v7.7.0](UPGRADE.md#v76x--v770)
 * [v7.5.X → v7.6.0](UPGRADE.md#v75x--v760)
@@ -674,6 +675,7 @@ __Airflow Kubernetes Values:__
 | Parameter | Description | Default |
 | --- | --- | --- |
 | `rbac.create` | if Kubernetes RBAC resources are created | `true` |
+| `rbac.events` | if the created RBAR role has GET/LIST access to Event resources | `false` |
 | `serviceAccount.create` | if a Kubernetes ServiceAccount is created | `true` |
 | `serviceAccount.name` | the name of the ServiceAccount | `""` |
 | `serviceAccount.annotations` | annotations for the ServiceAccount | `{}` |
