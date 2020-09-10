@@ -1,4 +1,4 @@
-{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.15-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: apps/v1
 {{- else -}}
 apiVersion: apps/v1beta2
