@@ -16,6 +16,8 @@ podLabels: {}
 
 podAnnotations: {}
 
+priorityClassName: ""
+
 initContainers: []
 
 tolerations: []
