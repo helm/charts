@@ -88,6 +88,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                 | Image pull policy                                             | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                                      | `7050`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`             | `ClusterIP`                                                |
+| `service.portMetrics`              | TCP port for the metrics service                              | `9443`                                                     |
 | `ingress.enabled`                  | If true, Ingress will be created                              | `false`                                                    |
 | `ingress.annotations`              | Ingress annotations                                           | `{}`                                                       |
 | `ingress.path`                     | Ingress path                                                  | `/`                                                        |
@@ -101,7 +102,6 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                              | `OrdererMSP`                                               |
 | `ord.tls.server.enabled`           | Do we enable server-side TLS?                                 | `false`                                                    |
 | `ord.tls.client.enabled`           | Do we enable client-side TLS?                                 | `false`                                                    |
-| `ord.operations.listenAddress`     | Host and port for the operations server                       | ``                                                         |
 | `ord.metrics.provider`             | Metrics provider, can be `statsd`, `prometheus` or `disabled` | `disabled`                                                 |
 | `ord.metrics.statsd.network`       | Network type, can be `udp` or `tcp`                           | `udp`                                                      |
 | `ord.metrics.statsd.address`       | Address of the StatsD server                                  | `127.0.0.1:8125`                                           |
