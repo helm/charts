@@ -79,7 +79,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
 | `keeper.fsGroup`                        | Keeper securityContext fsGroup, do not set if pg9 or 10 | ``                                                  |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
-| `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
+| `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"topologyKey":"kubernetes.io/hostname","labelSelector":{"matchLabels":{"component":"stolon-keeper"}}}]}}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
 | `keeper.volumes`                        | Additional volumes                             | `[]`                                                         |
 | `keeper.volumeMounts`                   | Mount paths for `keeper.volumes`               | `[]`                                                         |
@@ -92,7 +92,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
-| `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
+| `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"topologyKey":"kubernetes.io/hostname","labelSelector":{"matchLabels":{"component":"stolon-proxy"}}}]}}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
 | `proxy.podDisruptionBudget.enabled`     | If true, create a pod disruption budget for proxy pods. | `false`                                             |
 | `proxy.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                      |
@@ -102,7 +102,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
 | `sentinel.priorityClassName`            | Sentinel priorityClassName                     | `nil`                                                        |
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
-| `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
+| `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"topologyKey":"kubernetes.io/hostname","labelSelector":{"matchLabels":{"component":"stolon-sentinel"}}}]}}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
 | `sentinel.podDisruptionBudget.enabled`  | If true, create a pod disruption budget for sentinel pods. | `false`                                          |
 | `sentinel.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `""`                                   |

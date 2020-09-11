@@ -125,7 +125,26 @@ keeper:
         targetPort: 5432
         protocol: TCP
   nodeSelector: {}
-  affinity: {}
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# It is recommended to use pod anti-affinity to prevent these pods from being scheduled on the same node to ensure high availability
+# for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              component: stolon-keeper
   tolerations: []
   volumes: []
   volumeMounts: []
@@ -154,7 +173,13 @@ proxy:
         targetPort: 5432
         protocol: TCP
   nodeSelector: {}
-  affinity: {}
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              component: stolon-proxy
   tolerations: []
   podDisruptionBudget:
     # minAvailable: 1
@@ -175,7 +200,13 @@ sentinel:
   resources: {}
   priorityClassName: ""
   nodeSelector: {}
-  affinity: {}
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              component: stolon-sentinel
   tolerations: []
   podDisruptionBudget:
     # minAvailable: 1
