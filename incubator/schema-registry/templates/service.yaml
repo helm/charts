@@ -15,9 +15,13 @@ metadata:
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
 spec:
+  type: {{ .Values.service.type }}
   ports:
     - name: schema-registry
       port: {{ .Values.servicePort }}
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "schema-registry.name" . }}
     release: {{ .Release.Name | quote}}
