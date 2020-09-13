@@ -12,4 +12,4 @@ home: https://github.com/samsung-cnct/jenkins-operator
 sources:
 - https://github.com/samsung-cnct/jenkins-operator
 - https://github.com/jenkinsci/jenkins
-maintainers:
+maintainers: []
