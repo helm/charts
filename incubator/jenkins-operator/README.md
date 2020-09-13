@@ -1,3 +1,6 @@
+# ⚠️ DEPRECATED
+
+Please consider using https://github.com/jenkinsci/kubernetes-operator. See https://jenkinsci.github.io/kubernetes-operator/docs/installation/#using-helm-chart for instructions.
 # Jenkins Operator
 
 [jenkins-operator](https://github.com/samsung-cnct/jenkins-operator) simplifies
