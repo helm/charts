@@ -1,3 +1,12 @@
+**************
+* DEPRECATED *
+**************
+
+Please consider using https://github.com/jenkinsci/kubernetes-operator.
+See https://jenkinsci.github.io/kubernetes-operator/docs/installation/#using-helm-chart for instructions.
+
+**************
+
 1.  jenkins-operator deployed.
 
     Check the jenkins-operator logs:
