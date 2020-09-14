@@ -1,5 +1,25 @@
 # Upgrading Steps
 
+## `v7.7.X` → `v7.8.0`
+
+> __WARNING:__ 
+>
+> If you install many pip packages with: `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+> 
+> Ensure you set `scheduler.livenessProbe.initialDelaySeconds` to longer than the install time
+>
+
+__The following IMPROVEMENTS have been made:__
+* Upgraded to Airflow: `1.10.12`
+* The scheduler now has a liveness probe which will force the pod to restart if it becomes unhealthy for more than some threshold of time (default: 150sec)
+  * NOTE: this is on by default, but can be disabled with: `scheduler.livenessProbe.enabled`
+
+__The following values have been ADDED:__
+* `scheduler.livenessProbe.enabled`
+* `scheduler.livenessProbe.initialDelaySeconds`
+* `scheduler.livenessProbe.periodSeconds`
+* `scheduler.livenessProbe.failureThreshold`
+
 ## `v7.6.X` → `v7.7.0`
 
 __If you are using an INTERNAL redis database, some configs have changed:__
