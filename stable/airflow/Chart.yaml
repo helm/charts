@@ -8,6 +8,7 @@ home: https://airflow.apache.org/
 maintainers:
   - name: gsemet
     email: gaetan@xeberon.net
+  - name: thesuperzapper
 sources:
   - https://airflow.apache.org/
 keywords:
