@@ -39,6 +39,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.7.X → v7.8.0](UPGRADE.md#v77x--v780)
 * [v7.6.X → v7.7.0](UPGRADE.md#v76x--v770)
 * [v7.5.X → v7.6.0](UPGRADE.md#v75x--v760)
 * [v7.4.X → v7.5.0](UPGRADE.md#v74x--v750)
@@ -47,9 +48,6 @@ For steps you must take when upgrading this chart, please review:
 * [v7.1.X → v7.2.0](UPGRADE.md#v71x--v720)
 * [v7.0.X → v7.1.0](UPGRADE.md#v70x--v710)
 * [v6.X.X → v7.0.0](UPGRADE.md#v6xx--v700)
-* [v5.X.X → v6.0.0](UPGRADE.md#v5xx--v600)
-* [v4.X.X → v5.0.0](UPGRADE.md#v4xx--v500)
-* [v3.X.X → v4.0.0](UPGRADE.md#v3xx--v400)
 
 ### Examples:
 
@@ -569,6 +567,7 @@ __Airflow Scheduler values:__
 | `scheduler.initdb` | if we run `airflow initdb` when the scheduler starts | `true` |
 | `scheduler.preinitdb` | if we run `airflow initdb` inside a special initContainer | `false` |
 | `scheduler.initialStartupDelay` | the number of seconds to wait (in bash) before starting the scheduler container | `0` |
+| `scheduler.livenessProbe.*` | configs for the scheduler liveness probe | `<see values.yaml>` |
 | `scheduler.extraInitContainers` | extra init containers to run before the scheduler pod | `[]` |
 
 __Airflow Webserver Values:__
