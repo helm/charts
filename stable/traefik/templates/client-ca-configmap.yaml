@@ -9,7 +9,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-type: Opaque
 data:
 {{- range $idx, $caCert := .Values.ssl.mtls.clientCaCerts }}
   clientCaCert-{{ $idx }}.crt: {{ $caCert | quote }}
