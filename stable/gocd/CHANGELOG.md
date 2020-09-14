@@ -1,3 +1,5 @@
+### 1.31.0
+* [71ebc3374](https://github.com/kubernetes/charts/commit/71ebc3374): Deprecate GoCD Helm Chart.
 ### 1.30.0
 * [e97a5d88f](https://github.com/kubernetes/charts/commit/e97a5d88f): Bump up GoCD Version to 20.7.0
 ### 1.29.0
