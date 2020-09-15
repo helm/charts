@@ -64,6 +64,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.loadBalancerIP`                | IP address to assign to load balancer (if supported)                                  | `""`                                                        |
 | `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | []                                                          |
 | `service.annotations`                   | Annotations to add to service                                                         | {}                                                          |
+| `service.nodePort`                      | Port that set explicitly, when service type is set to NodePort                        |                                                             |
 | `serviceAccount.create`                 | If true, create & use serviceAccount                                                  | false                                                       |
 | `serviceAccount.name`                   | If not set & create is true, use template fullname                                    |                                                             |
 | `rbac.create`                           | If true, create & use RBAC resources                                                  | true                                                        |

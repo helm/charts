@@ -70,10 +70,18 @@ Generate the list of ports automatically from the server definitions
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {port: %v, protocol: UDP, name: udp-%s}\n" $port $port -}}
+            {{- if and (eq $.Values.serviceType "NodePort") ($.Values.service.nodePort) -}}
+                {{- printf "- {port: %v, protocol: UDP, name: udp-%s, nodePort: %v }\n" $port $port $.Values.service.nodePort -}}
+            {{- else -}}
+                {{- printf "- {port: %v, protocol: UDP, name: udp-%s}\n" $port $port -}}
+            {{- end -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {port: %v, protocol: TCP, name: tcp-%s}\n" $port $port -}}
+            {{- if and (eq $.Values.serviceType "NodePort") ($.Values.service.nodePort) -}}
+                {{- printf "- {port: %v, protocol: TCP, name: tcp-%s, nodePort: %v }\n" $port $port $.Values.service.nodePort -}}
+            {{- else -}}
+                {{- printf "- {port: %v, protocol: TCP, name: tcp-%s}\n" $port $port -}}
+            {{- end -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
