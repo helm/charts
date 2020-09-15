@@ -64,9 +64,9 @@ service:
 # externalTrafficPolicy: ""
   annotations: {}
 
-# If serviceType is NodePort explicitly set port number. 
+# If serviceType is NodePort explicitly set port number.
 # https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
-# nodePort: 12345  
+# nodePort: 12345
 
 serviceAccount:
   create: false
