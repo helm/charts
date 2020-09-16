@@ -70,7 +70,7 @@ Determine database name based on use of postgresql dependency.
 */}}
 {{- define "gogs.database.name" -}}
 {{- if .Values.postgresql.install -}}
-{{- .Values.postgresql.postgresDatabase | quote -}}
+{{- .Values.postgresql.postgresqlDatabase | quote -}}
 {{- else -}}
 {{- .Values.service.gogs.databaseName | quote -}}
 {{- end -}}
