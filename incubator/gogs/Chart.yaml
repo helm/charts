@@ -8,5 +8,6 @@ icon: https://gogs.io/img/favicon.ico
 maintainers:
   - name: obeyler
   - name: poblin-orange
+  - name: alexmirkhaydarov
 keywords:
 - git
