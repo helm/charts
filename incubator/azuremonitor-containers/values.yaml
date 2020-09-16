@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ## Microsoft OMS Agent image for kubernetes cluster monitoring
-## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
+## ref: https://github.com/microsoft/Docker-Provider/tree/ci_prod
 omsagent:
   image:
     repo: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod"

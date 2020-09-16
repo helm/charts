@@ -27,7 +27,15 @@ rules:
 - apiGroups: ["azmon.container.insights"]
   resources: ["healthstates"]
   verbs: ["get", "create", "patch"]
+- apiGroups: ["clusterconfig.azure.com"]
+  resources: ["azureclusteridentityrequests"]
+  resourceNames: ["container-insights-clusteridentityrequest"]
+  verbs: ["get", "create", "patch"]
 - nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["container-insights-clusteridentityrequest-token"]
   verbs: ["get"]
 ---
 kind: ClusterRoleBinding

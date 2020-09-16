@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 7.0.0-1
 description: Helm chart for deploying Azure Monitor container monitoring agent in Kubernetes
 name: azuremonitor-containers
-version: 2.7.4
+version: 2.7.5
 kubeVersion: "^1.10.0-0"
 keywords:
   - monitoring
@@ -28,7 +28,7 @@ keywords:
   - kubernetes
   - kuberneteshealth
 home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
-icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
+icon: https://raw.githubusercontent.com/microsoft/Docker-Provider/ci_prod/img/azuremonitor-containers.svg
 sources:
   - https://github.com/microsoft/Docker-Provider/tree/ci_prod
 maintainers:
