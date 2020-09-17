@@ -88,6 +88,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.defaults.interval`        | Interval for prometheus operator endpoint                                        | `30s`                                                                        |
 | `serviceMonitor.defaults.scrapeTimeout`   | Scrape timeout for prometheus operator endpoint                                  | `30s`                                                                        |
 | `serviceMonitor.defaults.module`          | The module that blackbox will use if serviceMonitor is enabled                   | `http_2xx`                                                                   |
+| `serviceMonitor.defaults.relabelings`     | Add custom target relabelings for all targets if empty for them                  |                                                                              |
+| `serviceMonitor.defaults.metricRelabelings` | Add custom metricsRelabelings for all targets if empty for them                |                                                                              |
 | `serviceMonitor.targets.[]`               | List of targets to scrape                                                        | `[]`                                                                         |
 | `serviceMonitor.targets.[].name`          | Human readable name for the job. It will also appear in job labels in Prometheus | `example`                                                                    |
 | `serviceMonitor.targets.[].url`           | The URL that blackbox will scrape if serviceMonitor is enabled                   | `http://example.com/healthz`                                                 |
@@ -95,6 +97,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `serviceMonitor.targets.[].interval`      | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.interval }}`                                     |
 | `serviceMonitor.targets.[].scrapeTimeout` | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.scrateTimeout }}`                                |
 | `serviceMonitor.targets.[].module`        | See above in `serviceMonitor.defaults`                                           | `{{ serviceMonitor.defaults.module }}`                                       |
+| `serviceMonitor.targets.[].relabelings`   | See above in `serviceMonitor.relabelings`                                        | `{{ serviceMonitor.defaults.relabelings }}`                                  |
+| `serviceMonitor.targets.[].metricRelabelings` | See above in `serviceMonitor.metricRelabelings`                              | `{{ serviceMonitor.defaults.metricRelabelings }}`                            |
 | `prometheusRule.enabled`                  | Set this to true to create PrometheusRule for Prometheus operator | `false`     |
 | `prometheusRule.additionalLabels`         | Additional labels that can be passed to PrometheusRule | `{}`  |
 | `prometheusRule.namespace`                | Namespace where PrometheusRule resource should be created |      |
