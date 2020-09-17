@@ -28,7 +28,7 @@ keywords:
   - kubernetes
   - kuberneteshealth
 home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
-icon: https://raw.githubusercontent.com/microsoft/Docker-Provider/ci_prod/img/azuremonitor-containers.svg
+icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
 sources:
   - https://github.com/microsoft/Docker-Provider/tree/ci_prod
 maintainers:
