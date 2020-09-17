@@ -133,6 +133,8 @@ serviceMonitor:
     interval: 30s
     scrapeTimeout: 30s
     module: http_2xx
+    relabelings:
+    metricRelabelings:
 
   targets:
 #    - name: example                    # Human readable URL that will appear in Prometheus / AlertManager

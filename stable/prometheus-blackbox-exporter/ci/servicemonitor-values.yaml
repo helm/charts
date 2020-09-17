@@ -1,0 +1,22 @@
+serviceMonitor:
+  enabled: true
+  defaults: 
+    labels:
+      release: prometheus-operator
+  targets:
+    - name: Github
+      url: https://www.github.com/
+      module: http_2xx
+      interval: 1m
+      relabelings:
+        - target_label: mynewlabel
+          replacement: 'myvalue'
+          action: replace
+
+    - name: Google
+      url: https://www.google.com/
+      module: http_2xx
+      interval: 1m
+      metricRelabelings:
+        - target_label: mylabel
+          action: keep

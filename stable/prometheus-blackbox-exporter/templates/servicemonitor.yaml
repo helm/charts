@@ -25,11 +25,18 @@ spec:
       - {{ .module | default $.Values.serviceMonitor.defaults.module }}
       target:
       - {{ .url }}
+    {{- if .relabelings }} 
+    relabelings:
+      {{- toYaml (.relabelings | default $.Values.serviceMonitor.defaults.relabelings) | nindent 6 }}
+    {{- end }}
     metricRelabelings:
       - targetLabel: instance
         replacement: {{ .url }}
       - targetLabel: target
         replacement: {{ .name }}
+      {{- if .metricRelabelings }}
+      {{- toYaml (.metricRelabelings | default $.Values.serviceMonitor.defaults.metricRelabelings) | nindent 6 }}
+      {{- end }}
   jobLabel: "{{ $.Release.Name }}"
   selector:
     matchLabels:
