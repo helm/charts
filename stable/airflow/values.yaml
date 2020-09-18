@@ -1168,6 +1168,13 @@ rbac:
   ##
   create: true
 
+  ## if the created RBAC Role has GET/LIST on Event resources
+  ##
+  ## NOTE:
+  ## - this is needed for KubernetesPodOperator() to use `log_events_on_failure=True`
+  ##
+  events: false
+
 ###################################
 # Kubernetes - Service Account
 ###################################
