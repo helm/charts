@@ -1,5 +1,16 @@
 # Upgrading Steps
 
+## `v7.8.X` → `v7.9.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* You can now give the airflow ServiceAccount GET/LIST on Event resources
+    * This is needed for `KubernetesPodOperator(log_events_on_failure=True)`
+    * To enable, set `rbac.events` to `true` (Default: `false`)
+
+__The following values have been ADDED:__
+* `rbac.events`
+
 ## `v7.7.X` → `v7.8.0`
 
 > __WARNING:__ 

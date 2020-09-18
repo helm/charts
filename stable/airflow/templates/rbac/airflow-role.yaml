@@ -9,16 +9,37 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
-- apiGroups: [""]
+{{- if .Values.rbac.events }}
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - "get"
+  - "list"
+{{- end }}
+- apiGroups:
+  - ""
   resources:
   - pods
-  verbs: ["create", "get", "delete", "list", "watch"]
-- apiGroups: [""]
+  verbs:
+  - "create"
+  - "get"
+  - "delete"
+  - "list"
+  - "watch"
+- apiGroups:
+  - ""
   resources:
   - "pods/log"
-  verbs: ["get", "list"]
-- apiGroups: [""]
+  verbs:
+  - "get"
+  - "list"
+- apiGroups:
+  - ""
   resources:
   - "pods/exec"
-  verbs: ["create", "get"]
+  verbs:
+  - "create"
+  - "get"
 {{- end }}
