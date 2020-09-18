@@ -15,7 +15,11 @@ spec:
     - ALL
   volumes:
     - 'secret'
+{{- if .Values.nfs.mountOptions }}
+    - 'persistentVolumeClaim'
+{{- else }}
     - 'nfs'
+{{- end }}
   hostNetwork: false
   hostIPC: false
   hostPID: false
