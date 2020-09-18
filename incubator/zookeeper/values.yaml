@@ -278,9 +278,16 @@ env:
   ## The number of wall clock ms that corresponds to a Tick for the ensembles
   ## internal time.
   ZK_TICK_TIME: 2000
+  
+  ## The time interval in hours for which the purge task has to be triggered. 
+  ## Set to a positive integer (1 and above) to enable the auto purging. Defaults to 0.
+  ZK_PURGE_INTERVAL: 0
 
-  ZOO_AUTOPURGE_PURGEINTERVAL: 0
-  ZOO_AUTOPURGE_SNAPRETAINCOUNT: 3
+  ## When enabled, ZooKeeper auto purge feature retains the autopurge.snapRetainCount most
+  ## recent snapshots and the corresponding transaction logs in the dataDir and dataLogDir
+  ## respectively and deletes the rest. Defaults to 3. Minimum value is 3.
+  ZK_SNAP_RETAIN_COUNT: 3
+
   ZOO_STANDALONE_ENABLED: false
 
 jobs:
