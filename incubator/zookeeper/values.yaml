@@ -279,7 +279,7 @@ env:
   ## internal time.
   ZK_TICK_TIME: 2000
 
-  ## The time interval in hours for which the purge task has to be triggered. 
+  ## The time interval in hours for which the purge task has to be triggered.
   ## Set to a positive integer (1 and above) to enable the auto purging. Defaults to 0.
   ZK_PURGE_INTERVAL: 0
 
