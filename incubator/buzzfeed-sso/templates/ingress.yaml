@@ -21,7 +21,7 @@ metadata:
 spec:
 {{- if or (and .Values.auth.enabled .Values.auth.tls) .Values.ingress.tls }}
   tls:
-  {{- if (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
+  {{- if and (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
