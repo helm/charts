@@ -80,9 +80,6 @@ spec:
               value: "true"
             - name: RUNDECK_LOGGING_STRATEGY
               value: "CONSOLE"
-          volumeMounts:
-          - name: data
-            mountPath: /home/rundeck/server/data
         {{- if .Values.rundeck.sshSecrets }}
           - name: sshkeys
             mountPath: /home/rundeck/.ssh
