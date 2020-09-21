@@ -146,7 +146,7 @@ volumes: ""
   # - name: plugins
   #   emptyDir: {}
 
-# volumeMounts to add to the rundeck container
+# volumeMounts to add to the rundeck container and configurable paths
 volumeMounts:
   - name: data
     mountPath: /home/rundeck/server/data
