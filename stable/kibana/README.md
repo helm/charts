@@ -122,6 +122,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `testFramework.enabled`                    | enable the test framework                                              | true                                  |
 | `testFramework.image`                      | `test-framework` image repository.                                     | `dduportal/bats`                      |
 | `testFramework.tag`                        | `test-framework` image tag.                                            | `0.4.0`                               |
+| `elasticsearch.enabled`                    | Deploy elasticsearch chart                                             | `false`                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

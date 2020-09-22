@@ -239,3 +239,7 @@ initContainers: {}
   #           sleep 5
   #         fi
   #       done
+
+elasticsearch:
+  # Set to true to deploy the elasticsearch chart.
+  enabled: false
