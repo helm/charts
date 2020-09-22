@@ -114,6 +114,22 @@ removing them before adding them when they are automatically being imported. The
 default value is true, so if a user wants to add a password after the initial
 deployment, they should set `scheduler.refreshConnections` to false.
 
+
+We expose the `scheduler.existingSecretConnections` value to allow connections from an existing secrets resource. This may be desireable when you have shared resources between different deployments or you want to use a custom resource, e.g. ExternalSecrets, to avoid exposing credentials. The resulting existing secret should have an `add-connections.sh` data containing `airflow connections --add` statements, like below:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-custom-airflow-connections
+type: Opaque
+stringData:
+  add-connections.sh: |-
+    #!/usr/bin/env bash
+    airflow connections --add --conn_id my_aws_custom_conn --conn_type "aws"  --conn_extra "{\n  \"aws_access_key_id\": \"XXXXXXXXXXXXXXXXXXX\",\n  \"aws_secret_access_key\": \"XXXXXXXXXXXXXXX\",\n  \"region_name\":\"eu-central-1\"\n}\n"
+```
+If this variable is defined and set to any valid value, the `scheduler.connections` and `scheduler.refreshConnections` values will be ignored.
+
+
 __NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
 __WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
