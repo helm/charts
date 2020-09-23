@@ -19,3 +19,16 @@ dashboardImport:
           }
         ]
       }
+
+# Kibana API used by the dashboard init container isn't available without elasticsearch.
+elasticsearch:
+  enabled: true
+  client:
+    replicas: 1
+  master:
+    persistence:
+      enabled: false
+  data:
+    replicas: 1
+    persistence:
+      enabled: false
