@@ -9,10 +9,10 @@
     {{- range $key, $value := .Values.redis.config }}
     {{ $key }} {{ $value }}
     {{- end }}
+{{- end }}
 {{- if .Values.auth }}
     requirepass replace-default-auth
     masterauth replace-default-auth
-{{- end }}
 {{- end }}
 {{- end }}
 
