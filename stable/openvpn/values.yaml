@@ -13,7 +13,7 @@ updateStrategy: {}
 imagePullSecretName:
 
 image:
-  repository: jmindspacephx/openvpn
+  repository: mindspacephx/openvpn
   tag: 1.0.0
   pullPolicy: IfNotPresent
 service:
