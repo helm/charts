@@ -41,7 +41,7 @@ data:
   preinit-db.sh: |
     #!/bin/bash
     # export the required environment variables
-    export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"
+    export AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD="{{ include "airflow.connection.alchemy" . }}"
 
     echo "*** Waiting 10s for postgres"
     sleep 10

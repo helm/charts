@@ -69,7 +69,7 @@ Used to discover the master Service and Secret name created by the sub-chart.
 
 
 {{/*
-Construct the AIRFLOW__CORE__SQL_ALCHEMY_CONN connection string.
+Construct the AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD connection string.
 */}}
 {{- define "airflow.connection.alchemy" -}}
 {{- if .Values.postgresql.enabled -}}

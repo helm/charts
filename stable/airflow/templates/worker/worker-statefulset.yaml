@@ -216,7 +216,7 @@ spec:
               {{- end }}
                && mkdir -p /home/airflow/.local/bin \
                && echo 'export PATH="/home/airflow/.local/bin:$PATH"' >> /home/airflow/airflow_env.sh \
-               && echo 'export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"' >> /home/airflow/airflow_env.sh \
+               && echo 'export AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD="{{ include "airflow.connection.alchemy" . }}"' >> /home/airflow/airflow_env.sh \
               {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
                && echo 'export AIRFLOW__CELERY__RESULT_BACKEND="{{ include "airflow.connection.celery.backend" . }}"' >> /home/airflow/airflow_env.sh \
                && echo 'export AIRFLOW__CELERY__BROKER_URL="{{ include "airflow.connection.celery.broker" . }}"' >> /home/airflow/airflow_env.sh \
