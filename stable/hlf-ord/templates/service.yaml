@@ -11,6 +11,12 @@ spec:
       targetPort: 7050
       protocol: TCP
       name: grpc
+    {{- if eq .Values.ord.metrics.provider "prometheus" }}
+    - port: {{ .Values.service.portMetrics }}
+      targetPort: 9443
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     app: {{ include "hlf-ord.name" . }}
     release: {{ .Release.Name }}

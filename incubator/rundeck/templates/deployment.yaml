@@ -30,7 +30,14 @@ spec:
       serviceAccountName: {{ include "rundeck.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
       containers:
+        {{- if .Values.sideCars }}
+          {{- toYaml .Values.sideCars | nindent 8 }}
+        {{- end }}
         - name: nginx
           image: nginx:stable
           ports:

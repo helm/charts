@@ -79,7 +79,11 @@ data:
     loopback_users.guest = false
     {{- end }}
 
+    {{- if semverCompare ">=3.8.2" .Chart.AppVersion }}
+    load_definitions = /etc/definitions/definitions.json
+    {{ else }}
     management.load_definitions = /etc/definitions/definitions.json
+    {{- end }}
 
     ## Memory-based Flow Control threshold
     vm_memory_high_watermark.{{ .Values.rabbitmqMemoryHighWatermarkType }} = {{ .Values.rabbitmqMemoryHighWatermark }}

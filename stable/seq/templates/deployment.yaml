@@ -31,6 +31,8 @@ spec:
             - name: "BASE_URI"
               value: "{{ .Values.baseURI }}"
 {{- end }}
+            - name: "SEQ_CACHE_SYSTEMRAMTARGET"
+              value: "{{ .Values.cache.targetSize }}"
           ports:
             - name: ingestion
               containerPort: 5341

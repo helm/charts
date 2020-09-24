@@ -1,8 +1,10 @@
 name: rabbitmq-ha
 apiVersion: v1
-appVersion: 3.8.6
-version: 1.46.5
-description: Highly available RabbitMQ cluster, the open source message broker
+appVersion: 3.8.7
+version: 1.47.1
+# Ths chart is deprecated and no longer maintained.
+deprecated: true
+description: DEPRECATED - Highly available RabbitMQ cluster, the open source message broker
   software that implements the Advanced Message Queuing Protocol (AMQP).
 keywords:
 - rabbitmq
@@ -16,5 +18,3 @@ icon: https://bitnami.com/assets/stacks/rabbitmq/img/rabbitmq-stack-220x234.png
 sources:
 - https://github.com/rabbitmq/rabbitmq
 - https://github.com/docker-library/rabbitmq
-maintainers:
-- name: steven-sheehy

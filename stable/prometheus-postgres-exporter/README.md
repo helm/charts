@@ -1,5 +1,7 @@
 # Prometheus Postgres Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [postgres exporter](https://github.com/wrouesnel/postgres_exporter)
 
 ## TL;DR;

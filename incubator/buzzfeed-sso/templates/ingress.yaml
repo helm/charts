@@ -21,7 +21,7 @@ metadata:
 spec:
 {{- if or (and .Values.auth.enabled .Values.auth.tls) .Values.ingress.tls }}
   tls:
-  {{- if (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
+  {{- if and (and .Values.auth.enabled .Values.auth.tls) .Values.auth.ingressEnabled }}
     - hosts:
         - {{ $authDomain }}
       secretName: {{ .Values.auth.tls.secretName -}}
@@ -40,10 +40,18 @@ spec:
     - host: {{ .domain }}
       http:
         paths:
+          {{- if .path }}
           - path: {{ .path }}
             backend:
               serviceName: {{ $fullName }}-proxy
               servicePort: http
+          {{- end }}
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-proxy
+              servicePort: http
+          {{- end }}
   {{- end }}
   {{- if and .Values.auth.enabled .Values.auth.ingressEnabled }}
     # Global SSO used in the callback for login

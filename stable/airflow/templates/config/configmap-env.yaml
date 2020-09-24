@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ include "airflow.fullname" . }}-env"
+  name: {{ include "airflow.fullname" . }}-env
   labels:
     app: {{ include "airflow.labels.app" . }}
     chart: {{ include "airflow.labels.chart" . }}
@@ -22,6 +22,7 @@ data:
   DATABASE_PORT: "{{ .Values.externalDatabase.port }}"
   DATABASE_USER: "{{ .Values.externalDatabase.user }}"
   DATABASE_DB: "{{ .Values.externalDatabase.database }}"
+  DATABASE_PROPERTIES: "{{.Values.externalDatabase.properties}}"
   {{- end }}
 
   {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
@@ -35,10 +36,14 @@ data:
   REDIS_PORT: "{{ .Values.externalRedis.port }}"
   REDIS_DBNUM: "{{ .Values.externalRedis.databaseNumber }}"
   {{- end }}
-
+  {{- if .Values.flower.enabled }}
   ## Airflow (Flower)
   AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.flower.urlPrefix }}"
+  AIRFLOW__CELERY__FLOWER_PORT: "5555"
+  {{- end }}
+  ## Airflow (Worker)
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
+  AIRFLOW__CELERY__WORKER_LOG_SERVER_PORT: "8793"
   {{- end }}
 
   {{- if (eq .Values.airflow.executor "KubernetesExecutor") }}
@@ -65,6 +70,7 @@ data:
   AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "false" # for forward compatibility with 2.0
   AIRFLOW__CORE__EXECUTOR: "{{ .Values.airflow.executor }}"
   AIRFLOW__WEBSERVER__BASE_URL: "{{ .Values.web.baseUrl }}"
+  AIRFLOW__WEBSERVER__WEB_SERVER_PORT: "8080"
   {{- if .Values.airflow.fernetKey }}
   AIRFLOW__CORE__FERNET_KEY: "{{ .Values.airflow.fernetKey }}"
   {{- end }}

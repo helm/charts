@@ -1,4 +1,8 @@
-# RabbitMQ High Available
+# ⚠️ DEPRECATED - RabbitMQ High Available
+
+This chart is deprecated and no longer maintained. It is recommended to use the Bitnami
+maintained [RabbitMQ chart](https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq)
+which has a similar feature set, including high availability.
 
 [RabbitMQ](https://www.rabbitmq.com) is an open source message broker software
 that implements the Advanced Message Queuing Protocol (AMQP).
@@ -88,7 +92,7 @@ and their default values.
 | `lifecycle`                                        | RabbitMQ container lifecycle hooks                                                                                                                                                                    | `{}`                                                                                                |
 | `image.pullPolicy`                                 | Image pull policy                                                                                                                                                                                     | `IfNotPresent`                                                                                      |
 | `image.repository`                                 | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                                                          |
-| `image.tag`                                        | RabbitMQ container image tag                                                                                                                                                                          | `3.8.6-alpine`                                                                                      |
+| `image.tag`                                        | RabbitMQ container image tag                                                                                                                                                                          | `3.8.7-alpine`                                                                                      |
 | `image.pullSecrets`                                | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                                                                                                |
 | `managementPassword`                               | Management user password.                                                                                                                                                                             | _random 24 character long alphanumeric string_                                                      |
 | `managementUsername`                               | Management user with minimal permissions used for health checks                                                                                                                                       | `management`                                                                                        |

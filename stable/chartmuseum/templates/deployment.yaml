@@ -160,10 +160,12 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.serviceAccount.create }}
+    {{- if .Values.deployment.schedulerName }}
       schedulerName: {{ .Values.deployment.schedulerName }}
     {{- end -}}
-    {{- if .Values.serviceAccount.create }}
+    {{- if and .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- else if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "chartmuseum.fullname" . }}
     {{- else if .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}

@@ -8,8 +8,8 @@ metadata:
    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
    release: {{ .Release.Name }}
    heritage: {{ .Release.Service }}
-   component: oms-agent
-   tier: node
+   component: oms-agent-win
+   tier: node-win
 spec:
  updateStrategy:
   type: RollingUpdate
@@ -25,6 +25,8 @@ spec:
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
     schema-versions: "v1"
   spec:
+   nodeSelector:
+      beta.kubernetes.io/os: windows
    {{- if .Values.omsagent.rbac }}
    serviceAccountName: omsagent
    {{- end }}
@@ -53,6 +55,13 @@ spec:
        - name: CONTROLLER_TYPE
          value: "DaemonSet"
        - name: HOSTNAME
+         valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+       - name: NODE_IP
+         valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
        volumeMounts:
         - mountPath: C:\ProgramData\docker\containers
           name: docker-windows-containers
@@ -73,9 +82,6 @@ spec:
               - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
           periodSeconds: 60
           initialDelaySeconds: 180
-   {{- with .Values.omsagent.daemonsetwindows.affinity }}
-   affinity: {{- toYaml . | nindent 8 }}
-   {{- end }}
    {{- with .Values.omsagent.tolerations }}
    tolerations: {{- toYaml . | nindent 8 }}
    {{- end }}
@@ -93,4 +99,8 @@ spec:
     - name: omsagent-secret
       secret:
        secretName: omsagent-secret
+    - name: omsagent-adx-secret
+      secret:
+       secretName: omsagent-adx-secret
+       optional: true
 {{- end }}

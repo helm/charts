@@ -1,5 +1,7 @@
 # Prometheus Mysql Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 -   Installs prometheus [mysql exporter](https://github.com/prometheus/mysqld_exporter)
 
 ## TL;DR;

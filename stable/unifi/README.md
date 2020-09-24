@@ -1,4 +1,9 @@
-# Ubiquiti Network's Unifi Controller
+# DEPRECATED - Network's Unifi Controller
+
+|**This chart has been deprecated and moved to its new home:**
+|
+|- **GitHub repo:** https://github.com/k8s-at-home/charts/tree/master/charts/unifi
+|- **Charts repo:** https://k8s-at-home.com/charts/
 
 This is a helm chart for [Ubiquiti Network's][ubnt] [Unifi Controller][ubnt 2].
 
@@ -110,7 +115,7 @@ The following tables lists the configurable parameters of the Unifi chart and th
 | `customCert.isChain`                            | `false`                      | If you are using a Let's Encrypt certificate which already includes the full chain set this to `true`                  |
 | `customCert.certName`                           | `tls.crt`                    | Name of the the certificate file in `<unifi-data>/cert`                                                                |
 | `customCert.keyName`                            | `tls.key`                    | Name of the the private key file in `<unifi-data>/cert`                                                                |
-| `customCert.secretName`                         | `unifi-tls`                  | Name of the the k8s tls secret where the certificate and its key are stored.                                           |
+| `customCert.certSecret`                         | `nil`                        | Name of the the k8s tls secret where the certificate and its key are stored.                                           |
 | `mongodb.enabled`                               | `false`                      | Use external MongoDB for data storage                                                                                  |
 | `mongodb.dbUri`                                 | `mongodb://mongo/unifi`      | external MongoDB URI                                                                                                   |
 | `mongodb.statDbUri`                             | `mongodb://mongo/unifi_stat` | external MongoDB statdb URI                                                                                            |
