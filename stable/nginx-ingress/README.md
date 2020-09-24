@@ -128,6 +128,8 @@ Parameter | Description | Default
 `controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
 `controller.service.internal.enabled` | Enables an (additional) internal load balancer | false
 `controller.service.internal.annotations` | Annotations for configuring the additional internal load balancer | `{}`
+`controller.service.internal.loadBalancerSourceRanges` | list of IP CIDRs allowed access to internal load balancer (if supported) | `[]`
+`controller.service.internal.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -384,7 +386,7 @@ controller:
       enabled: true
       annotations:
         # Create internal ELB
-        service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+        service.beta.kubernetes.io/aws-load-balancer-internal: "true"
         # Any other annotation can be declared here.
 ```
 
