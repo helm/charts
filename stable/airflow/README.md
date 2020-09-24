@@ -4,11 +4,22 @@
 
 ## Installation
 
-To install the Airflow Helm Chart:
+(Helm 2) To install the Airflow Helm Chart:
 ```bash
 helm install stable/airflow \
-  --version "X.X.X" \
   --name "airflow" \
+  --version "X.X.X" \
+  --namespace "airflow" \
+  --values ./custom-values.yaml
+```
+
+(Helm 3) To install the Airflow Helm Chart:
+```bash
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo update
+
+helm install "airflow" stable/airflow \
+  --version "X.X.X" \
   --namespace "airflow" \
   --values ./custom-values.yaml
 ```
@@ -25,7 +36,8 @@ helm delete "airflow"
 
 To run bash commands in the Airflow Scheduler Pod:
 ```bash
-# use this to run commands like: `airflow create_user`
+# create an interactive bash session in the Scheduler Pod
+# use this bash session for commands like: `airflow create_user`
 kubectl exec \
   -it \
   --namespace airflow \
