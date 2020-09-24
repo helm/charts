@@ -110,8 +110,8 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraEntries.output`              |   Extra entries for existing [OUPUT] section                     | ``                    |
 | `extraEntries.service`             |   Extra entries for existing [SERVICE] section                   | ``                    |
 | `extraPorts`                       | List of extra ports                        |                       |
-| `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
-| `extraVolume`                      | Extra volume                               |                                                |
+| `extraVolumeMounts`                | Mount extra volumes, required to mount ssl certificates when elasticsearch has tls enabled  | `[]`     |
+| `extraVolumes`                     | Extra volumes                              | `[]`                                           |
 | `initContainers`                   | Init containers                            | `{}`                                           |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
