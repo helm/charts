@@ -79,8 +79,8 @@ data:
   {{- end }}
 
   {{- if .Values.airflow.config }}
-  ## User Configs
-  {{- range $setting, $option := .Values.airflow.config }}
-  {{ $setting }}: "{{ $option }}"
-  {{- end }}
+  ## ----------------
+  ## Airflow - User Configs
+  ## ----------------
+  {{- toYaml .Values.airflow.config | nindent 2 }}
   {{- end }}
