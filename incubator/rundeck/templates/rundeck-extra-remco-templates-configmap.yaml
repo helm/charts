@@ -1,0 +1,12 @@
+{{- if or .Values.rundeck.extraRemcoTemplates -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-extra-remco-templates
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+data:
+{{- range $path, $config := .Values.rundeck.extraRemcoTemplates }}
+  {{ $path }}: |
+{{ $config | indent 4 -}}
+{{- end -}}
+{{- end -}}

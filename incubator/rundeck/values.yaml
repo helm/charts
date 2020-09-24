@@ -4,7 +4,7 @@
 
 image:
   repository: rundeck/rundeck
-  tag: 3.2.7
+  tag: 3.3.3
   pullPolicy: IfNotPresent
 
 deployment:
@@ -31,6 +31,25 @@ rundeck:
     # RUNDECK_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
     # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
     # RUNDECK_TOKENS_FILE: /home/rundeck/extra/tokens.properties
+
+  # Allows you to add extra Remco templates
+  # All files will be created on path /etc/remco/templates 
+  extraRemcoTemplates: {}
+  #  extra-rundeck-config.properties: |
+  #    server.useForwardHeaders=true
+
+  # Allow you to add extra Remco resources
+  # All files will be created on path /etc/remco/resources.d 
+  extraRemcoResources: {}
+  # extra-rundeck-config.properties.toml: |
+  #  [[template]]
+  #      src         = "${REMCO_TEMPLATE_DIR}/extra-rundeck-config.properties"
+  #      dst         = "${REMCO_TMP_DIR}/rundeck-config/extra-rundeck-config.properties"
+  #      mode        = "0644"
+
+  # Allow you to add some extra config map to use them as volumeMount
+  extraConfigName: rundeck-extra-config
+  extraConfigMap: {}
 
   # Name of the secret containing SSH files to mount under ~/.ssh
   # sshSecrets: "ssh-secret"
@@ -80,12 +99,18 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+nginx:
+  enabled: true
+
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  paths: []
+    # nginx.ingress.kubernetes.io/proxy-body-size: "50M"
+    # nginx.ingress.kubernetes.io/x-forwarded-port: "443"
+    # nginx.ingress.kubernetes.io/x-forwarded-proto: https
+  paths: ['/']
   hosts:
     - chart-example.local
   tls: []

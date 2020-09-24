@@ -7,7 +7,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      {{- if .Values.nginx.enabled }}
       targetPort: http
+      {{- else }}
+      targetPort: rundeck
+      {{- end }}
       protocol: TCP
       name: http
   selector:

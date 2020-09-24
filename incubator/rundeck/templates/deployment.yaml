@@ -38,6 +38,7 @@ spec:
         {{- if .Values.sideCars }}
           {{- toYaml .Values.sideCars | nindent 8 }}
         {{- end }}
+        {{- if .Values.nginx.enabled }}
         - name: nginx
           image: nginx:stable
           ports:
@@ -59,6 +60,14 @@ spec:
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx
+          securityContext:
+            capabilities:
+              add:
+                - CHOWN
+                - NET_BIND_SERVICE
+                - SETGID
+                - SETUID
+        {{- end }}
         - name: {{ .Chart.Name }}
           command:
           - /bin/sh
@@ -97,8 +106,18 @@ spec:
             mountPath: /home/rundeck/.kube/
         {{- end }}
         {{- if .Values.rundeck.extraConfigSecret }}
-          - name: extra-config
+          - name: extra-secret
             mountPath: /home/rundeck/extra/
+        {{- end }}
+        {{- range $path, $config := .Values.rundeck.extraRemcoResources }}
+          - name: extra-remco-resources
+            mountPath: /etc/remco/resources.d/{{ $path }}
+            subPath: {{ $path }}
+        {{- end }}
+        {{- range $path, $config := .Values.rundeck.extraRemcoTemplates }}
+          - name: extra-remco-templates
+            mountPath: /etc/remco/templates/{{ $path }}
+            subPath: {{ $path }}
         {{- end }}
         {{- if .Values.volumeMounts }}
           {{- toYaml .Values.volumeMounts | nindent 10}}
@@ -123,12 +142,14 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+        {{- if .Values.nginx.enabled }}
         - name: nginx-config
           configMap:
             name: {{ .Release.Name }}-nginx-configmap
             items:
               - key: nginx.conf
                 path: nginx.conf
+        {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}
         {{- if .Values.persistence.awsVolumeId }}
@@ -162,13 +183,24 @@ spec:
             secretName: {{ .Values.rundeck.kubeConfigSecret}}
         {{- end }}
         {{- if .Values.rundeck.extraConfigSecret }}
-        - name: extra-config
+        - name: extra-secret
           secret:
             secretName: {{ .Values.rundeck.extraConfigSecret}}
         {{- end }}
-      {{- if .Values.volumes }}
-        {{- toYaml .Values.volumes | nindent 8}}
-      {{- end }}
+        {{- if .Values.rundeck.extraRemcoResources }}
+        - name: extra-remco-resources
+          configMap:
+            name: {{ .Release.Name }}-extra-remco-resources 
+        {{- end }}
+        {{- if .Values.rundeck.extraRemcoTemplates }}
+        - name: extra-remco-templates
+          configMap:
+            name: {{ .Release.Name }}-extra-remco-templates 
+        {{- end }}
+        {{- if .Values.volumes }}
+            {{- toYaml .Values.volumes | nindent 8}}
+        {{- end }}
+      
       {{- if .Values.initContainers }}
       initContainers:
         {{- toYaml .Values.initContainers | nindent 8 }}

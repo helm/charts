@@ -1,0 +1,12 @@
+{{- if or .Values.rundeck.extraRemcoResources -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-extra-remco-resources
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+data:
+{{- range $path, $config := .Values.rundeck.extraRemcoResources }}
+  {{ $path }}: |
+{{ $config | indent 4 -}}
+{{- end -}}
+{{- end -}}
