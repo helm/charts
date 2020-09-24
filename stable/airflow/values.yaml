@@ -45,7 +45,7 @@ airflow:
   ##
   ## WARNING:
   ## - don't include sensitive variables in here, instead make use of `airflow.extraEnv` with Secrets
-  ## - don't specify `AIRFLOW__CORE__SQL_ALCHEMY_CONN`, `AIRFLOW__CELERY__RESULT_BACKEND`,
+  ## - don't specify `AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD`, `AIRFLOW__CELERY__RESULT_BACKEND`,
   ##   or `AIRFLOW__CELERY__BROKER_URL`, they are dynamically created from chart values
   ##
   ## NOTE:
