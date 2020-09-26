@@ -3,9 +3,9 @@ appVersion: "1.2.0"
 # The prometheus-pushgateway chart is deprecated and no longer maintained. For details deprecation,
 # including how to un-deprecate a chart see the PROCESSES.md file.
 deprecated: true
-description: DEPRECATE A Helm chart for prometheus pushgateway
+description: DEPRECATED A Helm chart for prometheus pushgateway
 name: prometheus-pushgateway
-version: 1.4.2
+version: 1.4.3
 home: https://github.com/prometheus/pushgateway
 sources:
 - https://github.com/prometheus/pushgateway
