@@ -52,8 +52,9 @@ spec:
             initialDelaySeconds: 300
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-{{- if .Values.freshclamConfig }}
+{{- if or .Values.freshclamConfig .Values.clamdConfig }}
       volumes:
+{{- if .Values.freshclamConfig }}
         - name: freshclam-config-volume
           configMap:
             name: {{ include "clamav.fullname" . }}-freshclam
@@ -63,6 +64,7 @@ spec:
         - name: clamd-config-volume
           configMap:
             name: {{ include "clamav.fullname" . }}-clamd
+{{- end }}
 {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
