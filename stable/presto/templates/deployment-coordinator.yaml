@@ -48,6 +48,15 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+            {{- if (.Values.server.catalog.secretName | default "") }}
+            - name: presto-connectors-conf
+              readOnly: true
+              mountPath: {{ .Values.server.config.path }}/catalog
+            {{- else if .Values.server.catalog.data }}
+            - name: catalog-config-volume
+              readOnly: true
+              mountPath: {{ .Values.server.config.path }}/catalog
+            {{- end }}
           ports:
             - name: http-coord
               containerPort: {{ .Values.server.config.http.port }}
