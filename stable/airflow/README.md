@@ -4,11 +4,22 @@
 
 ## Installation
 
-To install the Airflow Helm Chart:
+(Helm 2) To install the Airflow Helm Chart:
 ```bash
 helm install stable/airflow \
-  --version "X.X.X" \
   --name "airflow" \
+  --version "X.X.X" \
+  --namespace "airflow" \
+  --values ./custom-values.yaml
+```
+
+(Helm 3) To install the Airflow Helm Chart:
+```bash
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo update
+
+helm install "airflow" stable/airflow \
+  --version "X.X.X" \
   --namespace "airflow" \
   --values ./custom-values.yaml
 ```
@@ -23,14 +34,15 @@ To uninstall the Airflow Helm Chart:
 helm delete "airflow"
 ```
 
-To run bash commands in the Airflow Scheduler Pod:
+To run bash commands in the Airflow Webserver Pod:
 ```bash
-# use this to run commands like: `airflow create_user`
+# create an interactive bash session in the Webserver Pod
+# use this bash session for commands like: `airflow create_user`
 kubectl exec \
   -it \
   --namespace airflow \
-  --container airflow-scheduler \
-  Deployment/airflow-scheduler \
+  --container airflow-web \
+  Deployment/airflow-web \
   /bin/bash
 ```
 
@@ -39,6 +51,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.9.X → v7.10.0](UPGRADE.md#v79x--v7100)
 * [v7.8.X → v7.9.0](UPGRADE.md#v78x--v790)
 * [v7.7.X → v7.8.0](UPGRADE.md#v77x--v780)
 * [v7.6.X → v7.7.0](UPGRADE.md#v76x--v770)
