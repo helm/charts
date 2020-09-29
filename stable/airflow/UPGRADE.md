@@ -1,5 +1,14 @@
 # Upgrading Steps
 
+## `v7.9.X` → `v7.10.0`
+
+__The following IMPROVEMENTS have been made:__
+* We now make use of the `_CMD` variables for `AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD`, `AIRFLOW__CELERY__RESULT_BACKEND_CMD`, and `AIRFLOW__CELERY__BROKER_URL_CMD`:
+  * This fixes the Scheduler liveness probe implemented in `7.8.0`
+  * This fixes using `kubectl exec` to run commands like `airflow create_user`
+* Configs passed with `airflow.config` are now passed as-defined in your `values.yaml`:
+  * This fixes an issue where people had to escape `"` characters in JSON strings
+
 ## `v7.8.X` → `v7.9.0`
 
 __The following IMPROVEMENTS have been made:__

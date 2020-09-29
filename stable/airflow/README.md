@@ -34,15 +34,15 @@ To uninstall the Airflow Helm Chart:
 helm delete "airflow"
 ```
 
-To run bash commands in the Airflow Scheduler Pod:
+To run bash commands in the Airflow Webserver Pod:
 ```bash
-# create an interactive bash session in the Scheduler Pod
+# create an interactive bash session in the Webserver Pod
 # use this bash session for commands like: `airflow create_user`
 kubectl exec \
   -it \
   --namespace airflow \
-  --container airflow-scheduler \
-  Deployment/airflow-scheduler \
+  --container airflow-web \
+  Deployment/airflow-web \
   /bin/bash
 ```
 
@@ -51,6 +51,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.9.X → v7.10.0](UPGRADE.md#v79x--v7100)
 * [v7.8.X → v7.9.0](UPGRADE.md#v78x--v790)
 * [v7.7.X → v7.8.0](UPGRADE.md#v77x--v780)
 * [v7.6.X → v7.7.0](UPGRADE.md#v76x--v770)
