@@ -24,3 +24,4 @@ data:
         database: $PRISMA_DB_NAME
         ssl: $PRISMA_DB_SSL
         connectionLimit: $PRISMA_DB_CONNECTIONLIMIT
+        rawAccess: $PRISMA_DB_RAWACCESS

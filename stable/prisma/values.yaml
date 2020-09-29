@@ -19,7 +19,7 @@ image:
 
   ## Prisma image version
   ##
-  tag: 1.29.1-heroku
+  tag: 1.34-heroku
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -55,6 +55,10 @@ database:
   ## Enable database migrations
   ##
   migrations: true
+
+  ## Enable database rawAccess
+  ## https://v1.prisma.io/docs/1.34/releases-and-maintenance/features-in-preview/mongodb-b6o5/#prisma_config
+  rawAccess: false
 
 auth:
   ## Prisma's Management API authentication

@@ -56,6 +56,7 @@ Parameter                        | Description                                  
 `database.migrations`            | Enable database migrations                   | `true`
 `database.ssl`                   | Enable SSL for DB connections                | `false`
 `database.connectionLimit`       | The maximum number of database connections   | `2`
+`database.rawAcces`              | Specifies whether the executeRaw mutation will be enabled in the Prisma API. The MongoDB connector currently doesn't support raw access, so you need to set this to false or omit it.   | `false`
 `auth.enabled`                   | Enable Prisma Management API authentication  | `false`
 `auth.secret`                    | Secret to use for authentication             | `nil`
 `service.type`                   | Type of Service                              | `ClusterIP`

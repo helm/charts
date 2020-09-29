@@ -69,6 +69,8 @@ spec:
               value: {{ .Values.database.ssl | quote }}
             - name: PRISMA_DB_CONNECTIONLIMIT
               value: {{ .Values.database.connectionLimit | quote }}
+            - name: PRISMA_DB_RAWACCESS
+              value: {{ .Values.database.rawAccess | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
