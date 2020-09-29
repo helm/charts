@@ -30,7 +30,7 @@ data:
         # broker ids separated by newline
         grep -o '[0-9]\+' | \
         # they may have connected in a random order
-        sort | \
+        sort -n | \
         # trim the leading and trailing whitespace
         sed 's/ *$//' | \
         # Replace newline with comma
