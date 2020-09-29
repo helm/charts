@@ -47,13 +47,12 @@ datadog:
   ## You can modify the security context used to run the containers by
   ## modifying the label type below:
   #
-  securityContext:
-    rule: MustRunAs
-    seLinuxOptions:
-      user: "system_u"
-      role: "system_r"
-      type: "spc_t"
-      level: "s0"
+  securityContext: {}
+  #  seLinuxOptions:
+  #    user: "system_u"
+  #    role: "system_r"
+  #    type: "spc_t"
+  #    level: "s0"
 
   ## @param clusterName - string - optional
   ## Set a unique cluster name to allow scoping hosts and Cluster Checks easily
@@ -409,7 +408,7 @@ clusterAgent:
     ## @param tag - string - required
     ## Define the Cluster-Agent version to use.
     #
-    tag: 1.6.0
+    tag: 1.7.0
 
     ## @param pullPolicy - string - required
     ## The Kubernetes pull policy.
@@ -465,8 +464,15 @@ clusterAgent:
 
     ## @param wpaController - boolean - optional
     ## Enable informer and controller of the watermark pod autoscaler
+    ## NOTE: You need to install the `WatermarkPodAutoscaler` CRD before
     #
     wpaController: false
+
+    ## @param useDatadogMetrics - boolean - optional
+    ## Enable usage of DatadogMetric CRD to autoscale on arbitrary Datadog queries
+    ## NOTE: You need to install the `DatadogMetric` CRD before
+    #
+    useDatadogMetrics: false
 
     ## Configuration for the service for the cluster-agent metrics server
     #
@@ -485,6 +491,18 @@ clusterAgent:
   ## ref: https://docs.datadoghq.com/agent/cluster_agent/commands/#cluster-agent-options
   #
   env: []
+
+  ## @param admissionController - object - required
+  ## Enable the admissionController to be able to inject APM/Dogstatsd config
+  ## and standard tags (env, service, version) automatically into your pods
+  #
+  admissionController:
+    enabled: false
+
+    ## @param mutateUnlabelled - boolean - optional
+    ## Enable injecting config without having the pod label 'admission.datadoghq.com/enabled="true"'
+    #
+    mutateUnlabelled: false
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
@@ -649,7 +667,7 @@ agents:
     ## Define the Agent version to use.
     ## Use 7-jmx to enable jmx fetch collection
     #
-    tag: 7.20.2
+    tag: 7.21.1
 
     ## @param doNotCheckTag - boolean - optional
     ## By default, the version passed in agents.image.tag is checked
@@ -708,6 +726,17 @@ agents:
       #
       create: false
 
+    ## @param securityContext - object - required
+    ## Provide securityContext configuration
+    #
+    securityContext:
+      rule: MustRunAs
+      seLinuxOptions:
+        user: system_u
+        role: system_r
+        type: spc_t
+        level: s0
+
     ## @param privileged - boolean - optional
     ## If true, Allow to run privileged containers
     #
@@ -721,6 +750,7 @@ agents:
     - SYS_RESOURCE
     - SYS_PTRACE
     - NET_ADMIN
+    - NET_BROADCAST
     - IPC_LOCK
 
     ## @param volumes - list - optional

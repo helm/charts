@@ -42,29 +42,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the kube-downscaler chart and their default values.
 
-| Parameter               | Description                                                                                          | Default                                 |
-| ----------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `replicaCount`            | Number of replicas to run                                                                            | `1`                                       |
-| `name`                    | How to name resources created by this chart                                                          | `kube-downscaler`                         |
-| `debug.enable`            | Do you want to start the downscaler in debug mode                                                    | `false`                                   |
-| `namespace.active_in`     | Which namespace does the downscaler scans for deployment/statefulsets to downscale (`''` equals all)   | `''`                                      |
-| `interval`                | Interval between scans, in seconds                                                                   | `60`                                      |
-| `image.repository`        | Downscaler container image repository                                                                | `hjacobs/kube-downscaler`                 |
-| `image.tag`               | Downscaler container image tag                                                                       | `19.10.1`                                 |
-| `image.pullPolicy`        | Downscaler container image pull policy                                                               | `IfNotPresent`                            |
-| `nodeSelector`            | Node labels for downscaler pod assignment                                                            | `{}`                                      |
-| `tolerations`             | Downscaler pod toleration for taints                                                                 | `[]`                                      |
-| `affinity`                | Downscaler pod affinity                                                                              | `{}`                                      |
-| `podAnnotations`          | Annotations to be added to downscaler pod                                                            | `{}`                                      |
-| `podLabels`               | Labels to be added to downscaler pod                                                                 | `{}`                                      |
-| `resources`               | Downscaler pod resource requests & limits                                                            | `{}`                                      |
-| `securityContext`         | SecurityContext to apply to the downscaler pod                                                       | `{}`                                      |
-| `rbac.create`             | If true, create & use RBAC resources                                                                 | `true`                                    |
-| `rbac.serviceAccountName` | ServiceAccount downscaler will use (ignored if rbac.create=true)                                     | `default`                                 |
-| `downscaleResources`      | Resources the downscaler is allowed to manage                                                        | `[deployments, statefulsets]`             |
-| `excludedDeployments`     | Deployments to exclude from the downscaler                                                           | `[]`                                      |
-| `excludedNamespaces`      | Namespaces to exclude from the downscaler                                                            | `[]`                                      |
-| `extraArgs`               | Add extra args to docker command                                                                     | `[]`                                      |
+| Parameter                 | Description                                                                                          | Default                                                           |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `replicaCount`            | Number of replicas to run                                                                            | `1`                                                               |
+| `name`                    | How to name resources created by this chart                                                          | `kube-downscaler`                                                 |
+| `debug.enable`            | Do you want to start the downscaler in debug mode                                                    | `false`                                                           |
+| `namespace.active_in`     | Which namespace does the downscaler scans for deployment/statefulsets to downscale (`''` equals all) | `''`                                                              |
+| `interval`                | Interval between scans, in seconds                                                                   | `60`                                                              |
+| `image.repository`        | Downscaler container image repository                                                                | `hjacobs/kube-downscaler`                                         |
+| `image.tag`               | Downscaler container image tag                                                                       | `20.5.0`                                                          |
+| `image.pullPolicy`        | Downscaler container image pull policy                                                               | `IfNotPresent`                                                    |
+| `nodeSelector`            | Node labels for downscaler pod assignment                                                            | `{}`                                                              |
+| `tolerations`             | Downscaler pod toleration for taints                                                                 | `[]`                                                              |
+| `affinity`                | Downscaler pod affinity                                                                              | `{}`                                                              |
+| `podAnnotations`          | Annotations to be added to downscaler pod                                                            | `{}`                                                              |
+| `podLabels`               | Labels to be added to downscaler pod                                                                 | `{}`                                                              |
+| `resources`               | Downscaler pod resource requests & limits                                                            | `{}`                                                              |
+| `securityContext`         | SecurityContext to apply to the downscaler pod                                                       | `{}`                                                              |
+| `rbac.create`             | If true, create & use RBAC resources                                                                 | `true`                                                            |
+| `rbac.serviceAccountName` | ServiceAccount downscaler will use (ignored if rbac.create=true)                                     | `default`                                                         |
+| `downscaleResources`      | Resources the downscaler is allowed to manage                                                        | `[deployments, statefulsets, horizontalpodautoscalers, cronjobs]` |
+| `excludedDeployments`     | Deployments to exclude from the downscaler                                                           | `[]`                                                              |
+| `excludedNamespaces`      | Namespaces to exclude from the downscaler                                                            | `[]`                                                              |
+| `extraArgs`               | Add extra args to docker command                                                                     | `[]`                                                              |
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 

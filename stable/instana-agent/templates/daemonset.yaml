@@ -31,12 +31,12 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-        - name: {{ template "instana-agent.name" . }}
+        - name: instana-agent
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           env:
             - name: INSTANA_AGENT_LEADER_ELECTOR_PORT
-              value: {{ .Values.agent.leaderElectorPort | quote }}
+              value: {{ .Values.leaderElector.port | quote }}
             - name: INSTANA_ZONE
               value: {{ .Values.zone.name | quote }}
               {{- if .Values.cluster.name }}
@@ -149,8 +149,8 @@ spec:
               cpu: {{ default 1.5 .Values.agent.pod.limits.cpu }}
           ports:
             - containerPort: 42699
-        - name: {{ template "instana-agent.name" . }}-leader-elector
-          image: instana/leader-elector:0.5.4
+        - name: instana-agent-leader-elector
+          image: "{{ .Values.leaderElector.image.name }}:{{ .Values.leaderElector.image.tag }}"
           env:
             - name: INSTANA_AGENT_POD_NAME
               valueFrom:
@@ -159,7 +159,7 @@ spec:
           command:
             - "/busybox/sh"
             - "-c"
-            - "sleep 12 && /app/server --election=instana --http=localhost:{{ default 42655 .Values.agent.leaderElectorPort }} --id=$(INSTANA_AGENT_POD_NAME)"
+            - "sleep 12 && /app/server --election=instana --http=localhost:{{ .Values.leaderElector.port }} --id=$(INSTANA_AGENT_POD_NAME)"
           resources:
             requests:
               cpu: 0.1
@@ -171,7 +171,7 @@ spec:
             initialDelaySeconds: 300
             timeoutSeconds: 3
           ports:
-            - containerPort: {{ .Values.agent.leaderElectorPort }}
+            - containerPort: {{ .Values.leaderElector.port }}
       {{- if .Values.agent.pod.tolerations }}
       tolerations:
         {{- toYaml .Values.agent.pod.tolerations | nindent 8 }}

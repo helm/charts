@@ -1,10 +1,6 @@
 # name is the value which will be used as the base resource name for various resources associated with the agent.
 # name: instana-agent
 
-zone:
-  # zone.name is the custom zone that detected technologies will be assigned to
-  name: null
-
 agent:
   # agent.key is the secret token which your agent uses to authenticate to Instana's servers.
   key: null
@@ -14,8 +10,6 @@ agent:
   # downloadKey: null
   # agent.listenAddress is the IP address the agent HTTP server will listen to.
   # listenAddress: *
-  # agent.leaderElectorPort is the port on which the leader elector sidecar is exposed.
-  leaderElectorPort: 42655
 
   # agent.endpointHost is the hostname of the Instana server your agents will connect to.
   endpointHost: ingress-red-saas.instana.io
@@ -81,6 +75,18 @@ agent:
   # agent.supportOpenshift specifies whether the cluster role should include openshift permissions
   # supportOpenshift: true
 
+cluster:
+  # cluster.name represents the name that will be assigned to this cluster in Instana
+  name: null
+
+leaderElector:
+  image:
+    # leaderElector.image.name is the name of the container image of the leader elector.
+    name: instana/leader-elector
+    # leaderElector.image.tag is the tag name of the agent container image.
+    tag: 0.5.4
+  port: 42655
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -100,6 +106,6 @@ podSecurityPolicy:
   # If not set and `enable` is true, a PodSecurityPolicy will be created with a name generated using the fullname template.
   name: null
 
-cluster:
-  # cluster.name represents the name that will be assigned to this cluster in Instana
+zone:
+  # zone.name is the custom zone that detected technologies will be assigned to
   name: null

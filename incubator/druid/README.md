@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | Parameter                                | Description                                             | Default                                    |
 |------------------------------------------|---------------------------------------------------------|--------------------------------------------|
 | `image.repository`                       | container image name                                    | `apache/druid`                             |
-| `image.tag`                              | container image tag                                     | `0.18.1`                                   |
+| `image.tag`                              | container image tag                                     | `0.19.0`                                   |
 | `image.pullPolicy`                       | container pull policy                                   | `IfNotPresent`                             |
 | `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                                       |
 | `configMap.enabled`                       | enable druid configuration as configmap                   | `true`                                     |

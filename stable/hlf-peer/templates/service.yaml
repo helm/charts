@@ -15,6 +15,12 @@ spec:
       targetPort: 7053
       protocol: TCP
       name: event
+    {{- if eq .Values.peer.metrics.provider "prometheus" }}
+    - port: {{ .Values.service.portMetrics }}
+      targetPort: 9443
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     app: {{ include "hlf-peer.name" . }}
     release: {{ .Release.Name }}

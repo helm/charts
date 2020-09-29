@@ -97,7 +97,7 @@ spec:
         )
       labels:
         workload_type: deployment
-      record: mixin_pod_workload
+      record: namespace_workload_pod:kube_pod_owner:relabel
     - expr: |-
         max by (cluster, namespace, workload, pod) (
           label_replace(
@@ -107,7 +107,7 @@ spec:
         )
       labels:
         workload_type: daemonset
-      record: mixin_pod_workload
+      record: namespace_workload_pod:kube_pod_owner:relabel
     - expr: |-
         max by (cluster, namespace, workload, pod) (
           label_replace(
@@ -117,5 +117,5 @@ spec:
         )
       labels:
         workload_type: statefulset
-      record: mixin_pod_workload
+      record: namespace_workload_pod:kube_pod_owner:relabel
 {{- end }}

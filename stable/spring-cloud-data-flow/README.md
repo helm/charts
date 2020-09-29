@@ -4,6 +4,27 @@
 
 Data processing pipelines consist of [Spring Boot](https://projects.spring.io/spring-boot/) apps, built using the [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) or [Spring Cloud Task](https://cloud.spring.io/spring-cloud-task/) microservice frameworks. This makes Spring Cloud Data Flow suitable for a range of data processing use cases, from import/export to event streaming and predictive analytics.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Spring Cloud Data Flow Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## Chart Details
 This chart will provision a fully functional and fully featured Spring Cloud Data Flow installation
 that can deploy and manage data processing pipelines in the cluster that it is deployed to.
@@ -152,7 +173,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                                                                                 | Description                                                                  | Default          |
 | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------- |
-| server.version                                                                            | The version/tag of the Data Flow server                                      | 2.5.1.RELEASE
+| server.version                                                                            | The version/tag of the Data Flow server                                      | 2.6.0
 | server.imagePullPolicy                                                                    | The imagePullPolicy of the Data Flow server                                  | IfNotPresent
 | server.service.type                                                                       | The service type for the Data Flow server                                    | LoadBalancer
 | server.service.annotations                                                                | Extra annotations for service resource                                       | {}
@@ -170,7 +191,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                                      | Default          |
 | --------------------------------- | ---------------------------------------------------------------- | ---------------- |
-| skipper.version                   | The version/tag of the Skipper server                            | 2.4.1.RELEASE
+| skipper.version                   | The version/tag of the Skipper server                            | 2.5.0
 | skipper.imagePullPolicy           | The imagePullPolicy of the Skipper server                        | IfNotPresent
 | skipper.platformName              | The name of the configured platform account                      | default
 | skipper.service.type              | The service type for the Skipper server                          | ClusterIP

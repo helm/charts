@@ -16,6 +16,8 @@ namespace:
 downscaleResources:
   - deployments
   - statefulsets
+  - horizontalpodautoscalers
+  - cronjobs
 
 # List of namespaces to be excluded from the downscaler
 excludedNamespaces: []
@@ -34,7 +36,7 @@ rbac:
 
 image:
   repository: hjacobs/kube-downscaler
-  tag: 19.10.1
+  tag: 20.5.0
   pullPolicy: IfNotPresent
 
 resources:

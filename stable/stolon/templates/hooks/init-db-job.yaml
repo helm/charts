@@ -40,9 +40,23 @@ spec:
         image: 'postgres'
         env:
           - name: USERNAME
-            value: {{ .Values.superuserUsername }}
+{{- if not (empty .Values.superuserSecret.name) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.superuserSecret.name }}
+                key: {{ .Values.superuserSecret.usernameKey }}
+{{- else }}
+            value: {{ .Values.superuserUsername | quote }}
+{{- end }}
           - name: PGPASSWORD
-            value: {{ .Values.superuserPassword }}
+{{- if not (empty .Values.superuserSecret.name) }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.superuserSecret.name }}
+                key: {{ .Values.superuserSecret.passwordKey }}
+{{- else }}
+            value: {{ .Values.superuserPassword | quote }}
+{{- end }}
           - name: HOST
             value: {{ template "stolon.fullname" . }}-proxy
         command: ["/bin/bash", "-e", "/tmp/sql-script/create_script.sh"]

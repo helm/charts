@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podAnnotations`                | Pod annotations                                    | `{}`                                             |
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `extraEnv`                      | Extra pod environment variables                    | `[]`                                             |
+| `envFrom`                       | Environment variables from configMaps & secrets    | `[]`                                             |
 | `extraContainers`               | Add additional containers                          | `[]`                                             |
 | `extraInitContainers`           | Add additional initContainers                      | `[]`                                             |
 | `podManagementPolicy`           | podManagementPolicy of the StatefulSet             | `OrderedReady`                                   |

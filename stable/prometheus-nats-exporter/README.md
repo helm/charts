@@ -1,5 +1,7 @@
 # Prometheus NATS Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [NATS exporter](https://github.com/nats-io/prometheus-nats-exporter)
 
 ## TL;DR;

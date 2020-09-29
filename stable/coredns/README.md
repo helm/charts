@@ -79,7 +79,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraVolumeMounts`                     | Optional array of volumes to mount inside the CoreDNS container                       | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
+| `rollingUpdate.maxUnavailable`          | Maximum number of unavailable replicas during rolling update                          | `1`                                                         |
+| `rollingUpdate.maxSurge`                | Maximum number of pods created above desired number of pods                           | `25%`                                                       |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
+| `podAnnotations`                        | Optional Pod only Annotations                                                         | {}                                                          |
+| `terminationGracePeriodSeconds`         | Optional duration in seconds the pod needs to terminate gracefully.                   | 30                                                          |
+| `preStopSleep`                          | Definition of Kubernetes preStop hook executed before Pod termination                 | {}                                                          |
+| `hpa.enabled`                           | Enable Hpa autoscaler instead of proportional one                                     | `false`                                                     |
+| `hpa.minReplicas`                       | Hpa minimum number of CoreDNS replicas                                                | `1`                                                         |
+| `hpa.maxReplicas`                       | Hpa maximum number of CoreDNS replicas                                                | `2`                                                         |
+| `hpa.metrics`                           | Metrics definitions used by Hpa to scale up and down                                  | {}                                                          |
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
 | `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
 | `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
@@ -144,3 +153,7 @@ This also creates a ServiceAccount, ClusterRole, and ClusterRoleBinding for
 the autoscaler deployment.
 
 `replicaCount` is ignored if this is enabled.
+
+By setting `hpa.enabled = true` a [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+is enabled for Coredns deployment. This can scale number of replicas based on meitrics
+like CpuUtilization, MemoryUtilization or Custom ones.

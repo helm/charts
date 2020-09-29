@@ -72,7 +72,13 @@ priorityClassName: ""
 
 podLabels: {}
 
-probe: true
+probe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+  timeoutSeconds: 1
 
 rbac:
   ## If true, create & use RBAC resources

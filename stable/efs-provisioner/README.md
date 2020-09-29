@@ -71,27 +71,27 @@ busyboxImage:
   tag: 1.27
   pullPolicy: IfNotPresent
 
-## Deployment annotations
-##
-annotations: {}
-
 ## Extra env variables and envFrom
 extraEnv: []
 
 envFrom: []
+
+## Deployment annotations
+##
+annotations: {}
 
 ## Configure provisioner
 ## https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs#deployment
 ##
 efsProvisioner:
   # If specified, use this DNS or IP to connect the EFS
-  #dnsName: "my-custom-efs-dns.com"
+  # dnsName: "my-custom-efs-dns.com"
   efsFileSystemId: fs-12345678
   awsRegion: us-east-2
   path: /example-pv
   provisionerName: example.com/aws-efs
   storageClass:
-    name: efs
+    name: aws-efs
     isDefault: false
     gidAllocate:
       enabled: true
@@ -99,15 +99,21 @@ efsProvisioner:
       gidMax: 50000
     reclaimPolicy: Delete
     mountOptions: []
-      # - acregmin=3
-      # - acregmax=60
 
 ## Enable RBAC
-## Leave serviceAccountName blank for the default name
 ##
 rbac:
+  # Specifies whether RBAC resources should be created
   create: true
-  serviceAccountName: ""
+
+## Create or use ServiceAccount
+##
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
 
 ## Annotations to be added to deployment
 ##
@@ -127,7 +133,8 @@ nodeSelector: {}
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
-# Tolerations for node tains
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: {}
 
 ## Configure resources
@@ -141,6 +148,8 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 # Configure podsecuritypolicy
 # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/

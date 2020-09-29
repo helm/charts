@@ -19,6 +19,7 @@ The following table lists the configurable parameters of the sentry-kubernetes c
 | `sentry.environment`    | Sentry environment                                                                                                          | Empty                         |
 | `sentry.release`        | Sentry release                                                                                                              | Empty                         |
 | `sentry.logLevel`       | Sentry log level                                                                                                            | Empty                         |
+| `sentry.eventLevels`    | Sentry event levels                                                                                                         | Empty                         |
 | `image.repository`      | Container image name                                                                                                        | `getsentry/sentry-kubernetes` |
 | `image.tag`             | Container image tag                                                                                                         | `latest`                      |
 | `rbac.create`           | If `true`, create and use RBAC resources                                                                                    | `true`                        |

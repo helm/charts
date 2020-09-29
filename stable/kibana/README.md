@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `tolerations`                              | List of node taints to tolerate                                        | `[]`                                  |
 | `dashboardImport.enabled`                  | Enable dashboard import                                                | `false`                               |
 | `dashboardImport.timeout`                  | Time in seconds waiting for Kibana to be in green overall state        | `60`                                  |
+| `dashboardImport.basePath`                 | Customizing base path url during dashboard import                      | `/`                                   |
 | `dashboardImport.xpackauth.enabled`        | Enable Xpack auth                                                      | `false`                               |
 | `dashboardImport.xpackauth.username`       | Optional Xpack username                                                | `myuser`                              |
 | `dashboardImport.xpackauth.password`       | Optional Xpack password                                                | `mypass`                              |

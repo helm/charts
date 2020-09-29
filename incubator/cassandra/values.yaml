@@ -229,3 +229,26 @@ exporter:
     # requests:
     #   cpu: 1
     #   memory: 1Gi
+
+extraVolumes: []
+extraVolumeMounts: []
+# extraVolumes and extraVolumeMounts allows you to mount other volumes
+# Example Use Case: mount ssl certificates
+# extraVolumes:
+#   - name: cas-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: cas-certs
+# extraVolumeMounts:
+#   - name: cas-certs
+#     mountPath: /certs
+#     readOnly: true
+
+extraContainers: []
+## Additional containers to be added
+# extraContainers:
+# - name: cassandra-sidecar
+#   image: cassandra-sidecar:latest
+#   volumeMounts:
+#   - name: some-mount
+#     mountPath: /some/path

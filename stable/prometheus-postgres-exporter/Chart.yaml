@@ -1,8 +1,11 @@
 apiVersion: v1
 appVersion: "0.8.0"
-description: A Helm chart for prometheus postgres-exporter
+# The prometheus-postgres-exporter chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED A Helm chart for prometheus postgres-exporter
 name: prometheus-postgres-exporter
-version: 1.3.0
+version: 1.3.1
 home: https://github.com/wrouesnel/postgres_exporter
 sources:
 - https://github.com/wrouesnel/postgres_exporter
@@ -10,6 +13,3 @@ keywords:
 - postgresql
 - prometheus
 - exporter
-maintainers:
-- email: gianrubio@gmail.com
-  name: gianrubio
