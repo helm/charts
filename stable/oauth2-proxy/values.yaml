@@ -24,9 +24,12 @@ config:
   # configFile: |-
   #   pass_basic_auth = false
   #   pass_access_token = true
-  # Use an existing config map (see configmap.yaml for required fields)
+  # Use an existing configmap (see configmap.yaml for required fields)
   # Example:
   # existingConfig: config
+  # Use an existing config Secret (see configmap.yaml for required fields)
+  # Example:
+  # existingConfigSecret: config
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"

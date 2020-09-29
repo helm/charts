@@ -1,7 +1,7 @@
 {{- if not .Values.config.existingConfig }}
 {{- if .Values.config.configFile }}
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   labels:
     app: {{ template "oauth2-proxy.name" . }}

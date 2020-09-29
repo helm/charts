@@ -164,10 +164,15 @@ spec:
           secretName: {{ if .Values.htpasswdFile.existingSecret }}{{ .Values.htpasswdFile.existingSecret }}{{ else }} {{ template "oauth2-proxy.fullname" . }}-htpasswd-file {{ end }}
 {{- end }}
 
-{{- if or .Values.config.existingConfig .Values.config.configFile }}
+{{- if or .Values.config.existingConfigSecret .Values.config.configFile }}
+      - secret:
+          defaultMode: 420
+          secretName: {{ if .Values.config.existingConfigSecret }}{{ .Values.config.existingConfigSecret }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
+        name: configmain
+{{- else if .Values.config.existingConfig }}
       - configMap:
           defaultMode: 420
-          name: {{ if .Values.config.existingConfig }}{{ .Values.config.existingConfig }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
+          name: {{ .Values.config.existingConfig }}
         name: configmain
 {{- end }}
 {{- if ne (len .Values.extraVolumes) 0 }}
