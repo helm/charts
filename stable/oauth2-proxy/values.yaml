@@ -17,9 +17,9 @@ config:
     # Example:
     # existingSecret: google-secret
   # Default configuration, to be overridden
-  configFile: |-
-    email_domains = [ "*" ]
-    upstreams = [ "file:///dev/null" ]
+  configFile:
+    email_domains: [ "*" ]
+    upstreams: [ "file:///dev/null" ]
   # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
   #   pass_basic_auth = false
