@@ -46,6 +46,7 @@ $ helm install stable/chaoskube --set dryRun=false
 | `replicas`                                | number of replicas to run                                                             | 1                                |
 | `interval`                                | interval between pod terminations                                                     | 10m                              |
 | `labels`                                  | label selector to filter pods by                                                      | "" (matches everything)          |
+| `kinds`                                   | OwnerReference's Kind selector to filter pods by                                      | "" (matches everything)          |
 | `annotations`                             | annotation selector to filter pods by                                                 | "" (matches everything)          |
 | `namespaces`                              | namespace selector to filter pods by                                                  | "" (all namespaces)              |
 | `dryRun`                                  | don't kill pods, only log what would have been done                                   | true                             |
