@@ -167,7 +167,7 @@ spec:
 {{- if or .Values.config.existingConfigSecret .Values.config.configFile }}
       - secret:
           defaultMode: 420
-          secretName: {{ if .Values.config.existingConfigSecret }}{{ .Values.config.existingConfigSecret }}{{ else }}{{ template "oauth2-proxy.fullname" . }}{{ end }}
+          secretName: {{ if .Values.config.existingConfigSecret }}{{ .Values.config.existingConfigSecret }}{{ else }}{{ template "oauth2-proxy.fullname" . }}-config{{ end }}
         name: configmain
 {{- else if .Values.config.existingConfig }}
       - configMap:
