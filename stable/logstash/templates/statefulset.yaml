@@ -113,9 +113,7 @@ spec:
           args:
             - >-
               sleep 60;
-              exec /logstash_exporter
-                --logstash.endpoint=http://localhost:{{ .Values.exporter.logstash.target.port }}
-                --web.listen-address=:{{ .Values.exporter.logstash.port }}
+              exec /logstash_exporter --logstash.endpoint=http://localhost:{{ .Values.exporter.logstash.target.port }} --web.listen-address=:{{ .Values.exporter.logstash.port }}
           ports:
             - name: ls-exporter
               containerPort: {{ .Values.exporter.logstash.port }}
