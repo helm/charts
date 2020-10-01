@@ -3,6 +3,7 @@
 sentry:
   dsn: <change-me>
   logLevel: ~
+  eventLevels: ~
 # Sentry DSN config using an existing secret:
 # existingSecret:
 image:

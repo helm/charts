@@ -5,9 +5,10 @@ metadata:
   name: {{ include "airflow.fullname" . }}
   labels:
     app: {{ include "airflow.labels.app" . }}
+    component: web
     chart: {{ include "airflow.labels.chart" . }}
-    heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     {{- if .Values.prometheusRule.additionalLabels }}
     {{- toYaml .Values.prometheusRule.additionalLabels | nindent 4 }}
     {{- end }}

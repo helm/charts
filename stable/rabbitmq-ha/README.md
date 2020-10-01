@@ -1,4 +1,8 @@
-# RabbitMQ High Available
+# ⚠️ DEPRECATED - RabbitMQ High Available
+
+This chart is deprecated and no longer maintained. It is recommended to use the Bitnami
+maintained [RabbitMQ chart](https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq)
+which has a similar feature set, including high availability.
 
 [RabbitMQ](https://www.rabbitmq.com) is an open source message broker software
 that implements the Advanced Message Queuing Protocol (AMQP).

@@ -3,12 +3,8 @@ appVersion: "1.0"
 description: Installs the a deployment that overprovisions the cluster
 name: cluster-overprovisioner
 home: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler
-version: 0.4.0
-maintainers:
-- name: max-rocket-internet
-  email: max.williams@deliveryhero.com
-- name: mmingorance-dh
-  email: miguel.mingorance@deliveryhero.com
+version: 0.4.1
+deprecated: true
 engine: gotpl
 icon: https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png
 keywords:

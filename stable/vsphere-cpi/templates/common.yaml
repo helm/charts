@@ -6,7 +6,7 @@ metadata:
     app: {{ template "cpi.name" . }}
     vsphere-cpi-infra: common-configmap
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: cloud-controller
+    component: cloud-controller-manager
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}

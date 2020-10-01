@@ -1,3 +1,8 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the unifi maintained Helm chart is now located at k8s-at-home/charts (https://github.com/k8s-at-home/charts/tree/master/charts/unifi).
+
+
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
 {{- range .Values.ingress.hosts }}
