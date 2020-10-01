@@ -46,7 +46,8 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         {{- if .Values.securityContext.runAsNonRoot }}
         runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
-        {{- else if .Values.securityContext.supplementalGroups }}
+        {{- end }}
+        {{- if .Values.securityContext.supplementalGroups }}
         supplementalGroups: {{ .Values.securityContext.supplementalGroups }}
         {{- end }}
       {{- else if .Values.persistence.enabled }}
