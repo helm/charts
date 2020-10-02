@@ -51,6 +51,7 @@ kubectl exec \
 > NOTE: for chart version numbers, see [Chart.yaml](Chart.yaml) or [helm hub](https://hub.helm.sh/charts/stable/airflow).
 
 For steps you must take when upgrading this chart, please review:
+* [v7.10.X → v7.11.0](UPGRADE.md#v710x--v7110)
 * [v7.9.X → v7.10.0](UPGRADE.md#v79x--v7100)
 * [v7.8.X → v7.9.0](UPGRADE.md#v78x--v790)
 * [v7.7.X → v7.8.0](UPGRADE.md#v77x--v780)
@@ -126,6 +127,54 @@ We expose the `scheduler.refreshConnections` value to refresh connections by
 removing them before adding them when they are automatically being imported. The
 default value is true, so if a user wants to add a password after the initial
 deployment, they should set `scheduler.refreshConnections` to false.
+
+
+We expose the `scheduler.existingSecretConnections` value to allow connections from an existing secrets resource. This may be desireable when you have shared resources between different deployments or you want to use a custom resource, e.g. ExternalSecrets, to avoid exposing credentials. The resulting existing secret should have an `add-connections.sh` data containing `airflow connections --add` statements. There's a few ways to achieve them, including:
+
+- Secret
+
+This is a straight-forward way to keep credentials away from the values in the chart, which can be useful to avoid commiting them to a git repository, for example. Here's an example:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-custom-airflow-connections
+type: Opaque
+stringData:
+  add-connections.sh: |-
+    #!/usr/bin/env bash
+    airflow connections --add --conn_id my_aws_custom_conn --conn_type "aws"  --conn_extra "{\n  \"aws_access_key_id\": \"XXXXXXXXXXXXXXXXXXX\",\n  \"aws_secret_access_key\": \"XXXXXXXXXXXXXXX\",\n  \"region_name\":\"eu-central-1\"\n}\n"
+```
+
+- ExternalSecret
+
+You can create an external secret to keep credentials safe in a Secret Manager, adding governance layers and avoiding exposing its values in your Kubernetes cluster. [More information on how to implement this in your cluster here](https://github.com/godaddy/kubernetes-external-secrets#install-with-helm).
+Here's an example using AWS Secret Manager ([read more about it here](https://github.com/godaddy/kubernetes-external-secrets#install-with-helm)):
+
+```yaml
+apiVersion: "kubernetes-client.io/v1"
+kind: ExternalSecret
+metadata:
+  name: my-safe-custom-airflow-connections
+spec:
+  roleArn: arn:aws:iam::123456789012:role/my-secret-manager-role
+  template:
+    type: Opaque
+  backendType: secretsManager
+  data:
+    - key: secrets/manager/key
+      name: username
+      property: username
+    - key: secrets/manager/key
+      name: password
+      property: password
+```
+(This resource is only appliable after the custom resource is correcly installed)
+
+
+If `scheduler.existingSecretConnections` is defined and set to any valid value, the `scheduler.connections` and `scheduler.refreshConnections` values will be ignored.
+
 
 __NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
 
