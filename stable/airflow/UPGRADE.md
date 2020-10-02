@@ -1,5 +1,10 @@
 # Upgrading Steps
 
+## `v7.10.X` → `v7.11.0`
+
+__The following IMPROVEMENTS have been made:__
+* We can now pass existing secrets containing Scheduler Connections in `scheduler.existingSecretConnections`, allowing for other ways to create those connections without declaring them on Chart Values.
+
 ## `v7.9.X` → `v7.10.0`
 
 __The following IMPROVEMENTS have been made:__
