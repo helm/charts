@@ -41,6 +41,7 @@ helm install --name my-release stable/ignite
 | `nodeSelector`                  | Node selector for ignite application                                                                           | `{}`                                                                                                                              |
 | `tolerations`                   | Node tolerations for ignite application                                                                        | `[]`                                                                                                                              |
 | `affinity`                      | Node affinity for ignite application                                                                           | `{}`                                                                                                                              |
+| `priorityClassName`             | Pod Priority Class Name for ignite application                                                                 | `""`                                                                                                                              |
 
 ## DataStorage
 
