@@ -244,6 +244,11 @@ scheduler:
   ##
   refreshConnections: true
 
+  ## existingSecretConnections can receive an existing secret name to add connections using a custom secrets resource
+  ## if this variable is set to any valid value, scheduler.connections will be ignored
+  ##
+  ## existingSecretConnections: "custom-connections"
+
   ## custom airflow variables for the airflow scheduler
   ##
   ## NOTE:
