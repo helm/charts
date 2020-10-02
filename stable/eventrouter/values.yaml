@@ -4,6 +4,7 @@ image:
   repository: gcr.io/heptio-images/eventrouter
   tag: v0.3
   pullPolicy: IfNotPresent
+  pullSecrets: []
 resources: {}
   # limits:
   #  cpu: 100m

@@ -24,6 +24,7 @@ The following table lists the configurable parameters of the eventrouter chart a
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | `image.repository`      | Container image name                                                                                                        | `gcr.io/heptio-images/eventrouter` |
 | `image.tag`             | Container image tag                                                                                                         | `v0.3`                             |
+| `image.pullSecrets`     | A list of image pull secrets                                                                                                | `[]`                               |
 | `rbac.create`           | If `true`, create and use RBAC resources                                                                                    | `true`                             |
 | `serviceAccount.name`   | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``                                 |
 | `serviceAccount.create` | If true, create a new service account                                                                                       | `true`                             |
