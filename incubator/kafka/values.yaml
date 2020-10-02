@@ -478,7 +478,7 @@ zookeeper:
 
   ## Configure Zookeeper resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources: ~
+  resources: {}
 
   ## Environmental variables to set in Zookeeper
   env:
