@@ -1,4 +1,4 @@
-{{- if eq true .Values.firefoxDebug.enabled -}}
+{{- if and (eq true .Values.firefoxDebug.enabled) (eq true .Values.firefoxDebug.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
