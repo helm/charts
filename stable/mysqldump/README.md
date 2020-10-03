@@ -1,5 +1,7 @@
 # mysqldump
 
+**CHART WAS DEPRECATED AND MOVED TO <https://github.com/kokuwaio/helm-charts/tree/main/charts/mysqldump>**
+
 mysqldump is a tool for creating backups of MySQL databases in the form of a .sql file.
 
 ## TLDR
