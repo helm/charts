@@ -1,4 +1,7 @@
 # Atlantis
+
+# ⚠️  DEPRECATED Further development was moved to https://github.com/runatlantis/helm-charts
+
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
 ## Introduction
