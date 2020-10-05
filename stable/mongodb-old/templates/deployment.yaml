@@ -9,6 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   template:
+    selector:
+      matchLabels:
+        app: {{ template "fullname" . }}
     metadata:
       labels:
         app: {{ template "fullname" . }}
