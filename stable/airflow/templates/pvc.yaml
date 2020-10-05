@@ -4,10 +4,10 @@ apiVersion: v1
 metadata:
   name: {{ include "airflow.fullname" . }}
   labels:
-    app: {{ include "airflow.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
     - {{ .Values.dags.persistence.accessMode | quote }}
