@@ -1,0 +1,4 @@
+config:
+  configFile: |
+    email_domains = ["*"]
+    upstreams = ["file:///dev/null"]
