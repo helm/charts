@@ -109,6 +109,9 @@ airflow:
 
 We expose the `scheduler.connections` value to allow specifying [Airflow Connections](https://airflow.apache.org/docs/stable/concepts.html#connections) at deployment time, these connections will be automatically imported by the Airflow scheduler when it starts up.
 
+By default, we will delete and re-create any connections specified in `scheduler.connections` each time the Airflow scheduler restarts.
+(If you want to manually modify a connection in the WebUI, you should disable this behaviour by setting `scheduler.refreshConnections` to `false`)
+
 For example, to add a connection called `my_aws`:
 ```yaml
 scheduler:
@@ -117,68 +120,37 @@ scheduler:
       type: aws
       extra: |
         {
-          "aws_access_key_id": "XXXXXXXXXXXXXXXXXXX",
-          "aws_secret_access_key": "XXXXXXXXXXXXXXX",
+          "aws_access_key_id": "XXXXXXXX",
+          "aws_secret_access_key": "XXXXXXXX",
           "region_name":"eu-central-1"
         }
 ```
 
-We expose the `scheduler.refreshConnections` value to refresh connections by
-removing them before adding them when they are automatically being imported. The
-default value is true, so if a user wants to add a password after the initial
-deployment, they should set `scheduler.refreshConnections` to false.
+If you do not want to store connections in your `values.yaml`, use `scheduler.existingSecretConnections` to specify the name of an existing Secret containing an `add-connections.sh` script.
 
+Note: your script will be run EACH TIME the airflow-scheduler Pod restarts, and `scheduler.connections` will not longer work.
 
-We expose the `scheduler.existingSecretConnections` value to allow connections from an existing secrets resource. This may be desireable when you have shared resources between different deployments or you want to use a custom resource, e.g. ExternalSecrets, to avoid exposing credentials. The resulting existing secret should have an `add-connections.sh` data containing `airflow connections --add` statements. There's a few ways to achieve them, including:
-
-- Secret
-
-This is a straight-forward way to keep credentials away from the values in the chart, which can be useful to avoid commiting them to a git repository, for example. Here's an example:
-
+Here is an example Secret you might create:
 ```yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: my-custom-airflow-connections
+  name: my-airflow-connections
 type: Opaque
 stringData:
-  add-connections.sh: |-
+  add-connections.sh: |
     #!/usr/bin/env bash
-    airflow connections --add --conn_id my_aws_custom_conn --conn_type "aws"  --conn_extra "{\n  \"aws_access_key_id\": \"XXXXXXXXXXXXXXXXXXX\",\n  \"aws_secret_access_key\": \"XXXXXXXXXXXXXXX\",\n  \"region_name\":\"eu-central-1\"\n}\n"
+
+    # remove any existing connection
+    airflow connections --delete \
+      --conn_id "my_aws"
+  
+    # re-add your custom connection
+    airflow connections --add \
+      --conn_id "my_aws" \
+      --conn_type "aws" \
+      --conn_extra "{\\"aws_access_key_id\\": \\"XXXXXXXX\\", \\"aws_secret_access_key\\": \\"XXXXXXXX\", \\"region_name\\":\\"eu-central-1\\"}"
 ```
-
-- ExternalSecret
-
-You can create an external secret to keep credentials safe in a Secret Manager, adding governance layers and avoiding exposing its values in your Kubernetes cluster. [More information on how to implement this in your cluster here](https://github.com/godaddy/kubernetes-external-secrets#install-with-helm).
-Here's an example using AWS Secret Manager ([read more about it here](https://github.com/godaddy/kubernetes-external-secrets#install-with-helm)):
-
-```yaml
-apiVersion: "kubernetes-client.io/v1"
-kind: ExternalSecret
-metadata:
-  name: my-safe-custom-airflow-connections
-spec:
-  roleArn: arn:aws:iam::123456789012:role/my-secret-manager-role
-  template:
-    type: Opaque
-  backendType: secretsManager
-  data:
-    - key: secrets/manager/key
-      name: username
-      property: username
-    - key: secrets/manager/key
-      name: password
-      property: password
-```
-(This resource is only appliable after the custom resource is correcly installed)
-
-
-If `scheduler.existingSecretConnections` is defined and set to any valid value, the `scheduler.connections` and `scheduler.refreshConnections` values will be ignored.
-
-
-__NOTE:__ As connections may include sensitive data, we store the bash script which generates the connections in a Kubernetes Secret, and mount this to the pods.
-
-__WARNING:__ Because some values are sensitive, you should take care to store your custom `values.yaml` securely before passing it to helm with: `helm -f <my-secret-values.yaml>`
 
 ### Airflow-Configs/Variables
 
@@ -623,7 +595,8 @@ __Airflow Scheduler values:__
 | `scheduler.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `scheduler.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the scheduler | `<see values.yaml>` |
 | `scheduler.connections` | custom airflow connections for the airflow scheduler | `[]` |
-| `scheduler.refreshConnections` | if we remove before adding a connection resulting in a refresh | `true` |
+| `scheduler.refreshConnections` | if `scheduler.connections` are deleted and re-added after each scheduler restart | `true` |
+| `scheduler.existingSecretConnections` | the name of an existing Secret containing an `add-connections.sh` script to run on scheduler start | `""` |
 | `scheduler.variables` | custom airflow variables for the airflow scheduler | `"{}"` |
 | `scheduler.pools` | custom airflow pools for the airflow scheduler | `"{}"` |
 | `scheduler.numRuns` | the value of the `airflow --num_runs` parameter used to run the airflow scheduler | `-1` |
