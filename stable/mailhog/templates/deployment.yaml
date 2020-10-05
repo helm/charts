@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "mailhog.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mailhog.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
