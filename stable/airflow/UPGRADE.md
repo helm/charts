@@ -3,7 +3,11 @@
 ## `v7.10.X` → `v7.11.0`
 
 __The following IMPROVEMENTS have been made:__
-* We can now pass existing secrets containing Scheduler Connections in `scheduler.existingSecretConnections`, allowing for other ways to create those connections without declaring them on Chart Values.
+* You can now use `scheduler.existingSecretConnections` with an externally created Secret to store airflow connections. 
+  (Rather than storing them in plain-text with `scheduler.connections`)
+
+__The following values have been ADDED:__
+* `scheduler.existingSecretConnections`
 
 ## `v7.9.X` → `v7.10.0`
 
