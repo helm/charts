@@ -128,8 +128,10 @@ The following table lists the configurable parameters of the chart and its defau
 | `files`                         | Logstash custom files configuration                | `nil`                                            |
 | `binaryFiles`                   | Logstash custom binary files                       | `nil`                                            |
 | `inputs`                        | Logstash inputs configuration                      | beats                                            |
+| `inputs.existingSecret`         | Logstash inputs secret name               | unset                                            |
 | `filters`                       | Logstash filters configuration                     | `nil`                                            |
 | `outputs`                       | Logstash outputs configuration                     | elasticsearch                                    |
+| `outputs.existingSecret`        | Logstash outputs secret name                       | unset                                    |
 | `securityContext.fsGroup`       | Group ID for the container                         | `1000`                                           |
 | `securityContext.runAsUser`     | User ID for the container                          | `1000`                                           |
 | `args`                          | Additional arguments to pass to Logstash           | `1000`                                           |
