@@ -1,3 +1,4 @@
+{{- if or .Values.filters (not .Values.inputs.existingSecret) (not .Values.outputs.existingSecret) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,17 +9,23 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- range $key, $value := .Values.inputs }}
-  input_{{ $key }}.conf: |-
-{{ $value | indent 4 }}
-{{- end }}
-
 {{- range $key, $value := .Values.filters }}
   filter_{{ $key }}.conf: |-
 {{ $value | indent 4 }}
 {{- end }}
 
+{{- if not .Values.inputs.existingSecret }}
+{{- range $key, $value := .Values.inputs }}
+  input_{{ $key }}.conf: |-
+{{ $value | indent 4 }}
+{{- end }}
+{{- end }}
+
+{{- if not .Values.outputs.existingSecret }}
 {{- range $key, $value := .Values.outputs }}
   output_{{ $key }}.conf: |-
 {{ $value | indent 4 }}
+{{- end }}
+{{- end }}
+
 {{- end }}

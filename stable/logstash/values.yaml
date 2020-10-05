@@ -315,6 +315,7 @@ inputs:
       #   type => "example"
       # }
     }
+  existingSecret: ""
 
 filters:
   # main: |-
@@ -338,6 +339,7 @@ outputs:
       #   topic_id => "destination"
       # }
     }
+  existingSecret: ""
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created

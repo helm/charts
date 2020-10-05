@@ -29,7 +29,9 @@ spec:
       annotations:
         checksum/patterns: {{ include (print $.Template.BasePath "/patterns-config.yaml") . | sha256sum }}
         checksum/templates: {{ include (print $.Template.BasePath "/files-config.yaml") . | sha256sum }}
+        {{- if or .Values.filters (not .Values.inputs.existingSecret) (not .Values.outputs.existingSecret) }}
         checksum/pipeline: {{ include (print $.Template.BasePath "/pipeline-config.yaml") . | sha256sum }}
+        {{- end }}
       {{- if .Values.podAnnotations }}
         ## Custom pod annotations
         {{- range $key, $value := .Values.podAnnotations }}
@@ -157,8 +159,20 @@ spec:
           configMap:
             name: {{ template "logstash.fullname" . }}-files
         - name: pipeline
-          configMap:
-            name: {{ template "logstash.fullname" . }}-pipeline
+          projected:
+            sources:
+            {{- if or .Values.filters (not .Values.inputs.existingSecret) (not .Values.outputs.existingSecret) }}
+              - configMap:
+                  name: {{ template "logstash.fullname" . }}-pipeline
+            {{- end }}
+            {{- if .Values.inputs.existingSecret }}
+            - secret:
+                name: {{ .Values.inputs.existingSecret }}
+            {{- end }}
+            {{- if .Values.outputs.existingSecret }}
+            - secret:
+                name: {{ .Values.outputs.existingSecret }}
+            {{- end }}
     {{- with .Values.volumes }}
 {{ toYaml . | indent 8 }}
     {{- end }}
