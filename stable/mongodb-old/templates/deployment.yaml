@@ -8,10 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
   template:
-    selector:
-      matchLabels:
-        app: {{ template "fullname" . }}
     metadata:
       labels:
         app: {{ template "fullname" . }}
