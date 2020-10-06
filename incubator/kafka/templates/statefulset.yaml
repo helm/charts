@@ -241,16 +241,16 @@ spec:
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
       {{- end }}
-      {{- if .Values.securityContext }}
-      securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
-      {{- end }}
       {{- range .Values.secrets }}
       {{- if .mountPath }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
           secretName: {{ .name }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}
