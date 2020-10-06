@@ -194,7 +194,7 @@ spec:
               mountPath: {{ .Values.logs.path }}
               subPath: {{ .Values.logs.persistence.subPath }}
             {{- end }}
-            {{- if .Values.scheduler.connections }}
+            {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
             - name: connections
               mountPath: /home/airflow/connections
             {{- end}}
@@ -243,7 +243,7 @@ spec:
                && echo "*** adding Airflow variables..." \
                && airflow variables -i /home/airflow/variables-pools/variables.json \
               {{- end }}
-              {{- if .Values.scheduler.connections }}
+              {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
                && echo "*** adding Airflow connections..." \
                && /home/airflow/connections/add-connections.sh \
               {{- end }}
@@ -306,10 +306,15 @@ spec:
             defaultMode: 0700
         {{- end }}
         {{- end }}
-        {{- if .Values.scheduler.connections }}
+        {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
         - name: connections
           secret:
-            secretName: {{ include "airflow.fullname" . }}-connections
+            secretName: |
+              {{- if .Values.scheduler.existingSecretConnections }}
+              {{ .Values.scheduler.existingSecretConnections }}
+              {{- else }}
+              {{ include "airflow.fullname" . }}-connections
+              {{- end }}
             defaultMode: 0755
         {{- end }}
         {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
