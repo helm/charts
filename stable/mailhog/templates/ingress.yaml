@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled }}
 {{- $fullName := include "mailhog.fullname" . -}}
 {{- $path := .Values.ingress.path -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
 {{- if .Values.ingress.annotations }}

@@ -1,0 +1,17 @@
+appVersion: 3.4.6
+description: NoSQL document-oriented database that stores JSON-like documents with
+  dynamic schemas, simplifying the integration of data in content-driven applications.
+engine: gotpl
+home: https://mongodb.org
+icon: https://bitnami.com/assets/stacks/mongodb/img/mongodb-stack-220x234.png
+keywords:
+- mongodb
+- database
+- nosql
+maintainers:
+- email: containers@bitnami.com
+  name: Bitnami
+name: mongodb
+sources:
+- https://github.com/bitnami/bitnami-docker-mongodb
+version: 0.4.12

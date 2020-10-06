@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "mailhog.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mailhog.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
