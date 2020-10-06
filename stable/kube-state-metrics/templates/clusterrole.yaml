@@ -9,169 +9,169 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: {{ template "kube-state-metrics.fullname" . }}
 rules:
-{{ if .Values.collectors.certificatesigningrequests }}
+{{ if .Values.args.resources.certificatesigningrequests }}
 - apiGroups: ["certificates.k8s.io"]
   resources:
   - certificatesigningrequests
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.configmaps }}
+{{ if .Values.args.resources.configmaps }}
 - apiGroups: [""]
   resources:
   - configmaps
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.cronjobs }}
+{{ if .Values.args.resources.cronjobs }}
 - apiGroups: ["batch"]
   resources:
   - cronjobs
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.daemonsets }}
+{{ if .Values.args.resources.daemonsets }}
 - apiGroups: ["extensions", "apps"]
   resources:
   - daemonsets
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.deployments }}
+{{ if .Values.args.resources.deployments }}
 - apiGroups: ["extensions", "apps"]
   resources:
   - deployments
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.endpoints }}
+{{ if .Values.args.resources.endpoints }}
 - apiGroups: [""]
   resources:
   - endpoints
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.horizontalpodautoscalers }}
+{{ if .Values.args.resources.horizontalpodautoscalers }}
 - apiGroups: ["autoscaling"]
   resources:
   - horizontalpodautoscalers
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.ingresses }}
+{{ if .Values.args.resources.ingresses }}
 - apiGroups: ["extensions", "networking.k8s.io"]
   resources:
   - ingresses
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.jobs }}
+{{ if .Values.args.resources.jobs }}
 - apiGroups: ["batch"]
   resources:
   - jobs
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.limitranges }}
+{{ if .Values.args.resources.limitranges }}
 - apiGroups: [""]
   resources:
   - limitranges
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.mutatingwebhookconfigurations }}
+{{ if .Values.args.resources.mutatingwebhookconfigurations }}
 - apiGroups: ["admissionregistration.k8s.io"]
   resources:
     - mutatingwebhookconfigurations
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.namespaces }}
+{{ if .Values.args.resources.namespaces }}
 - apiGroups: [""]
   resources:
   - namespaces
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.networkpolicies }}
+{{ if .Values.args.resources.networkpolicies }}
 - apiGroups: ["networking.k8s.io"]
   resources:
   - networkpolicies
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.nodes }}
+{{ if .Values.args.resources.nodes }}
 - apiGroups: [""]
   resources:
   - nodes
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.persistentvolumeclaims }}
+{{ if .Values.args.resources.persistentvolumeclaims }}
 - apiGroups: [""]
   resources:
   - persistentvolumeclaims
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.persistentvolumes }}
+{{ if .Values.args.resources.persistentvolumes }}
 - apiGroups: [""]
   resources:
   - persistentvolumes
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.poddisruptionbudgets }}
+{{ if .Values.args.resources.poddisruptionbudgets }}
 - apiGroups: ["policy"]
   resources:
     - poddisruptionbudgets
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.pods }}
+{{ if .Values.args.resources.pods }}
 - apiGroups: [""]
   resources:
   - pods
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.replicasets }}
+{{ if .Values.args.resources.replicasets }}
 - apiGroups: ["extensions", "apps"]
   resources:
   - replicasets
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.replicationcontrollers }}
+{{ if .Values.args.resources.replicationcontrollers }}
 - apiGroups: [""]
   resources:
   - replicationcontrollers
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.resourcequotas }}
+{{ if .Values.args.resources.resourcequotas }}
 - apiGroups: [""]
   resources:
   - resourcequotas
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.secrets }}
+{{ if .Values.args.resources.secrets }}
 - apiGroups: [""]
   resources:
   - secrets
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.services }}
+{{ if .Values.args.resources.services }}
 - apiGroups: [""]
   resources:
   - services
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.statefulsets }}
+{{ if .Values.args.resources.statefulsets }}
 - apiGroups: ["apps"]
   resources:
   - statefulsets
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.storageclasses }}
+{{ if .Values.args.resources.storageclasses }}
 - apiGroups: ["storage.k8s.io"]
   resources:
     - storageclasses
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.validatingwebhookconfigurations }}
+{{ if .Values.args.resources.validatingwebhookconfigurations }}
 - apiGroups: ["admissionregistration.k8s.io"]
   resources:
     - validatingwebhookconfigurations
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.volumeattachments }}
+{{ if .Values.args.resources.volumeattachments }}
 - apiGroups: ["storage.k8s.io"]
   resources:
     - volumeattachments
   verbs: ["list", "watch"]
 {{ end -}}
-{{ if .Values.collectors.verticalpodautoscalers }}
+{{ if .Values.args.resources.verticalpodautoscalers }}
 - apiGroups: ["autoscaling.k8s.io"]
   resources:
     - verticalpodautoscalers

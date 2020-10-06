@@ -62,92 +62,92 @@ spec:
               fieldPath: metadata.namespace
 {{- end }}
         args:
-{{  if .Values.collectors.certificatesigningrequests  }}
-        - --collectors=certificatesigningrequests
+{{  if .Values.args.resources.certificatesigningrequests  }}
+        - --resources=certificatesigningrequests
 {{  end  }}
-{{  if .Values.collectors.configmaps  }}
-        - --collectors=configmaps
+{{  if .Values.args.resources.configmaps  }}
+        - --resources=configmaps
 {{  end  }}
-{{  if .Values.collectors.cronjobs  }}
-        - --collectors=cronjobs
+{{  if .Values.args.resources.cronjobs  }}
+        - --resources=cronjobs
 {{  end  }}
-{{ if .Values.collectors.daemonsets  }}
-        - --collectors=daemonsets
+{{  if .Values.args.resources.daemonsets  }}
+        - --resources=daemonsets
 {{  end  }}
-{{  if .Values.collectors.deployments  }}
-        - --collectors=deployments
+{{  if .Values.args.resources.deployments  }}
+        - --resources=deployments
 {{  end  }}
-{{  if .Values.collectors.endpoints  }}
-        - --collectors=endpoints
+{{  if .Values.args.resources.endpoints  }}
+        - --resources=endpoints
 {{  end  }}
-{{  if .Values.collectors.horizontalpodautoscalers  }}
-        - --collectors=horizontalpodautoscalers
+{{  if .Values.args.resources.horizontalpodautoscalers  }}
+        - --resources=horizontalpodautoscalers
 {{  end  }}
-{{  if .Values.collectors.ingresses  }}
-        - --collectors=ingresses
+{{  if .Values.args.resources.ingresses  }}
+        - --resources=ingresses
 {{  end  }}
-{{  if .Values.collectors.jobs  }}
-        - --collectors=jobs
+{{  if .Values.args.resources.jobs  }}
+        - --resources=jobs
 {{  end  }}
-{{  if .Values.collectors.limitranges  }}
-        - --collectors=limitranges
+{{  if .Values.args.resources.limitranges  }}
+        - --resources=limitranges
 {{  end  }}
-{{  if .Values.collectors.mutatingwebhookconfigurations  }}
-        - --collectors=mutatingwebhookconfigurations
+{{  if .Values.args.resources.mutatingwebhookconfigurations  }}
+        - --resources=mutatingwebhookconfigurations
 {{  end  }}
-{{  if .Values.collectors.namespaces  }}
-        - --collectors=namespaces
+{{  if .Values.args.resources.namespaces  }}
+        - --resources=namespaces
 {{  end  }}
-{{  if .Values.collectors.networkpolicies  }}
-        - --collectors=networkpolicies
+{{  if .Values.args.resources.networkpolicies  }}
+        - --resources=networkpolicies
 {{  end  }}
-{{  if .Values.collectors.nodes  }}
-        - --collectors=nodes
+{{  if .Values.args.resources.nodes  }}
+        - --resources=nodes
 {{  end  }}
-{{  if .Values.collectors.persistentvolumeclaims  }}
-        - --collectors=persistentvolumeclaims
+{{  if .Values.args.resources.persistentvolumeclaims  }}
+        - --resources=persistentvolumeclaims
 {{  end  }}
-{{  if .Values.collectors.persistentvolumes  }}
-        - --collectors=persistentvolumes
+{{  if .Values.args.resources.persistentvolumes  }}
+        - --resources=persistentvolumes
 {{  end  }}
-{{  if .Values.collectors.poddisruptionbudgets  }}
-        - --collectors=poddisruptionbudgets
+{{  if .Values.args.resources.poddisruptionbudgets  }}
+        - --resources=poddisruptionbudgets
 {{  end  }}
-{{  if .Values.collectors.pods  }}
-        - --collectors=pods
+{{  if .Values.args.resources.pods  }}
+        - --resources=pods
 {{  end  }}
-{{  if .Values.collectors.replicasets  }}
-        - --collectors=replicasets
+{{  if .Values.args.resources.replicasets  }}
+        - --resources=replicasets
 {{  end  }}
-{{  if .Values.collectors.replicationcontrollers  }}
-        - --collectors=replicationcontrollers
+{{  if .Values.args.resources.replicationcontrollers  }}
+        - --resources=replicationcontrollers
 {{  end  }}
-{{  if .Values.collectors.resourcequotas  }}
-        - --collectors=resourcequotas
+{{  if .Values.args.resources.resourcequotas  }}
+        - --resources=resourcequotas
 {{  end  }}
-{{  if .Values.collectors.secrets  }}
-        - --collectors=secrets
+{{  if .Values.args.resources.secrets  }}
+        - --resources=secrets
 {{  end  }}
-{{  if .Values.collectors.services  }}
-        - --collectors=services
+{{  if .Values.args.resources.services  }}
+        - --resources=services
 {{  end  }}
-{{  if .Values.collectors.statefulsets  }}
-        - --collectors=statefulsets
+{{  if .Values.args.resources.statefulsets  }}
+        - --resources=statefulsets
 {{  end  }}
-{{  if .Values.collectors.storageclasses  }}
-        - --collectors=storageclasses
+{{  if .Values.args.resources.storageclasses  }}
+        - --resources=storageclasses
 {{  end  }}
-{{  if .Values.collectors.validatingwebhookconfigurations  }}
-        - --collectors=validatingwebhookconfigurations
+{{  if .Values.args.resources.validatingwebhookconfigurations  }}
+        - --resources=validatingwebhookconfigurations
 {{  end  }}
-{{  if .Values.collectors.verticalpodautoscalers  }}
-        - --collectors=verticalpodautoscalers
+{{  if .Values.args.resources.verticalpodautoscalers  }}
+        - --resources=verticalpodautoscalers
 {{  end  }}
-{{  if .Values.collectors.volumeattachments  }}
-        - --collectors=volumeattachments
+{{  if .Values.args.resources.volumeattachments  }}
+        - --resources=volumeattachments
 {{  end  }}
-{{ if .Values.namespace }}
-        - --namespace={{ .Values.namespace }}
+{{ if .Values.namespaces }}
+        - --namespaces={{ .Values.namespaces }}
 {{ end }}
 {{ if .Values.autosharding.enabled }}
         - --pod=$(POD_NAME)
