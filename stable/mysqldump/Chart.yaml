@@ -12,4 +12,6 @@ icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
 sources:
 - https://github.com/kubernetes/charts
 - https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html
+# This chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md
 deprecated: true
