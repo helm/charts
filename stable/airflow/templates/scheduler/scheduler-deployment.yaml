@@ -309,7 +309,7 @@ spec:
         {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
         - name: connections
           secret:
-            secretName: |
+            secretName: |-
               {{- if .Values.scheduler.existingSecretConnections }}
               {{ .Values.scheduler.existingSecretConnections }}
               {{- else }}
