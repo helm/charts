@@ -194,7 +194,7 @@ spec:
               mountPath: {{ .Values.logs.path }}
               subPath: {{ .Values.logs.persistence.subPath }}
             {{- end }}
-            {{- if .Values.scheduler.connections }}
+            {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
             - name: connections
               mountPath: /home/airflow/connections
             {{- end}}
@@ -226,15 +226,7 @@ spec:
                && sleep {{ .Values.scheduler.initialStartupDelay }} \
               {{- end }}
                && mkdir -p /home/airflow/.local/bin \
-               && echo 'export PATH="/home/airflow/.local/bin:$PATH"' >> /home/airflow/airflow_env.sh \
-               && echo 'export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"' >> /home/airflow/airflow_env.sh \
-              {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
-               && echo 'export AIRFLOW__CELERY__RESULT_BACKEND="{{ include "airflow.connection.celery.backend" . }}"' >> /home/airflow/airflow_env.sh \
-               && echo 'export AIRFLOW__CELERY__BROKER_URL="{{ include "airflow.connection.celery.broker" . }}"' >> /home/airflow/airflow_env.sh \
-              {{- end }}
-               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.profile \
-               && echo 'source /home/airflow/airflow_env.sh' >> /home/airflow/.bashrc \
-               && source /home/airflow/airflow_env.sh \
+               && export PATH="/home/airflow/.local/bin:$PATH" \
               {{- if .Values.dags.installRequirements }}
                && echo "*** installing requirements..." \
                && /home/airflow/scripts/install-requirements.sh \
@@ -251,7 +243,7 @@ spec:
                && echo "*** adding Airflow variables..." \
                && airflow variables -i /home/airflow/variables-pools/variables.json \
               {{- end }}
-              {{- if .Values.scheduler.connections }}
+              {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
                && echo "*** adding Airflow connections..." \
                && /home/airflow/connections/add-connections.sh \
               {{- end }}
@@ -314,10 +306,15 @@ spec:
             defaultMode: 0700
         {{- end }}
         {{- end }}
-        {{- if .Values.scheduler.connections }}
+        {{- if or (.Values.scheduler.connections) (.Values.scheduler.existingSecretConnections) }}
         - name: connections
           secret:
-            secretName: {{ include "airflow.fullname" . }}-connections
+            secretName: |-
+              {{- if .Values.scheduler.existingSecretConnections }}
+              {{ .Values.scheduler.existingSecretConnections }}
+              {{- else }}
+              {{ include "airflow.fullname" . }}-connections
+              {{- end }}
             defaultMode: 0755
         {{- end }}
         {{- if or (.Values.scheduler.variables) (.Values.scheduler.pools) }}
