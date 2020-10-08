@@ -3,16 +3,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.flower.service.annotations }}
+  annotations:
+    {{- toYaml .Values.flower.service.annotations | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ include "airflow.labels.app" . }}
     component: flower
     chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  annotations:
-  {{- if .Values.flower.service.annotations }}
-    {{- toYaml .Values.flower.service.annotations | nindent 4 }}
-  {{- end }}
 spec:
   type: {{ .Values.flower.service.type }}
   selector:

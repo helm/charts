@@ -224,25 +224,50 @@ scheduler:
 
   ## custom airflow connections for the airflow scheduler
   ##
-  ## NOTE:
-  ## - connections are created with a script that is stored in a K8s secret and mounted into the scheduler container
-  ##
   ## EXAMPLE:
   ##   connections:
   ##     - id: my_aws
   ##       type: aws
   ##       extra: |
   ##         {
-  ##           "aws_access_key_id": "XXXXXXXXXXXXXXXXXXX",
-  ##           "aws_secret_access_key": "XXXXXXXXXXXXXXX",
+  ##           "aws_access_key_id": "XXXXXXXX",
+  ##           "aws_secret_access_key": "XXXXXXXX",
   ##           "region_name":"eu-central-1"
   ##         }
   ##
   connections: []
 
-  ## if we remove before adding a connection resulting in a refresh
+  ## if `scheduler.connections` are deleted and re-added after each scheduler restart
   ##
   refreshConnections: true
+
+  ## the name of an existing Secret containing an `add-connections.sh` script to run on scheduler start
+  ##
+  ## NOTE:
+  ##  - if this is non-empty, `scheduler.connections` will be ignored
+  ##  - use this if you don't want to store connections in your values.yaml
+  ##
+  ## EXAMPLE SECRET:
+  ##   apiVersion: v1
+  ##   kind: Secret
+  ##   metadata:
+  ##     name: my-airflow-connections
+  ##   type: Opaque
+  ##   stringData:
+  ##     add-connections.sh: |
+  ##       #!/usr/bin/env bash
+  ##
+  ##       # remove any existing connection
+  ##       airflow connections --delete \
+  ##         --conn_id "my_aws"
+  ##
+  ##       # re-add your custom connection
+  ##       airflow connections --add \
+  ##         --conn_id "my_aws" \
+  ##         --conn_type "aws" \
+  ##         --conn_extra "{\"region_name\":\"eu-central-1\"}"
+  ##
+  existingSecretConnections: ""
 
   ## custom airflow variables for the airflow scheduler
   ##
