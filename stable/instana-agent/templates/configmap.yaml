@@ -42,3 +42,30 @@ data:
   {{- if .Values.agent.configuration_yaml -}}
   {{ .Values.agent.configuration_yaml | nindent 4 }}
   {{- end }}
+  {{- if .Values.agent.additionalBackends }}
+  {{- $proxyHost := .Values.agent.proxyHost }}
+  {{- $proxyPort := .Values.agent.proxyPort }}
+  {{- $proxyUser := .Values.agent.proxyUser }}
+  {{- $proxyPassword := .Values.agent.proxyPassword }}
+  {{- $proxyUseDNS := .Values.agent.proxyUseDNS }}
+  {{- range $index,$backend := .Values.agent.additionalBackends }}
+  {{ $backendIndex :=add $index 2 -}}
+  additional-backend-{{$backendIndex}}: |
+    host={{ .endpointHost }}
+    port={{ default 443 .endpointPort }}
+    key={{ .key }}
+    protocol=HTTP/2
+  {{- if $proxyHost }}
+    proxy.type=HTTP
+    proxy.host={{ $proxyHost }}
+    proxy.port={{ $proxyPort }}
+  {{- if $proxyUser }}
+    proxy.user={{ $proxyUser }}
+    proxy.password={{ $proxyPassword }}
+  {{- end }}
+  {{- if $proxyUseDNS }}
+    proxyUseDNS=true
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
