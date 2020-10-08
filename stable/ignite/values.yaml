@@ -51,12 +51,14 @@ persistence:
   persistenceVolume:
     size: 8Gi
     provisioner: kubernetes.io/aws-ebs
+    volumeBindingMode: Immediate
     provisionerParameters:
       type: gp2
       fsType: ext4
   walVolume:
     size: 8Gi
     provisioner: kubernetes.io/aws-ebs
+    volumeBindingMode: Immediate
     provisionerParameters:
       type: gp2
       fsType: ext4
