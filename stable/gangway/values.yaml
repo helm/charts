@@ -25,6 +25,11 @@ env: {}
 # Add annotations to the pod
 podAnnotations: {}
 
+# Defaults to creating a service account for gangway called 'gangway' if serviceAccount.create is set to true
+serviceAccount:
+  create: false
+  name: gangway
+
 gangway:
   # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
   # Env var: GANGWAY_HOST
