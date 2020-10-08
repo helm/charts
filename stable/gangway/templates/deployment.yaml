@@ -25,8 +25,8 @@ spec:
 {{ toYaml .Values.podAnnotations | trim | indent 8 }}  
 {{- end }}
     spec:
-      {{- if .Values.serviceAccount.create }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- if ne .Values.gangway.serviceAccountName "default" }}
+      serviceAccountName: {{ .Values.gangway.serviceAccountName }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
