@@ -12,7 +12,7 @@ metadata:
 data:
     ok: |
       #!/bin/sh
-      zkServer.sh status
+      echo ruok | nc 127.0.0.1 ${1:-2181}
 
     ready: |
       #!/bin/sh
