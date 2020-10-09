@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `rbac.create`                     | Create required role and rolebindings       | `true`                                              |
 | `serviceAccount.create`           | If true, create a new service account	      | `true`                                              |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `nil` |
+| `helm3-migration-compatibility`   | Sets the "heritage" label on the StatefulSet's VolumeClaimTemplate to "Tiller", as this field is immutable and must be preserved in a helm2-to-helm3 upgrade. | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

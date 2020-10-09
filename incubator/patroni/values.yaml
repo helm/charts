@@ -125,3 +125,8 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+# Sets the "heritage" label on the StatefulSet's VolumeClaimTemplate to
+# "Tiller", as this field is immutable and must be preserved in a
+# helm2-to-helm3 upgrade.
+helm3-migration-compatibility: false

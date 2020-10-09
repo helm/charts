@@ -191,7 +191,7 @@ spec:
         labels:
           app: {{ template "patroni.fullname" . }}
           release: {{ .Release.Name }}
-          heritage: {{ .Release.Service }}
+          heritage: {{ if index .Values "helm3-migration-compatibility" -}} Tiller {{- else }}{{ .Release.Service }}{{ end }}
       spec:
         accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
