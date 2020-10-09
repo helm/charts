@@ -403,7 +403,7 @@ spec:
         labels:
           app: {{ template "redis.name" . }}
           release: {{ .Release.Name }}
-          heritage: {{ .Release.Service }}
+          heritage: {{ if index .Values "helm3-migration-compatibility" -}} Tiller {{- else }}{{ .Release.Service }}{{ end }}
           component: slave
       spec:
         accessModes:

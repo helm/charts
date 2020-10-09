@@ -266,6 +266,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `sysctlImage.mountHostSys`                    | Mount the host `/sys` folder to `/host-sys`                                                                                                         | `false`                                                 |
 | `sysctlImage.resources`                       | sysctlImage Init container CPU/Memory resource requests/limits                                                                                      | {}                                                      |
 | `podSecurityPolicy.create`                    | Specifies whether a PodSecurityPolicy should be created                                                                                             | `false`                                                 |
+| `helm3-migration-compatibility`               | Sets the "heritage" label on the StatefulSet's VolumeClaimTemplate to "Tiller", as this field is immutable and must be preserved in a helm2-to-helm3 upgrade. | `false`                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
