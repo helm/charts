@@ -15,7 +15,9 @@ For more information on Spinnaker and its capabilities, see it's [documentation]
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/spinnaker --timeout 600
+$ helm repo add helm-stable https://kubernetes-charts.storage.googleapis.com
+$ helm repo update
+$ helm install --name my-release helm-stable/spinnaker --timeout 600
 ```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.

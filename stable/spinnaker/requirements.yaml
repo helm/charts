@@ -4,6 +4,6 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: redis.enabled
 - name: minio
-  version: 5.0.9
+  version: 5.0.33
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: minio.enabled
