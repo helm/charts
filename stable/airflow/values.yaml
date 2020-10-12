@@ -183,6 +183,10 @@ scheduler:
   ##
   tolerations: []
 
+  ## the security context for the scheduler Pods
+  ##
+  securityContext: {}
+
   ## labels for the scheduler Deployment
   ##
   labels: {}
@@ -383,6 +387,10 @@ web:
   ##
   tolerations: []
 
+  ## the security context for the web Pods
+  ##
+  securityContext: {}
+
   ## labels for the web Deployment
   ##
   labels: {}
@@ -498,22 +506,16 @@ web:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-web-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides web.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `web.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Worker Configs
@@ -551,6 +553,10 @@ workers:
   ## the toleration configs for the worker Pods
   ##
   tolerations: []
+
+  ## the security context for the worker Pods
+  ##
+  securityContext: {}
 
   ## labels for the worker StatefulSet
   ##
@@ -661,22 +667,16 @@ workers:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-worker-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides workers.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `worker.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Flower Configs
@@ -714,6 +714,10 @@ flower:
   ## the toleration configs for the flower Pods
   ##
   tolerations: []
+
+  ## the security context for the flower Pods
+  ##
+  securityContext: {}
 
   ## labels for the flower Deployment
   ##
