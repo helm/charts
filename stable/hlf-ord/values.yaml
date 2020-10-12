@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-orderer
-  tag: 1.4.3
+  tag: 2.2.1
   pullPolicy: IfNotPresent
 
 service:
@@ -81,6 +81,8 @@ secrets:
     # tls: hlf--ord1-tls
     ## TLS root CA certificate saved under key 'cert.pem'
     # tlsRootCert: hlf--ord-tlsrootcert
+    ## TLS client secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    # tlsClient: hlf--ord1-tls
     ## TLS client root CA certificates saved under any names (as there may be multiple)
     # tlsClientRootCerts: hlf--peer-tlsrootcert
   ## This should contain "genesis" block derived from a configtx.yaml

@@ -57,6 +57,11 @@ spec:
           secret:
             secretName: {{ .Values.secrets.ord.tlsRootCert }}
         {{- end }}
+        {{- if .Values.secrets.ord.tlsClient }}
+        - name: tls-client
+          secret:
+            secretName: {{ .Values.secrets.ord.tlsClient }}
+        {{- end }}
         {{- if .Values.secrets.ord.tlsClientRootCert }}
         - name: tls-clientrootcert
           secret:
@@ -105,7 +110,7 @@ spec:
               - /var/hyperledger
             initialDelaySeconds: 15
           command:
-            - bash
+            - sh
             - -c
             - |
 
@@ -172,6 +177,10 @@ spec:
             {{- if .Values.secrets.ord.tls }}
             - mountPath: /var/hyperledger/tls/server/pair
               name: tls
+            {{- end }}
+            {{- if .Values.secrets.ord.tlsClient }}
+            - mountPath: /var/hyperledger/tls/client/pair
+              name: tls-client
             {{- end }}
             {{- if .Values.secrets.ord.tlsRootCert }}
             - mountPath: /var/hyperledger/tls/server/cert

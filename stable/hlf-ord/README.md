@@ -10,11 +10,11 @@ $ helm install stable/hlf-ord
 
 ## Introduction
 
-The Hyperledger Fabric Orderer can be installed as either a `solo` orderer (for development), or a `kafka` orderer (for crash fault tolerant consensus).
+The Hyperledger Fabric Orderer can be installed as either a `solo` orderer (for development), a `kafka` orderer (for crash fault tolerant consensus) or a `etcdraft` orderer (etcd to maintain the state and raft wich is Leader/Follower type consensus algorithm).
 
 This Orderer can receive transaction endorsements and package them into blocks to be distributed to the nodes of the Hyperledger Fabric network.
 
-Learn more about deploying a production ready consensus framework based on Apache [Kafka](https://hyperledger-fabric.readthedocs.io/en/release-1.1/kafka.html?highlight=orderer). Minimally, you will need to set these options:
+Learn more about deploying a production ready consensus framework based on Apache [Kafka](https://hyperledger-fabric.readthedocs.io/en/release-2.2/kafka.html?highlight=orderer). Minimally, you will need to set these options:
 
 ```
   "default.replication.factor": 4  # given a 4 node Kafka cluster
@@ -24,6 +24,10 @@ Learn more about deploying a production ready consensus framework based on Apach
   "replica.fetch.max.bytes": "103809024"  # 99 * 1024 * 1024 B
   "log.retention.ms": -1  # Since we need to keep logs indefinitely for the HL Fabric Orderer
 ```
+
+Learn more about deploying a production consensus framework based on [etcd and raft](https://hyperledger-fabric.readthedocs.io/en/release-2.2/raft_configuration.html)
+
+You can also check this to migrate from kafka to raft : https://hyperledger-fabric.readthedocs.io/en/release-2.2/kafka_raft_migration.html
 
 ## Prerequisites
 
@@ -98,7 +102,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `persistence.annotations`          | Persistent Volume annotations                                 | `{}`                                                       |
 | `persistence.size`                 | Size of data volume (adjust for production!)                  | `1Gi`                                                      |
 | `persistence.storageClass`         | Storage class of backing PVC                                  | `default`                                                  |
-| `ord.type`                         | Type of Orderer (`solo` or `kafka`)                           | `solo`                                                     |
+| `ord.type`                         | Type of Orderer (`solo`, `etcdraft` or `kafka`)               | `solo`                                                     |
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                              | `OrdererMSP`                                               |
 | `ord.tls.server.enabled`           | Do we enable server-side TLS?                                 | `false`                                                    |
 | `ord.tls.client.enabled`           | Do we enable client-side TLS?                                 | `false`                                                    |
@@ -114,6 +118,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'                     | ``                                                         |
 | `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'                        | ``                                                         |
 | `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'                        | ``                                                         |
+| `secrets.ord.tlsClient`            | TLS client secret: as 'tls.crt' and 'tls.key'                 | ``                                                         |
 | `secrets.ord.tlsClientRootCert`    | TLS client root CA certificate: as 'cert.pem'                 | ``                                                         |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer                   | ``                                                         |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate               | ``                                                         |
