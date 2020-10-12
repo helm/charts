@@ -484,14 +484,63 @@ For a production deployment, you will likely want to persist the logs.
 
 ### Option 1 - S3/GCS bucket (Recommended)
 
-__NOTE:__ a connection called `google_cloud_airflow` must exist in airflow (this could be created using the `scheduler.connections` value)
+You must give airflow credentials for it to read/write on the remote bucket, this can be achieved with `AIRFLOW__CORE__REMOTE_LOG_CONN_ID`, or by using something like [Workload Identity (GKE)](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity), or [IAM Roles for Service Accounts (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). 
 
+Example, using `AIRFLOW__CORE__REMOTE_LOG_CONN_ID` (can be used with AWS too):
 ```yaml
 airflow:
   config:
     AIRFLOW__CORE__REMOTE_LOGGING: "True"
     AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "gs://<<MY-BUCKET-NAME>>/airflow/logs"
     AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "google_cloud_airflow"
+
+scheduler:
+  connections:
+    - id: google_cloud_airflow
+      type: google_cloud_platform
+      extra: |-
+        {
+         "extra__google_cloud_platform__num_retries": "5",
+         "extra__google_cloud_platform__keyfile_dict": "{...}"
+        }
+```
+    
+Example, using [Workload Identity (GKE)](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity):
+```yaml
+airflow:
+  config:
+    AIRFLOW__CORE__REMOTE_LOGGING: "True"
+    AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "gs://<<MY-BUCKET-NAME>>/airflow/logs"
+    AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "google_cloud_default"
+
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: "<<MY-ROLE-NAME>>@<<MY-PROJECT-NAME>>.iam.gserviceaccount.com"
+```
+
+Example, using [IAM Roles for Service Accounts (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html):
+```yaml
+airflow:
+  config:
+    AIRFLOW__CORE__REMOTE_LOGGING: "True"
+    AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: "s3://<<MY-BUCKET-NAME>>/airflow/logs"
+    AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "aws_default"
+
+scheduler:
+  securityContext:
+    fsGroup: 65534
+
+web:
+  securityContext:
+    fsGroup: 65534
+
+workers:
+  securityContext:
+    fsGroup: 65534
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::XXXXXXXXXX:role/<<MY-ROLE-NAME>>"
 ```
 
 ### Option 2 - Kubernetes PVC
@@ -612,10 +661,11 @@ __Airflow Scheduler values:__
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `scheduler.resources` | resource requests/limits for the scheduler pod | `{}` |
-| `scheduler.nodeSelector` | the nodeSelector configs for the scheduler pods | `{}` |
-| `scheduler.affinity` | the affinity configs for the scheduler pods | `{}` |
-| `scheduler.tolerations` | the toleration configs for the scheduler pods | `[]` |
+| `scheduler.resources` | resource requests/limits for the scheduler Pods | `{}` |
+| `scheduler.nodeSelector` | the nodeSelector configs for the scheduler Pods | `{}` |
+| `scheduler.affinity` | the affinity configs for the scheduler Pods | `{}` |
+| `scheduler.tolerations` | the toleration configs for the scheduler Pods | `[]` |
+| `scheduler.securityContext` | the security context for the scheduler Pods | `{}` |
 | `scheduler.labels` | labels for the scheduler Deployment | `{}` |
 | `scheduler.podLabels` | Pod labels for the scheduler Deployment | `{}` |
 | `scheduler.annotations` | annotations for the scheduler Deployment | `{}` |
@@ -643,6 +693,7 @@ __Airflow Webserver Values:__
 | `web.nodeSelector` | the number of web Pods to run | `{}` |
 | `web.affinity` | the affinity configs for the web Pods | `{}` |
 | `web.tolerations` | the toleration configs for the web Pods | `[]` |
+| `web.securityContext` | the security context for the web Pods | `{}` |
 | `web.labels` | labels for the web Deployment | `{}` |
 | `web.podLabels` | Pod labels for the web Deployment | `{}` |
 | `web.annotations` | annotations for the web Deployment | `{}` |
@@ -658,8 +709,8 @@ __Airflow Webserver Values:__
 | `web.readinessProbe.*` | configs for the web Service readiness probe | `<see values.yaml>` |
 | `web.livenessProbe.*` | configs for the web Service liveness probe | `<see values.yaml>` |
 | `web.secretsDir` | the directory in which to mount secrets on web containers | `/var/airflow/secrets` |
-| `web.secrets` | secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>` | `[]` |
-| `web.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`. If you use web.secretsMap, then it overrides `web.secrets`.| `""` |
+| `web.secrets` | the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>` | `[]` |
+| `web.secretsMap` | the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>` | `""` |
 
 __Airflow Worker Values:__
 
@@ -671,6 +722,7 @@ __Airflow Worker Values:__
 | `workers.nodeSelector` | the nodeSelector configs for the worker Pods | `{}` |
 | `workers.affinity` | the affinity configs for the worker Pods | `{}` |
 | `workers.tolerations` | the toleration configs for the worker Pods | `[]` |
+| `workers.securityContext` | the security context for the worker Pods | `{}` |
 | `workers.labels` | labels for the worker StatefulSet | `{}` |
 | `workers.podLabels` | Pod labels for the worker StatefulSet | `{}` |
 | `workers.annotations` | annotations for the worker StatefulSet | `{}` |
@@ -682,8 +734,8 @@ __Airflow Worker Values:__
 | `workers.celery.*` | configs for the celery worker Pods | `<see values.yaml>` |
 | `workers.terminationPeriod` | how many seconds to wait after SIGTERM before SIGKILL of the celery worker | `60` |
 | `workers.secretsDir` | directory in which to mount secrets on worker containers | `/var/airflow/secrets` |
-| `workers.secrets` | secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>` | `[]` |
-| `workers.secretsMap` | you can use secretsMap to specify a map and all the secrets will be stored within it secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`. If you use workers.secretsMap, then it overrides `workers.secrets`.| `""` |
+| `workers.secrets` | the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>` | `[]` |
+| `workers.secretsMap` | the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>` | `""` |
 
 __Airflow Flower Values:__
 
@@ -693,6 +745,7 @@ __Airflow Flower Values:__
 | `flower.resources` | resource requests/limits for the flower Pods | `{}` |
 | `flower.affinity` | the affinity configs for the flower Pods | `{}` |
 | `flower.tolerations` | the toleration configs for the flower Pods | `[]` |
+| `flower.securityContext` | the security context for the flower Pods | `{}` |
 | `flower.labels` | labels for the flower Deployment | `{}` |
 | `flower.podLabels` | Pod labels for the flower Deployment | `{}` |
 | `flower.annotations` | annotations for the flower Deployment | `{}` |
