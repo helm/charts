@@ -70,7 +70,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Configuration
 
 The following table lists the configurable parameters of the Hyperledger Fabric Peer chart and default values.
-            
+
 | Parameter                           | Description                                                    | Default                   |
 | ---------------------------------   | -------------------------------------------------              | ------------------------- |
 | `image.repository`                  | `hlf-peer` image repository                                    | `hyperledger/fabric-peer` |
@@ -97,9 +97,9 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.path`                      | Ingress path                                                   | `/`                       |
 | `ingress.hosts`                     | Ingress hostnames                                              | `[]`                      |
 | `ingress.tls`                       | Ingress TLS configuration                                      | `[]`                      |
-| `dockerSocketPath`                  | Docker Socket path                                             | `/var/run/docker.sock`    |
-| `dockerConfig`                      | Docker Config file base 64 encoded                             | `null`                    |
-| `dockerConfigMountPath`             | Docker Config file mount path                                  | `/root/.docker`           |
+| `docker.socketPath`                 | Docker Socket path                                             | `/var/run/docker.sock`    |
+| `docker.config`                     | Docker Config file base 64 encoded                             | `null`                    |
+| `docker.configMountPath`            | Docker Config file mount path                                  | `/root/.docker`           |
 | `peer.databaseType`                 | Database type to use (`goleveldb` or `CouchDB`)                | `goleveldb`               |
 | `peer.couchdbInstance`              | CouchDB chart name to use `cdb-peer1`                          | `cdb-peer1`               |
 | `peer.mspID`                        | ID of MSP the Peer belongs to                                  | `Org1MSP`                 |
@@ -119,6 +119,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `peer.metrics.statsd.address`       | Address of the StatsD server                                   | `127.0.0.1:8125`          |
 | `peer.metrics.statsd.writeInterval` | Intervall at whitch counters and gauges are pushed             | `10s`                     |
 | `peer.metrics.statsd.prefix`        | Prefix prepended to all the exported metrics                   | ``                        |
+| `peer.docker.enabled`               | Do we enable Docker                                            | `true`                    |
 | `secrets.peer.cred`                 | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'                   | ``                        |
 | `secrets.peer.cert`                 | Certificate: as 'cert.pem'                                     | ``                        |
 | `secrets.peer.key`                  | Private key: as 'key.pem'                                      | ``                        |
@@ -136,7 +137,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `nodeSelector`                      | Node labels for pod assignment                                 | `{}`                      |
 | `tolerations`                       | Toleration labels for pod assignment                           | `[]`                      |
 | `affinity`                          | Affinity settings for pod assignment                           | `{}`                      |
-  
+
 ## Persistence
 
 The volume stores the Fabric Peer data and configurations at the `/var/hyperledger` path of the container.

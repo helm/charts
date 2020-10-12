@@ -68,7 +68,9 @@ data:
   CORE_PEER_TLS_CLIENTROOTCAS_FILES: "/var/hyperledger/tls/client/cert/*"
   CORE_PEER_TLS_CLIENTCERT_FILE: "/var/hyperledger/tls/client/pair/tls.crt"
   CORE_PEER_TLS_CLIENTKEY_FILE: "/var/hyperledger/tls/client/pair/tls.key"
+  {{- if .Values.peer.docker.enabled }}
   CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+  {{- end}}
   CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.peer.databaseType | quote }}
   # Containers in the same pod share the host
   {{- if eq .Values.peer.databaseType "CouchDB" }}

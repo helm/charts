@@ -27,16 +27,18 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        {{- if .Values.peer.docker.enabled }}
         - name: dockersocket
           hostPath:
-            path: {{ .Values.dockerSocketPath }}
-        {{- if .Values.dockerConfig }}
+            path: {{ .Values.docker.socketPath }}
+        {{- if .Values.docker.config }}
         - name: docker-config
           secret:
             secretName: {{ include "hlf-peer.fullname" . }}-dockerconfigjson
             items:
               - key: .dockerconfigjson
                 path: config.json
+        {{- end }}
         {{- end }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
@@ -131,7 +133,7 @@ spec:
               - /var/hyperledger
             initialDelaySeconds: 15
           command:
-            - bash
+            - sh
             - -c
             - |
               # To avoid having separate secrets for CouchDB and HLF
@@ -174,12 +176,14 @@ spec:
           volumeMounts:
             - mountPath: /var/hyperledger
               name: data
+            {{- if .Values.peer.docker.enabled }}
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
-            {{- if .Values.dockerConfig }}
+            {{- if .Values.docker.config }}
             - name: docker-config
-              mountPath: {{ .Values.dockerConfigMountPath }}
-            {{ end }}
+              mountPath: {{ .Values.docker.configMountPath }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.secrets.peer.cert }}
             - mountPath: /var/hyperledger/msp/signcerts
               name: id-cert

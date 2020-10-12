@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-peer
-  tag: 1.4.3
+  tag: 2.2.1
   pullPolicy: IfNotPresent
 
 service:
@@ -14,12 +14,13 @@ service:
   portEvent: 7053
   portMetrics: 9443
 
-# Path of the docker socket on the host
-dockerSocketPath: /var/run/docker.sock
-# Docker config to be used to pull the images (base64'd)
-dockerConfig: null
-# Docker config mount path
-dockerConfigMountPath: /root/.docker
+docker:
+  # Path of the docker socket on the host
+  socketPath: /var/run/docker.sock
+  # Docker config to be used to pull the images (base64'd)
+  config: null
+  # Docker config mount path
+  configMountPath: /root/.docker
 
 ingress:
   enabled: false
@@ -97,6 +98,10 @@ peer:
       address: "127.0.0.1:8125"
       writeInterval: "10s"
       prefix: ""
+
+  docker:
+    enabled: true
+
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials
@@ -115,7 +120,7 @@ secrets:
     # tls: hlf--peer1-tls
     ## TLS root CA certificate saved under key 'cert.pem'
     # tlsRootCert: hlf--peer-tlsrootcert
-    ## TLS client root CA certificates saved under any names (as there may be multiple)
+    ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
     # tlsClient: hlf--peer1-tls
     ## TLS client root CA certificates saved under any names (as there may be multiple)
     # tlsClientRootCerts: hlf--ord-tlsrootcert
