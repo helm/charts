@@ -18,8 +18,8 @@ Ingress URL to Airflow and Flower:
    echo http://$NODE_IP:$NODE_PORT/
 {{- else if contains "LoadBalancer" .Values.web.service.type }}
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         You can watch the status of the service by running 'kubectl get svc -w {{ include "airflow.fullname" . }}'
-   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "airflow.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+         You can watch the status of the service by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "airflow.fullname" . }}-web'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "airflow.fullname" . }}-web -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    echo http://$SERVICE_IP:{{ .Values.web.service.externalPort }}/
 {{- else if contains "ClusterIP" .Values.web.service.type }}
    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component=web,app={{ include "airflow.labels.app" . }}" -o jsonpath="{.items[0].metadata.name}")
