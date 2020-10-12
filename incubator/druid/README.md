@@ -68,6 +68,8 @@ The following table lists the configurable parameters of the Druid chart and the
 | `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                                       |
 | `configMap.enabled`                       | enable druid configuration as configmap                   | `true`                                     |
 | `configVars`                              | druid configuration variables for all components         | ``                                         |
+| `configSecret.enabled`                   | enable additional druid configuration as secret         | `false`                                |
+| `configSecret.name`                      | secret name used for additional sensitive configuration | `druid`                                    |
 | `gCloudStorage.enabled`                  | look for secret to set google cloud credentials         | `false`                                    |
 | `gCloudStorage.secretName`               | secretName to be mounted as google cloud credentials    | `false`                                    |
 | `broker.enabled`                         | enable broker                                           | `true`                                     |

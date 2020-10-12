@@ -83,6 +83,10 @@ spec:
         envFrom:
           - configMapRef:
               name: {{ template "druid.name" . }}
+          {{- if .Values.configSecret.enabled }}
+          - secretRef:
+              name: {{ .Values.configSecret.name }}
+          {{- end }}
         resources:
 {{ toYaml .Values.historical.resources | indent 12 }}
         livenessProbe:

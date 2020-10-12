@@ -33,6 +33,13 @@ configVars:
   druid_emitter_logging_logLevel: debug
   druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
 
+## Existing secret holding passwords (aws, azure,...)
+configSecret:
+  ## If true, env variables will be added from predefined secret
+  ##
+  enabled: false
+  name: "druid"
+
 gCloudStorage:
   enabled: false
   secretName: google-cloud-key

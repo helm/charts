@@ -40,6 +40,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ template "druid.name" . }} 
+            {{- if .Values.configSecret.enabled }}
+            - secretRef:
+                name: {{ .Values.configSecret.name }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.overlord.port }}
