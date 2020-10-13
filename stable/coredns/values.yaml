@@ -61,6 +61,7 @@ prometheus:
 service:
 # clusterIP: ""
 # loadBalancerIP: ""
+# externalIPs: []
 # externalTrafficPolicy: ""
   annotations: {}
 

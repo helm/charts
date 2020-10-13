@@ -25,6 +25,9 @@ spec:
 {{ toYaml .Values.podAnnotations | trim | indent 8 }}  
 {{- end }}
     spec:
+      {{- if ne .Values.gangway.serviceAccountName "" }}
+      serviceAccountName: {{ .Values.gangway.serviceAccountName }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}

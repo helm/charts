@@ -11,6 +11,7 @@ service:
   # Cluster IP or LoadBalancer
   type: ClusterIP
   port: 7050
+  portMetrics: 9443
 
 ingress:
   enabled: false
@@ -55,8 +56,6 @@ ord:
       enabled: "false"
     client:
       enabled: "false"
-  operations:
-    listenAddress: ""
   metrics:
     provider: "disabled"
     statsd:

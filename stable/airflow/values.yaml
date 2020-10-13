@@ -6,7 +6,7 @@ airflow:
   ##
   image:
     repository: apache/airflow
-    tag: 1.10.10-python3.6
+    tag: 1.10.12-python3.6
     ## values: Always or IfNotPresent
     pullPolicy: IfNotPresent
     pullSecret: ""
@@ -183,6 +183,10 @@ scheduler:
   ##
   tolerations: []
 
+  ## the security context for the scheduler Pods
+  ##
+  securityContext: {}
+
   ## labels for the scheduler Deployment
   ##
   labels: {}
@@ -224,25 +228,50 @@ scheduler:
 
   ## custom airflow connections for the airflow scheduler
   ##
-  ## NOTE:
-  ## - connections are created with a script that is stored in a K8s secret and mounted into the scheduler container
-  ##
   ## EXAMPLE:
   ##   connections:
   ##     - id: my_aws
   ##       type: aws
   ##       extra: |
   ##         {
-  ##           "aws_access_key_id": "XXXXXXXXXXXXXXXXXXX",
-  ##           "aws_secret_access_key": "XXXXXXXXXXXXXXX",
+  ##           "aws_access_key_id": "XXXXXXXX",
+  ##           "aws_secret_access_key": "XXXXXXXX",
   ##           "region_name":"eu-central-1"
   ##         }
   ##
   connections: []
 
-  ## if we remove before adding a connection resulting in a refresh
+  ## if `scheduler.connections` are deleted and re-added after each scheduler restart
   ##
   refreshConnections: true
+
+  ## the name of an existing Secret containing an `add-connections.sh` script to run on scheduler start
+  ##
+  ## NOTE:
+  ##  - if this is non-empty, `scheduler.connections` will be ignored
+  ##  - use this if you don't want to store connections in your values.yaml
+  ##
+  ## EXAMPLE SECRET:
+  ##   apiVersion: v1
+  ##   kind: Secret
+  ##   metadata:
+  ##     name: my-airflow-connections
+  ##   type: Opaque
+  ##   stringData:
+  ##     add-connections.sh: |
+  ##       #!/usr/bin/env bash
+  ##
+  ##       # remove any existing connection
+  ##       airflow connections --delete \
+  ##         --conn_id "my_aws"
+  ##
+  ##       # re-add your custom connection
+  ##       airflow connections --add \
+  ##         --conn_id "my_aws" \
+  ##         --conn_type "aws" \
+  ##         --conn_extra "{\"region_name\":\"eu-central-1\"}"
+  ##
+  existingSecretConnections: ""
 
   ## custom airflow variables for the airflow scheduler
   ##
@@ -297,6 +326,24 @@ scheduler:
   ##
   initialStartupDelay: 0
 
+  ## configs for the scheduler liveness probe
+  ##
+  ## NOTE:
+  ## - the maximum number of seconds the scheduler can be unhealthy =
+  ##   `livenessProbe.periodSeconds` x `livenessProbe.failureThreshold`
+  ##
+  livenessProbe:
+    enabled: true
+    ## the number of seconds to wait before checking pod health
+    ##
+    ## NOTE:
+    ## - make larger if you are installing many packages with:
+    ##   `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+    ##
+    initialDelaySeconds: 300
+    periodSeconds: 30
+    failureThreshold: 5
+
   ## extra init containers to run before the scheduler Pod
   ##
   ## EXAMPLE:
@@ -339,6 +386,10 @@ web:
   ## the toleration configs for the web Pods
   ##
   tolerations: []
+
+  ## the security context for the web Pods
+  ##
+  securityContext: {}
 
   ## labels for the web Deployment
   ##
@@ -455,22 +506,16 @@ web:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-web-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides web.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `web.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Worker Configs
@@ -508,6 +553,10 @@ workers:
   ## the toleration configs for the worker Pods
   ##
   tolerations: []
+
+  ## the security context for the worker Pods
+  ##
+  securityContext: {}
 
   ## labels for the worker StatefulSet
   ##
@@ -618,22 +667,16 @@ workers:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-worker-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides workers.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `worker.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Flower Configs
@@ -671,6 +714,10 @@ flower:
   ## the toleration configs for the flower Pods
   ##
   tolerations: []
+
+  ## the security context for the flower Pods
+  ##
+  securityContext: {}
 
   ## labels for the flower Deployment
   ##
@@ -1149,6 +1196,13 @@ rbac:
   ##   which is required for the KubernetesPodOperator() to function
   ##
   create: true
+
+  ## if the created RBAC Role has GET/LIST on Event resources
+  ##
+  ## NOTE:
+  ## - this is needed for KubernetesPodOperator() to use `log_events_on_failure=True`
+  ##
+  events: false
 
 ###################################
 # Kubernetes - Service Account

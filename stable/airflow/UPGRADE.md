@@ -1,5 +1,54 @@
 # Upgrading Steps
 
+## `v7.10.X` → `v7.11.0`
+
+__The following IMPROVEMENTS have been made:__
+* You can now use `scheduler.existingSecretConnections` with an externally created Secret to store airflow connections. 
+  (Rather than storing them in plain-text with `scheduler.connections`)
+
+__The following values have been ADDED:__
+* `scheduler.existingSecretConnections`
+
+## `v7.9.X` → `v7.10.0`
+
+__The following IMPROVEMENTS have been made:__
+* We now make use of the `_CMD` variables for `AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD`, `AIRFLOW__CELERY__RESULT_BACKEND_CMD`, and `AIRFLOW__CELERY__BROKER_URL_CMD`:
+  * This fixes the Scheduler liveness probe implemented in `7.8.0`
+  * This fixes using `kubectl exec` to run commands like `airflow create_user`
+* Configs passed with `airflow.config` are now passed as-defined in your `values.yaml`:
+  * This fixes an issue where people had to escape `"` characters in JSON strings
+
+## `v7.8.X` → `v7.9.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* You can now give the airflow ServiceAccount GET/LIST on Event resources
+    * This is needed for `KubernetesPodOperator(log_events_on_failure=True)`
+    * To enable, set `rbac.events` to `true` (Default: `false`)
+
+__The following values have been ADDED:__
+* `rbac.events`
+
+## `v7.7.X` → `v7.8.0`
+
+> __WARNING:__ 
+>
+> If you install many pip packages with: `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+> 
+> Ensure you set `scheduler.livenessProbe.initialDelaySeconds` to longer than the install time
+>
+
+__The following IMPROVEMENTS have been made:__
+* Upgraded to Airflow: `1.10.12`
+* The scheduler now has a liveness probe which will force the pod to restart if it becomes unhealthy for more than some threshold of time (default: 150sec)
+  * NOTE: this is on by default, but can be disabled with: `scheduler.livenessProbe.enabled`
+
+__The following values have been ADDED:__
+* `scheduler.livenessProbe.enabled`
+* `scheduler.livenessProbe.initialDelaySeconds`
+* `scheduler.livenessProbe.periodSeconds`
+* `scheduler.livenessProbe.failureThreshold`
+
 ## `v7.6.X` → `v7.7.0`
 
 __If you are using an INTERNAL redis database, some configs have changed:__

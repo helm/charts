@@ -35,8 +35,11 @@ data:
   ##############
   # Operations #
   ##############
-  {{- if .Values.ord.operations.listenAddress }}
-  ORDERER_OPERATIONS_LISTENADDRESS: {{ .Values.ord.operations.listenAddress | quote }}
+  {{- if eq .Values.ord.metrics.provider "prometheus" }}
+  ORDERER_OPERATIONS_LISTENADDRESS: 0.0.0.0:9443
+  {{- end }}
+  {{- if eq .Values.ord.metrics.provider "statsd" }}
+  ORDERER_OPERATIONS_LISTENADDRESS: 127.0.0.1:8125
   {{- end }}
   ###########
   # Metrics #
