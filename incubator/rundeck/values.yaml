@@ -130,6 +130,14 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
 nodeSelector: {}
 
 tolerations: []
