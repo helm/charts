@@ -90,9 +90,8 @@ spec:
             - name: RUNDECK_LOGGING_STRATEGY
               value: "CONSOLE"
           volumeMounts:
-        {{- if .Values.volumeMounts }}
-          {{- toYaml .Values.volumeMounts | nindent 10}}
-        {{- end }}
+          - name: data
+            mountPath: /home/rundeck/server/data
         {{- if .Values.rundeck.sshSecrets }}
           - name: sshkeys
             mountPath: /home/rundeck/.ssh
