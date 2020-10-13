@@ -5,14 +5,14 @@ apiVersion: v1
 kind: List
 metadata:
   name: {{ include "prometheus-operator.fullname" $ }}-prometheus-serviceperreplica
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
 items:
 {{- range $i, $e := until $count }}
   - apiVersion: v1
     kind: Service
     metadata:
       name: {{ include "prometheus-operator.fullname" $ }}-prometheus-{{ $i }}
-      namespace: {{ $.Release.Namespace }}
+      namespace: {{ template "prometheus-operator.namespace" $ }}
       labels:
         app: {{ include "prometheus-operator.name" $ }}-prometheus
 {{ include "prometheus-operator.labels" $ | indent 8 }}

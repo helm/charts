@@ -1,8 +1,8 @@
 apiVersion: v1
 name: dokuwiki
-version: 6.0.10
+version: 6.0.11
 appVersion: 0.20180422.201901061035
-# The redis chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
+# The dokuwiki chart is deprecated and no longer maintained. For details deprecation, see the PROCESSES.md file.
 deprecated: true
 description: DEPRECATED DokuWiki is a standards-compliant, simple to use wiki optimized for creating
   documentation. It is targeted at developer teams, workgroups, and small companies.

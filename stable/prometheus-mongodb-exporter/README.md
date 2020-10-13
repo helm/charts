@@ -1,5 +1,7 @@
 # Prometheus MongoDB Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Installs the [MongoDB Exporter](https://github.com/percona/mongodb_exporter) for [Prometheus](https://prometheus.io/). The
 MongoDB Exporter collects and exports oplog, replica set, server status, sharding and storage engine metrics.
 
@@ -15,7 +17,8 @@ This command deploys the MongoDB Exporter with the default configuration. The [c
 
 ## Using the Chart
 
-To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string).
+To use the chart, ensure the `mongodb.uri` is populated with a valid [MongoDB URI](https://docs.mongodb.com/manual/reference/connection-string)
+or an existing secret (in the releases namespace) containing the key defined on `existingSecret.key`, with the URI is referred via `existingSecret.name`. If no secret key is defined, the default value is `mongodb-uri`.
 If the MongoDB server requires authentication, credentials should be populated in the connection string as well. The MongoDB Exporter supports
 connecting to either a MongoDB replica set member, shard, or standalone instance.
 
@@ -35,13 +38,15 @@ podAnnotations:
 |-----------|-------------|---------|
 | `affinity` | Node/pod affinities | `{}` |
 | `annotations` | Annotations to be added to the pods | `{}` |
+| `existingSecret.name` | Refer to an existing secret name instead of using `mongodb.uri` | `` |
+| `existingSecret.key` | Refer to an existing secret key | `mongodb-uri` |
 | `extraArgs` | The extra command line arguments to pass to the MongoDB Exporter  | See values.yaml |
 | `fullnameOverride` | Override the full chart name | `` |
 | `image.pullPolicy` | MongoDB Exporter image pull policy | `IfNotPresent` |
 | `image.repository` | MongoDB Exporter image name | `ssheehy/mongodb-exporter` |
 | `image.tag` | MongoDB Exporter image tag | `0.10.0` |
 | `imagePullSecrets` | List of container registry secrets | `[]` |
-| `mongodb.uri` | The required [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
+| `mongodb.uri` | The [URI](https://docs.mongodb.com/manual/reference/connection-string) to connect to MongoDB | `` |
 | `nameOverride` | Override the application name  | `` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `podAnnotations` | Annotations to be added to all pods | `{}` |
@@ -51,6 +56,7 @@ podAnnotations:
 | `resources` | Pod resource requests and limits | `{}` |
 | `env` | Extra environment variables passed to pod | `{}` |
 | `securityContext` | Security context for the pod | See values.yaml |
+| `service.labels` | Additional labels for the service definition | `{}` |
 | `service.annotations` | Annotations to be added to the service | `{}` |
 | `service.port` | The port to expose | `9216` |
 | `service.type` | The type of service to expose | `ClusterIP` |
@@ -61,9 +67,6 @@ podAnnotations:
 | `serviceMonitor.scrapeTimeout` | Interval at which metric scrapes should time out | `10s` |
 | `serviceMonitor.namespace` | The namespace where the Prometheus Operator is deployed | `` |
 | `serviceMonitor.additionalLabels` | Additional labels to add to the ServiceMonitor | `{}` |
+| `serviceMonitor.targetLabels` | Set of labels to transfer on the Kubernetes Service onto the target. | `[]`
+| `serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion. | `[]` |
 | `tolerations` | List of node taints to tolerate  | `[]` |
-
-## Limitations
-
-Connecting to MongoDB via TLS is currently not supported.
-

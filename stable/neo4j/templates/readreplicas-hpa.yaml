@@ -3,9 +3,11 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template "neo4j.name" . }}
-  chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  heritage: {{ .Release.Service }}
-  release: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

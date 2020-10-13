@@ -26,10 +26,8 @@ spec:
       target:
       - {{ .url }}
     metricRelabelings:
-      - sourceLabels: [__address__]
-        targetLabel: __param_target
-      - sourceLabels: [__param_target]
-        targetLabel: instance
+      - targetLabel: instance
+        replacement: {{ .url }}
       - targetLabel: target
         replacement: {{ .name }}
   jobLabel: "{{ $.Release.Name }}"
@@ -42,4 +40,3 @@ spec:
       - {{ $.Release.Namespace }}
 {{- end }}
 {{- end }}
-

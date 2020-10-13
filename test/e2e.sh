@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly IMAGE_TAG=v3.4.0
+readonly IMAGE_TAG=v3.4.1
 readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
 readonly REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 
@@ -46,7 +46,7 @@ main() {
     trap "docker rm -f $config_container_id" EXIT
 
     docker exec "$config_container_id" gcloud auth activate-service-account --key-file /service-account.json
-    docker exec "$config_container_id" gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+    docker exec "$config_container_id" gcloud container clusters get-credentials charts-testing-1 --project kubernetes-charts-ci --zone us-west1-a
     docker exec "$config_container_id" kubectl cluster-info
     docker exec "$config_container_id" ct lint-and-install --config test/ct.yaml
 

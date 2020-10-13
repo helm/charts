@@ -1,7 +1,7 @@
 {{- $etcdPeerProtocol := include "etcd.peerProtocol" . }}
 {{- $etcdClientProtocol := include "etcd.clientProtocol" . }}
 {{- $etcdAuthOptions := include "etcd.authOptions" . }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "etcd.fullname" . }}
@@ -101,7 +101,7 @@ spec:
                   AUTH_OPTIONS="{{ $etcdAuthOptions }}"                  
 
                   member_hash() {
-                      etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                      etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d ',' -f1
                   }
 
                   SET_ID=${HOSTNAME##*[^0-9]}
@@ -122,8 +122,8 @@ spec:
             AUTH_OPTIONS="{{ $etcdAuthOptions }}"
             # store member id into PVC for later member replacement
             collect_member() {                
-                while ! etcdctl $AUTH_OPTIONS member list &>/dev/null; do sleep 1; done
-                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id                
+                while ! etcdctl $AUTH_OPTIONS member list > /dev/null 2>&1; do sleep 1; done
+                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d ',' -f1 > /var/run/etcd/member_id
                 exit 0
             }
 
@@ -136,7 +136,7 @@ spec:
             }
 
             member_hash() {
-                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                etcdctl $AUTH_OPTIONS member list | grep {{ $etcdPeerProtocol }}://${HOSTNAME}.${SET_NAME}:2380 | cut -d ',' -f1
             }
 
             # we should wait for other pods to be up before trying to join
@@ -150,7 +150,7 @@ spec:
             done
             
             # re-joining after failure?
-            if [ -e /var/run/etcd/default.etcd ]; then
+            if [ -e /var/run/etcd/default.etcd && -e /var/run/etcd/member_id ]; then
                 echo "Re-joining etcd member"
                 member_id=$(cat /var/run/etcd/member_id)
 

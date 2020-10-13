@@ -32,6 +32,14 @@ alertmanager:
   ##
   enabled: true
 
+  ## Use a ClusterRole (and ClusterRoleBinding)
+  ## - If set to false - we define a Role and RoleBinding in the defined namespaces ONLY
+  ## This makes alertmanager work - for users who do not have ClusterAdmin privs, but wants alertmanager to operate on their own namespaces, instead of clusterwide.
+  useClusterRole: true
+
+  ## Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to the rolename set here.
+  useExistingRole: false
+
   ## alertmanager container name
   ##
   name: alertmanager
@@ -40,7 +48,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.20.0
+    tag: v0.21.0
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -50,6 +58,10 @@ alertmanager:
   ## Additional alertmanager container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -320,7 +332,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -358,7 +370,7 @@ configmapReload:
     ##
     image:
       repository: jimmidyson/configmap-reload
-      tag: v0.3.0
+      tag: v0.4.0
       pullPolicy: IfNotPresent
 
     ## Additional configmap-reload container arguments
@@ -386,9 +398,13 @@ configmapReload:
 
 kubeStateMetrics:
   ## If false, kube-state-metrics sub-chart will not be installed
-  ## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics for configurable values
   ##
   enabled: true
+
+## kube-state-metrics sub-chart configurable values
+## Please see https://github.com/helm/charts/tree/master/stable/kube-state-metrics
+##
+# kube-state-metrics:
 
 nodeExporter:
   ## If false, node-exporter will not be installed
@@ -411,7 +427,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.18.1
+    tag: v1.0.1
     pullPolicy: IfNotPresent
 
   ## Specify if a Pod Security Policy for node-exporter must be created
@@ -440,6 +456,10 @@ nodeExporter:
   ## Additional node-exporter container arguments
   ##
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ## Additional node-exporter hostPath mounts
   ##
@@ -526,6 +546,21 @@ server:
   ## Prometheus server container name
   ##
   enabled: true
+
+  ## Use a ClusterRole (and ClusterRoleBinding)
+  ## - If set to false - we define a RoleBinding in the defined namespaces ONLY
+  ##
+  ## NB: because we need a Role with nonResourceURL's ("/metrics") - you must get someone with Cluster-admin privileges to define this role for you, before running with this setting enabled.
+  ##     This makes prometheus work - for users who do not have ClusterAdmin privs, but wants prometheus to operate on their own namespaces, instead of clusterwide.
+  ##
+  ## You MUST also set namespaces to the ones you have access to and want monitored by Prometheus.
+  ##
+  # useExistingClusterRoleName: nameofclusterrole
+
+  ## namespaces to monitor (instead of monitoring all - clusterwide). Needed if you want to run without Cluster-admin privileges.
+  # namespaces:
+  #   - yournamespace
+
   name: server
   sidecarContainers:
 
@@ -533,12 +568,18 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.16.0
+    tag: v2.20.1
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
   ##
   priorityClassName: ""
+
+  ## EnableServiceLinks indicates whether information about services should be injected
+  ## into pod's environment variables, matching the syntax of Docker links.
+  ## WARNING: the field is unsupported and will be skipped in K8s prior to v1.13.0.
+  ##
+  enableServiceLinks: true
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -593,10 +634,10 @@ server:
     evaluation_interval: 1m
   ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write
   ##
-  remoteWrite: {}
+  remoteWrite: []
   ## https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read
   ##
-  remoteRead: {}
+  remoteRead: []
 
   ## Additional Prometheus server container arguments
   ##
@@ -685,6 +726,12 @@ server:
   ## Server Deployment Strategy type
   # strategy:
   #   type: Recreate
+
+  ## hostAliases allows adding entries to /etc/hosts inside the containers
+  hostAliases: []
+  #   - ip: "127.0.0.1"
+  #     hostnames:
+  #       - "example.com"
 
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -817,15 +864,22 @@ server:
       annotations: {}
       labels: {}
       servicePort: 80
+      ## Enable gRPC port on service to allow auto discovery with thanos-querier
+      gRPC:
+        enabled: false
+        servicePort: 10901
+        # nodePort: 10901
 
   ## Prometheus server readiness and liveness probe initial delay and timeout
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   ##
   readinessProbeInitialDelay: 30
+  readinessProbePeriodSeconds: 5
   readinessProbeTimeout: 30
   readinessProbeFailureThreshold: 3
   readinessProbeSuccessThreshold: 1
   livenessProbeInitialDelay: 30
+  livenessProbePeriodSeconds: 15
   livenessProbeTimeout: 30
   livenessProbeFailureThreshold: 3
   livenessProbeSuccessThreshold: 1
@@ -913,7 +967,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v1.0.1
+    tag: v1.2.0
     pullPolicy: IfNotPresent
 
   ## pushgateway priorityClassName
@@ -924,6 +978,10 @@ pushgateway:
   ##
   ## for example: persistence.file: /data/pushgateway.data
   extraArgs: {}
+
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: []
 
   ingress:
     ## If true, pushgateway Ingress will be created
@@ -1516,3 +1574,6 @@ networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
   enabled: false
+
+# Force namespace of namespaced resources
+forceNamespace: null

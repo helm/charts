@@ -1,5 +1,9 @@
 {{- if .Values.master.ingress.enabled }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: {{ .Values.master.ingress.apiVersion }}
+{{- end }}
 kind: Ingress
 metadata:
   namespace: {{ template "jenkins.namespace" . }}
@@ -21,14 +25,26 @@ spec:
   rules:
   - http:
       paths:
+{{- if len (.Values.master.ingress.paths) }}
+{{ tpl (toYaml .Values.master.ingress.paths | indent 6) . }}
+{{- else }}
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.master.servicePort }}
 {{- if .Values.master.ingress.path }}
         path: {{ .Values.master.ingress.path }}
 {{- end -}}
+{{- end -}}
 {{- if .Values.master.ingress.hostName }}
     host: {{ .Values.master.ingress.hostName | quote }}
+{{- end }}
+{{- if .Values.master.ingress.resourceRootUrl }}
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ template "jenkins.fullname" . }}
+          servicePort: {{ .Values.master.servicePort }}
+    host: {{ .Values.master.ingress.resourceRootUrl | quote }}
 {{- end }}
 {{- if .Values.master.ingress.tls }}
   tls:

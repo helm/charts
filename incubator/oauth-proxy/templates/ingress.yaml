@@ -1,33 +1,41 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "oauth-proxy.fullname" . -}}
-{{- $servicePort := .Values.service.externalPort -}}
-{{- $ingressPath := .Values.ingress.path -}}
+{{- $fullName := include "oauth-proxy.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
+  name: {{ $fullName }}
   labels:
-    app: {{ template "oauth-proxy.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "oauth-proxy.fullname" . }}
+{{ include "oauth-proxy.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+        {{- range .paths }}
+          - path: {{ . }}
             backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-    {{- end -}}
-  {{- if .Values.ingress.tls }}
-  tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end -}}
-{{- end -}}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}

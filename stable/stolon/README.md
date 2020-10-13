@@ -46,12 +46,14 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `superuserSecret.usernameKey`           | Username key of Postgres superuser in secret   | `pg_su_username`                                             |
 | `superuserSecret.passwordKey`           | Password key of Postgres superuser in secret   | `pg_su_password`                                             |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
-| `superuserPassword`                     | Postgres superuser password                    | (Required if `superuserSecret.name` is not set)              |
+| `superuserPasswordFile`                     | File where to read the Postgres superuser password                   |               |
+| `superuserPassword`                     | Postgres superuser password                    | (Required if `superuserSecret.name` and `superuserPasswordFile` are not set)              |
 | `replicationSecret.name`                | Postgres replication credential secret name    | `""`                                                         |
 | `replicationSecret.usernameKey`         | Username key of Postgres replication in secret | `pg_repl_username`                                           |
 | `replicationSecret.passwordKey`         | Password key of Postgres replication in secret | `pg_repl_password`                                           |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
-| `replicationPassword`                   | Replication password                           | (Required if `replicationSecret.name` is not set)            |
+| `replicationPasswordFile`                     | File where to read the replication password                   |               |
+| `replicationPassword`                   | Replication password                           | (Required if `replicationSecret.name` and `replicationPasswordFile` are not set)            |
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
@@ -64,6 +66,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `serviceMonitor.scrapeTimeout`          | Set to use a different value than the default Prometheus scrape timeout | `nil`                               |
 | `job.autoCreateCluster`                 | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `job.autoUpdateClusterSpec`             | Set to `false` to force-disable auto-cluster-spec-update | `true`                                             |
+| `job.annotations`                       | Annotations for Jobs, the value is evaluated as a template. | `{}`                                            |
 | `clusterSpec`                           | Stolon cluster spec [reference](https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md) | `{}`   |
 | `tls.enabled`                           | Enable tls support to postgresql               | `false`                                                      |
 | `tls.rootCa`                            | Ca certificate                                 | `""`                                                         |

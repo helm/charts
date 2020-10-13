@@ -1,4 +1,10 @@
-# Minecraft
+# DEPRECATED - Minecraft
+
+**This chart has been deprecated and moved to its new home:**
+
+**Github repo:** https://github.com/itzg/minecraft-server-charts
+
+**Charts repo:** https://itzg.github.io/minecraft-server-charts/
 
 [Minecraft](https://minecraft.net/en/) is a game about placing blocks and going on adventures.
 

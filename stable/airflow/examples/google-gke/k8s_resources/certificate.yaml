@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: airflow-cluster1-cert
+  namespace: airflow-cluster1
+spec:
+  secretName: airflow-cluster1-cert
+  commonName: "airflow-cluster1.example.com"
+  dnsNames:
+  - "airflow-cluster1.example.com"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-issuer

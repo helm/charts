@@ -1,0 +1,13 @@
+{{- define "daemonset-volumes-windows" -}}
+{{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
+- hostPath:
+    path: C:/var/log
+  name: pointerdir
+- hostPath:
+    path: C:/var/log/pods
+  name: logpodpath
+- hostPath:
+    path: C:/ProgramData/docker/containers
+  name: logdockercontainerpath
+{{- end }}
+{{- end -}}

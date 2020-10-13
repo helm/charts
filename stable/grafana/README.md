@@ -1,3 +1,7 @@
+# ⚠️ DEPRECATED
+
+This chart was moved to https://github.com/grafana/helm2-grafana
+
 # Grafana Helm Chart
 
 * Installs the web dashboarding system [Grafana](http://grafana.org/)
@@ -49,10 +53,11 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `deploymentStrategy`                      | Deployment strategy                           | `{ "type": "RollingUpdate" }`                           |
 | `livenessProbe`                           | Liveness Probe settings                       | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10 }` |
 | `readinessProbe`                          | Readiness Probe settings                      | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
-| `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
+| `securityContext`                         | Deployment securityContext                    | `{"runAsUser": 472, "runAsGroup": 472, "fsGroup": 472}`  |
 | `priorityClassName`                       | Name of Priority Class to assign pods         | `nil`                                                   |
 | `image.repository`                        | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `6.7.1`                                                 |
+| `image.tag`                               | Image tag (`Must be >= 5.0.0`)                | `7.0.3`                                                 |
+| `image.sha`                               | Image sha (optional)                          | `17cbd08b9515fda889ca959e9d72ee6f3327c8f1844a3336dfd952134f38e2fe` |
 | `image.pullPolicy`                        | Image pull policy                             | `IfNotPresent`                                          |
 | `image.pullSecrets`                       | Image pull secrets                            | `{}`                                                    |
 | `service.type`                            | Kubernetes service type                       | `ClusterIP`                                             |
@@ -65,13 +70,14 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `service.clusterIP`                       | internal cluster service IP                   | `nil`                                                   |
 | `service.loadBalancerIP`                  | IP address to assign to load balancer (if supported) | `nil`                                            |
 | `service.loadBalancerSourceRanges`        | list of IP CIDRs allowed access to lb (if supported) | `[]`                                             |
-| `serivce.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
-| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   | 
+| `service.externalIPs`                     | service external IP addresses                 | `[]`                                                    |
+| `extraExposePorts`                        | Additional service ports for sidecar containers| `[]`                                                   |
+| `hostAliases`                             | adds rules to the pod's /etc/hosts            | `[]`                                                    |
 | `ingress.enabled`                         | Enables Ingress                               | `false`                                                 |
-| `ingress.annotations`                     | Ingress annotations                           | `{}`                                                    |
+| `ingress.annotations`                     | Ingress annotations (values are templated)    | `{}`                                                    |
 | `ingress.labels`                          | Custom labels                                 | `{}`                                                    |
 | `ingress.path`                            | Ingress accepted path                         | `/`                                                     |
-| `ingress.hosts`                           | Ingress accepted hostnames                    | `[]`                                                    |
+| `ingress.hosts`                           | Ingress accepted hostnames                    | `["chart-example.local"]`                                                    |
 | `ingress.extraPaths`                      | Ingress extra paths to prepend to every host configuration. Useful when configuring [custom actions with AWS ALB Ingress Controller](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/#actions). | `[]`                                                    |
 | `ingress.tls`                             | Ingress TLS configuration                     | `[]`                                                    |
 | `resources`                               | CPU/Memory resource requests/limits           | `{}`                                                    |
@@ -80,6 +86,7 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `affinity`                                | Affinity settings for pod assignment          | `{}`                                                    |
 | `extraInitContainers`                     | Init containers to add to the grafana pod     | `{}`                                                    |
 | `extraContainers`                         | Sidecar containers to add to the grafana pod  | `{}`                                                    |
+| `extraContainerVolumes`                   | Volumes that can be mounted in sidecar containers | `[]`                                                |
 | `schedulerName`                           | Name of the k8s scheduler (other than default) | `nil`                                                  |
 | `persistence.enabled`                     | Use persistent volume to store data           | `false`                                                 |
 | `persistence.type`                        | Type of persistence (`pvc` or `statefulset`)  | `pvc`                                                   |
@@ -92,13 +99,14 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `persistence.subPath`                     | Mount a sub dir of the persistent volume      | `nil`                                                   |
 | `initChownData.enabled`                   | If false, don't reset data ownership at startup | true                                                  |
 | `initChownData.image.repository`          | init-chown-data container image repository    | `busybox`                                               |
-| `initChownData.image.tag`                 | init-chown-data container image tag           | `latest`                                                |
+| `initChownData.image.tag`                 | init-chown-data container image tag           | `1.31.1`                                                |
+| `initChownData.image.sha`                 | init-chown-data container image sha (optional)| `""`                                                    |
 | `initChownData.image.pullPolicy`          | init-chown-data container image pull policy   | `IfNotPresent`                                          |
 | `initChownData.resources`                 | init-chown-data pod resource requests & limits | `{}`                                                   |
 | `schedulerName`                           | Alternate scheduler name                      | `nil`                                                   |
 | `env`                                     | Extra environment variables passed to pods    | `{}`                                                    |
 | `envValueFrom`                            | Environment variables from alternate sources. See the API docs on [EnvVarSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core) for format details.  | `{}` |
-| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `envFromSecret`                           | Name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment. Can be templated | `""` |
 | `envRenderSecret`                         | Sensible environment variables passed to pods and stored as secret | `{}`                               |
 | `extraSecretMounts`                       | Additional grafana server secret mounts       | `[]`                                                    |
 | `extraVolumeMounts`                       | Additional grafana server volume mounts       | `[]`                                                    |
@@ -119,9 +127,12 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
 | `podLabels`                               | Pod labels                                    | `{}`                                                    |
 | `podPortName`                             | Name of the grafana port on the pod           | `grafana`                                               |
-| `sidecar.image`                           | Sidecar image                                 | `kiwigrid/k8s-sidecar:0.1.99`                           |
+| `sidecar.image.repository`                | Sidecar image repository                      | `kiwigrid/k8s-sidecar`                                  |
+| `sidecar.image.tag`                       | Sidecar image tag                             | `0.1.151`                                               |
+| `sidecar.image.sha`                       | Sidecar image sha (optional)                  | `""`                                                    |
 | `sidecar.imagePullPolicy`                 | Sidecar image pull policy                     | `IfNotPresent`                                          |
 | `sidecar.resources`                       | Sidecar resources                             | `{}`                                                    |
+| `sidecar.enableUniqueFilenames`           | Sets the kiwigrid/k8s-sidecar UNIQUE_FILENAMES environment variable | `false`                           |
 | `sidecar.dashboards.enabled`              | Enables the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
 | `sidecar.dashboards.SCProvider`           | Enables creation of sidecar provider          | `true`                                                  |
 | `sidecar.dashboards.provider.name`        | Unique name of the grafana provider           | `sidecarProvider`                                       |
@@ -139,6 +150,9 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `sidecar.datasources.enabled`             | Enables the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`               | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
 | `sidecar.datasources.searchNamespace`     | If specified, the sidecar will search for datasources config-maps inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
+| `sidecar.notifiers.enabled`               | Enables the cluster wide search for notifiers and adds/updates/deletes them in grafana |`false`       |
+| `sidecar.notifiers.label`                 | Label that config maps with notifiers should have to be added | `grafana_notifier`                               |
+| `sidecar.notifiers.searchNamespace`       | If specified, the sidecar will search for notifiers config-maps (or secrets) inside this namespace. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify ALL to search in all namespaces | `nil`                               |
 | `smtp.existingSecret`                     | The name of an existing secret containing the SMTP credentials. | `""`                                  |
 | `smtp.userKey`                            | The key in the existing SMTP secret containing the username. | `"user"`                                 |
 | `smtp.passwordKey`                        | The key in the existing SMTP secret containing the password. | `"password"`                             |
@@ -159,12 +173,31 @@ You have to add --force to your helm upgrade command as the labels of the chart 
 | `testFramework.enabled`                   | Whether to create test-related resources      | `true`                                                  |
 | `testFramework.image`                     | `test-framework` image repository.            | `bats/bats`                                        |
 | `testFramework.tag`                       | `test-framework` image tag.                   | `v1.1.0`                                                 |
+| `testFramework.imagePullPolicy`           | `test-framework` image pull policy.           | `IfNotPresent`                                             |
 | `testFramework.securityContext`           | `test-framework` securityContext              | `{}`                                                    |
 | `downloadDashboards.env`                  | Environment variables to be passed to the `download-dashboards` container | `{}`                        |
+| `downloadDashboards.resources`            | Resources of `download-dashboards` container  | `{}`                                                    |
 | `downloadDashboardsImage.repository`      | Curl docker image repo                        | `curlimages/curl`                                       |
-| `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.68.0`                                                |
+| `downloadDashboardsImage.tag`             | Curl docker image tag                         | `7.70.0`                                                |
+| `downloadDashboardsImage.sha`             | Curl docker image sha (optional)              | `""`                                                    |
 | `downloadDashboardsImage.pullPolicy`      | Curl docker image pull policy                 | `IfNotPresent`                                          |
 | `namespaceOverride`                       | Override the deployment namespace             | `""` (`Release.Namespace`)                              |
+
+### Example ingress with path
+
+With grafana 6.3 and above
+```yaml
+grafana.ini:
+  server:
+    domain: monitoring.example.com
+    root_url: "%(protocol)s://%(domain)s/grafana"
+    serve_from_sub_path: true
+ingress:
+  enabled: true
+  hosts:
+    - "monitoring.example.com"
+  path: "/grafana"
+```
 
 ### Example of extraVolumeMounts
 
@@ -320,3 +353,66 @@ stringData:
 
 ```
 
+## Sidecar for notifiers
+
+If the parameter `sidecar.notifiers.enabled` is set, an init container is deployed in the grafana
+pod. This container lists all secrets (or configmaps, though not recommended) in the cluster and
+filters out the ones with a label as defined in `sidecar.notifiers.label`. The files defined in
+those secrets are written to a folder and accessed by grafana on startup. Using these yaml files,
+the notification channels in grafana can be imported. The secrets must be created before
+`helm install` so that the notifiers init container can list the secrets.
+
+Secrets are recommended over configmaps for this usecase because alert notification channels usually contain
+private data like SMTP usernames and passwords. Secrets are the more appropriate cluster ressource to manage those.
+
+Example datasource config adapted from [Grafana](https://grafana.com/docs/grafana/latest/administration/provisioning/#alert-notification-channels):
+
+```
+notifiers:
+  - name: notification-channel-1
+    type: slack
+    uid: notifier1
+    # either
+    org_id: 2
+    # or
+    org_name: Main Org.
+    is_default: true
+    send_reminder: true
+    frequency: 1h
+    disable_resolve_message: false
+    # See `Supported Settings` section for settings supporter for each
+    # alert notification type.
+    settings:
+      recipient: 'XXX'
+      token: 'xoxb'
+      uploadImage: true
+      url: https://slack.com
+
+delete_notifiers:
+  - name: notification-channel-1
+    uid: notifier1
+    org_id: 2
+  - name: notification-channel-2
+    # default org_id: 1
+```
+
+## How to serve Grafana with a path prefix (/grafana)
+
+In order to serve Grafana with a prefix (e.g., http://example.com/grafana), add the following to your values.yaml.
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+  path: /grafana/?(.*)
+  hosts:
+    - k8s.example.dev
+
+grafana.ini:
+  server:
+    root_url: http://localhost:3000/grafana # this host can be localhost
+```

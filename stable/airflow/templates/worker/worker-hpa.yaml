@@ -1,0 +1,21 @@
+{{- if and (.Values.workers.enabled) (.Values.workers.autoscaling.enabled) }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "airflow.fullname" . }}-worker
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: worker
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "airflow.fullname" . }}-worker
+  minReplicas: {{ .Values.workers.replicas }}
+  maxReplicas: {{ .Values.workers.autoscaling.maxReplicas }}
+  metrics:
+    {{- toYaml .Values.workers.autoscaling.metrics | nindent 4 }}
+{{- end }}

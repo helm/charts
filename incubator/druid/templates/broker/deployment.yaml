@@ -1,3 +1,4 @@
+{{- if .Values.broker.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,7 +25,7 @@ spec:
       {{- with .Values.broker.podAnnotations }}
       annotations:
 {{ toYaml . | indent 8 }}
-      {{- end }}        
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -32,33 +33,13 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: [ "broker" ]
           env:
-          {{- if .Values.zookeeper.enabled }}
-          - name: ZOOKEEPER_HOST
-            value: {{ .Release.Name }}-zookeeper-headless:2181
-          {{- else }}
-          - name: ZOOKEEPER_HOST
-            value: {{ .Values.zkHosts }}
-          {{- end }}
-          {{- if .Values.mysql.enabled }}
-          - name: DB_HOST
-            value: {{ .Release.Name }}-mysql
-          - name: DB_TYPE
-            value: mysql
-          - name: DB_USERNAME
-            value: {{ .Values.mysql.mysqlUser }}
-          - name: DB_PASSWORD
-            value: {{ .Values.mysql.mysqlPassword }}
-          - name: DB_DBNAME
-            value: {{ .Values.mysql.mysqlDatabase }}
-          - name: DB_PORT
-            value: "3306"
-          {{- end }}
-          - name: JAVA_OPTS
-            value: {{ .Values.broker.javaOpts }}
-          {{- range $key, $value :=  .Values.env }}
+          {{- range $key, $val := .Values.broker.config }}
           - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
+            value: {{ $val | quote }}
+          {{- end}}
+          envFrom:
+            - configMapRef:
+                name: {{ template "druid.name" . }}
           ports:
             - name: http
               containerPort: {{ .Values.broker.port }}
@@ -87,3 +68,8 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

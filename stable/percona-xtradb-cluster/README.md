@@ -63,6 +63,10 @@ The following table lists the configurable parameters of the Percona chart and t
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
 | `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
 | `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
+| `serviceAccountName`       | Name for the pod's serviceAccount  | `nil`                                                      |
+| `securityContext.runAsUser` | Run the pod with this uid         | `nil`                                                      |
+| `securityContext.runAsGroup` | Run the pod with this gid         | `nil`                                                      |
+| `securityContext.fsGroup`  | Set GID for mounted volumes        | `nil`                                                      |
 | `persistence.enabled`      | Create a volume to store data      | false                                                       |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |

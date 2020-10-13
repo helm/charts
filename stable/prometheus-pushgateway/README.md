@@ -1,5 +1,7 @@
 # Prometheus Pushgateway
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [pushgateway](https://github.com/prometheus/pushgateway)
 
 ## TL;DR;
@@ -52,6 +54,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `ingress.tls`                     | Ingress TLS configuration                                                                                                     | `[]`                              |
 | `resources`                       | CPU/Memory resource requests/limits                                                                                           | `{}`                              |
 | `replicaCount`                    | Number of replicas                                                                                                            | `1`                               |
+| `strategy`                        | Deployment strategy                                                                                                           | `{ "type": "Recreate" }`          |
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                       |
 | `service.port`                    | The service port                                                                                                              | `9091`                            |
 | `service.nodePort`                | The optional service node port when `service.type` is `NodePort`                                                              | ``                                |

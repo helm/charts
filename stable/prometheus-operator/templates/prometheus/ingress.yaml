@@ -3,7 +3,11 @@
 {{- $servicePort := .Values.prometheus.service.port -}}
 {{- $routePrefix := list .Values.prometheus.prometheusSpec.routePrefix }}
 {{- $paths := .Values.prometheus.ingress.paths | default $routePrefix -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
 {{- if .Values.prometheus.ingress.annotations }}
@@ -11,7 +15,7 @@ metadata:
 {{ toYaml .Values.prometheus.ingress.annotations | indent 4 }}
 {{- end }}
   name: {{ $serviceName }}
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}

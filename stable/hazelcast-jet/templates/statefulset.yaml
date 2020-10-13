@@ -98,7 +98,15 @@ spec:
         volumeMounts:
         - name: hazelcast-jet-storage
           mountPath: /data/hazelcast-jet
+        {{- if .Values.customVolume }}
+        - name: hazelcast-jet-custom-volume
+          mountPath: /data/custom
+        {{- end }}
         env:
+        {{- if .Values.customVolume }}
+        - name: CLASSPATH
+          value: "/data/custom:/data/custom/*"
+        {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: PROMETHEUS_PORT
           value: "{{ .Values.metrics.service.port }}"
@@ -126,3 +134,7 @@ spec:
       - name: hazelcast-jet-storage
         configMap:
           name: {{ template "hazelcast-jet.fullname" . }}-configuration
+      {{- if .Values.customVolume }}
+      - name: hazelcast-jet-custom-volume
+{{ toYaml .Values.customVolume | indent 8 }}
+      {{- end }}

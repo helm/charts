@@ -76,14 +76,18 @@ master:
   #      command:
   #      - "uname"
   #      - "-a"
+  disableRememberMe: false
   numExecutors: 0
+  # configures the executor mode of the Jenkins node. Possible values are: NORMAL or EXCLUSIVE
+  executorMode: "NORMAL"
+  # This is ignored if enableRawHtmlMarkupFormatter is true
+  markupFormatter: plainText
   customJenkinsLabels: []
   # configAutoReload requires UseSecurity is set to true:
   useSecurity: true
 
   # enables configuration done directly via XML files
-  # People who want to configure Jenkins via https://github.com/jenkinsci/configuration-as-code-plugin only can set it to false
-  enableXmlConfig: true
+  enableXmlConfig: false
   # Allows to configure different SecurityRealm using Jenkins XML
   securityRealm: |-
     <securityRealm class="hudson.security.LegacySecurityRealm"/>
@@ -98,6 +102,10 @@ master:
   # you should revert master.adminUser to your preferred admin user:
   adminUser: "admin"
   # adminPassword: <defaults to random>
+  admin:
+    existingSecret: ""
+    userKey: jenkins-admin-user
+    passwordKey: jenkins-admin-password
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
   jenkinsHome: "/var/jenkins_home"
@@ -132,8 +140,8 @@ master:
   usePodSecurityContext: true
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting runAsUser to a different value than 0 also set fsGroup to the same value:
-  # runAsUser: <defaults to 0>
-  # fsGroup: <will be omitted in deployment if runAsUser is 0>
+  runAsUser: 1000
+  fsGroup: 1000
   servicePort: 8080
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -184,7 +192,12 @@ master:
   # GKE users: only regional static IPs will work for Service Load balancer.
   # slaveListenerLoadBalancerIP: 1.2.3.4
   slaveListenerServiceAnnotations: {}
+  slaveDefaultsProviderTemplate: ""
+  slaveConnectTimeout: 5
+  slaveReadTimeout: 15
   slaveKubernetesNamespace:
+  slaveJenkinsUrl:
+  slaveJenkinsTunnel:
 
   # Example of 'LoadBalancer' type of agent listener with annotations securing it
   # slaveListenerServiceType: LoadBalancer
@@ -212,14 +225,27 @@ master:
 
   # List of plugins to be install during Jenkins master start
   installPlugins:
-    - kubernetes:1.24.1
-    - workflow-job:2.36
+    - kubernetes:1.25.7
+    - workflow-job:2.39
     - workflow-aggregator:2.6
-    - credentials-binding:1.21
-    - git:4.2.0
+    - credentials-binding:1.23
+    - git:4.2.2
+    - configuration-as-code:1.41
+
+  # List of plugins to install in addition to those listed in master.installPlugins
+  additionalPlugins: []
+
+  # Enable to initialize the Jenkins master only once on initial installation.
+  # Without this, whenever the master gets restarted (Evicted, etc.) it will fetch plugin updates which has the potential to cause breakage.
+  # Note that for this to work, `persistence.enabled` needs to be set to `true`
+  initializeOnce: false
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
+
+  # Configures if plugins bundled with `master.image` should be overwritten with the values of 'master.installPlugins' on upgrade or redeployment.
+  overwritePluginsFromImage: true
+
   # Enable HTML parsing using OWASP Markup Formatter Plugin (antisamy-markup-formatter), useful with ghprb plugin.
   # The plugin is not installed by default, please update master.installPlugins.
   enableRawHtmlMarkupFormatter: false
@@ -250,10 +276,18 @@ master:
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
   JCasC:
-    enabled: false
-    defaultConfig: false
-    pluginVersion: "1.36"
+    enabled: true
+    defaultConfig: true
     configScripts: {}
+    # Ignored if securityRealm is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.securityRealm takes precedence
+    securityRealm: |-
+      legacy
+    # Ignored if authorizationStrategy is defined in master.JCasC.configScripts and
+    # ignored if master.enableXmlConfig=true as master.authorizationStrategy takes precedence
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
     # welcome-message: |
     #   jenkins:
     #     systemMessage: Welcome to our CI\CD server.  This Jenkins is configured and managed 'as code'.
@@ -269,8 +303,8 @@ master:
       # If enabled: true, Jenkins Configuration as Code will be reloaded on-the-fly without a reboot.  If false or not-specified,
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
-      enabled: false
-      image: kiwigrid/k8s-sidecar:0.1.20
+      enabled: true
+      image: kiwigrid/k8s-sidecar:0.1.144
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -279,6 +313,17 @@ master:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # How many connection-related errors to retry on
+      reqRetryConnect: 10
+      # env:
+      #   - name: REQ_TIMEOUT
+      #     value: "30"
+      # SSH port value can be set to any unused TCP port.  The default, 1044, is a non-standard SSH port that has been chosen at random.
+      # Is only used to reload jcasc config from the sidecar container running in the Jenkins master pod.
+      # This TCP port will not be open in the pod (unless you specifically configure this), so Jenkins will not be
+      # accessible via SSH from outside of the pod.  Note if you use non-root pod privileges (runAsUser & fsGroup),
+      # this must be > 1024:
+      sshTcpPort: 1044
       # folder in the pod that should hold the collected dashboards:
       folder: "/var/jenkins_home/casc_configs"
       # If specified, the sidecar will search for JCasC config-maps inside this namespace.
@@ -334,6 +379,16 @@ master:
 
   ingress:
     enabled: false
+    # Override for the default paths that map requests to the backend
+    paths: []
+    # - backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    # - backend:
+    #     serviceName: >-
+    #       {{ template "jenkins.fullname" . }}
+    #     # Don't use string here, use only integer value!
+    #     servicePort: 8080
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     apiVersion: "extensions/v1beta1"
     labels: {}
@@ -403,13 +458,16 @@ master:
 
 agent:
   enabled: true
-  image: "jenkins/jnlp-slave"
-  tag: "3.27-1"
+  image: "jenkins/inbound-agent"
+  tag: "4.3-4"
+  workingDir: "/home/jenkins"
   customJenkinsLabels: []
   # name of the secret to be used for image pulling
   imagePullSecretName:
   componentName: "jenkins-slave"
   privileged: false
+  runAsUser:
+  runAsGroup:
   resources:
     requests:
       cpu: "512m"
@@ -423,27 +481,43 @@ agent:
   # Possible values: Always, Never, OnFailure
   podRetention: "Never"
   # You can define the volumes that you want to mount for this container
-  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
+  # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, PVC, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+  volumes: []
+  # - type: ConfigMap
+  #   configMapName: myconfigmap
+  #   mountPath: /var/myapp/myconfigmap
+  # - type: EmptyDir
+  #   mountPath: /var/myapp/myemptydir
+  #   memory: false
+  # - type: HostPath
+  #   hostPath: /var/lib/containers
+  #   mountPath: /var/myapp/myhostpath
+  # - type: Nfs
+  #   mountPath: /var/myapp/mynfs
+  #   readOnly: false
+  #   serverAddress: "192.0.2.0"
+  #   serverPath: /var/lib/containers
+  # - type: PVC
+  #   claimName: mypvc
+  #   mountPath: /var/myapp/mypvc
+  #   readOnly: false
+  # - type: Secret
+  #   defaultMode: "600"
+  #   mountPath: /var/myapp/mysecret
+  #   secretName: mysecret
   # Pod-wide ennvironment, these vars are visible to any container in the agent pod
   envVars: []
   # - name: PATH
   #   value: /usr/local/bin
-  volumes: []
-  # - type: Secret
-  #   secretName: mysecret
-  #   mountPath: /var/myapp/mysecret
-  # - type: EmptyDir
-  #   mountPath: "/var/lib/containers"
-  #   memory: false
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
 
   # Executed command when side container gets started
   command:
-  args:
+  args: "${computer.jnlpmac} ${computer.name}"
   # Side container name
   sideContainerName: "jnlp"
   # Doesn't allocate pseudo TTY by default
@@ -467,8 +541,55 @@ agent:
   #     - key: "key"
   #       operator: "Equal"
   #       value: "value"
+  # Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates: merge or override
+  yamlMergeStrategy: "override"
   # Timeout in seconds for an agent to be online
   slaveConnectTimeout: 100
+
+  # Below is the implementation of custom pod templates for the default configured kubernetes cloud.
+  # Add a key under podTemplates for each pod template. Each key (prior to | character) is just a label, and can be any value.
+  # Keys are only used to give the pod template a meaningful name.  The only restriction is they may only contain RFC 1123 \ DNS label
+  # characters: lowercase letters, numbers, and hyphens. Each pod template can contain multiple containers.
+  # For this pod templates configuration to be loaded the following values must be set:
+  # master.JCasC.enabled: true
+  # master.JCasC.defaultConfig: true
+  # Best reference is https://<jenkins_url>/configuration-as-code/reference#Cloud-kubernetes. The example below creates a python pod template.
+  podTemplates: {}
+  #  python: |
+  #    - name: python
+  #      label: jenkins-python
+  #      serviceAccount: jenkins
+  #      containers:
+  #        - name: python
+  #          image: python:3
+  #          command: "/bin/sh -c"
+  #          args: "cat"
+  #          ttyEnabled: true
+  #          privileged: true
+  #          resourceRequestCpu: "400m"
+  #          resourceRequestMemory: "512Mi"
+  #          resourceLimitCpu: "1"
+  #          resourceLimitMemory: "1024Mi"
+
+# Here you can add additional agents
+# They inherit all values from `agent` so you only need to specify values which differ
+additionalAgents: {}
+#  maven:
+#    podName: maven
+#    customJenkinsLabels: maven
+#    # An example of overriding the jnlp container
+#    # sideContainerName: jnlp
+#    image: jenkins/jnlp-agent-maven
+#    tag: latest
+#  python:
+#    podName: python
+#    customJenkinsLabels: python
+#    sideContainerName: python
+#    image: python
+#    tag: "3"
+#    command: "/bin/sh -c"
+#    args: "cat"
+#    TTYEnabled: true
 
 persistence:
   enabled: true
@@ -501,6 +622,16 @@ networkPolicy:
   # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
   # For Kubernetes v1.7, use 'networking.k8s.io/v1'
   apiVersion: networking.k8s.io/v1
+  # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
+  internalAgents:
+    allowed: true
+    podLabels: {}
+    namespaceLabels: {}
+      # project: myproject
+  externalAgents: {}
+  #   ipCIDR: 172.17.0.0/16
+  #   except:
+  #     - 172.17.1.0/24
 
 ## Install Default RBAC roles and bindings
 rbac:

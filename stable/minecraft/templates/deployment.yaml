@@ -201,7 +201,11 @@ spec:
       - name: datadir
       {{- if .Values.persistence.dataDir.enabled }}
         persistentVolumeClaim:
+        {{- if .Values.persistence.dataDir.existingClaim }}
+          claimName: {{ .Values.persistence.dataDir.existingClaim }}
+        {{- else }}
           claimName: {{ template "minecraft.fullname" . }}-datadir
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

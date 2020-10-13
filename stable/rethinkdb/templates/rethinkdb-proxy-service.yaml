@@ -13,7 +13,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}
-  clusterIP: "{{ .Values.proxy.service.clusterIP }}"
+{{- if .Values.proxy.service.clusterIP }}
+  clusterIP: {{ .Values.proxy.service.clusterIP | quote }}
+{{- end }}
 {{- if .Values.proxy.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.proxy.service.externalIPs | indent 4 }}

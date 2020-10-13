@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+    name: {{ template "prometheus-cloudwatch-exporter.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole

@@ -1,4 +1,4 @@
-{{- if (.Values.vscode.enabled) and (.Values.vscode.ingress.enabled) }}
+{{- if and (.Values.vscode.enabled) (.Values.vscode.ingress.enabled) }}
 {{- $fullName := include "home-assistant.fullname" . -}}
 {{- $servicePort := .Values.vscode.service.port -}}
 {{- $ingressPath := .Values.vscode.ingress.path -}}

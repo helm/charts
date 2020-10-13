@@ -24,6 +24,8 @@ service:
   # clusterIP:
   port: 5000
   # nodePort:
+  # loadBalancerIP:
+  # loadBalancerSourceRanges:
   annotations: {}
   # foo.io/bar: "true"
 ingress:

@@ -1,0 +1,45 @@
+{{- if .Values.server.enabled -}}
+{{- if .Values.server.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $serviceName := include "prometheus.server.fullname" . }}
+{{- $servicePort := .Values.server.service.servicePort -}}
+{{- $extraPaths := .Values.server.ingress.extraPaths -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+{{- if .Values.server.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.server.ingress.annotations | indent 4 }}
+{{- end }}
+  labels:
+    {{- include "prometheus.server.labels" . | nindent 4 }}
+{{- range $key, $value := .Values.server.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+  name: {{ template "prometheus.server.fullname" . }}
+{{ include "prometheus.namespace" . | indent 2 }}
+spec:
+  rules:
+  {{- range .Values.server.ingress.hosts }}
+    {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
+      http:
+        paths:
+{{ if $extraPaths }}
+{{ toYaml $extraPaths | indent 10 }}
+{{- end }}
+          - path: /{{ rest $url | join "/" }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+{{- if .Values.server.ingress.tls }}
+  tls:
+{{ toYaml .Values.server.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

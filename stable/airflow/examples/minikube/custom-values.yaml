@@ -1,0 +1,154 @@
+#
+# NOTE:
+# - This is intended to be a `custom-values.yaml` starting point for non-production deployment (like minikube)
+
+# External Dependencies:
+# - A PUBLIC git repo for DAGs: ssh://git@repo.example.com:my-airflow-dags.git
+#
+
+###################################
+# Airflow - Common Configs
+###################################
+airflow:
+  ## the airflow executor type to use
+  ##
+  executor: CeleryExecutor
+
+  ## the fernet key used to encrypt the connections in the database
+  ##
+  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+
+  ## environment variables for the web/scheduler/worker Pods (for airflow configs)
+  ##
+  config:
+    # Security
+    AIRFLOW__CORE__SECURE_MODE: "True"
+    AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.deny_all"
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+    AIRFLOW__WEBSERVER__RBAC: "False"
+
+    # DAGS
+    AIRFLOW__CORE__LOAD_EXAMPLES: "True"
+
+    ## Disable noisy "Handling signal: ttou" Gunicorn log messages
+    GUNICORN_CMD_ARGS: "--log-level WARNING"
+
+###################################
+# Airflow - Scheduler Configs
+###################################
+scheduler:
+
+  ## custom airflow connections for the airflow scheduler
+  ##
+  connections:
+    - id: my_aws
+      type: aws
+      extra: |
+        {
+          "aws_access_key_id": "XXXXXXXXXXXXXXXXXXX",
+          "aws_secret_access_key": "XXXXXXXXXXXXXXX",
+          "region_name":"eu-central-1"
+        }
+
+  ## custom airflow variables for the airflow scheduler
+  ##
+  variables: |
+    { "environment": "dev" }
+
+  ## custom airflow pools for the airflow scheduler
+  ##
+  pools: |
+    {
+      "example": {
+        "description": "This is an example pool with 2 slots.",
+        "slots": 2
+      }
+    }
+
+###################################
+# Airflow - WebUI Configs
+###################################
+web:
+  ## configs for the Service of the web Pods
+  ##
+  service:
+    type: NodePort
+
+###################################
+# Airflow - Worker Configs
+###################################
+workers:
+  ## the number of workers Pods to run
+  ##
+  replicas: 1
+
+###################################
+# Airflow - DAGs Configs
+###################################
+dags:
+  ## configs for the DAG git repository & sync container
+  ##
+  git:
+    ## url of the git repository
+    ##
+    url: "ssh://git@repo.example.com/my-airflow-dags.git"
+
+    ## the branch/tag/sha1 which we clone
+    ##
+    ref: master
+
+    ## the name of a pre-created secret containing files for ~/.ssh/
+    ##
+    ## NOTE:
+    ## - this is ONLY RELEVANT for SSH git repos
+    ## - the secret commonly includes files: id_rsa, id_rsa.pub, known_hosts
+    ## - known_hosts is NOT NEEDED if `git.sshKeyscan` is true
+    ##
+    secret: ""
+
+    ## the name of the private key file in your `git.secret`
+    ##
+    ## NOTE:
+    ## - this is ONLY RELEVANT for PRIVATE SSH git repos
+    ##
+    privateKeyName: id_rsa
+
+    ## the host name of the git repo
+    ##
+    ## NOTE:
+    ## - this is ONLY REQUIRED for SSH git repos
+    ##
+    ## EXAMPLE:
+    ##   repoHost: "github.com"
+    ##
+    repoHost: "repo.example.com"
+
+    ## the port of the git repo
+    ##
+    ## NOTE:
+    ## - this is ONLY REQUIRED for SSH git repos
+    ##
+    repoPort: 22
+
+    ## configs for the git-sync container
+    ##
+    gitSync:
+      ## enable the git-sync sidecar container
+      ##
+      enabled: true
+
+      ## the git sync interval in seconds
+      ##
+      refreshTime: 60
+
+###################################
+# Database - PostgreSQL Chart
+###################################
+postgresql:
+  enabled: true
+
+###################################
+# Database - Redis Chart
+###################################
+redis:
+  enabled: true

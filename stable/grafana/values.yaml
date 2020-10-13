@@ -50,7 +50,8 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.7.1
+  tag: 7.1.1
+  sha: ""
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -64,10 +65,12 @@ testFramework:
   enabled: true
   image: "bats/bats"
   tag: "v1.1.0"
+  imagePullPolicy: IfNotPresent
   securityContext: {}
 
 securityContext:
   runAsUser: 472
+  runAsGroup: 472
   fsGroup: 472
 
 
@@ -89,11 +92,13 @@ extraEmptyDirMounts: []
 
 downloadDashboardsImage:
   repository: curlimages/curl
-  tag: 7.68.0
+  tag: 7.70.0
+  sha: ""
   pullPolicy: IfNotPresent
 
 downloadDashboards:
   env: {}
+  resources: {}
 
 ## Pod Annotations
 # podAnnotations: {}
@@ -125,8 +130,15 @@ extraExposePorts: []
  #   targetPort: 8080
  #   type: ClusterIP
 
+# overrides pod.spec.hostAliases in the grafana deployment's pods
+hostAliases: []
+  # - ip: "1.2.3.4"
+  #   hostnames:
+  #     - "my.host.com"
+
 ingress:
   enabled: false
+  # Values can be templated
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -187,6 +199,14 @@ extraContainers: |
 #     - name: proxy-web
 #       containerPort: 4181
 
+## Volumes that can be used in init containers that will not be mounted to deployment pods
+extraContainerVolumes: []
+#  - name: volume-from-secret
+#    secret:
+#      secretName: secret-to-mount
+#  - name: empty-dir-volume
+#    emptyDir: {}
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -214,6 +234,7 @@ initChownData:
   image:
     repository: busybox
     tag: "1.31.1"
+    sha: ""
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits
@@ -264,7 +285,7 @@ env: {}
 envValueFrom: {}
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
-## This can be useful for auth tokens, etc
+## This can be useful for auth tokens, etc. Value is templated.
 envFromSecret: ""
 
 ## Sensible environment variables that will be rendered as new secret object
@@ -278,6 +299,7 @@ extraSecretMounts: []
   #   mountPath: /etc/secrets
   #   secretName: grafana-secret-files
   #   readOnly: true
+  #   subPath: ""
 
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
@@ -451,7 +473,10 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.1.99
+  image:
+    repository: kiwigrid/k8s-sidecar
+    tag: 0.1.151
+    sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}
 #   limits:
@@ -462,6 +487,7 @@ sidecar:
 #     memory: 50Mi
   # skipTlsVerify Set to true to skip tls verification for kube api calls
   # skipTlsVerify: true
+  enableUniqueFilenames: false
   dashboards:
     enabled: false
     SCProvider: true
@@ -494,6 +520,14 @@ sidecar:
     # label that the configmaps with datasources are marked with
     label: grafana_datasource
     # If specified, the sidecar will search for datasource config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null
+  notifiers:
+    enabled: false
+    # label that the configmaps with notifiers are marked with
+    label: grafana_notifier
+    # If specified, the sidecar will search for notifier config-maps inside this namespace.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces
     searchNamespace: null

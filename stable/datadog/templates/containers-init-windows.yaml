@@ -1,0 +1,38 @@
+{{- define "containers-init-windows" -}}
+- name: init-volume
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["pwsh", "-Command"]
+  args:
+    - Copy-Item -Recurse -Force {{ template "datadog.confPath" . }} C:/Temp
+  volumeMounts:
+    - name: config
+      mountPath: C:/Temp/Datadog
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+- name: init-config
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["pwsh", "-Command"]
+  args:
+    - Get-ChildItem 'entrypoint-ps1' | ForEach-Object { & $_.FullName if (-Not $?) { exit 1 } }
+  volumeMounts:
+    - name: config
+      mountPath: {{ template "datadog.confPath" . }}
+    {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
+    - name: confd
+      mountPath: C:/conf.d
+      readOnly: true
+    {{- end }}
+    {{- if .Values.datadog.checksd }}
+    - name: checksd
+      mountPath: C:/checks.d
+      readOnly: true
+    {{- end }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+  resources:
+{{ toYaml .Values.agents.containers.initContainers.resources | indent 4 }}
+{{- end -}}

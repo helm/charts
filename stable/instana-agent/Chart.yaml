@@ -18,7 +18,9 @@ maintainers:
   name: dlbock
 - email: nathan.fisher@instana.com
   name: nfisher
+- email: michele.mancioppi@instana.com
+  name: mmanciop
 name: instana-agent
 sources:
 - https://github.com/instana/instana-agent-docker
-version: 1.0.26
+version: 1.0.31

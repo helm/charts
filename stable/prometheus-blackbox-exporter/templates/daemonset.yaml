@@ -9,13 +9,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
 spec:
-  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-  strategy:
-{{ toYaml .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -29,6 +26,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "prometheus-blackbox-exporter.serviceAccountName" . }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -76,13 +74,9 @@ spec:
             - containerPort: {{ .Values.service.port }}
               name: http
           livenessProbe:
-            httpGet:
-              path: /health
-              port: http
+            {{- toYaml .Values.livenessProbe | trim | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /health
-              port: http
+            {{- toYaml .Values.readinessProbe | trim | nindent 12 }}
           volumeMounts:
             - mountPath: /config
               name: config

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus-am-confg
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
 {{- if .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations }}
   annotations:
 {{ toYaml .Values.prometheus.prometheusSpec.additionalPrometheusSecretsAnnotations | indent 4 }}

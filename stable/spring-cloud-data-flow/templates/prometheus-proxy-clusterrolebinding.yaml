@@ -8,7 +8,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-prometheus-proxy
-    namespace: default
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin

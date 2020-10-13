@@ -18,6 +18,11 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - bitnami.com
+    resources:
+      - sealedsecrets/status
+    verbs:
       - update
   - apiGroups:
       - ""

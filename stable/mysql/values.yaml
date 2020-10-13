@@ -2,19 +2,21 @@
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
 image: "mysql"
-imageTag: "5.7.28"
+imageTag: "5.7.30"
 
 strategy:
   type: Recreate
 
 busybox:
   image: "busybox"
-  tag: "1.29.3"
+  tag: "1.32"
 
 testFramework:
   enabled: true
-  image: "dduportal/bats"
-  tag: "0.4.0"
+  image: "bats/bats"
+  tag: "1.2.1"
+  imagePullPolicy: IfNotPresent
+  securityContext: {}
 
 ## Specify password for root user
 ##
@@ -63,6 +65,11 @@ extraInitContainers: |
   #   image: busybox
   #   command: ['do', 'something']
 
+## A string to add extra environment variables
+# extraEnvVars: |
+#   - name: EXTRA_VAR
+#     value: "extra"
+
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -72,6 +79,10 @@ extraInitContainers: |
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+## Affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
 
 ## Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -144,6 +155,14 @@ initializationFiles: {}
 #    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 #  second-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+# To enaable the mysql X Protocol's port
+# .. will expose the port 33060
+# .. Note the X Plugin needs installation
+# ref: https://dev.mysql.com/doc/refman/8.0/en/x-plugin-checking-installation.html
+mysqlx:
+  port:
+    enabled: false
 
 metrics:
   enabled: false

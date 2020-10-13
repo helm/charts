@@ -50,4 +50,4 @@ Currently following imported:
     - run sync_grafana_dashboards.py inside your fork of this repo
     - send PR with changes to this repo
 
-[CoreDNS dashboard](https://github.com/helm/charts/blob/master/stable/prometheus-operator/templates/grafana/dashboards/k8s-coredns.yaml) is the only dashboard which is maintained in this repo and can be changed without import.
+[CoreDNS dashboard](https://github.com/helm/charts/blob/master/stable/prometheus-operator/templates/grafana/dashboards-1.14/k8s-coredns.yaml) is the only dashboard which is maintained in this repo and can be changed without import.

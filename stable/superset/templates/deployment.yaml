@@ -50,7 +50,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/bin/env"]
-          args: ["python", "/usr/local/bin/gunicorn", "-b", "0.0.0.0:8088", "--limit-request-line", "0", "--limit-request-field_size", "0", "superset:app"]
+          args:
+          - bash
+          - /home/superset/init_superset.sh
+          {{- range .Values.extraArguments }}
+          - {{ . }}
+          {{- end }}
           volumeMounts:
             - name: superset-configs
               mountPath: /home/superset

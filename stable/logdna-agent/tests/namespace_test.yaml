@@ -1,0 +1,23 @@
+suite: test namespace of all yamls
+templates:
+  - daemon_set.yaml
+  - service_account.yaml
+  - role.yaml
+  - role_binding.yaml
+  - secrets.yaml
+tests:
+  - it: should use \"default\" namespace by default
+    release:
+      # helm-unittest defaults this to "NAMESPACE" which is dumb - helm uses "default" by default
+      namespace: default
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: default
+  - it: should use overriden namespace
+    release:
+      namespace: logdna-agent
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: logdna-agent

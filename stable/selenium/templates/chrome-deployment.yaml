@@ -1,4 +1,4 @@
-{{- if eq true .Values.chrome.enabled -}}
+{{- if and (eq true .Values.chrome.enabled) (eq false .Values.chrome.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -18,11 +18,18 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.chrome.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}
       {{- if .Values.chrome.podAnnotations }}
       annotations:
 {{ toYaml .Values.chrome.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.chrome.securityContext }}
+      securityContext:
+{{ toYaml .Values.chrome.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.chrome.image }}:{{ .Values.chrome.tag }}"
@@ -33,6 +40,24 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
+          {{- if .Values.chrome.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.chrome.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.chrome.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.chrome.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}

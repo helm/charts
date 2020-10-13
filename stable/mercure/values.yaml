@@ -4,6 +4,10 @@
 
 transportUrl: bolt://updates.db?size=0&cleanup_frequency=0.3
 allowAnonymous: false
+subscriptions: false
+metrics: false
+metricsLogin: "mercure"
+metricsPassword: ""
 corsAllowedOrigins: []
 debug: false
 demo: false
@@ -14,8 +18,10 @@ publishAllowedOrigins: []
 publisherJwtKey: ""
 subscriberJwtKey: ""
 heartbeatInterval: "0s"
-readTimeout: "0s"
-writeTimeout: "0s"
+readTimeout: "5s"
+writeTimeout: "60s"
+dispatchTimeout: "5s"
+compress: false
 useForwardedHeaders: false
 license: ""
 
@@ -32,7 +38,7 @@ replicaCount: 1
 
 image:
   repository: dunglas/mercure
-  tag: v0
+  tag: v0.10
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

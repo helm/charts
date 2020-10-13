@@ -4,7 +4,7 @@
 
 image:
   repository: homeassistant/home-assistant
-  tag: 0.106.6
+  tag: 0.108.7
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -34,7 +34,7 @@ service:
   type: ClusterIP
   port: 8123
   portName: api
-  additionalPorts: {}
+  additionalPorts: []
   # - name: homematicproxy
   #   port: 2001
   #   targetPort: 2001
@@ -100,6 +100,14 @@ extraEnvSecrets:
   #   secret: mqtt
   #   key: password
 
+## If you'd like to provide your own Kubernetes Secret object instead of passing your values
+## individually, pass in the name of a created + populated Secret.
+## All secrets will be mounted as environment variables, with each key/value mapping to a
+## corresponding environment variable.
+##
+extraSecretForEnvFrom: []
+# - home-assistant-secrets
+
 # Enable pod security context (must be `true` if runAsUser or fsGroup are set)
 usePodSecurityContext: true
 # Set runAsUser to 1000 to let home-assistant run as non-root user 'hass' which exists in 'runningman84/alpine-homeassistant' docker image.
@@ -120,6 +128,11 @@ git:
 
   ## Specify the command that runs in the git-sync container to pull in configuration.
   # command: []
+
+  # Committer settings
+  user:
+    name: ""
+    email: ""
 
   # repo:
   secret: git-creds
@@ -190,6 +203,7 @@ configurator:
     externalIPs: []
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    # externalTrafficPolicy: Local
     # nodePort: 30000
 
 ## Add support for Prometheus
@@ -204,10 +218,13 @@ monitoring:
     # namespace: monitoring
     # Set how frequently Prometheus should scrape
     # interval: 30s
-    # Set path to beats-exporter telemtery-path
-    # telemetryPath: /metrics
     # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
     # labels:
+    # Set bearerTokenFile for home assistant auth (use long lived access tokens)
+    # bearerTokenFile:
+    # Set bearerTokenSecret for home assistant auth (use long lived access tokens)
+    # bearerTokenSecret:
+
 
 vscode:
   enabled: false
@@ -216,7 +233,7 @@ vscode:
   ##
   image:
     repository: codercom/code-server
-    tag: 2.1665-vsc1.39.2
+    tag: 3.1.1
     pullPolicy: IfNotPresent
 
   ## VSCode password
@@ -253,6 +270,51 @@ vscode:
     labels: {}
     clusterIP: ""
     ## List of IP addresses at which the hass-vscode service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    # nodePort: 30000
+
+appdaemon:
+  enabled: false
+
+  ## code-server container image
+  ##
+  image:
+    repository: acockburn/appdaemon
+    tag: 3.0.5
+    pullPolicy: IfNotPresent
+
+  ## Home Assistant API token
+  # haToken:
+
+  ## Additional hass-vscode container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - appdaemon.local
+    tls: []
+    #  - secretName: appdaemon-tls
+    #    hosts:
+    #      - appdaemon.local
+
+  service:
+    type: ClusterIP
+    port: 5050
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    ## List of IP addresses at which the hass-appdaemon service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
     externalIPs: []

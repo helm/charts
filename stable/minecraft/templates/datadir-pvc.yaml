@@ -1,4 +1,4 @@
-{{- if .Values.persistence.dataDir.enabled -}}
+{{- if and .Values.persistence.dataDir.enabled (not .Values.persistence.dataDir.existingClaim ) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

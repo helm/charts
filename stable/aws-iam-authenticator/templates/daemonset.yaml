@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "daemonset.apiVersion" . }}
 kind: DaemonSet
 metadata:
   name: {{ template "aws-iam-authenticator.fullname" . }}
@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "aws-iam-authenticator.name" . }}
+      release: {{ .Release.Name }}
   updateStrategy:
     type: RollingUpdate
   template:

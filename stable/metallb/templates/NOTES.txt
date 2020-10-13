@@ -1,3 +1,6 @@
+############################################################
+####          WARNING: This chart is deprecated         ####
+############################################################
 
 MetalLB is now running in the cluster.
 {{- if .Values.configInline }}

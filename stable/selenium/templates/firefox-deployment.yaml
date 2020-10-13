@@ -1,4 +1,4 @@
-{{- if eq true .Values.firefox.enabled -}}
+{{- if and (eq true .Values.firefox.enabled) (eq false .Values.firefox.runAsDaemonSet) -}}
 apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -18,11 +18,18 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.firefox.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}
       {{- if .Values.firefox.podAnnotations }}
       annotations:
 {{ toYaml .Values.firefox.podAnnotations | indent 8 }}
       {{- end}}
     spec:
+      {{- if .Values.firefox.securityContext }}
+      securityContext:
+{{ toYaml .Values.firefox.securityContext | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.firefox.image }}:{{ .Values.firefox.tag }}"
@@ -33,6 +40,24 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
+          {{- if .Values.firefox.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.firefox.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.firefox.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.firefox.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "selenium.hub.fullname" . }}
@@ -85,11 +110,19 @@ spec:
             {{- if .Values.firefox.extraEnvs }}
 {{ toYaml .Values.firefox.extraEnvs | indent 12 }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.firefox.volumeMounts -}}
+{{ toYaml .Values.firefox.volumeMounts | trim | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.firefox.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.firefox.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.firefox.volumes -}}
+{{ toYaml .Values.firefox.volumes | trim | indent 8 }}
 {{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}

@@ -1,0 +1,106 @@
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>") (or (ne .Values.omsagent.env.clusterName "<your_cluster_name>") (ne .Values.omsagent.env.clusterId "<your_cluster_id>"))}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+ name: omsagent-win
+ namespace: kube-system
+ labels:
+   chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+   release: {{ .Release.Name }}
+   heritage: {{ .Release.Service }}
+   component: oms-agent-win
+   tier: node-win
+spec:
+ updateStrategy:
+  type: RollingUpdate
+ selector:
+   matchLabels:
+     dsName: "omsagent-ds"
+ template:
+  metadata:
+   labels:
+    dsName: "omsagent-ds"
+   annotations:
+    agentVersion: {{ .Values.omsagent.image.tagWindows }}
+    dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
+    schema-versions: "v1"
+  spec:
+   nodeSelector:
+      beta.kubernetes.io/os: windows
+   {{- if .Values.omsagent.rbac }}
+   serviceAccountName: omsagent
+   {{- end }}
+   containers:
+     - name: omsagent-win
+       {{- if eq (.Values.omsagent.domain | lower) "opinsights.azure.cn" }}
+       image: "mcr.azk8s.cn/azuremonitor/containerinsights/ciprod:{{ .Values.omsagent.image.tagWindows }}"
+       {{- else }}
+       image: {{ printf "%s:%s" .Values.omsagent.image.repo .Values.omsagent.image.tagWindows }}
+       {{- end }}
+       imagePullPolicy: IfNotPresent
+       resources:
+{{ toYaml .Values.omsagent.resources.daemonset | indent 9 }}
+       env:
+       {{- if ne .Values.omsagent.env.clusterId "<your_cluster_id>" }}
+       - name: AKS_RESOURCE_ID
+         value: {{ .Values.omsagent.env.clusterId | quote }}
+       {{- if ne .Values.omsagent.env.clusterRegion "<your_cluster_region>" }}
+       - name: AKS_REGION
+         value: {{ .Values.omsagent.env.clusterRegion | quote }}
+       {{- end }}
+       {{- else }}
+       - name: ACS_RESOURCE_NAME
+         value: {{ .Values.omsagent.env.clusterName | quote }}
+       {{- end }}
+       - name: CONTROLLER_TYPE
+         value: "DaemonSet"
+       - name: HOSTNAME
+         valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+       - name: NODE_IP
+         valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+       volumeMounts:
+        - mountPath: C:\ProgramData\docker\containers
+          name: docker-windows-containers
+          readOnly: true
+        - mountPath: C:\var #Read + Write access on this for position file
+          name: docker-windows-kuberenetes-container-logs
+        - mountPath: C:\etc\config\settings
+          name: settings-vol-config
+          readOnly: true
+        - mountPath: C:\etc\omsagent-secret
+          name: omsagent-secret
+          readOnly: true
+       livenessProbe:
+          exec:
+            command:
+              - cmd
+              - /c
+              - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
+          periodSeconds: 60
+          initialDelaySeconds: 180
+   {{- with .Values.omsagent.tolerations }}
+   tolerations: {{- toYaml . | nindent 8 }}
+   {{- end }}
+   volumes:
+    - name: docker-windows-kuberenetes-container-logs
+      hostPath:
+        path: C:\var
+    - name: docker-windows-containers
+      hostPath:
+        path: C:\ProgramData\docker\containers
+    - name: settings-vol-config
+      configMap:
+        name: container-azm-ms-agentconfig
+        optional: true
+    - name: omsagent-secret
+      secret:
+       secretName: omsagent-secret
+    - name: omsagent-adx-secret
+      secret:
+       secretName: omsagent-adx-secret
+       optional: true
+{{- end }}

@@ -1,4 +1,9 @@
-# Node-RED
+# DEPRECATED - Node-RED
+
+**This chart has been deprecated and moved to its new home:**
+
+- **GitHub repo:** https://github.com/billimek/billimek-charts/tree/master/charts/node-red
+- **Charts repo:** https://billimek.com/billimek-charts
 
 Low-code programming for event-driven applications
 

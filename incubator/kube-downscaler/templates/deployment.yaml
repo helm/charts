@@ -37,9 +37,16 @@ spec:
           - --namespace="{{ .Values.namespace.active_in }}"
           {{- end }}
           {{- end }}
-          {{ if .Values.debug.enable }}
+          {{- if .Values.debug.enable }}
           - --debug
-          {{end }}
+          {{- end }}
+          - --include-resources={{- join "," .Values.downscaleResources }}
+          {{- if .Values.excludedNamespaces }}
+          - --exclude-namespaces={{- join "," .Values.excludedNamespaces }}
+          {{- end }}
+          {{- if .Values.excludedDeployments }}
+          - --exclude-deployments={{- join "," .Values.excludedDeployments }}
+          {{- end }}
 {{- with .Values.extraArgs }}
 {{ toYaml . | indent 10 }}
 {{- end }}

@@ -7,7 +7,7 @@ metadata:
 {{ toYaml .Values.controller.stats.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
@@ -15,7 +15,9 @@ metadata:
   name: {{ template "haproxy-ingress.controller.fullname" . }}-stats
   namespace: {{ .Release.Namespace }}
 spec:
+{{- if .Values.controller.stats.service.clusterIP }}
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
+{{- end }}
 {{- if .Values.controller.stats.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.controller.stats.service.externalIPs | indent 4 }}
@@ -32,7 +34,7 @@ spec:
       port: {{ .Values.controller.stats.service.servicePort }}
       targetPort: stats
   selector:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.controller" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.stats.service.type }}"

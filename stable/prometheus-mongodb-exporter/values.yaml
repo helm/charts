@@ -24,9 +24,15 @@ livenessProbe:
     port: metrics
   initialDelaySeconds: 10
 
-# [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
+# [mongodb[+srv]://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 mongodb:
-  uri:
+  uri: ""
+
+# Name of an externally managed secret (in the same namespace) containing the connection uri as key `mongodb-uri`.
+# If this is provided, the value mongodb.uri is ignored.
+existingSecret:
+  name: ""
+  key: "mongodb-uri"
 
 nameOverride: ""
 
@@ -69,6 +75,7 @@ securityContext:
   runAsUser: 10000
 
 service:
+  labels: {}
   annotations: {}
   port: 9216
   type: ClusterIP
@@ -85,5 +92,7 @@ serviceMonitor:
   scrapeTimeout: 10s
   namespace:
   additionalLabels: {}
+  targetLabels: []
+  metricRelabelings: []
 
 tolerations: []

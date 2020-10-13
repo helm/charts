@@ -81,40 +81,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Hyperledger Fabric Orderer chart and default values.
 
-| Parameter                          | Description                                     | Default                                                    |
-| ---------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
-| `image.repository`                 | `hlf-ord` image repository                       | `hyperledger/fabric-orderer`                                    |
-| `image.tag`                        | `hlf-ord` image tag                              | `x86_64-1.1.0`                                             |
-| `image.pullPolicy`                 | Image pull policy                                | `IfNotPresent`                                             |
-| `service.port`                     | TCP port                                         | `7050`                                                     |
-| `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`| `ClusterIP`                                                |
-| `ingress.enabled`                  | If true, Ingress will be created                 | `false`                                                    |
-| `ingress.annotations`              | Ingress annotations                              | `{}`                                                       |
-| `ingress.path`                     | Ingress path                                     | `/`                                                        |
-| `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
-| `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
-| `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
-| `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
-| `persistence.size`                 | Size of data volume (adjust for production!)     | `1Gi`                                                      |
-| `persistence.storageClass`         | Storage class of backing PVC                     | `default`                                                  |
-| `ord.type`                         | Type of Orderer (`solo` or `kafka`)              | `solo`                                                     |
-| `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
-| `ord.tls.server.enabled`           | Do we enable server-side TLS?                    | `false`                                                    |
-| `ord.tls.client.enabled`           | Do we enable client-side TLS?                    | `false`                                                    |
-| `secrets.ord.cred`                 | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'     | ``                                                         |
-| `secrets.ord.cert`                 | Certificate: as 'cert.pem'                       | ``                                                         |
-| `secrets.ord.key`                  | Private key: as 'key.pem'                        | ``                                                         |
-| `secrets.ord.caCert`               | CA Cert: as 'cacert.pem'                         | ``                                                         |
-| `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'        | ``                                                         |
-| `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'           | ``                                                         |
-| `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'           | ``                                                         |
-| `secrets.ord.tlsClientRootCert`    | TLS client root CA certificate: as 'cert.pem'    | ``                                                         |
-| `secrets.genesis`                  | Secret containing Genesis Block for orderer      | ``                                                         |
-| `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | ``                                                         |
-| `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
-| `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
-| `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
-| `affinity`                         | Affinity settings for pod assignment             | `{}`                                                       |
+| Parameter                          | Description                                                   | Default                                                    |
+| ---------------------------------- | ------------------------------------------------              | ---------------------------------------------------------- |
+| `image.repository`                 | `hlf-ord` image repository                                    | `hyperledger/fabric-orderer`                               |
+| `image.tag`                        | `hlf-ord` image tag                                           | `x86_64-1.1.0`                                             |
+| `image.pullPolicy`                 | Image pull policy                                             | `IfNotPresent`                                             |
+| `service.port`                     | TCP port                                                      | `7050`                                                     |
+| `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`             | `ClusterIP`                                                |
+| `service.portMetrics`              | TCP port for the metrics service                              | `9443`                                                     |
+| `ingress.enabled`                  | If true, Ingress will be created                              | `false`                                                    |
+| `ingress.annotations`              | Ingress annotations                                           | `{}`                                                       |
+| `ingress.path`                     | Ingress path                                                  | `/`                                                        |
+| `ingress.hosts`                    | Ingress hostnames                                             | `[]`                                                       |
+| `ingress.tls`                      | Ingress TLS configuration                                     | `[]`                                                       |
+| `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite                           | `ReadWriteOnce`                                            |
+| `persistence.annotations`          | Persistent Volume annotations                                 | `{}`                                                       |
+| `persistence.size`                 | Size of data volume (adjust for production!)                  | `1Gi`                                                      |
+| `persistence.storageClass`         | Storage class of backing PVC                                  | `default`                                                  |
+| `ord.type`                         | Type of Orderer (`solo` or `kafka`)                           | `solo`                                                     |
+| `ord.mspID`                        | ID of MSP the Orderer belongs to                              | `OrdererMSP`                                               |
+| `ord.tls.server.enabled`           | Do we enable server-side TLS?                                 | `false`                                                    |
+| `ord.tls.client.enabled`           | Do we enable client-side TLS?                                 | `false`                                                    |
+| `ord.metrics.provider`             | Metrics provider, can be `statsd`, `prometheus` or `disabled` | `disabled`                                                 |
+| `ord.metrics.statsd.network`       | Network type, can be `udp` or `tcp`                           | `udp`                                                      |
+| `ord.metrics.statsd.address`       | Address of the StatsD server                                  | `127.0.0.1:8125`                                           |
+| `ord.metrics.statsd.writeInterval` | Intervall at whitch counters and gauges are pushed            | `30s`                                                      |
+| `ord.metrics.statsd.prefix`        | Prefix prepended to all the exported metrics                  | ``                                                         |
+| `secrets.ord.cred`                 | Credentials: 'CA_USERNAME' and 'CA_PASSWORD'                  | ``                                                         |
+| `secrets.ord.cert`                 | Certificate: as 'cert.pem'                                    | ``                                                         |
+| `secrets.ord.key`                  | Private key: as 'key.pem'                                     | ``                                                         |
+| `secrets.ord.caCert`               | CA Cert: as 'cacert.pem'                                      | ``                                                         |
+| `secrets.ord.intCaCert`            | Int. CA Cert: as 'intermediatecacert.pem'                     | ``                                                         |
+| `secrets.ord.tls`                  | TLS secret: as 'tls.crt' and 'tls.key'                        | ``                                                         |
+| `secrets.ord.tlsRootCert`          | TLS root CA certificate: as 'cert.pem'                        | ``                                                         |
+| `secrets.ord.tlsClientRootCert`    | TLS client root CA certificate: as 'cert.pem'                 | ``                                                         |
+| `secrets.genesis`                  | Secret containing Genesis Block for orderer                   | ``                                                         |
+| `secrets.adminCert`                | Secret containing Orderer Org admin certificate               | ``                                                         |
+| `resources`                        | CPU/Memory resource requests/limits                           | `{}`                                                       |
+| `nodeSelector`                     | Node labels for pod assignment                                | `{}`                                                       |
+| `tolerations`                      | Toleration labels for pod assignment                          | `[]`                                                       |
+| `affinity`                         | Affinity settings for pod assignment                          | `{}`                                                       |
 
 ## Persistence
 

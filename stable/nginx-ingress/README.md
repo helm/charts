@@ -1,4 +1,7 @@
-# nginx-ingress
+# DEPRECATED - nginx-ingress
+
+This chart is deprecated as we have moved to the upstream repo [ingress-nginx](https://github.com/kubernetes/ingress-nginx)
+The chart source can be found here: https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx
 
 [nginx-ingress](https://github.com/kubernetes/ingress-nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
 
@@ -47,11 +50,14 @@ The following table lists the configurable parameters of the nginx-ingress chart
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.30.0`
+`controller.image.registry` | controller container image registry | `us.gcr.io`
+`controller.image.repository` | controller container image repository | `k8s-artifacts-prod/ingress-nginx/controller`
+`controller.image.tag` | controller container image tag | `0.32.0`
+`controller.image.digest` | controller container image digest | `""`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. | `101`
 `controller.useComponentLabel` | Wether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the controller deployment* | `false`
+`controller.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `controller.containerPort.http` | The port that the controller container listens on for http connections. | `80`
 `controller.containerPort.https` | The port that the controller container listens on for https connections. | `443`
 `controller.config` | nginx [ConfigMap](https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md) entries | none
@@ -87,6 +93,8 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.podAnnotationConfigChecksum` | add annotation with checksum/config | `false`
+`controller.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.podSecurityContext` | Security context policies to add to the controller pod | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
@@ -118,6 +126,8 @@ Parameter | Description | Default
 `controller.service.nodePorts.https` | If `controller.service.type` is either `NodePort` or `LoadBalancer` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
 `controller.service.nodePorts.tcp` | Sets the nodePort for an entry referenced by its key from `tcp` | `{}`
 `controller.service.nodePorts.udp` | Sets the nodePort for an entry referenced by its key from `udp` | `{}`
+`controller.service.internal.enabled` | Enables an (additional) internal load balancer | false
+`controller.service.internal.annotations` | Annotations for configuring the additional internal load balancer | `{}`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -161,13 +171,15 @@ Parameter | Description | Default
 `controller.admissionWebhooks.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.admissionWebhooks.service.servicePort` | Admission webhook service port | `443`
 `controller.admissionWebhooks.service.type` | Type of admission webhook service to create | `ClusterIP`
-`controller.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for the prometheus operator tls proxy, and patch the created webhooks with the CA. | `true`
+`controller.admissionWebhooks.patch.enabled` | If true, will use a pre and post install hooks to generate a CA and certificate to use for validating webhook endpoint, and patch the created webhooks with the CA. | `true`
 `controller.admissionWebhooks.patch.image.repository` | Repository to use for the webhook integration jobs | `jettech/kube-webhook-certgen`
 `controller.admissionWebhooks.patch.image.tag` |  Tag to use for the webhook integration jobs | `v1.0.0`
+`controller.admissionWebhooks.patch.image.digest` |  Digest to use for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.image.pullPolicy` | Image pull policy for the webhook integration jobs | `IfNotPresent`
 `controller.admissionWebhooks.patch.priorityClassName` | Priority class for the webhook integration jobs | `""`
 `controller.admissionWebhooks.patch.podAnnotations` | Annotations for the webhook job pods | `{}`
 `controller.admissionWebhooks.patch.nodeSelector` | Node selector for running admission hook patch jobs | `{}`
+`controller.admissionWebhooks.patch.resources` | Admission webhooks pod resource requests & limits | `{}`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.addHeaders` | configMap key:value pairs containing [custom headers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers) added before sending response to the client | `{}`
@@ -181,12 +193,19 @@ Parameter | Description | Default
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend-amd64`
 `defaultBackend.image.tag` | default backend container image tag | `1.5`
+`defaultBackend.image.digest` | default backend container image digest | `""`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.image.runAsUser` | User ID of the controller process. Value depends on the Linux distribution used inside of the container image. By default uses nobody user. | `65534`
 `defaultBackend.useComponentLabel` | Whether to add component label so the HPA can work separately for controller and defaultBackend. *Note: don't change this if you have an already running deployment as it will need the recreation of the defaultBackend deployment* | `false`
+`defaultBackend.componentLabelKeyOverride` | Allows override of the component label key | `""`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.extraEnvs` | any additional environment variables to set in the defaultBackend pods | `[]`
 `defaultBackend.port` | Http port number | `8080`
+`defaultBackend.autoscaling.enabled` | If true, creates Horizontal Pod Autoscaler | false
+`defaultBackend.autoscaling.minReplicas` | If autoscaling enabled, this field sets minimum replica count | `1`
+`defaultBackend.autoscaling.maxReplicas` | If autoscaling enabled, this field sets maximum replica count | `2`
+`defaultBackend.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilization percentage to scale | "50"
+`defaultBackend.autoscaling.targetMemoryUtilizationPercentage` | Target memory utilization percentage to scale | "50"
 `defaultBackend.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 30
 `defaultBackend.livenessProbe.periodSeconds` | How often to perform the probe | 10
 `defaultBackend.livenessProbe.timeoutSeconds` | When the probe times out | 5
@@ -201,6 +220,7 @@ Parameter | Description | Default
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
+`defaultBackend.deploymentLabels` | labels to add to the deployment metadata | `{}`
 `defaultBackend.podLabels` | labels to add to the pod container metadata | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
@@ -222,9 +242,11 @@ Parameter | Description | Default
 `podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account for the controller | `true`
 `serviceAccount.name` | The name of the controller service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
+`serviceAccount.annotations` | Annotations for service account. Only used if `create` is `true`. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs. The value is evaluated as a template. | `{}`
 `udp` | UDP service key:value pairs The value is evaluated as a template. | `{}`
+`releaseLabelOverride` | If provided, the value will be used as the `release` label instead of .Release.Name | `""`
 
 These parameters can be passed via Helm's `--set` option
 ```console
@@ -305,7 +327,7 @@ The port NLB `80` will be mapped to nginx container port `80` and NLB port `443`
 ```
 controller:
   config:
-    ssl-redirect: "false" # we use `special` port to control ssl redirection 
+    ssl-redirect: "false" # we use `special` port to control ssl redirection
     server-snippet: |
       listen 8000;
       if ( $server_port = 80 ) {
@@ -339,6 +361,47 @@ controller:
       domainName: "kubernetes-example.com"
 ```
 
+## Additional internal load balancer
+
+This setup is useful when you need both external and internal load balancers but don't want to have multiple ingress controllers and multiple ingress objects per application.
+
+By default, the ingress object will point to the external load balancer address, but if correctly configured, you can make use of the internal one if the URL you are looking up resolves to the internal load balancer's URL.
+
+You'll need to set both the following values:
+
+`controller.service.internal.enabled`
+`controller.service.internal.annotations`
+
+If one of them is missing the internal load balancer will not be deployed. Example you may have `controller.service.internal.enabled=true` but no annotations set, in this case no action will be taken.
+
+`controller.service.internal.annotations` varies with the cloud service you're using.
+
+Example for AWS
+```
+controller:
+  service:
+    internal:
+      enabled: true
+      annotations:
+        # Create internal ELB
+        service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+        # Any other annotation can be declared here.
+```
+
+Example for GCE
+```
+controller:
+  service:
+    internal:
+      enabled: true
+      annotations:
+        # Create internal LB
+        cloud.google.com/load-balancer-type: "Internal"
+        # Any other annotation can be declared here.
+```
+
+An use case for this scenario is having a split-view DNS setup where the public zone CNAME records point to the external balancer URL while the private zone CNAME records point to the internal balancer URL. This way, you only need one ingress kubernetes object.
+
 ## Ingress Admission Webhooks
 
 With nginx-ingress-controller version 0.25+, the nginx ingress controller pod exposes an endpoint that will integrate with the `validatingwebhookconfiguration` Kubernetes feature to prevent bad ingress from being added to the cluster.
@@ -356,3 +419,46 @@ Error: UPGRADE FAILED: Service "?????-controller" is invalid: spec.clusterIP: In
 Detail of how and why are in [this issue](https://github.com/helm/charts/pull/13646) but to resolve this you can set `xxxx.service.omitClusterIP` to `true` where `xxxx` is the service referenced in the error.
 
 As of version `1.26.0` of this chart, by simply not providing any clusterIP value, `invalid: spec.clusterIP: Invalid value: "": field is immutable` will no longer occur since `clusterIP: ""` will not be rendered.
+
+## Using custom default backend
+
+Default can be used to server custom error pages when service endpoints are not available. This is requires custom webserver image build with simmilar configuration as below.
+
+```
+server {
+  listen 80 default_server;
+
+  location /nginx_status {
+    stub_status on;
+    access_log  off;
+    allow 127.0.0.1;
+    allow all;
+    deny all;
+  }
+
+  location /healthz {
+    stub_status on;
+    access_log  off;
+    allow 127.0.0.1;
+    allow all;
+    deny all;
+  }
+
+}
+
+###
+# DefaultBackend application handler block
+server {
+  listen 80;
+  server_name *.example-app.com example-app.com;
+
+  access_log  /var/log/nginx/access.log main;
+  root /usr/share/nginx/html;
+
+  location / {
+    add_header Content-Type application/json;
+    add_header Cache-Control "no-cache, no-store" always;
+    try_files /maintenance.json  =502;
+  }
+}
+```

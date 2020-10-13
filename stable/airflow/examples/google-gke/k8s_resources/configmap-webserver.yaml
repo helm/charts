@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-cluster1-webserver-config
+  namespace: airflow-cluster1
+data:
+  webserver_config.py: |
+    import os
+    from airflow.configuration import conf
+    from flask_appbuilder.security.manager import AUTH_DB
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    # The SQLAlchemy connection string.
+    SQLALCHEMY_DATABASE_URI = conf.get("core", "SQL_ALCHEMY_CONN")
+
+    # Flask-WTF flag for CSRF
+    CSRF_ENABLED = True
+
+    # Force users to re-auth after 15min of inactivity
+    PERMANENT_SESSION_LIFETIME = 900
+
+    # Don't allow user self registration
+    AUTH_USER_REGISTRATION = False
+    AUTH_USER_REGISTRATION_ROLE = "Viewer"
+
+    # Use Database authentication
+    AUTH_TYPE = AUTH_DB
