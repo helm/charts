@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `mysqlRootPassword`                          | Password for the `root` user. Ignored if existing secret is provided                         | Random 10 characters                                 |
 | `mysqlUser`                                  | Username of new user to create.                                                              | `nil`                                                |
 | `mysqlPassword`                              | Password for the new user. Ignored if existing secret is provided                            | Random 10 characters                                 |
+| `mysqlPasswordSecretAnnotations`             | MySQL password secret annotations                                                            |  {}                                             |
 | `mysqlDatabase`                              | Name for new database to create.                                                             | `nil`                                                |
 | `livenessProbe.initialDelaySeconds`          | Delay before liveness probe is initiated                                                     | 30                                                   |
 | `livenessProbe.periodSeconds`                | How often to perform the probe                                                               | 10                                                   |
