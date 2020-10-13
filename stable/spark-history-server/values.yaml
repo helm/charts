@@ -16,7 +16,10 @@ image:
 
 service:
   type: LoadBalancer
-  port: 18080
+  # nodePort: 32000
+  port:
+    number: 18080
+    name: http-historyport
   annotations: {}
 
 environment:
@@ -91,11 +94,13 @@ s3:
   enableIAM: true
   # Omit for IAM role-based or provider-based authentication.
   secret: aws-secrets
-  # accessKeyName is a is AWS access key ID. Omit for IAM role-based or provider-based authentication.
+  # accessKeyName is an AWS access key ID. Omit for IAM role-based or provider-based authentication.
   accessKeyName: aws-access-key
   # secretKey is AWS secret key. Omit for IAM role-based or provider-based authentication.
   secretKeyName: aws-secret-key
   logDirectory: s3a://spark-hs/
+  # custom s3 endpoint. Keep default for using aws s3 endpoint
+  endpoint: default
 
 wasbs:
   enableWASBS: false

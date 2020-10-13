@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "haproxy-ingress.name" . }}
+    app: {{ template "haproxy-ingress.labels.app.default-backend" . }}
     chart: {{ template "haproxy-ingress.chart" . }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
@@ -14,7 +14,7 @@ spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "haproxy-ingress.name" . }}
+      app: {{ template "haproxy-ingress.labels.app.default-backend" . }}
       component: "{{ .Values.defaultBackend.name }}"
       release: {{ .Release.Name }}
   template:
@@ -24,7 +24,7 @@ spec:
 {{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "haproxy-ingress.name" . }}
+        app: {{ template "haproxy-ingress.labels.app.default-backend" . }}
         component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.defaultBackend.podLabels }}

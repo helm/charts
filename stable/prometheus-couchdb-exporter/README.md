@@ -1,5 +1,7 @@
 # prometheus-couchdb-exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 [couchdb-prometheus-exporter](https://github.com/gesellix/couchdb-prometheus-exporter) is a Prometheus exporter for CouchDB metrics.
 
 ## TL;DR;

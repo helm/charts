@@ -21,6 +21,11 @@ spec:
         release: {{ .Release.Name }}
         component: coordinator
     spec:
+      {{- with .Values.image.securityContext }}
+      securityContext:
+        runAsUser: {{ .runAsUser }}
+        runAsGroup: {{ .runAsGroup }}
+      {{- end }}
       volumes:
         - name: config-volume
           configMap:
@@ -29,9 +34,6 @@ spec:
         - name: {{ .Chart.Name }}-coordinator
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/bash"]
-          args:
-            - {{ .Values.server.config.path }}/docker-presto.sh
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume

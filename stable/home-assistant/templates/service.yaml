@@ -25,6 +25,9 @@ spec:
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
+  {{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+  {{- end }}
   {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
@@ -58,9 +61,18 @@ spec:
     - name: vscode
       port: {{ .Values.vscode.service.port }}
       protocol: TCP
-      targetPort: 80
+      targetPort: {{ .Values.vscode.service.port }}
 {{ if (and (eq .Values.vscode.service.type "NodePort") (not (empty .Values.vscode.service.nodePort))) }}
       nodePort: {{.Values.vscode.service.nodePort}}
+{{ end }}
+{{- end }}
+{{- if .Values.appdaemon.enabled }}
+    - name: appdaemon
+      port: {{ .Values.appdaemon.service.port }}
+      protocol: TCP
+      targetPort: 5050
+{{ if (and (eq .Values.appdaemon.service.type "NodePort") (not (empty .Values.appdaemon.service.nodePort))) }}
+      nodePort: {{.Values.appdaemon.service.nodePort}}
 {{ end }}
 {{- end }}
 {{- if .Values.service.additionalPorts }}

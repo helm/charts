@@ -7,7 +7,7 @@ name: "neo4j"
 
 # Specs for the Neo4j docker image
 image: "neo4j"
-imageTag: "3.4.5-enterprise"
+imageTag: "4.0.3-enterprise"
 imagePullPolicy: "IfNotPresent"
 # imagePullSecret: registry-secret
 acceptLicenseAgreement: "no"
@@ -38,11 +38,21 @@ authEnabled: true
 clusterDomain: "cluster.local"
 
 # Specs for the images used for running tests against the Helm package
+# https://github.com/mneedham/k8s-kubectl this is a general kubectl docker image
 testImage: "markhneedham/k8s-kubectl"
 testImageTag: "master"
 
+# Whether or not to use APOC: https://neo4j.com/labs/apoc/
+# Comment out if you do not want to use it.
+useAPOC: "true"
+
+# The default name of the Neo4j database to use.
+# See https://neo4j.com/docs/operations-manual/current/manage-databases/introduction/#manage-databases-default
+defaultDatabase: "neo4j"
+
 # Cores
 core:
+  # configMap: "my-custom-configmap"
   numberOfServers: 3
   persistentVolume:
     ## whether or not persistence is enabled
@@ -70,14 +80,6 @@ core:
     ##
     ## subPath: ""
 
-  ## Pass extra environment variables to the Neo4j container.
-  ##
-  # extraVars:
-  # - name: EXTRA_VAR_1
-  #   value: extra-var-value-1
-  # - name: EXTRA_VAR_2
-  #   value: extra-var-value-2
-
   sidecarContainers: []
   ## Additional containers to be added to the Neo4j core pod.
   #  - name: my-sidecar
@@ -85,7 +87,9 @@ core:
 
   initContainers: []
   ## init containers to run before the Neo4j core pod e.g. to install plugins
-
+  ## They can also be used to restore from last available backup, to ensure that newly joining
+  ## core members have less TX history to catch up on before joining the cluster.
+  ## Note that this is specifically *not* needed for APOC, which is included by default.
   # - name: init-plugins
   #   image: "appropriate/curl:latest"
   #   imagePullPolicy: "IfNotPresent"
@@ -96,11 +100,12 @@ core:
   #     - "/bin/sh"
   #     - "-c"
   #     - |
-  #       curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.0.3/apoc-3.2.0.3-all.jar -O
-  #       cp apoc-3.2.0.3-all.jar /plugins/
+  #       curl -L https://somesite.com/path/to/plugin.jar -O
+  #       cp plugin.jar /plugins/
 
 # Read Replicas
 readReplica:
+  # configMap: "my-custom-configmap"
   resources: {}
   # limits:
   #   cpu: 100m
@@ -115,13 +120,6 @@ readReplica:
     maxReplicas: 3
 
   numberOfServers: 0
-  ## Pass extra environment variables to the Neo4j container.
-  ##
-  # extraVars:
-  # - name: EXTRA_VAR_1
-  #   value: extra-var-value-1
-  # - name: EXTRA_VAR_2
-  #   value: extra-var-value-2
 
   sidecarContainers: []
   ## Additional containers to be added to the Neo4j replica pod.
@@ -129,8 +127,10 @@ readReplica:
   #    image: nginx:latest
 
   initContainers: []
-  ## init containers to run before the Neo4j replica pod e.g. to install plugins
-
+  ## init containers to run before the Neo4j replica pod e.g. to install custom plugins
+  ## They can also be used to restore from last available backup, to ensure that newly joining
+  ## core members have less TX history to catch up on before joining the cluster.
+  ## Note that this is specifically *not* needed for APOC, which is included by default.
   # - name: init-plugins
   #   image: "appropriate/curl:latest"
   #   imagePullPolicy: "IfNotPresent"
@@ -141,8 +141,8 @@ readReplica:
   #     - "/bin/sh"
   #     - "-c"
   #     - |
-  #       curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.0.3/apoc-3.2.0.3-all.jar -O
-  #       cp apoc-3.2.0.3-all.jar /plugins/
+  #       curl -L https://somesite.com/path/to/plugin.jar -O
+  #       cp plugin.jar /plugins/
 
 resources: {}
 # limits:

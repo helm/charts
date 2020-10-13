@@ -41,6 +41,21 @@ data:
   CORE_PEER_GOSSIP_EXTERNALENDPOINT: {{ .Values.peer.gossip.externalEndpoint | quote }}
   CORE_PEER_GOSSIP_ORGLEADER: {{ .Values.peer.gossip.orgLeader | quote }}
   CORE_PEER_GOSSIP_USELEADERELECTION: {{ .Values.peer.gossip.useLeaderElection | quote }}
+  #############
+  # CHAINCODE #
+  #############
+  {{- if .Values.peer.chaincode.builder }}
+  CORE_CHAINCODE_BUILDER: {{ .Values.peer.chaincode.builder | quote }}
+  {{- end}}
+  {{- if .Values.peer.chaincode.runtime.golang }}
+  CORE_CHAINCODE_GOLANG_RUNTIME: {{ .Values.peer.chaincode.runtime.golang | quote }}
+  {{- end}}
+  {{- if .Values.peer.chaincode.runtime.java }}
+  CORE_CHAINCODE_JAVA_RUNTIME: {{ .Values.peer.chaincode.runtime.java | quote }}
+  {{- end}}
+  {{- if .Values.peer.chaincode.runtime.node }}
+  CORE_CHAINCODE_NODE_RUNTIME: {{ .Values.peer.chaincode.runtime.node | quote }}
+  {{- end}}
   ##########
   # TLS    #
   ##########
@@ -64,3 +79,22 @@ data:
   GODEBUG: "netdns=go"
   ADMIN_MSP_PATH: /var/hyperledger/admin_msp
   ORD_TLS_PATH: /var/hyperledger/tls/ord/cert
+##############
+# Operations #
+##############
+  {{- if eq .Values.peer.metrics.provider "prometheus" }}
+  CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:9443
+  {{- end }}
+  {{- if eq .Values.peer.metrics.provider "statsd" }}
+  CORE_OPERATIONS_LISTENADDRESS: 127.0.0.1:8125
+  {{- end }}
+###########
+# Metrics #
+###########
+  CORE_METRICS_PROVIDER: {{ .Values.peer.metrics.provider | quote }}
+  {{- if eq .Values.peer.metrics.provider "statsd" }}
+  CORE_METRICS_STATSD_NETWORK: {{ .Values.peer.metrics.statsd.network | quote }}
+  CORE_METRICS_STATSD_ADDRESS: {{ .Values.peer.metrics.statsd.address | quote }}
+  CORE_METRICS_STATSD_WRITEINTERVAL: {{ .Values.peer.metrics.statsd.writeInterval | quote }}
+  CORE_METRICS_STATSD_PREFIX: {{ .Values.peer.metrics.statsd.prefix | quote }}
+  {{- end }}

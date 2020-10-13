@@ -32,10 +32,12 @@ prometheus:
     interval: 10s
     # Alternative namespace to install the ServiceMonitor in
     namespace: ""
+    # Labels to add to the service monitor
+    labels: {}
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.10.7
+  tag: 0.10.9
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -49,6 +51,8 @@ aws:
   secret_key: ""
   access_key: ""
   region: ""
+
+existingSecret: ""
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -68,7 +72,13 @@ priorityClassName: ""
 
 podLabels: {}
 
-probe: true
+probe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+  timeoutSeconds: 1
 
 rbac:
   ## If true, create & use RBAC resources
@@ -95,3 +105,10 @@ updateStrategy: OnDelete
 verbose: false
 
 tolerations: []
+
+podSecurityPolicy:
+  ## if true, a podSecurityPolicy object will be created. rbac.create has to be set to true to also create RBAC roles and bindings for the podSecurityPolicy.
+  enabled: false
+
+  ## annotations to add to the podSecurityPolicy object
+  annotations: {}

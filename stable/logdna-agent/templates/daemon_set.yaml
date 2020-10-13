@@ -1,0 +1,114 @@
+{{- if .Values.logdna.key -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.logdna.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ template "logdna.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: {{ template "logdna.chart" . }}
+spec:
+  {{- if .Values.daemonset.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "logdna.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "logdna.name" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        helm.sh/chart: {{ template "logdna.chart" . }}
+      {{- if .Values.updateOnSecretChange }}
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum | quote }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "logdna.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.logdna.name }}
+        image: "{{ .Values.image.name }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: LOGDNA_AGENT_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "logdna.name" . }}
+                key: logdna-agent-key
+          - name: RUST_LOG
+            value: info
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+{{- if .Values.logdna.tags }}
+          - name: LOGDNA_TAGS
+            value: {{ .Values.logdna.tags }}
+{{- end }}
+{{- if .Values.extraEnv }}
+{{ tpl (toYaml .Values.extraEnv) $ | indent 10 }}
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+          - name: varlog
+            mountPath: /var/log
+          - name: vardata
+            mountPath: /var/data
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+            readOnly: true
+          - name: mnt
+            mountPath: /mnt
+            readOnly: true
+          - name: docker
+            mountPath: /var/run/docker.sock
+          - name: osrelease
+            mountPath: /etc/os-release
+          - name: logdnahostname
+            mountPath: /etc/logdna-hostname
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+{{- end }}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: vardata
+          hostPath:
+            path: /var/data
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: mnt
+          hostPath:
+            path: /mnt
+        - name: docker
+          hostPath:
+            path: /var/run/docker.sock
+        - name: osrelease
+          hostPath:
+            path: /etc/os-release
+        - name: logdnahostname
+          hostPath:
+            path: /etc/hostname
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8}}
+{{- end }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+{{- end -}}

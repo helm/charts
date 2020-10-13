@@ -85,14 +85,14 @@ spec:
       protocol: TCP
       name: statd
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.statdPort))) }}
-      nodePort: {{ .Values.service.statdPort }}
+      nodePort: {{ .Values.service.statdNodePort }}
       {{- end }}
     - port: {{ .Values.service.statdPort }}
       targetPort: statd-udp
       protocol: UDP
       name: statd-udp
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.statdPort))) }}
-      nodePort: {{ .Values.service.statdPort }}
+      nodePort: {{ .Values.service.statdNodePort }}
       {{- end }}
   {{- if .Values.service.externalIPs }}
   externalIPs:

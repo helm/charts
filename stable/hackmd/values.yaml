@@ -81,8 +81,9 @@ affinity: {}
 ##
 postgresql:
   install: true
-  imageTag: "9.6.2"
-  postgresUser: "hackmd"
-  postgresDatabase: "hackmd"
+  image:
+    tag: "9.6"
+  postgresqlUsername: "hackmd"
+  postgresqlDatabase: "hackmd"
   ## Default: random 10 character string
-  # postgresPassword:
+  # postgresqlPassword:

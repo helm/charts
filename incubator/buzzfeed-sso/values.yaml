@@ -6,6 +6,7 @@ rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
 cluster: dev
 
 auth:
+  enabled: true
   annotations: {}
   domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
   extraEnv: []
@@ -27,6 +28,9 @@ auth:
     # cookieSecret: ''
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-auth-secret
+  # Include Auth application in ingress, useful if the auth component is
+  # exposed independently.
+  ingressEnabled: true
   # Auth application ingress path.
   # For GKE and AWS ALB ingresses use "/*"
   # For Nginx ingress use "/"
@@ -35,6 +39,7 @@ auth:
     # secretName: sso-auth-tls-secret
 
 proxy:
+  enabled: true
   annotations: {}
   extraEnv:
     - name: STATSD_HOST
@@ -62,6 +67,12 @@ proxy:
   # # Or if you do not want to create the secret via helm
   # customSecret: my-sso-proxy-secret
 
+  # If you are using_allowed groups in upstreams, DEFAULT_ALLOWED_EMAIL_DOMAINS needs to be an empty string
+  # this is explained in this pr https://github.com/buzzfeed/sso/pull/280#issuecomment-584088825
+  # to get an empty value, set the string below to -, as per this issue https://github.com/helm/helm/issues/2600#issuecomment-310108850
+  # otherwise populate it with your default allowed email domains
+  defaultAllowedEmailDomains: ""
+
 provider:
   google: {}  # Required.
   # google:
@@ -78,7 +89,7 @@ provider:
 
 image:
   repository: buzzfeed/sso
-  tag: v2.0.0
+  tag: v2.1.0
   pullPolicy: IfNotPresent
 
 ingress:
@@ -90,11 +101,22 @@ ingress:
   extraLabels: {}
   hosts: []
   #  - domain: mybackend.mydomain.foo
+  #    # The "path" field is deprecated and will be removed in the
+  #    # next major release. Use "paths" instead.
   #    path: /
+  #    paths:
+  #      - /endpoint1
+  #      - /endpoint2
   tls: []
   #  - secretName: mybackend-mydomain-tls
   #    hosts:
   #      - mybackend.mydomain.foo
+  # GCP backend service configuration
+  # Possible values can be found here : https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig#backendconfigspec_v1beta1_cloudgooglecom
+  gcpBackendConfig: {}
+  # timeoutSec: 60
+  # connectionDraining:
+  #   drainingTimeoutSec: 60
 
 upstreams: []
 # See https://github.com/buzzfeed/sso/blob/f437f237ac977201f15868601c9bc0e9dff11f40/docs/sso_config.md#proxy-config

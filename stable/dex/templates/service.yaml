@@ -26,6 +26,14 @@ spec:
   {{- end }}
     port: {{ .Values.ports.grpc.servicePort }}
 {{- end }}
+{{- if .Values.telemetry }}
+  - name: telemetry
+    targetPort: telemetry
+  {{- if eq "NodePort" .Values.service.type }}
+    nodePort: {{ .Values.ports.telemetry.nodePort }}
+  {{- end }}
+    port: {{ .Values.ports.telemetry.servicePort }}
+{{- end }}
 {{- if hasKey .Values.service "externalIPs" }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}

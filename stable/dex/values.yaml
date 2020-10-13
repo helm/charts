@@ -4,8 +4,9 @@
 # name: value
 
 image: quay.io/dexidp/dex
-imageTag: "v2.21.0"
+imageTag: "v2.24.0"
 imagePullPolicy: "IfNotPresent"
+imagePullSecrets: {}
 
 inMiniKube: false
 
@@ -14,6 +15,8 @@ nodeSelector: {}
 podLabels: {}
 
 podAnnotations: {}
+
+priorityClassName: ""
 
 initContainers: []
 
@@ -53,6 +56,9 @@ grpc: true
 # https termination by dex itself
 https: false
 
+# expose prometheus metrics ?
+telemetry: false
+
 ports:
   web:
     containerPort: 5556
@@ -65,6 +71,11 @@ ports:
     # for service.type: NodePort
     nodePort: 35000
     servicePort: 35000
+  telemetry:
+    containerPort: 5558
+    # for service.type: NodePort
+    nodePort: 37000
+    servicePort: 37000
 
 livenessProbe:
   enabled: true
@@ -186,6 +197,7 @@ config:
     address: 0.0.0.0
     tlsCert: /etc/dex/tls/https/server/tls.crt
     tlsKey: /etc/dex/tls/https/server/tls.key
+    allowedOrigins: []
 # Section below is relevant only when grpc support is enabled
   grpc:
     # port is taken from ports section above

@@ -119,6 +119,11 @@ spec:
                   name: {{ $opts.secret }}
                   key: {{ $opts.key }}
             {{- end }}
+          envFrom:
+          {{- range .Values.extraSecretForEnvFrom }}
+            - secretRef:
+                name: {{ . }}
+          {{- end }}
           volumeMounts:
           - mountPath: /config
             name: config
@@ -170,7 +175,7 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-configurator
                   key: hass-api-password
             {{- end }}
-            {{- if (.Values.configurator.username) and (.Values.configurator.password) }}
+            {{- if and (.Values.configurator.username) (.Values.configurator.password) }}
             - name: HC_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -197,6 +202,18 @@ spec:
             - name: HC_ENFORCE_BASEPATH
               value: "{{ .Values.configurator.enforceBasepath }}"
             {{- end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
+            {{ end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
+            {{ end }}
             {{- range $key, $value := .Values.configurator.extraEnv }}
             - name: {{ $key }}
               value: {{ $value }}
@@ -228,9 +245,7 @@ spec:
           workingDir: {{ .Values.vscode.hassConfig }}
           args:
             - --port={{ .Values.vscode.service.port }}
-            {{- if (.Values.vscode.password) }}
-            - --allow-http #Not supported without password
-            {{- else }}
+            {{- if not (.Values.vscode.password) }}
             - --auth=none
             {{- end }}
             {{- if .Values.vscode.vscodePath }}
@@ -250,6 +265,18 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-vscode
                   key: password
             {{- end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
+            {{ end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
+            {{ end }}
             {{- range $key, $value := .Values.vscode.extraEnv }}
             - name: {{ $key }}
               value: {{ $value }}
@@ -257,6 +284,10 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: config
+          {{- if .Values.git.enabled }}
+          - mountPath: {{ .Values.git.keyPath }}
+            name: git-secret
+          {{- end }}
           {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
           {{- if .Values.usePodSecurityContext }}
           securityContext:
@@ -269,6 +300,64 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.vscode.resources | indent 12 }}
+        {{- end }}
+        {{- if .Values.appdaemon.enabled }}
+        - name: appdaemon
+          image: "{{ .Values.appdaemon.image.repository }}:{{ .Values.appdaemon.image.tag }}"
+          imagePullPolicy: {{ .Values.appdaemon.image.pullPolicy }}
+          ports:
+            - name: appdaemon
+              containerPort: {{ .Values.appdaemon.service.port }}
+              protocol: TCP
+          env:
+            - name: HA_URL
+              value: "http://localhost:{{ .Values.service.port }}"
+            {{- if .Values.appdaemon.ingress.enabled }}
+            - name: DASH_URL
+              #value: http{{ if .Values.appdaemon.ingress.tls }}s{{ end }}://{{ index .Values.appdaemon.ingress.hosts 0 }}
+              value: http://0.0.0.0:{{ .Values.appdaemon.service.port }}
+            {{- end }}
+            {{- if .Values.appdaemon.haToken }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-appdaemon
+                  key: token
+            {{- end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.name) }}
+            - name: GIT_AUTHOR_NAME
+              value: {{ .Values.git.user.name }}
+            - name: GIT_COMMITTER_NAME
+              value: {{ .Values.git.user.name }}
+            {{ end }}
+            {{- if and (.Values.git.enabled) (.Values.git.user.email) }}
+            - name: GIT_AUTHOR_EMAIL
+              value: {{ .Values.git.user.email }}
+            - name: GIT_COMMITTER_EMAIL
+              value: {{ .Values.git.user.email }}
+            {{ end }}
+            {{- range $key, $value := .Values.vscode.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /ha-conf
+            name: config
+          - mountPath: /conf
+            subPath: appdaemon
+            name: config
+          {{- if .Values.extraVolumeMounts }}{{ toYaml .Values.extraVolumeMounts | trim | nindent 10 }}{{ end }}
+          {{- if .Values.usePodSecurityContext }}
+          securityContext:
+            runAsUser: {{ default 0 .Values.runAsUser }}
+          {{- if and (.Values.runAsUser) (.Values.fsGroup) }}
+          {{- if not (eq .Values.runAsUser 0.0) }}
+            fsGroup: {{ .Values.fsGroup }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.appdaemon.resources | indent 12 }}
         {{- end }}
       volumes:
       - name: config

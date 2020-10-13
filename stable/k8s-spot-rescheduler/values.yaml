@@ -10,7 +10,7 @@ podDisruptionBudget: {}
 
 image:
   repository: quay.io/pusher/k8s-spot-rescheduler
-  tag: v0.2.0
+  tag: v0.3.0
   pullPolicy: IfNotPresent
 
 # The full list of available options https://github.com/pusher/k8s-spot-rescheduler#flags

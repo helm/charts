@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "0.0.1"
+deprecated: true
+description: DEPRECATED - incubator/kube-ops-view
+name: kube-ops-view
+# This chart is deprecated and no longer maintained. For details on the
+# deprecation policy, including how to un-deprecate a chart, see the
+# PROCESSES.md file.
+version: 0.1.1
+home: https://github.com/hjacobs/kube-ops-view
+maintainers: []

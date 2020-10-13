@@ -79,3 +79,7 @@ persistence:
 ## To make adjustments to janusgraph.properties and gremlin-server.yaml, provide a
 ## custom ConfigMap in your k8s cluster (using the helm created ConfigMap as a base).
 configMapOverrideName: ""
+
+# nodeSelector:
+#   beta.kubernetes.io/os: linux
+#   beta.kubernetes.io/arch: amd64

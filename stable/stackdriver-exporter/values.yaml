@@ -83,6 +83,7 @@ serviceAccount:
   # If not set and create is false, 'default' is used
   # If not set and create is true, a name is generated using the fullname template
   name:
+  annotations: {}
 
 # Enable this if you're using https://github.com/coreos/prometheus-operator
 serviceMonitor:

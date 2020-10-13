@@ -29,6 +29,9 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "sematext-agent.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         {{- if or (.Values.containerToken) (.Values.infraToken) }}
         - name: agent
@@ -82,6 +85,9 @@ spec:
               mountPath: /sys/kernel/debug
             - name: run
               mountPath: /var/run/
+            - name: dev
+              mountPath: /hostfs/dev
+              readOnly: true
           securityContext:
             privileged: true
           ports:
@@ -139,6 +145,9 @@ spec:
         - name: run
           hostPath:
             path: /var/run/
+        - name: dev
+          hostPath:
+            path: /dev
         {{- if .Values.logagent.customConfigs }}
         - name: logagent-config-volume
           configMap:

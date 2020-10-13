@@ -117,6 +117,7 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
+| service.nodePort |The NodePort on which the service UI can be accessed.|nil|
 | service.annotations | annotations for the service | {} |
 | pvc.enablePVC |Whether to use PVC storage|true|
 | pvc.existingClaimName |The pre-created PVC name|nfs-pvc|
@@ -132,6 +133,7 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | s3.accessKeyName | The file name that contains the AWS access key ID. Omit if using IAM based authentication | aws-access-key |
 | s3.secretKeyName | The file name that contains the AWS secret access key. Omit if using IAM based authentication | aws-secret-key |
 | s3.logDirectory | The S3 log directory that starts with "s3a://" | s3a://spark-hs/ |
+| s3.endpoint | The s3 service endpoint | default |
 | wasbs.enableWASBS | Whether to use WASBS storage | false |
 | wasbs.sasKeyMode | Whether to use SAS token based authentication or fall back to using Azure Storage Account access key secret | true |
 | wasbs.secret | Pre-mounted secret name for WASBS connection | azure-secrets |
@@ -167,6 +169,7 @@ Similarly, only when `s3.enableS3` is `true`, the following settings take effect
 * s3.accessKeyName
 * s3.secretKeyName
 * s3.logDirectory
+* s3.endpoint
 
 Similarly, only when `wasbs.enableWASBS` is `true`, the following settings take effect:
 * wasbs.enableWASBS

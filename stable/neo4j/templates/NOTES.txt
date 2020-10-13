@@ -4,21 +4,22 @@
 ###################################################################
 {{- else }}
 We'll need to wait a few seconds for the Neo4j cluster to form.
-We need to see this line in all of our pods' logs:
+We need to see this line in all of our pods' logs that look like this:
 
 > Remote interface available at http://neo-helm-neo4j-core-2.neo-helm-neo4j.default.svc.cluster.local:7474/
 
 We can see the content of the logs by running the following command:
 
-kubectl logs -l "app={{ template "neo4j.name" . }},component=core"
+kubectl logs -l "app.kubernetes.io/name={{ template "neo4j.name" . }},app.kubernetes.io/component=core"
 
 We can now run a query to find the topology of the cluster.
 
+export NEO4J_PASSWORD=$(kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml | grep password | sed 's/.*: //' | base64 -D)
 kubectl run -it --rm cypher-shell \
-    --image=neo4j:3.2.3-enterprise \
+    --image={{ .Values.image }}:{{ .Values.imageTag }} \
     --restart=Never \
     --namespace {{ .Release.Namespace }} \
-    --command -- ./bin/cypher-shell -u neo4j -p <password> --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
+    --command -- ./bin/cypher-shell -u neo4j -p "$NEO4J_PASSWORD" -a neo4j://{{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
 
 This will print out the addresses of the members of the cluster.
 
@@ -28,4 +29,10 @@ If you didn't set a password, one will be auto generated.
 You can find the base64 encoded version of the password by running the following command:
 
 kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml
+
+===================== NOTICE ==========================
+This chart has now been deprecated, replaced by 
+https://github.com/neo4j-contrib/neo4j-helm
+=======================================================
+
 {{- end}}

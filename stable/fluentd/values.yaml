@@ -1,6 +1,8 @@
 # Default values for fluentd.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+replicaCount: 1
+
 image:
   repository: gcr.io/google-containers/fluentd-elasticsearch
   tag: v2.4.0
@@ -67,6 +69,10 @@ metrics:
 annotations: {}
 #  prometheus.io/scrape: "true"
 #  prometheus.io/port: "24231"
+
+# Pod Labels
+deployment:
+  labels: {}
 
 ingress:
   enabled: false

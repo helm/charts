@@ -1,12 +1,10 @@
 apiVersion: v1
 appVersion: 1.1.0
-description: A Helm chart for Elastabot - a Slack bot companion for Elasticsearch and ElastAlert
+description: DEPRECATED A Helm chart for Elastabot - a Slack bot companion for Elasticsearch and ElastAlert
+deprecated: true
 name: elastabot
-version: 1.2.0
+version: 1.2.1
 home: https://github.com/jertel/elastabot
 sources:
 - https://github.com/jertel/elastabot
-maintainers:
-  - name: jertel
-    email: jertel@codesim.com
 engine: gotpl

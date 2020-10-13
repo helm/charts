@@ -4,13 +4,11 @@ kind: Service
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
   selector:
-    app: {{ template "sysdig.fullname" .}}
+    app.kubernetes.io/name: {{ include "sysdig.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
   - protocol: TCP
     port: {{ .Values.auditLog.auditServerPort }}

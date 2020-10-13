@@ -1,0 +1,42 @@
+{{- if .Values.scc.create }}
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  annotations:
+    kubernetes.io/description: |
+      This provides the minimum requirements to the Sysdig agent to run in the Openshift.
+  name: {{ template "sysdig.fullname" . }}
+  labels:
+{{ include "sysdig.labels" . | indent 4 }}
+allowHostDirVolumePlugin: true
+allowHostIPC: false
+allowHostNetwork: true
+allowHostPID: true
+allowHostPorts: false
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: true
+allowedCapabilities: []
+allowedUnsafeSysctls: []
+defaultAddCapabilities: []
+fsGroup:
+  type: RunAsAny
+groups: []
+priority: 0
+readOnlyRootFilesystem: false
+requiredDropCapabilities: []
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+seccompProfiles:
+- '*'
+supplementalGroups:
+  type: RunAsAny
+users:
+- system:serviceaccount:{{ .Release.Namespace }}:{{ template "sysdig.serviceAccountName" .}}
+volumes:
+- hostPath
+- emptyDir
+- secret
+- configMap
+{{- end -}}

@@ -1,5 +1,11 @@
 # Consul Helm Chart
 
+## Deprecated
+This chart is deprecated in favor of HashiCorp's [Official Helm Chart](https://github.com/hashicorp/consul-helm).
+
+See [https://www.consul.io/docs/k8s/installation/overview](https://www.consul.io/docs/k8s/installation/overview)
+for installation instructions.
+
 ## Prerequisites Details
 * Kubernetes 1.10+
 * PV support on underlying infrastructure

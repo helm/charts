@@ -61,6 +61,7 @@ securityContext: {}
 
 config:
   datasource:
+    # Specify one of both datasource or datasourceSecret
     host:
     user: postgres
     # Only one of password and passwordSecret can be specified
@@ -74,6 +75,13 @@ config:
     port: "5432"
     database: ''
     sslmode: disable
+  datasourceSecret: {}
+    # Specifies if datasource should be sourced from secret value in format: postgresql://login:password@hostname:port/dbname?sslmode=disable
+    # Multiple Postgres databases can be configured by comma separated postgres connection strings
+    # Secret name
+    #  name:
+    # Connection string key inside secret
+    #  key:
   disableDefaultMetrics: false
   disableSettingsMetrics: false
   autoDiscoverDatabases: false

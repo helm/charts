@@ -23,6 +23,8 @@ spec:
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
         role: hazelcast
+      annotations:
+        checksum/hazelcast-config: {{ toYaml .Values.hazelcast.yaml | sha256sum }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -103,6 +105,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        {{- if .Values.customVolume }}
+        - name: CLASSPATH
+          value: "/data/custom:/data/custom/*"
+        {{- end }}
         {{- if .Values.metrics.enabled }}
         - name: PROMETHEUS_PORT
           value: "{{ .Values.metrics.service.port }}"

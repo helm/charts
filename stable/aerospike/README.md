@@ -3,6 +3,16 @@
 This is an implementation of Aerospike StatefulSet found here:
 * <https://github.com/aerospike/aerospike-kubernetes>
 
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline), another repository has taken over the chart [here](hhttps://github.com/aerospike/aerospike-kubernetes/tree/master/helm)*
+
+Note: this is the official repository.
+
+Please make PRs / Issues here from now on.
+
+----------------------------------------
+
 ## Pre Requisites
 * Kubernetes 1.9+
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).

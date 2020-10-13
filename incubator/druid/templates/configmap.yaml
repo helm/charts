@@ -1,0 +1,33 @@
+{{- if .Values.configMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "druid.name" . }}
+  labels:
+    app: {{ template "druid.name" . }}
+    chart: {{ template "druid.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.configVars | indent 2 }}
+{{- if .Values.zookeeper.enabled }}
+  druid_zk_service_host: {{ .Release.Name }}-zookeeper-headless:2181
+{{- else }}
+  druid_zk_service_host: {{ .Values.zkHosts }}
+{{- end }}
+{{- if .Values.mysql.enabled }}
+  druid_metadata_storage_type: mysql
+  druid_metadata_storage_connector_connectURI: jdbc:mysql://{{ .Release.Name }}-mysql:3306/{{ .Values.mysql.mysqlDatabase}}
+  druid_metadata_storage_connector_user: {{ .Values.mysql.mysqlUser }}
+  druid_metadata_storage_connector_password: {{ .Values.mysql.mysqlPassword }}
+{{- end }}
+{{- if .Values.postgresql.enabled }}
+  druid_metadata_storage_type: postgresql
+  druid_metadata_storage_connector_connectURI: jdbc:postgresql://{{ .Release.Name }}-postgresql:{{ .Values.postgresql.service.port}}/{{ .Values.postgresql.postgresqlDatabase }}
+  druid_metadata_storage_connector_user: {{ .Values.postgresql.postgresqlUsername }}
+  druid_metadata_storage_connector_password: {{ .Values.postgresql.postgresqlPassword }}
+{{- end }}
+{{- if .Values.gCloudStorage.enabled }}
+  GOOGLE_APPLICATION_CREDENTIALS: /var/secrets/google/key.json
+{{- end }}
+{{- end }}

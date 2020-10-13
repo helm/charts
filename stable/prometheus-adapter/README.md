@@ -1,5 +1,7 @@
 # Prometheus Adapter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Installs the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter) for the Custom Metrics API. Custom metrics are used in Kubernetes by [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) to scale workloads based upon your own metric pulled from an external metrics provider like Prometheus. This chart complements the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server) chart that provides resource only metrics.
 
 ## Prerequisites
@@ -112,10 +114,11 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.6.0`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.7.0`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |
+| `listenPort`                    | Port that application would listen on in the container                          | `6443`                                      |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `1m`                                        |
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
 | `podLabels`                     | Labels to add to the pod                                                        | `{}`                                        |
@@ -123,6 +126,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `priorityClassName`             | Pod priority                                                                    | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service, zero to omit this option      | `9090`                                      |
+| `prometheus.path`               | Custom path to append to the prometheus URL                                     | ``                                          |
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |

@@ -1,17 +1,40 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained Spring Cloud Data Flow Helm chart is now located at bitnami/charts (https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+ ```bash                                                                                                                                                                                                                                                                                                                                                                    $ helm
+ repo add bitnami https://charts.bitnami.com/bitnami
+  $ helm upgrade my-release bitnami/<chart>
+  ```
+
+  Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in this issue (https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 1. Get the application URL by running these commands:
-{{- if contains "NodePort" .Values.server.service.type }}
+{{- if eq true .Values.ingress.enabled }}
+  export SERVICE_URL={{ .Values.ingress.protocol }}://{{ .Values.ingress.server.host }}:{{ .Values.server.service.externalPort }}
+  echo $SERVICE_URL
+{{- else if contains "NodePort" .Values.server.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "scdf.fullname" . }}-server)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.server.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of the server by running 'kubectl get svc -w {{ template "scdf.fullname" . }}-server'
+           You can watch the status of the server by running 'kubectl get svc -n {{ .Release.Namespace }} -w {{ template "scdf.fullname" . }}-server'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "scdf.fullname" . }}-server -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.server.service.externalPort }}
 {{- else if contains "ClusterIP"  .Values.server.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "scdf.fullname" . }}-server" -> -l "app={{ template "scdf.name" . }},release={{ .Release.Name }},component=server"
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -oname -l "app={{ template "scdf.name" . }},release={{ .Release.Name }},component=server")
   echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.server.service.externalPort }}
+  kubectl port-forward $POD_NAME 8080:8080
 {{- end }}
 {{ if gt ((index .Values "rabbitmq-ha" "enabled") | add .Values.rabbitmq.enabled | add .Values.kafka.enabled) 1 -}}
 WARNING: More than one messaging layer is enabled and installed as

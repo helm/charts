@@ -2,12 +2,13 @@ server:
   workers: 2
   node:
     environment: production
-    dataDir: /presto/etc/data
+    dataDir: /data/presto
+    pluginDir: /usr/lib/presto/plugin
   log:
     presto:
       level: INFO
   config:
-    path: /etc/presto
+    path: /usr/lib/presto/etc
     http:
       port: 8080
     query:
@@ -21,9 +22,12 @@ server:
         heapRegionSize: "32M"
 
 image:
-  repository: bivas/presto
-  tag: 0.196
+  repository: prestosql/presto
+  tag: 329
   pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
 
 service:
   type: ClusterIP

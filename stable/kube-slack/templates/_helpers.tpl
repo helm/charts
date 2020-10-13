@@ -52,3 +52,14 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1beta1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for deployment.
+*/}}
+{{- define "kube-slack.deployment.apiVersion" -}}
+{{- if semverCompare "<1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "extensions/v1beta1" -}}
+{{- else if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{- end -}}

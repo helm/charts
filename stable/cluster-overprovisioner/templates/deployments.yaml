@@ -4,6 +4,7 @@
 {{- $name :=  include "cluster-overprovisioner.name" . -}}
 {{- $chart :=  include "cluster-overprovisioner.chart" . -}}
 {{- $chartName := .Chart.Name }}
+{{- $podSecurityContext := .Values.podSecurityContext }}
 {{- $priorityClassName := .Values.priorityClassOverprovision.name }}
 {{- $repository := .Values.image.repository }}
 {{- $imageTag := .Values.image.tag }}
@@ -45,6 +46,8 @@ spec:
     {{- end }}
     spec:
       priorityClassName: {{ $priorityClassName }}
+      securityContext:
+        {{- toYaml $podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $chartName }}
           image: "{{ $repository }}:{{ $imageTag }}"

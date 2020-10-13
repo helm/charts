@@ -1,0 +1,46 @@
+{{- if .Values.podSecurityPolicy.enabled }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "kube2iam.name" . }}
+    helm.sh/chart: {{ template "kube2iam.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ template "kube2iam.fullname" . }}
+{{- if .Values.podSecurityPolicy.annotations }}
+  annotations:
+{{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
+{{- end }}
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  requiredDropCapabilities:
+  - ALL
+  hostNetwork: true
+  hostPorts:
+  - max: {{ .Values.host.port }}
+    min: {{ .Values.host.port }}
+{{- if .Values.prometheus.metricsPort }}
+  - max: {{ .Values.prometheus.metricsPort }}
+    min: {{ .Values.prometheus.metricsPort }}
+{{- end }}
+  hostIPC: false
+  hostPID: false
+  volumes:
+  - 'configMap'
+  - 'secret'
+  - 'downwardAPI'
+  runAsUser:
+    rule: 'RunAsAny'    
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+{{- end }}

@@ -1,0 +1,21 @@
+{{- if .Values.middleManager.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "druid.middleManager.fullname" . }}
+  labels:
+    app: {{ include "druid.name" . }}
+    chart: {{ include "druid.chart" . }}
+    component: "{{ .Values.name }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "druid.middleManager.fullname" . }}
+  minReplicas: {{ .Values.middleManager.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.middleManager.autoscaling.maxReplicas }}
+  metrics:
+{{ toYaml .Values.middleManager.autoscaling.metrics | indent 4 }}
+{{- end }}

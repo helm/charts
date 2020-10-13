@@ -3,12 +3,15 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-admission
-  namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
     app: {{ template "prometheus-operator.name" . }}-admission
+{{- if .Values.global.rbac.pspAnnotations }}
+  annotations:
+{{ toYaml .Values.global.rbac.pspAnnotations | indent 4 }}
+{{- end }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   privileged: false

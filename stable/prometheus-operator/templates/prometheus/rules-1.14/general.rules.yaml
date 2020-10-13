@@ -9,7 +9,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "general.rules" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -26,7 +26,7 @@ spec:
     rules:
     - alert: TargetDown
       annotations:
-        message: '{{`{{ printf "%.4g" $value }}`}}% of the {{`{{ $labels.job }}`}} targets in {{`{{ $labels.namespace }}`}} namespace are down.'
+        message: '{{`{{`}} printf "%.4g" $value {{`}}`}}% of the {{`{{`}} $labels.job {{`}}`}}/{{`{{`}} $labels.service {{`}}`}} targets in {{`{{`}} $labels.namespace {{`}}`}} namespace are down.'
       expr: 100 * (count(up == 0) BY (job, namespace, service) / count(up) BY (job, namespace, service)) > 10
       for: 10m
       labels:

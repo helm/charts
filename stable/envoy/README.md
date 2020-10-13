@@ -44,6 +44,7 @@ Parameter | Description | Default
 `volumeMounts` | Additional volume mounts to be added to Envoy containers(Primary containers of Envoy pods) | ``
 `initContainerTemplate` | Golang template of the init container added to Envoy pods| ``
 `sidecarContainersTemplate` | Golang template of additional containers added after the primary container of Envoy pods | ``
+`service.loadBalancerSourceRanges` | An optional list of CIDR-formatted IP ranges for limiting access to the proxy to these source addresses | ``
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).
 

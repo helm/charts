@@ -1,7 +1,7 @@
 apiVersion: v1
 name: kube2iam
-version: 2.1.0
-appVersion: 0.10.7
+version: 2.5.1
+appVersion: 0.10.9
 description: Provide IAM credentials to pods based on annotations.
 keywords:
 - kube2iam

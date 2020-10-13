@@ -1,4 +1,10 @@
-# MongoDB Helm Chart
+# ⚠️ DEPRECATED
+
+This chart is deprecated and no longer maintained.
+
+It is recommended to use the Bitnami maintained
+[MongoDB chart](https://github.com/bitnami/charts/tree/master/bitnami/mongodb) which
+has a similar feature set.
 
 ## Prerequisites Details
 
@@ -36,9 +42,9 @@ The following table lists the configurable parameters of the mongodb chart and t
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
-| `skipInitialization`                    | If `true` skip replica set initialization during bootstrapping                                              | `false`      
+| `skipInitialization`                | If `true` skip replica set initialization during bootstrapping            | `false`                                             |
 | `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
-| `updateStrategy`                    | Update strategy                                                   | `nil`                                               |
+| `updateStrategy`                    | Update strategy                                                           | `nil`                                               |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `imagePullSecrets`                  | Image pull secrets                                                        | `[]`                                                |
 | `installImage.repository`           | Image name for the install container                                      | `unguiculus/mongodb-install`                        |
@@ -50,6 +56,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
+| `serviceAccount`                    | Name of a ServiceAccount to be created and applied to StatefulSet pods. Won't be created by default.  | ``                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
 | `statefulSetAnnotations`            | Annotations to be added to MongoDB statefulSet                            | `{}`                                                |
 | `securityContext.enabled`           | Enable security context                                                   | `true`                                              |
@@ -79,8 +86,6 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.securityContext.enabled`   | Enable security context                                                   | `true`                                              |
 | `metrics.securityContext.fsGroup`   | Group ID for the metrics container                                        | `1001`                                              |
 | `metrics.securityContext.runAsUser` | User ID for the metrics container                                         | `1001`                                              |
-| `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
@@ -91,6 +96,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingMetricsSecret`        | If set, and existing secret with this name is used for the metrics user   | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
+| `secretAnnotations`                 | Annotations to be added to the secret if auth is enabled                  | `{}`                                                |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `initMongodStandalone`              | If set, initContainer executes script in standalone mode                  | ``                                                  |
@@ -108,10 +114,16 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe.periodSeconds`      | Readiness probe period seconds                                            | `10`                                                |
 | `readinessProbe.successThreshold`   | Readiness probe success threshold                                         | `1`                                                 |
 | `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
+| `startupProbe.failureThreshold`     | Startup probe failure threshold                                           | `60`                                                |
+| `startupProbe.initialDelaySeconds`  | Startup probe initial delay seconds                                       | `5`                                                 |
+| `startupProbe.periodSeconds`        | Startup probe period seconds                                              | `10`                                                |
+| `startupProbe.successThreshold`     | Startup probe success threshold                                           | `2`                                                 |
+| `startupProbe.timeoutSeconds`       | Startup probe timeout seconds                                             | `5`                                                 |
 | `extraContainers`                   | Additional containers to add to the StatefulSet                           | `[]`                                                |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 | `extraVolumes`                      | Additional volumes to add to the resources                                | `[]`                                                |
+| `clientService.enabled`             | Enables the headless client service                                       | `true`                                              |
 | `global.namespaceOverride`          | Override the deployment namespace                                         | Not set (`Release.Namespace`)                       |
 
 *MongoDB config file*

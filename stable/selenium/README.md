@@ -55,6 +55,8 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.servicePort` | The port the hub Service listens on | `4444` |
 | `hub.nodePort` | The port the hub is exposed when Nodeport mode is selected | `nil` |
 | `hub.podAnnotations` | Annotations on the hub pod | `{}` |
+| `hub.podLabels` | Additionals labels to the hub pod | `{}`|
+| `hub.securityContext` |	SecurityContext on the hub pod |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `hub.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 400 mb | `-Xmx400m` |
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 512 mb RAM | `{"limits":{"cpu":".5", "memory":"512Mi"}}` |
@@ -65,9 +67,9 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridNewSessionWaitTimeout` | | `nil` |
 | `hub.gridJettyMaxThreads` | | `nil` |
 | `hub.gridNodePolling` | | `nil` |
-| `hub.gridCleanUpCycle` | | `nil` |
-| `hub.gridTimeout` | | `nil` |
-| `hub.gridBrowserTimeout` | | `nil` |
+| `hub.gridCleanUpCycle` | Specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads **(in ms)**. Must also specify "timeout" option | `nil` |
+| `hub.gridTimeout` | Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds.| `nil` |
+| `hub.gridBrowserTimeout` | Number of seconds a browser session is allowed to hang while a WebDriver command is running | `nil` |
 | `hub.gridMaxSession` | | `nil` |
 | `hub.gridUnregisterIfStillDownAfter` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
@@ -84,12 +86,17 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.livenessTimeout` | Timeout for hub liveness probe in seconds | `1` |
 | `hub.probePath` | Path for readiness and liveness probes to check | `/wd/hub/status` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
+| `chrome.runAsDaemonSet` | Schedule chrome node pods as DaemonSet | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.141.59` |
 | `chrome.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
-| `chrome.replicas` | The number of selenium node chrome pods | `1` |
+| `chrome.replicas` | The number of selenium node chrome pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `chrome.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `chrome.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chrome.podAnnotations` | Annotations on the chrome pods | `{}` |
+| `chrome.podLabels` | Additional labels on the chrome pods | `{}` |
+| `chrome.securityContext` |	SecurityContext on the chrome pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chrome.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
 | `chrome.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
@@ -110,12 +117,17 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.affinity` | Deployemnt affinities to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chrome.tolerations` | Deployment tolerations to use for scheduling of the chrome if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
+| `chromeDebug.runAsDaemonSet` | Schedule selenium node chrome debug pods as DaemonSet | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.141.59` |
 | `chromeDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
-| `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
+| `chromeDebug.replicas` | The number of selenium node chrome debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `chromeDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `chromeDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `chromeDebug.podAnnotations` | Annotations on the Chrome debug pod | `{}` |
+| `chromeDebug.podLabels` | Additional labels on the Chrome debug pods | `{}` |
+| `chromeDebug.securityContext` |	SecurityContext on the Chrome debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `chromeDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
 | `chromeDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
@@ -136,14 +148,21 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.affinity` | Deployemnt affinities to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `chromeDebug.tolerations` | Deployment tolerations to use for scheduling of the chromeDebug if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
+| `firefox.runAsDaemonSet` | Schedule selenium node firefox pods as DaemonSet | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
 | `firefox.tag` | The selenium node firefox tag | `3.141.59` |
 | `firefox.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
-| `firefox.replicas` | The number of selenium node firefox pods | `1` |
+| `firefox.replicas` | The number of selenium node firefox pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `firefox.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `firefox.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefox.podAnnotations` | Annotations on the firefox pods | `{}` |
+| `firefox.podLabels` | Additional labels on the firefox pods | `{}` |
+| `firefox.securityContext` |	SecurityContext on the firefox pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefox.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
+| `firefox.volumeMounts` | Additional volumes to mount, the default provides a larger shared memory | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
+| `firefox.volumes` | Additional volumes import, the default provides a larger shared memory | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
 | `firefox.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefox.screenWidth` | | `nil` |
 | `firefox.screenHeight` | | `nil` |
@@ -160,14 +179,21 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.affinity` | Deployemnt affinities to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefox.tolerations` | Deployment tolerations to use for scheduling of the firefox if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
+| `firefoxDebug.runAsDaemonSet` | Schedule selenium node firefox debug pods as DaemonSet | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.141.59` |
 | `firefoxDebug.imagePullSecrets` | The secret to use for pulling the image. Will override the global parameter if set | `nil` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
-| `firefoxDebug.replicas` | The number of selenium node firefox debug pods | `1` |
+| `firefoxDebug.replicas` | The number of selenium node firefox debug pods. This is ignored if runAsDaemonSet is enabled. | `1` |
+| `firefoxDebug.enableLivenessProbe` | When true will add a liveness check to the pod | `false` |
+| `firefoxDebug.waitForRunningSessions` | When true will wait for current running sessions to finish before terminating the pod | `false` |
 | `firefoxDebug.podAnnotations` | Annotations on the firefox debug pods | `{}` |
+| `firefoxDebug.podLabels` | Additional labels on the firefox debug pods | `{}` |
+| `firefoxDebug.securityContext` |	SecurityContext on the firefox debug pods |	`{"runAsUser": 1000, "fsGroup": 1000}` |
 | `firefoxDebug.extraEnvs` |  Any additional environment variables to set in the pods | `[]` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
+| `firefoxDebug.volumeMounts` | Additional volumes to mount, the default provides a larger shared | `[{"mountPath":"/dev/shm", "name":"dshm"}]` |
+| `firefoxDebug.volumes` | Additional volumes import, the default provides a larger shared | `[{"name":"dshm", "emptyDir":{"medium":"Memory"}}]` |
 | `firefoxDebug.resources` | The resources for the selenium node firefox debug container, defaults to minimum half a cpu and maximum 1,000 mb | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `firefoxDebug.screenWidth` | | `nil` |
 | `firefoxDebug.screenHeight` | | `nil` |

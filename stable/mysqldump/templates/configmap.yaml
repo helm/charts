@@ -46,7 +46,7 @@ data:
 
     echo "started" > ${BACKUP_DIR}/${TIMESTAMP}.state
 
-    {{ if (.Values.persistence.enabled) or (.Values.persistentVolumeClaim) }}
+    {{ if or (.Values.persistence.enabled) (.Values.persistentVolumeClaim) }}
     {{ if .Values.housekeeping.enabled }}
     echo "delete old backups"
     find ${BACKUP_DIR} -maxdepth 2 -mtime +${KEEP_DAYS} -regex "^${BACKUP_DIR}/.*[0-9]*_.*\.sql\.gz$" -type f -exec rm {} \;

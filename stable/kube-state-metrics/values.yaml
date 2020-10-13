@@ -2,8 +2,11 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.5
+  tag: v1.9.7
   pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+# - name: "image-pull-secret"
 
 # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
 # will be automatically sharded across <.Values.replicas> pods using the built-in
@@ -39,6 +42,10 @@ serviceAccount:
   # Reference to one or more secrets to be used when pulling images
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
+  # ServiceAccount annotations.
+  # Use case: AWS EKS IAM roles for service accounts
+  # ref: https://docs.aws.amazon.com/eks/latest/userguide/specify-service-account-role.html
+  annotations: {}
 
 prometheus:
   monitor:
@@ -62,9 +69,11 @@ podSecurityPolicy:
     # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
     # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
+  additionalVolumes: []
 
 securityContext:
   enabled: true
+  runAsGroup: 65534
   runAsUser: 65534
   fsGroup: 65534
 
@@ -118,8 +127,14 @@ collectors:
   statefulsets: true
   storageclasses: true
   validatingwebhookconfigurations: true
-  verticalpodautoscalers: true
+  verticalpodautoscalers: false
   volumeattachments: true
+
+# Enabling kubeconfig will pass the --kubeconfig argument to the container
+kubeconfig:
+  enabled: false
+  # base64 encoded kube-config file
+  secret:
 
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
@@ -127,3 +142,20 @@ collectors:
 ## Override the deployment namespace
 ##
 namespaceOverride: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 64Mi
+  # requests:
+  #  cpu: 10m
+  #  memory: 32Mi
+
+## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
+## For example: kubeTargetVersionOverride: 1.14.9
+##
+kubeTargetVersionOverride: ""

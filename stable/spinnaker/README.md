@@ -104,9 +104,9 @@ dockerRegistries:
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
 # - name: ecr
-#   address: https://<AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
+#   address: <AWS-ACCOUNT-ID>.dkr.ecr.<REGION>.amazonaws.com
 #   username: AWS
-#   passwordCommand: "aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'"
+#   passwordCommand: aws --region <REGION> ecr get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d | sed 's/^AWS://'
 ```
 
 You can provide passwords as a Helm value, or you can use a pre-created secret containing your registry passwords.  The secret should have an item per Registry in the format: `<registry name>: <password>`. In which case you'll specify the secret to use in `dockerRegistryAccountSecret` like so:
@@ -290,6 +290,14 @@ This will result in the specified BOM contents being written to a `1.16.1.yml` B
 halyard:
   annotations:
     iam.amazonaws.com/role: <role_arn>
+```
+
+### Set custom annotations for the halyard serviceaccount
+
+```yaml
+serviceAccount:
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: <role_arn>
 ```
 
 ### Set environment variables on the halyard pod

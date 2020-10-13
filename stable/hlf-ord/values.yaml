@@ -11,6 +11,7 @@ service:
   # Cluster IP or LoadBalancer
   type: ClusterIP
   port: 7050
+  portMetrics: 9443
 
 ingress:
   enabled: false
@@ -55,7 +56,13 @@ ord:
       enabled: "false"
     client:
       enabled: "false"
-
+  metrics:
+    provider: "disabled"
+    statsd:
+      network: "udp"
+      address: "127.0.0.1:8125"
+      writeInterval: "30s"
+      prefix: ""
 
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials

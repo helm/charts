@@ -1,0 +1,22 @@
+{{- if .Values.workers.enabled }}
+# Headless service for stable DNS entries of StatefulSet members.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "airflow.fullname" . }}-worker
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: worker
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: worker
+      protocol: TCP
+      port: 8793
+  clusterIP: None
+  selector:
+    app: {{ include "airflow.labels.app" . }}
+    component: worker
+{{- end }}
