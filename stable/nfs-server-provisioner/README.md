@@ -1,3 +1,12 @@
+# ⚠️  DEPRECATED
+
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline).*
+
+This chart is deprecated as we have moved to the upstream repo [NFS Ganesha server and external provisioner](https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner)  
+the chart source can be found here:
+
+https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/tree/master/deploy/helm
+
 # NFS Server Provisioner
 
 [NFS Server Provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs)
