@@ -33,13 +33,13 @@ rundeck:
     # RUNDECK_TOKENS_FILE: /home/rundeck/extra/tokens.properties
 
   # Allows you to add extra Remco templates
-  # All files will be created on path /etc/remco/templates 
+  # All files will be created on path /etc/remco/templates
   extraRemcoTemplates: {}
   #  extra-rundeck-config.properties: |
   #    server.useForwardHeaders=true
 
   # Allow you to add extra Remco resources
-  # All files will be created on path /etc/remco/resources.d 
+  # All files will be created on path /etc/remco/resources.d
   extraRemcoResources: {}
   # extra-rundeck-config.properties.toml: |
   #  [[template]]
