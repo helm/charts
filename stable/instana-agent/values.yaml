@@ -39,6 +39,10 @@ agent:
     #   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     tolerations: []
 
+    # agent.pod.priorityClassName is the name of an existing PriorityClass that should be set on the agent pods
+    #   https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+    priorityClassName: null
+
     requests:
       # agent.pod.requests.memory is the requested memory allocation in MiB for the agent pods.
       memory: 512
