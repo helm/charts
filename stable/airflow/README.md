@@ -52,6 +52,7 @@ kubectl exec \
 
 Chart version numbers: [Chart.yaml](Chart.yaml) or [Helm Hub](https://hub.helm.sh/charts/stable/airflow)
 
+- [v7.11.X → v7.12.0](UPGRADE.md#v711x--v7120)
 - [v7.10.X → v7.11.0](UPGRADE.md#v710x--v7110)
 - [v7.9.X → v7.10.0](UPGRADE.md#v79x--v7100)
 - [v7.8.X → v7.9.0](UPGRADE.md#v78x--v790)

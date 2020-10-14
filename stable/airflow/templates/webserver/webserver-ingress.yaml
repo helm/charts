@@ -13,6 +13,9 @@ metadata:
     chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- if .Values.ingress.web.labels }}
+    {{- toYaml .Values.ingress.web.labels | nindent 4 }}
+    {{- end }}
 spec:
   {{- if .Values.ingress.web.tls.enabled }}
   tls:
