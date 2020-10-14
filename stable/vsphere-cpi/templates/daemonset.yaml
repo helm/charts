@@ -14,7 +14,7 @@ metadata:
   annotations:
     scheduler.alpha.kubernetes.io/critical-pod: ""
     {{- if .Values.daemonset.annotations }}
-    {{- toYaml .Values.daemonset.annotations | indent 4 }}
+    {{- toYaml .Values.daemonset.annotations | nindent 4 }}
     {{- end }}
 spec:
   selector:
@@ -26,7 +26,7 @@ spec:
     metadata:
       {{- if .Values.daemonset.podAnnotations }}
       annotations:
-      {{- toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- toYaml .Values.daemonset.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
         app: {{ template "cpi.name" . }}
@@ -35,13 +35,13 @@ spec:
         release: {{ .Release.Name }}
         vsphere-cpi-infra: daemonset
         {{- if .Values.daemonset.podLabels }}
-        {{- toYaml .Values.daemonset.podLabels | indent 8 }}
+        {{- toYaml .Values.daemonset.podLabels | nindent 8 }}
         {{- end }}
     spec:
       nodeSelector:
         node-role.kubernetes.io/master: ""
       {{- if .Values.daemonset.nodeSelector }}
-      {{- toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- toYaml .Values.daemonset.nodeSelector | nindent 8 }}
       {{- end }}
       tolerations:
       - key: node.cloudprovider.kubernetes.io/uninitialized
@@ -53,7 +53,7 @@ spec:
         effect: NoSchedule
         operator: Exists
       {{- if .Values.daemonset.tolerations }}
-      {{- toYaml .Values.daemonset.tolerations | indent 8 }}
+      {{- toYaml .Values.daemonset.tolerations | nindent 6 }}
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -93,7 +93,7 @@ spec:
             readOnly: true
         {{- if .Values.daemonset.resources }}
         resources:
-          {{- toYaml .Values.daemonset.resources | indent 10 }}
+          {{- toYaml .Values.daemonset.resources | nindent 10 }}
         {{- end }}
       volumes:
         - name: vsphere-config-volume
