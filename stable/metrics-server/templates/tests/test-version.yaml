@@ -12,10 +12,16 @@ metadata:
 spec:
   containers:
   - name: wget
-    image: busybox
+    image: "{{ .Values.testImage.repository }}:{{ .Values.testImage.tag }}"
+    imagePullPolicy: {{ .Values.testImage.pullPolicy }}
     command: ['/bin/sh']
     args:
     - -c
     - 'wget -qO- https://{{ include "metrics-server.fullname" . }}:{{ .Values.service.port }}/version | grep -F {{ .Values.image.tag }}'
+{{- if .Values.imagePullSecrets }}
+  imagePullSecrets:
+  {{- range .Values.imagePullSecrets }}
+    - name: {{ . }}
+  {{- end }}
+{{- end }}
   restartPolicy: Never
-

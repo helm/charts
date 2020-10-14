@@ -1,3 +1,5 @@
+> This chart has been **DEPRECATED**.  Please use the Chart found at https://github.com/stakater/Reloader#helm-charts instead.
+
 - For a `Deployment` called `foo` have a `ConfigMap` called `foo-configmap`. Then add this annotation to main metadata of your `Deployment`
   configmap.reloader.stakater.com/reload: "foo-configmap"
 

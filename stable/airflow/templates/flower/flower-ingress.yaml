@@ -1,18 +1,18 @@
-{{- if and (.Values.flower.enabled)  (.Values.ingress.enabled) }}
-apiVersion: extensions/v1beta1
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") (.Values.ingress.enabled) }}
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.ingress.flower.annotations }}
+  annotations:
+    {{- toYaml .Values.ingress.flower.annotations | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ include "airflow.labels.app" . }}
     component: flower
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-  annotations:
-    {{- range $key, $value := .Values.ingress.flower.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   {{- if .Values.ingress.flower.tls.enabled }}
   tls:

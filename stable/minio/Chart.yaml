@@ -1,7 +1,8 @@
 apiVersion: v1
-description: MinIO is a high performance data infrastructure for machine learning, analytics and application data workloads.
+deprecated: true
+description: DEPRECATED MinIO is a high performance data infrastructure for machine learning, analytics and application data workloads.
 name: minio
-version: 5.0.32
+version: 5.0.33
 appVersion: master
 keywords:
 - storage
@@ -11,8 +12,3 @@ home: https://min.io
 icon: https://min.io/resources/img/logo/MINIO_wordmark.png
 sources:
 - https://github.com/minio/minio
-maintainers:
-- name: Minio
-  email: dev@minio.io
-- name: Acaleph
-  email: hello@acale.ph

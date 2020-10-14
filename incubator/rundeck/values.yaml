@@ -146,10 +146,10 @@ volumes: ""
   # - name: plugins
   #   emptyDir: {}
 
-# volumeMounts to add to the rundeck container
-volumeMounts: ""
-  # - mountPath: /home/rundeck/libext/
-  #   name: plugins
+# volumeMounts to add to the rundeck container and configurable paths
+volumeMounts:
+  - name: data
+    mountPath: /home/rundeck/server/data
 
 # initContainers can be used to download plugins or customise your rundeck installation
 initContainers: ""
@@ -161,3 +161,13 @@ initContainers: ""
   #   volumeMounts:
   #     - mountPath: /home/rundeck/libext/
   #       name: plugins
+
+# sideCars can run additional containers in the pod
+sideCars: ""
+  # - name: cloudsql-proxy
+  #   image: gcr.io/cloudsql-docker/gce-proxy:1.17
+  #   command:
+  #     - "/cloud_sql_proxy"
+  #     - "-instances=<instance_end_point>=tcp:3306"
+  #   securityContext:
+  #     runAsNonRoot: true

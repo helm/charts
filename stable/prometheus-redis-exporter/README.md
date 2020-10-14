@@ -1,5 +1,7 @@
 # prometheus-redis-exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 [redis_exporter](https://github.com/oliver006/redis_exporter) is a Prometheus exporter for Redis metrics.
 
 ## TL;DR;

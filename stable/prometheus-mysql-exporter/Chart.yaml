@@ -1,13 +1,11 @@
 apiVersion: v1
-description: A Helm chart for prometheus mysql exporter with cloudsqlproxy
+# The prometheus-mysql-exporter chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED A Helm chart for prometheus mysql exporter with cloudsqlproxy
 name: prometheus-mysql-exporter
-version: 0.7.0
+version: 0.7.1
 home: https://github.com/prometheus/mysqld_exporter
 appVersion: v0.11.0
 sources:
   - https://github.com/prometheus/mysqld_exporter
-maintainers:
-  - name: juanchimienti
-    email: juan.chimienti@gmail.com
-  - name: monotek
-    email: monotek23@gmail.com

@@ -145,6 +145,7 @@ etcdCluster:
   ## etcd cluster pod specific values
   ## Ref: https://github.com/coreos/etcd-operator/blob/master/doc/user/spec_examples.md#three-members-cluster-with-resource-requirement
   pod:
+    busyboxImage: busybox:1.28.0-glibc
     ## Antiaffinity for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     antiAffinity: false

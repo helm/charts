@@ -430,6 +430,15 @@ firefox:
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
+  volumes:
+    ## https://docs.openshift.com/container-platform/3.6/dev_guide/shared_memory.html
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
@@ -522,6 +531,15 @@ firefoxDebug:
   ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
+
+  volumes:
+    ## https://docs.openshift.com/container-platform/3.6/dev_guide/shared_memory.html
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

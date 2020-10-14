@@ -37,3 +37,6 @@ Parameter | Description | Default
 `podDisruptionBudget.minAvailable` | Minimum available instances; ignored if there is no PodDisruptionBudget |
 `podDisruptionBudget.maxUnavailable` | Maximum unavailable instances; ignored if there is no PodDisruptionBudget |
 `extraContainers`   | Add additional containers  | `[]`
+`testImage.repository` | Image repository and name for test pod.  See also `imagePullSecrets` | `busybox`
+`testImage.tag` | Image tag for test pod | `latest`
+`testImage.pullPolicy` | Image pull policy for test pod | `IfNotPresent`

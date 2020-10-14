@@ -368,6 +368,7 @@ graylog:
   ##
   provisioner:
     enabled: false
+    annotations: {}
     useGraylogServiceAccount: false
     # script: |
     #  json='{

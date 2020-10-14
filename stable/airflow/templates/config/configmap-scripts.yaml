@@ -25,8 +25,8 @@ data:
     #!/bin/bash -e
     echo "*** starting graceful worker shutdown"
 
-    # source the required environment variables
-    source /home/airflow/airflow_env.sh
+    # set the required environment variables
+    export AIRFLOW__CELERY__BROKER_URL=$(eval $AIRFLOW__CELERY__BROKER_URL_CMD)
 
     # prevent the worker accepting new tasks
     echo "*** preventing worker accepting new tasks"
@@ -36,14 +36,11 @@ data:
     # loop until all active task are finished
     echo "*** waiting for active tasks to finish"
     while (( celery inspect --broker $AIRFLOW__CELERY__BROKER_URL --destination celery@$HOSTNAME --json active | python3 -c "import json; active_tasks = json.loads(input())['celery@$HOSTNAME']; print(len(active_tasks))" > 0 )); do
-      sleep 30
+      sleep 10
     done
   preinit-db.sh: |
     #!/bin/bash
-    # export the required environment variables
-    export AIRFLOW__CORE__SQL_ALCHEMY_CONN="{{ include "airflow.connection.alchemy" . }}"
-
-    echo "*** Waiting 10s for postgres"
+    echo "*** Waiting 10s for database"
     sleep 10
 
     COUNT=0

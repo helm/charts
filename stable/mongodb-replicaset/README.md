@@ -1,4 +1,10 @@
-# MongoDB Helm Chart
+# ⚠️ DEPRECATED
+
+This chart is deprecated and no longer maintained.
+
+It is recommended to use the Bitnami maintained
+[MongoDB chart](https://github.com/bitnami/charts/tree/master/bitnami/mongodb) which
+has a similar feature set.
 
 ## Prerequisites Details
 

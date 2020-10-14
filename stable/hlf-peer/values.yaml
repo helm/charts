@@ -12,6 +12,7 @@ service:
   type: ClusterIP
   portRequest: 7051
   portEvent: 7053
+  portMetrics: 9443
 
 # Path of the docker socket on the host
 dockerSocketPath: /var/run/docker.sock
@@ -89,8 +90,6 @@ peer:
       golang: ""
       java: ""
       node: ""
-  operations:
-    listenAddress: ""
   metrics:
     provider: "disabled"
     statsd:

@@ -3,14 +3,14 @@
 # Declare variables to be passed into your templates.
 
 ## Microsoft OMS Agent image for kubernetes cluster monitoring
-## ref: https://github.com/Microsoft/OMS-docker/tree/ci_feature_prod
+## ref: https://github.com/microsoft/Docker-Provider/tree/ci_prod
 omsagent:
   image:
     repo: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod"
-    tag: "ciprod07152020"
-    tagWindows: "win-ciprod05262020-2"
+    tag: "ciprod09252020"
+    tagWindows: "win-ciprod09252020"
     pullPolicy: IfNotPresent
-    dockerProviderVersion: "10.0.0-3"
+    dockerProviderVersion: "10.0.0-6"
     agentVersion: "1.10.0.1"
   ## To get your workspace id and key do the following
   ## You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
@@ -81,17 +81,6 @@ omsagent:
                   operator: NotIn
                   values:
                     - master
-  daemonsetwindows:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - labelSelector:
-              matchExpressions:
-                - key: beta.kubernetes.io/os
-                  operator: In
-                  values:
-                    - windows
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##

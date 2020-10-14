@@ -1,3 +1,7 @@
+# ⚠️ DEPRECATED
+
+This chart was moved to https://github.com/jenkinsci/helm-charts
+
 # Jenkins Helm Chart
 
 Jenkins master and agent cluster utilizing the Jenkins Kubernetes plugin
@@ -68,7 +72,7 @@ master:
 #### Migration steps
 
 Migration instructions heavily depend on your current setup.
-So think of the list below more as a general guideline of what should be done. 
+So think of the list below more as a general guideline of what should be done.
 
 - Ensure that the Jenkins image you are using contains a user with id 1000 and a group with the same id.
   That's the case for `jenkins/jenkins:lts` image, which the chart uses by default
@@ -191,6 +195,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `master.installPlugins`           | List of Jenkins plugins to install. If you don't want to install plugins set it to `[]` | `kubernetes:1.18.2 workflow-aggregator:2.6 credentials-binding:1.19 git:3.11.0 workflow-job:2.33` |
 | `master.additionalPlugins`        | List of Jenkins plugins to install in addition to those listed in master.installPlugins | `[]` |
+| `master.initializeOnce`           | Initialize only on first install. Ensures plugins do not get updated inadvertently. Requires `persistence.enabled` to be set to `true`. | `false` |
 | `master.overwritePlugins`         | Overwrite installed plugins on start.| `false`                                   |
 | `master.overwritePluginsFromImage` | Keep plugins that are already installed in the master image.| `true`            |
 
@@ -269,6 +274,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.ingress.enabled`          | Enables ingress                      | `false`                                   |
 | `master.ingress.apiVersion`       | Ingress API version                  | `extensions/v1beta1`                      |
 | `master.ingress.hostName`         | Ingress host name                    | Not set                                   |
+| `master.ingress.resourceRootUrl`  | Hostname to serve assets from        | Not set                                   |
 | `master.ingress.annotations`      | Ingress annotations                  | `{}`                                      |
 | `master.ingress.labels`           | Ingress labels                       | `{}`                                      |
 | `master.ingress.path`             | Ingress path                         | Not set                                   |

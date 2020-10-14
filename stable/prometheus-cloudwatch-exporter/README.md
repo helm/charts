@@ -1,5 +1,7 @@
 # Cloudwatch exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs [cloudwatch exporter](http://github.com/prometheus/cloudwatch_exporter)
 
 ## TL;DR;

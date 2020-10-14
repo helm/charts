@@ -1,3 +1,23 @@
+# **DEPRECATED** This repository has moved
+
+With upcoming deprecation of `helm/charts` repository, the Datadog Helm Charts repository has moved to: https://github.com/DataDog/helm-charts
+
+You can use this new repository by doing:
+
+```bash
+helm repo add datadog https://helm.datadoghq.com
+helm repo update
+```
+
+You can now use `datadog/datadog` instead of `stable/datadog` in all your Helm commands, e.g.:
+
+```bash
+# New installation
+helm install --name <RELEASE_NAME> --set datadog.apiKey=<DATADOG_API_KEY> datadog/datadog
+# Upgrade existing installation
+helm upgrade --name <RELEASE_NAME> --set datadog.apiKey=<DATADOG_API_KEY> datadog/datadog
+```
+
 # Datadog
 
 [Datadog](https://www.datadoghq.com/) is a hosted infrastructure monitoring platform. This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also optionally depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics). For more information about monitoring Kubernetes with Datadog, please refer to the [Datadog documentation website](https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/).

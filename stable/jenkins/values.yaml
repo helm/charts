@@ -235,6 +235,11 @@ master:
   # List of plugins to install in addition to those listed in master.installPlugins
   additionalPlugins: []
 
+  # Enable to initialize the Jenkins master only once on initial installation.
+  # Without this, whenever the master gets restarted (Evicted, etc.) it will fetch plugin updates which has the potential to cause breakage.
+  # Note that for this to work, `persistence.enabled` needs to be set to `true`
+  initializeOnce: false
+
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
 

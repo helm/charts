@@ -82,8 +82,11 @@ data:
 ##############
 # Operations #
 ##############
-  {{- if .Values.peer.operations.listenAddress }}
-  CORE_OPERATIONS_LISTENADDRESS: {{ .Values.peer.operations.listenAddress | quote }}
+  {{- if eq .Values.peer.metrics.provider "prometheus" }}
+  CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:9443
+  {{- end }}
+  {{- if eq .Values.peer.metrics.provider "statsd" }}
+  CORE_OPERATIONS_LISTENADDRESS: 127.0.0.1:8125
   {{- end }}
 ###########
 # Metrics #

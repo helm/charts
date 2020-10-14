@@ -173,6 +173,7 @@ serviceMonitor:
   relabelings: []
   targetLabels: []
   metricRelabelings: []
+  sampleLimit: 0
 
 prometheusRule:
   ## If true, a PrometheusRule CRD is created for a prometheus operator

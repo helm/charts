@@ -9,13 +9,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" . }}
 spec:
-  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-  strategy:
-{{ toYaml .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:

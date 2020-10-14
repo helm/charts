@@ -7,6 +7,10 @@ image: quay.io/linki/chaoskube
 # docker image tag
 imageTag: v0.14.0
 
+## secrets for pulling images from a private docker registry.
+# imagePullSecrets:
+#   - name: secret_name
+
 # number of replicas to run
 replicas: 1
 

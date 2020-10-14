@@ -1,0 +1,9 @@
+{{- if ( contains "microsoft.kubernetes/connectedclusters" (.Values.omsagent.env.clusterId | lower)) }}
+apiVersion:  clusterconfig.azure.com/v1beta1
+kind: AzureClusterIdentityRequest
+metadata:
+  name: container-insights-clusteridentityrequest
+  namespace: azure-arc
+spec:
+  audience: https://monitoring.azure.com/
+{{- end }}
