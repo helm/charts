@@ -25,7 +25,7 @@ spec:
       serviceAccountName: {{ template "prometheus-pushgateway.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
-      {{- end }}      
+      {{- end }}
       containers:
         - name: pushgateway
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
