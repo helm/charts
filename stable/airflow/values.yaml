@@ -1077,6 +1077,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the web Ingress
+    ##
+    labels: {}
+
     ## the path for the web Ingress
     ##
     ## WARNING:
@@ -1144,6 +1148,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the flower Ingress
+    ##
+    labels: {}
+
     ## the path for the flower Ingress
     ##
     ## WARNING:
@@ -1184,6 +1192,26 @@ ingress:
       ## - this MUST be specified if `ingress.flower.tls.enabled` is true
       ##
       secretName: ""
+
+    ## http paths to add to the flower Ingress before the default path
+    ##
+    ## EXAMPLE:
+    ##   precedingPaths:
+    ##     - path: "/*"
+    ##       serviceName: "ssl-redirect"
+    ##       servicePort: "use-annotation"
+    ##
+    precedingPaths: []
+
+    ## http paths to add to the flower Ingress after the default path
+    ##
+    ## EXAMPLE:
+    ##   succeedingPaths:
+    ##     - path: "/extra-service"
+    ##       serviceName: "extra-service"
+    ##       servicePort: "use-annotation"
+    ##
+    succeedingPaths: []
 
 ###################################
 # Kubernetes - RBAC

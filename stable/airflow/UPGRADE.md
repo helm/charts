@@ -1,5 +1,13 @@
 # Upgrading Steps
 
+## `v7.11.X` → `v7.12.0`
+
+__The following values have been ADDED:__
+* `ingress.web.labels`
+* `ingress.flower.labels`
+* `ingress.flower.precedingPaths`
+* `ingress.flower.succeedingPaths`
+
 ## `v7.10.X` → `v7.11.0`
 
 __The following IMPROVEMENTS have been made:__

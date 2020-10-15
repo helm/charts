@@ -13,6 +13,9 @@ metadata:
     chart: {{ include "airflow.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- if .Values.ingress.flower.labels }}
+    {{- toYaml .Values.ingress.flower.labels | nindent 4 }}
+    {{- end }}
 spec:
   {{- if .Values.ingress.flower.tls.enabled }}
   tls:
@@ -23,9 +26,21 @@ spec:
   rules:
     - http:
         paths:
+          {{- range .Values.ingress.flower.precedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
           - path: {{ .Values.ingress.flower.path }}
             backend:
               serviceName: {{ include "airflow.fullname" . }}-flower
               servicePort: flower
+          {{- range .Values.ingress.flower.succeedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
       host: {{ .Values.ingress.flower.host }}
 {{- end }}
