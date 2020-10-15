@@ -135,7 +135,7 @@ serviceMonitor:
 # If not set then a PodDisruptionBudget will not be created
 podDisruptionBudget: {}
 
-#Custom Priority Class name to be used in deployment if provided.
+# Custom Priority Class name to be used in deployment if provided
 priorityClassName:
 
 # Deployment Strategy type
