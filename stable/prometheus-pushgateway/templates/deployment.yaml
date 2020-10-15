@@ -23,7 +23,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus-pushgateway.serviceAccountName" . }}
-      {{- if .ValuespriorityClassName }}
+      {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}      
       containers:
