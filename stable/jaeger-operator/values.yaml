@@ -43,5 +43,5 @@ affinity: {}
 
 securityContext: {}
 
-#Priority Class name to be used in deployment if provided.
+# Priority Class name to be used in deployment if provided.
 priorityClassName:
