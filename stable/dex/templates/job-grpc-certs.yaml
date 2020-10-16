@@ -47,6 +47,7 @@ spec:
 {{- with .Values.certs.grpc.pod.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
+{{- end }}
       restartPolicy: OnFailure
       containers:
       - name: main
