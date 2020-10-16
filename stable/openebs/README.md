@@ -3,7 +3,7 @@ OpenEBS
 
 ## NOTICE: This chart has moved!
 
-Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. The source for the OpenEBS Charts is moved to [OpenEBS Charts GitHub project](https://github.com/openebs/charts). The chart is hosted at https://hub.helm.sh/charts?q=openebs.
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. The source for the OpenEBS Charts is moved to [OpenEBS Charts GitHub project](https://github.com/openebs/charts). The chart can be found using [artifacthub.io](https://artifacthub.io/packages/search?ts_query_web=openebs).
 
 
 
