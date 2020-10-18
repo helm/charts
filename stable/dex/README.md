@@ -64,7 +64,13 @@ Parameters introduced starting from v2
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `certs.grpc.pod.annotations` | Annotations for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.affinity` | Affinity for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.nodeSelector` | nodeSelector for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.tolerations` | Tolerations for the pod created by the `grpc-certs` job | `[]` |
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.affinity` | Affinity for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.nodeSelector` | nodeSelector for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.tolerations` | Tolerations for the pod created by the `web-certs` job | `[]` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
 | `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
 | `config.frontend` | Maps to the dex config `frontend` dict param | `""` |
