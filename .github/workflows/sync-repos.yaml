@@ -53,8 +53,7 @@ jobs:
           echo "dirs: ${{ needs.changes.outputs.stable_dirs }}"
           mkdir -p ${{ runner.temp }}/stable/packages
           for dir in ${{ needs.changes.outputs.stable_dirs }}; do
-              if helm dependency build "$dir"; then
-                  helm package --destination ${{ runner.temp }}/stable/packages "$dir"
+              if helm package --dependency-update --destination ${{ runner.temp }}/stable/packages "$dir"; then
                   echo "✅ built dependencies and packaged $dir"
               else
                   echo "❌ unable to build dependencies for $dir"
@@ -71,8 +70,7 @@ jobs:
         run: |
           mkdir -p ${{ runner.temp }}/incubator/packages
           for dir in ${{ needs.changes.outputs.incubator_dirs }}; do
-              if helm dependency build "$dir"; then
-                  helm package --destination ${{ runner.temp }}/incubator/packages "$dir"
+              if helm package --dependency-update --destination ${{ runner.temp }}/incubator/packages "$dir"; then
                   echo "✅ built dependencies and packaged $dir"
               else
                   echo "❌ unable to build dependencies for $dir"
