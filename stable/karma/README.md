@@ -57,12 +57,14 @@ The following table lists the configurable parameters of the karma chart and the
 | `nodeSelector`                      | Settings for nodeselector                              | `{}`                                      |
 | `tolerations`                       | Settings for toleration                                | `{}`                                      |
 | `affinity`                          | Settings for affinity                                  | `{}`                                      |
+| `podLabels`                         | Labels to be added to pod                              | `{}`                                      |
+| `podAnnotations`                    | Annotations to be added to pod                         | `{}`                                      |
 | `securityContext`                   | Settings for security context                          | `{}`                                      |
 | `serviceAccount.create`             | Create service-account                                 | `true`                                    |
 | `serviceAccount.name`               | Override service-account name                          | ``                                        |
 | `livenessProbe.delay`               | Specify delay in executing probe                       | `5`                                       |
 | `livenessProbe.period`              | Speicy period of liveness probe                        | `5`                                       |
-| `livenessProbe.path`                | Specify path liveness probe should hit                 | `/health`                                       |
+| `livenessProbe.path`                | Specify path liveness probe should hit                 | `/health`                                 |
 | `configMap.enabled`                 | Provide a custom karma configuration                   | `false`                                   |
 | `configMap.annotations`             | Annotations to add to the config map                   | `{}`                                      |
 | `configMap.rawConfig`               | A karma compatible YAML configuration                  | ``                                        |
