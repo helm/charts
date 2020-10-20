@@ -64,6 +64,12 @@ tolerations: []
 
 affinity: {}
 
+# Labels to be added to pod
+podLabels: {}
+
+# Annotations to be added to pod
+podAnnotations: {}
+
 securityContext: {}
 
 # configuration for liveness probe
