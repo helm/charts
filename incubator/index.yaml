@@ -4892,6 +4892,43 @@ entries:
   druid:
   - apiVersion: v1
     appVersion: 0.19.0
+    created: "2020-10-20T11:47:32.864947649Z"
+    dependencies:
+    - condition: zookeeper.enabled
+      name: zookeeper
+      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+      version: 2.1.4
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 1.6.4
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 8.6.4
+    description: Apache Druid is a high performance real-time analytics database.
+    digest: e629c840d29be7310e822383615358785a754ce08569945844e8aee75019b625
+    home: https://druid.apache.org/
+    icon: https://druid.apache.org/img/favicon.png
+    keywords:
+    - olap
+    - database
+    - analytics
+    maintainers:
+    - email: maciek@brynski.pl
+      name: maver1ck
+    - email: hellis@foxmail.com
+      name: AWaterColorPen
+    - email: asdf2014@apache.org
+      name: asdf2014
+    name: druid
+    sources:
+    - https://github.com/apache/druid
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/druid-0.2.14.tgz
+    version: 0.2.14
+  - apiVersion: v1
+    appVersion: 0.19.0
     created: "2020-10-15T10:42:06.96998-04:00"
     dependencies:
     - condition: zookeeper.enabled
@@ -19526,33 +19563,6 @@ entries:
     - https://charts.helm.sh/incubator/packages/patroni-0.6.1.tgz
     version: 0.6.1
   - apiVersion: v1
-    appVersion: 1.3-p4
-    created: "2020-10-15T10:42:07.660868-04:00"
-    dependencies:
-    - condition: Etcd.DeployChart
-      name: etcd
-      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-      version: 0.3.6
-    - condition: Zookeeper.DeployChart
-      name: zookeeper
-      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-      version: 0.2.2
-    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
-    digest: d81a4402b54878e0d6f84199682446f309e069656ab7803a78a37bf4e90d1f64
-    home: https://github.com/zalando/patroni
-    maintainers:
-    - email: team-acid@zalando.de
-      name: alexeyklyukin
-    - email: team-teapot@zalando.de
-      name: linki
-    name: patroni
-    sources:
-    - https://github.com/zalando/patroni
-    - https://github.com/zalando/spilo
-    urls:
-    - https://charts.helm.sh/incubator/packages/patroni-0.6.tgz
-    version: "0.6"
-  - apiVersion: v1
     appVersion: 1.2-p17
     created: "2020-10-15T10:42:07.655542-04:00"
     dependencies:
@@ -19579,33 +19589,6 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/patroni-0.5.1.tgz
     version: 0.5.1
-  - apiVersion: v1
-    appVersion: 1.2-p17
-    created: "2020-10-15T10:42:07.65655-04:00"
-    dependencies:
-    - condition: Etcd.DeployChart
-      name: etcd
-      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-      version: 0.2.1
-    - condition: Zookeeper.DeployChart
-      name: zookeeper
-      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-      version: 0.2.2
-    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
-    digest: 111fbd934047f8093ab87cf16bda64a7a8524fe801e5d93a03232745df22f1c2
-    home: https://github.com/zalando/patroni
-    maintainers:
-    - email: team-acid@zalando.de
-      name: alexeyklyukin
-    - email: team-teapot@zalando.de
-      name: linki
-    name: patroni
-    sources:
-    - https://github.com/zalando/patroni
-    - https://github.com/zalando/spilo
-    urls:
-    - https://charts.helm.sh/incubator/packages/patroni-0.5.tgz
-    version: "0.5"
   - apiVersion: v1
     appVersion: 1.2-p17
     created: "2020-10-15T10:42:07.653735-04:00"
@@ -25668,4 +25651,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-10-15T10:42:06.793216-04:00"
+generated: "2020-10-20T11:47:32.857340105Z"
