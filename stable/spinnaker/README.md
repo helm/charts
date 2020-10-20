@@ -14,11 +14,11 @@ For more information on Spinnaker and its capabilities, see it's [documentation]
 
 To install the chart with the release name `my-release`:
 
-**Use this if version of Helm is above 3.0**
+**Use this if version of Helm version is 3.0 and above**
 ```bash
 $ helm install my-release stable/spinnaker --timeout 600s
 ```
-**Use this if version of Helm is below 3.0**
+**Use this if version of Helm version is below 3.0**
 ```bash
 $ helm install --name my-release my-release stable/spinnaker --timeout 600
 ```
