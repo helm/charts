@@ -33,11 +33,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-**Use this if version of Helm is above 3.0**
+**Use this if version of Helm version is 3.0 and above**
 ```bash
 $ helm install my-release -f values.yaml stable/spinnaker
 ```
-**Use this if version of Helm is below 3.0**
+**Use this if version of Helm version is below 3.0**
 ```bash
 $ helm install --name my-release -f values.yaml stable/spinnaker
 ```
