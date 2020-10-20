@@ -14,8 +14,13 @@ For more information on Spinnaker and its capabilities, see it's [documentation]
 
 To install the chart with the release name `my-release`:
 
+**Use this if version of Helm is above 3.0**
 ```bash
-$ helm install --name my-release stable/spinnaker --timeout 600
+$ helm install my-release stable/spinnaker --timeout 600s
+```
+**Use this if version of Helm is below 3.0**
+```bash
+$ helm install --name my-release my-release stable/spinnaker --timeout 600
 ```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install.
@@ -28,6 +33,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
+**Use this if version of Helm is above 3.0**
+```bash
+$ helm install my-release -f values.yaml stable/spinnaker
+```
+**Use this if version of Helm is below 3.0**
 ```bash
 $ helm install --name my-release -f values.yaml stable/spinnaker
 ```
