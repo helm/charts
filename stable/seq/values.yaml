@@ -80,7 +80,8 @@ cache:
   # 70% (`0.7`) is a good starting point for machines with up to ~8GB of RAM.
   targetSize: 0.7
 
-nodeSelector: {}
+nodeSelector: 
+  kubernetes.io/os: linux
 
 tolerations: []
 
