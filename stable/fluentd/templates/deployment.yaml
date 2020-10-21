@@ -16,7 +16,7 @@ spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
-{{- if .Values.autoscaling.enabled }}
+{{- if $statefulSet }}
   serviceName: {{ template "fluentd.name" . }}
 {{- end }}
   selector:
