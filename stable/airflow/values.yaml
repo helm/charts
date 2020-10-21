@@ -758,6 +758,13 @@ flower:
     ##
     minAvailable: ""
 
+  ## the value of the flower `--auth` argument
+  ##
+  ## NOTE:
+  ##  - see flower docs: https://flower.readthedocs.io/en/latest/auth.html#google-oauth-2-0
+  ##
+  oauthDomains: ""
+
   ## the name of a pre-created secret containing the basic authentication value for flower
   ##
   ## NOTE:

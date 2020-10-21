@@ -1,5 +1,10 @@
 # Upgrading Steps
 
+## `v7.12.X` → `v7.13.0`
+
+__The following values have been ADDED:__
+* `flower.oauthDomains`
+
 ## `v7.11.X` → `v7.12.0`
 
 __The following values have been ADDED:__

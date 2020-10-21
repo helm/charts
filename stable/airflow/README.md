@@ -52,6 +52,7 @@ kubectl exec \
 
 Chart version numbers: [Chart.yaml](Chart.yaml) or [Helm Hub](https://hub.helm.sh/charts/stable/airflow)
 
+- [v7.12.X → v7.13.0](UPGRADE.md#v712x--v7130)
 - [v7.11.X → v7.12.0](UPGRADE.md#v711x--v7120)
 - [v7.10.X → v7.11.0](UPGRADE.md#v710x--v7110)
 - [v7.9.X → v7.10.0](UPGRADE.md#v79x--v7100)
@@ -753,6 +754,7 @@ __Airflow Flower Values:__
 | `flower.podAnnotations` | Pod annotations for the flower Deployment | `{}` |
 | `flower.safeToEvict` | if we should tell Kubernetes Autoscaler that its safe to evict these Pods | `true` |
 | `flower.podDisruptionBudget.*` | configs for the PodDisruptionBudget of the flower Deployment | `<see values.yaml>` |
+| `flower.oauthDomains` | the value of the flower `--auth` argument | `""` |
 | `flower.basicAuthSecret` | the name of a pre-created secret containing the basic authentication value for flower | `""` |
 | `flower.basicAuthSecretKey` | the key within `flower.basicAuthSecret` containing the basic authentication string | `""` |
 | `flower.urlPrefix` | sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX` | `""` |
