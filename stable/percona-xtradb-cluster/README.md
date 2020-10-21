@@ -97,7 +97,7 @@ The following table lists the configurable parameters of the Percona chart and t
 | `prometheus.operator.serviceMonitor.selector`  | Label Selector for Prometheus to find ServiceMonitors              | `nil`   |
 | `podDisruptionBudget` | Pod disruption budget | `{enabled: false, maxUnavailable: 1}` |
 | `service.percona.headless` | if set to true makes the percona service [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) | false |
-
+| `initResources`                | CPU/Memory resource requests/limits for init containers| Memory: `128Mi`, CPU: `100m`                              |
 
 Some of the parameters above map to the env variables defined in the [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/).
 
