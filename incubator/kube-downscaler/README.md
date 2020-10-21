@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the kube-downscaler ch
 | `excludedDeployments`     | Deployments to exclude from the downscaler                                                           | `[]`                                                              |
 | `excludedNamespaces`      | Namespaces to exclude from the downscaler                                                            | `[]`                                                              |
 | `extraArgs`               | Add extra args to docker command                                                                     | `[]`                                                              |
+| `priorityClassName`       | Specifies the pod's priority class name                                                              | `''`                                                              |
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
