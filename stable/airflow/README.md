@@ -207,6 +207,17 @@ airflow:
           key: password
 ```
 
+You can also use `airflow.extraEnvFrom` to mount all the values in a ConfigMap or Secret
+For example, mounting all the data in `custom-config-map` and `super-secrets` as environment variables (the `custom-config-map` and `super-secrets` must already exist):
+```yaml
+airflow:
+  extraEnvFrom:
+    - configMapRef:
+        name: custom-config-map
+    - secretRef:
+        name: super-secrets
+```
+
 ## Docs (Airflow) - ConfigMaps
 
 We expose the `airflow.extraConfigmapMounts` value to mount extra Kubernetes ConfigMaps.
@@ -653,6 +664,7 @@ __Global Values:__
 | `airflow.config` | environment variables for the web/scheduler/worker pods (for airflow configs) | `{}` |
 | `airflow.podAnnotations` | extra annotations for the web/scheduler/worker/flower Pods | `{}` |
 | `airflow.extraEnv` | extra environment variables for the web/scheduler/worker/flower Pods | `[]` |
+| `airflow.extraEnvFrom` | ConfigMaps and Secrets to add as environment variables for the web/scheduler/worker/flower Pods | `[]` |
 | `airflow.extraConfigmapMounts` | extra configMap volumeMounts for the web/scheduler/worker/flower Pods | `[]` |
 | `airflow.extraContainers` | extra containers for the web/scheduler/worker Pods | `[]` |
 | `airflow.extraPipPackages` | extra pip packages to install in the web/scheduler/worker Pods | `[]` |
