@@ -19,6 +19,7 @@ image:
 # imagePullSecrets:
     # - name: docker
 service:
+  # externalIPs:
   name: registry
   type: ClusterIP
   # clusterIP:

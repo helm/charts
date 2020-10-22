@@ -16,6 +16,12 @@ spec:
 {{- if (and (eq .Values.service.type "ClusterIP") (not (empty .Values.service.clusterIP))) }}
   clusterIP: {{ .Values.service.clusterIP }}
 {{- end }}
+{{- if (not (empty .Values.service.externalIPs)) }}
+  externalIPs:
+    {{- range .Values.service.externalIPs }}
+    - {{ . | quote }}
+    {{- end }}
+{{- end }}
 {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}
