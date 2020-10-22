@@ -83,6 +83,7 @@ spec:
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }}
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
@@ -114,6 +115,7 @@ spec:
           image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }}
           imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
@@ -148,6 +150,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:

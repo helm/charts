@@ -106,6 +106,18 @@ airflow:
   ##
   extraEnv: []
 
+  ## extra environment vairables from configmaps or secrets for the web/scheduler/worker Pods
+  ## 
+  ## EXAMPLE:
+  ##   extraEnvFrom:
+  ##     - configMapRef:
+  ##         name: config-map-1
+  ##     - secretRef:
+  ##         name: secret-pws
+  ##     - configMapRef:
+  ##         name: other-config-map
+  extraEnvFrom: []
+
   ## extra configMap volumeMounts for the web/scheduler/worker Pods
   ##
   ## EXAMPLE:

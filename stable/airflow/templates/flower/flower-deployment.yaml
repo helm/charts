@@ -75,6 +75,7 @@ spec:
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
           envFrom:
+            {{- toYaml .Values.airflow.extraEnvFrom | nindent 12 }}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:

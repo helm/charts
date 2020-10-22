@@ -92,6 +92,7 @@ spec:
             - "-c"
             - "/home/airflow/scripts/preinit-db.sh"
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
@@ -107,6 +108,7 @@ spec:
           image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }}
           imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
@@ -142,6 +144,7 @@ spec:
           image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }}
           imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:
@@ -172,6 +175,7 @@ spec:
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
           envFrom:
+            {{- include "airflow.config.extraEnvFrom" . | nindent 12}}
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
           env:

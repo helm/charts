@@ -191,3 +191,46 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
 {{ toYaml .Values.airflow.extraEnv }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Render the extraEnvFrom to YAML to be included in the workers, web, and scheduler
+*/}}
+{{- define "airflow.config.extraEnvFrom" -}}
+{{- if .Values.airflow.extraEnvFrom -}}
+{{ toYaml .Values.airflow.extraEnvFrom }}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Render a list of configMapRefs starting with a ',' that will get appended to the default config map 
+for the AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF envVar
+*/}}
+{{- define "airflow.kubernetes.configMaps" -}}
+{{- $name := "" -}}
+{{- range .Values.airflow.extraEnvFrom -}}
+{{- if  .configMapRef -}}
+{{- $name = (printf "%v,%v" $name .configMapRef.name) -}}
+{{- end -}}
+{{- end -}}
+{{ $name }}
+{{- end -}}
+
+
+{{/*
+Render a comma separated list of secret references for the AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF envVar
+*/}}
+{{- define "airflow.kubernetes.envSecrets" -}}
+{{- $name := "" -}}
+{{- range .Values.airflow.extraEnvFrom -}}
+{{- if  .secretRef -}}
+{{- if eq $name "" -}}
+{{- $name = .secretRef.name -}}
+{{- else -}}
+{{- $name = (printf "%v,%v" $name .secretRef.name) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{ $name }}
+{{- end -}}

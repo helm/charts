@@ -102,7 +102,10 @@ data:
   ## Airflow - KubernetesExecutor
   ## ----------------
   {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF) }}
-  AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF: "{{ include "airflow.fullname" . }}-env"
+  AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF: "{{ include "airflow.fullname" . }}-env{{include "airflow.kubernetes.configMaps" .}}"
+  {{- end }}
+  {{ if (not .Values.airflow.config.AIRFLOW__KUBERNETES__ENV_FROM_SECRET_REF )}}
+  AIRFLOW__KUBERNETES__ENV_FROM_SECRET_REF: "{{ include "airflow.kubernetes.envSecrets" . }}"
   {{- end }}
   {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__NAMESPACE) }}
   AIRFLOW__KUBERNETES__NAMESPACE: "{{ .Release.Namespace }}"
