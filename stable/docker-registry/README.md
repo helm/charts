@@ -40,6 +40,7 @@ their default values.
 | `service.port`              | TCP port on which the service is exposed                                                   | `5000`          |
 | `service.type`              | service type                                                                               | `ClusterIP`     |
 | `service.clusterIP`         | if `service.type` is `ClusterIP` and this is non-empty, sets the cluster IP of the service | `nil`           |
+| `service.externalIPs`       | if `service.type` is `ExternalIP` and this is non-empty, sets the external IP of the service | `nil`           |
 | `service.nodePort`          | if `service.type` is `NodePort` and this is non-empty, sets the node port of the service   | `nil`           |
 | `service.loadBalancerIP     | if `service.type` is `LoadBalancer` and this is non-empty, sets the loadBalancerIP of the service | `nil`          |
 | `service.loadBalancerSourceRanges`| if `service.type` is `LoadBalancer` and this is non-empty, sets the loadBalancerSourceRanges of the service | `nil`           |
