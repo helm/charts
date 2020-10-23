@@ -45,6 +45,10 @@ spec:
 {{ toYaml .Values.ingressMonitorController.matchLabels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.ingressMonitorController.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.ingressMonitorController.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - env:
       {{- if .Values.ingressMonitorController.watchNamespace }}
