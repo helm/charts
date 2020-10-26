@@ -33,6 +33,12 @@ rbac:
   # If true, create & use RBAC resources
   create: true
 
+  # Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to it, rolename set here.
+  # useExistingRole: your-existing-role
+
+  # if set to false - Run without Cluteradmin privs needed - ONLY works if namespace is also set (if useExistingRole is set this name is used as CluterRole or Role to bind to)
+  useClusterRole: true
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created, require rbac true
   create: true
