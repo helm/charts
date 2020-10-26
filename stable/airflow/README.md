@@ -50,7 +50,7 @@ kubectl exec \
 
 ## Upgrade Steps
 
-Chart version numbers: [Chart.yaml](Chart.yaml) or [Helm Hub](https://hub.helm.sh/charts/stable/airflow)
+Chart version numbers: [Chart.yaml](Chart.yaml) or [Artifact Hub](https://artifacthub.io/packages/helm/helm-stable/airflow)
 
 - [v7.12.X → v7.13.0](UPGRADE.md#v712x--v7130)
 - [v7.11.X → v7.12.0](UPGRADE.md#v711x--v7120)
