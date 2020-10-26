@@ -92,7 +92,7 @@ spec:
             command:
               - sh
               - -ec
-              - /usr/bin/jps | /bin/grep -q SupportedKafka
+              - /usr/bin/jps | /bin/grep -q Kafka
           {{- if not .Values.livenessProbe }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
