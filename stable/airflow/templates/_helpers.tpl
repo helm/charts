@@ -67,39 +67,46 @@ Used to discover the master Service and Secret name created by the sub-chart.
 {{- end -}}
 {{- end -}}
 
-
 {{/*
-Construct the AIRFLOW__CORE__SQL_ALCHEMY_CONN connection string.
+Bash command which echos the DB connection string in SQLAlchemy format.
+NOTE:
+ - used by `AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD`
+ - the `DATABASE_PASSWORD_CMD` sub-command is set in `configmap-env`
 */}}
-{{- define "airflow.connection.alchemy" -}}
+{{- define "DATABASE_SQLALCHEMY_CMD" -}}
 {{- if .Values.postgresql.enabled -}}
-postgresql+psycopg2://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "postgresql+psycopg2://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}"
 {{- else if and (not .Values.postgresql.enabled) (eq "postgres" .Values.externalDatabase.type) -}}
-postgresql+psycopg2://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "postgresql+psycopg2://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}"
 {{- else if and (not .Values.postgresql.enabled) (eq "mysql" .Values.externalDatabase.type) -}}
-mysql+mysqldb://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "mysql+mysqldb://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}"
 {{- end -}}
 {{- end -}}
 
 {{/*
-Construct the AIRFLOW__CELERY__RESULT_BACKEND connection string.
+Bash command which echos the DB connection string in Celery result_backend format.
+NOTE:
+ - used by `AIRFLOW__CELERY__RESULT_BACKEND_CMD`
+ - the `DATABASE_PASSWORD_CMD` sub-command is set in `configmap-env`
 */}}
-{{- define "airflow.connection.celery.backend" -}}
+{{- define "DATABASE_CELERY_CMD" -}}
 {{- if .Values.postgresql.enabled -}}
-db+postgresql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "db+postgresql://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}"
 {{- else if and (not .Values.postgresql.enabled) (eq "postgres" .Values.externalDatabase.type) -}}
-db+postgresql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "db+postgresql://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}"
 {{- else if and (not .Values.postgresql.enabled) (eq "mysql" .Values.externalDatabase.type) -}}
-db+mysql://${DATABASE_USER}:$( echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)" )@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+echo -n "db+mysql://${DATABASE_USER}:$(eval $DATABASE_PASSWORD_CMD)@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}${DATABASE_PROPERTIES}"
 {{- end -}}
 {{- end -}}
 
 {{/*
-Construct the AIRFLOW__CELERY__BROKER_URL connection string.
-Note that a redis URL with no password excludes the "@" prefix.
+Bash command which echos the Redis connection string.
+NOTE:
+ - used by `AIRFLOW__CELERY__BROKER_URL_CMD`
+ - the `REDIS_PASSWORD_CMD` sub-command is set in `configmap-env`
 */}}
-{{- define "airflow.connection.celery.broker" -}}
-redis://$( echo ${REDIS_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(f\":{encoded_pass}@\") if len(encoded_pass) > 0 else None" )${REDIS_HOST}:${REDIS_PORT}/${REDIS_DBNUM}
+{{- define "REDIS_CONNECTION_CMD" -}}
+echo -n "redis://$(eval $REDIS_PASSWORD_CMD)${REDIS_HOST}:${REDIS_PORT}/${REDIS_DBNUM}"
 {{- end -}}
 
 {{/*
@@ -139,13 +146,14 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
 {{- /* --------------------------- */ -}}
 {{- /* ---------- REDIS ---------- */ -}}
 {{- /* --------------------------- */ -}}
-{{- if and (.Values.redis.enabled) (eq .Values.airflow.executor "CeleryExecutor") }}
+{{- if eq .Values.airflow.executor "CeleryExecutor" }}
+{{- if .Values.redis.enabled }}
 {{- if .Values.redis.existingSecret }}
 - name: REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.redis.existingSecret }}
-      key: {{ .Values.redis.existingSecretKey }}
+      key: {{ .Values.redis.existingSecretPasswordKey }}
 {{- else }}
 - name: REDIS_PASSWORD
   valueFrom:
@@ -153,7 +161,7 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
       name: {{ include "airflow.redis.fullname" . }}
       key: redis-password
 {{- end }}
-{{- else if (eq .Values.airflow.executor "CeleryExecutor") }}
+{{- else }}
 {{- if .Values.externalRedis.passwordSecret }}
 - name: REDIS_PASSWORD
   valueFrom:
@@ -163,6 +171,7 @@ When applicable, we use the secrets created by the postgres/redis charts (which 
 {{- else }}
 - name: REDIS_PASSWORD
   value: ""
+{{- end }}
 {{- end }}
 {{- end }}
 {{- /* ---------------------------- */ -}}

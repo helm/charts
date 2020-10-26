@@ -1,0 +1,196 @@
+apiVersion: {{- if .Capabilities.APIVersions.Has "apps/v1" }} apps/v1 {{- else }} extensions/v1beta1 {{- end }}
+kind: Deployment
+metadata:
+  name: {{ template "postgresql.fullname" . }}
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "postgresql.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "postgresql.name" . }}
+        release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      containers:
+      - name: {{ template "postgresql.fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        args:
+          {{- range $key, $value := default dict .Values.postgresConfig }}
+          - -c
+          - '{{ $key | snakecase }}={{ $value }}'
+          {{- end }}
+          {{- if .Values.pgHbaConf }}
+          - -c
+          - hba_file=/pg_hba/pg_hba.conf
+          {{- end }}
+        env:
+        - name: POSTGRES_USER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+          # Required for pg_isready in the health probes.
+        - name: PGUSER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+        - name: POSTGRES_DB
+          value: {{ default "" .Values.postgresDatabase | quote }}
+        - name: POSTGRES_INITDB_ARGS
+          value: {{ default "" .Values.postgresInitdbArgs | quote }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: /conf/postgres-password
+        {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgres-password
+        {{- end }}
+        - name: POD_IP
+          valueFrom: { fieldRef: { fieldPath: status.podIP } }
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready --host $POD_IP
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+          failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready --host $POD_IP
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.persistence.mountPath }}
+          subPath: {{ .Values.persistence.subPath }}
+        {{- if .Values.usePasswordFile }}
+        - name: password-file
+          mountPath: /conf
+          readOnly: true
+        {{- end }}
+        {{- if .Values.pgHbaConf }}
+        - name: pg-hba-conf
+          mountPath: /pg_hba
+          readOnly: true
+        {{- end }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: DATA_SOURCE_NAME
+          value: postgresql://{{ default "postgres" .Values.postgresUser }}@127.0.0.1:5432?sslmode=disable
+        {{- if .Values.metrics.customMetrics }}
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          value: /conf/custom-metrics.yaml
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9187
+        {{- if .Values.metrics.customMetrics }}
+        volumeMounts:
+          - name: custom-metrics
+            mountPath: /conf
+            readOnly: true
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "postgresql.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
+      - name: custom-metrics
+        configMap:
+          name: {{ template "postgresql.fullname" . }}
+          items:
+            - key: custom-metrics.yaml
+              path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.usePasswordFile }}
+      - name: password-file
+        secret:
+          secretName: {{ template "postgresql.secretName" . }}
+          items:
+            - key: postgres-password
+              path: postgres-password
+      {{- end }}
+      {{- if .Values.pgHbaConf }}
+      - name: pg-hba-conf
+        configMap:
+          name: {{ template "postgresql.fullname" . }}
+          items:
+            - key: pg_hba.conf
+              path: pg_hba.conf
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}

@@ -80,6 +80,8 @@ spec:
           value: {{ .Values.features.batch.enabled | quote }}
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_SCHEDULES_ENABLED
           value: {{ .Values.features.batch.enabled | quote }}
+        - name: SPRING_CLOUD_DATAFLOW_TASK_COMPOSED_TASK_RUNNER_URI
+          value: 'docker://springcloud/spring-cloud-dataflow-composed-task-runner:2.6.0'
         {{- range $key, $value := .Values.server.extraEnv }}
         - name: {{ $key }}
           value: "{{ $value }}"

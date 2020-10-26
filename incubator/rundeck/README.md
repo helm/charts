@@ -20,6 +20,7 @@ deployment.strategy | Sets the K8s rollout strategy for the Rundeck deployment |
 image.repository | Name of the image to run, without the tag. | [rundeck/rundeck](https://github.com/rundeck/rundeck)
 image.tag | The image tag to use. | 3.2.7
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
+image.pullSecrets | The kubernetes secret to pull the image from a private registry. | None
 service.type | The kubernetes service type to use. | ClusterIP
 service.port | The tcp port the service should listen on. | 80
 ingress | Any ingress rules to apply. | None
@@ -42,6 +43,7 @@ serviceAccount.name | Name of the service account the Rundeck pod should use | "
 volumes | volumes made available to all containers | ""
 volumeMounts | volumeMounts to add to the rundeck container | ""
 initContainers | can be used to download plugins or customise your rundeck installation | ""
+sideCars | can be used to run additional containers in the pod | ""
 
 ## AWS & K8s Permissions
 

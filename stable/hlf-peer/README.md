@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                  | Image pull policy                                              | `IfNotPresent`            |
 | `service.portRequest`               | TCP port for requests to Peer                                  | `7051`                    |
 | `service.portEvent`                 | TCP port for event service on Peer                             | `7053`                    |
+| `service.portMetrics`               | TCP port for the metrics service on Peer                       | `9443`                    |
 | `service.type`                      | K8S service type exposing ports, e.g. `ClusterIP`              | `ClusterIP`               |
 | `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite                            | `ReadWriteOnce`           |
 | `persistence.annotations`           | Persistent Volume annotations                                  | `{}`                      |
@@ -113,7 +114,6 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `peer.chaincode.runtime.golang`     | Image of the chaincode runtime for Go                          | ``                        |
 | `peer.chaincode.runtime.java`       | Image of the chaincode runtime for Java                        | ``                        |
 | `peer.chaincode.runtime.node`       | Image of the chaincode runtime for Node.js                     | ``                        |
-| `peer.operations.listenAddress`     | Host and port for the operations server                        | ``                        |
 | `peer.metrics.provider`             | Metrics provider, can be `statsd`, `prometheus`, or `disabled` | `disabled`                |
 | `peer.metrics.statsd.network`       | Network type, can be `tcp` or `udp`                            | `udp`                     |
 | `peer.metrics.statsd.address`       | Address of the StatsD server                                   | `127.0.0.1:8125`          |

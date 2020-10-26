@@ -1,5 +1,5 @@
 name: oauth2-proxy
-version: 3.2.2
+version: 3.2.3
 apiVersion: v1
 appVersion: 5.1.0
 home: https://pusher.github.io/oauth2_proxy/

@@ -16,6 +16,8 @@
 
   If using GCS as storage, follow the preparatory steps below:
 
+  Note: Use the `gcs.enableIAM` flag if running on GKE with Workload Idenity or if the node's service account already has the required permissions. Otherwise follow the steps below.
+
   Set up `gsutil` and `gcloud` on your local laptop and associate them with your Google Cloud Platform (GCP) project, create a bucket, create an IAM service account `sparkonk8s`, generate a JSON key file `sparkonk8s.json`, to grant `sparkonk8s` admin permission to bucket `gs://spark-history-server`.
 
   ```bash
@@ -117,6 +119,7 @@ Note that the default image `lightbend/spark-history-server` is built using this
 | image.tag |The tag of the image|2.4.0|
 | service.type |The type of history server service that exposes the UI|LoadBalancer|
 | service.port |The port on which the service UI can be accessed.|18080|
+| service.nodePort |The NodePort on which the service UI can be accessed.|nil|
 | service.annotations | annotations for the service | {} |
 | pvc.enablePVC |Whether to use PVC storage|true|
 | pvc.existingClaimName |The pre-created PVC name|nfs-pvc|

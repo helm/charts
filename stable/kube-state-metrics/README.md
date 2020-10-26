@@ -78,3 +78,5 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.honorLabels`             | Honor metric labels                                                                   | `false`                                    |
 | `namespaceOverride`                          | Override the deployment namespace                                                     | `""` (`Release.Namespace`)                 |
 | `kubeTargetVersionOverride`                  | Override the k8s version of the target cluster                                        | `""`                                       |
+| `kubeconfig.enabled`                         | Adds --kubeconfig arg to container at startup                                         | `""`                                       |
+| `kubeconfig.secret`                          | Base64 encoded kubeconfig file                                                        | `""`                                       |

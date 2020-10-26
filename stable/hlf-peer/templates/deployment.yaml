@@ -111,6 +111,11 @@ spec:
             - name: event
               containerPort: 7053
               protocol: TCP
+            {{- if eq .Values.peer.metrics.provider "prometheus" }}
+            - name: metrics
+              containerPort: 9443
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             exec:
               command:

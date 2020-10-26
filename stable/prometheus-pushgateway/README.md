@@ -1,5 +1,7 @@
 # Prometheus Pushgateway
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [pushgateway](https://github.com/prometheus/pushgateway)
 
 ## TL;DR;

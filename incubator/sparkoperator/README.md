@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `leaderElection.lockName` | Lock name to use for leader election                         | `spark-operator-lock`                  |
 | `leaderElection.lockNamespace` | Namespace to use for leader election                    | (namespace of release)                 |
 | `securityContext` | Defines security context for operator container. | `{}` |
+| `istio.enabled`  			| Whether Jobs will run in service mesh						   | false									| 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

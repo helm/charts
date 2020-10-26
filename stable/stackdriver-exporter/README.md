@@ -66,6 +66,7 @@ Parameter                           | Description                               
 `resources`                         | Resource requests & limits                                                      | `{}`
 `serviceAccount.name`               | Name of Kubernetes service account to use                                       | `""` (defaults to `default`)
 `serviceAccount.create`             | Toggle for service account creation                                             | `false`
+`serviceAccount.annotations`        | Annotations for service account. Only used if `create` is `true`.               | `nil`
 `service.type`                      | Type of service to create                                                       | `ClusterIP`
 `service.httpPort`                  | Port for the http service                                                       | `9255`
 `stackdriver.projectId`             | GCP Project ID                                                                  | ``

@@ -100,3 +100,6 @@ env:
 extraVolumes: []
 
 extraVolumeMounts: []
+
+updateStrategy: RollingUpdate
+maxUnavailable: 1

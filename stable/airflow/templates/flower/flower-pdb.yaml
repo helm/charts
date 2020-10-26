@@ -1,0 +1,24 @@
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") (.Values.flower.podDisruptionBudget.enabled) }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "airflow.fullname" . }}-flower
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: flower
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if .Values.flower.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.flower.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if .Values.flower.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.flower.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: flower
+      release: {{ .Release.Name }}
+{{- end }}

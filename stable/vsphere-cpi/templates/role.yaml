@@ -2,12 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: system:{{ .Values.serviceAccount.name }}
+  name: {{ .Values.serviceAccount.name }}
   labels:
     app: {{ template "cpi.name" . }}
     vsphere-cpi-infra: role
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: cloud-controller
+    component: cloud-controller-manager
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 rules:
@@ -40,6 +40,12 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - services/status
+  verbs:
+  - patch
 - apiGroups:
   - ""
   resources:

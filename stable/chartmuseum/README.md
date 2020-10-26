@@ -102,6 +102,9 @@ their default values. See values.yaml for all available options.
 | `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
 | `securityContext.enabled`               | Enable securityContext                                                      | `true`                               |
 | `securityContext.fsGroup`               | Group ID for the container                                                  | `1000`                               |
+| `securityContext.runAsNonRoot`          | Running Pods as non-root                                                    | ``                                   |
+| `securityContext.supplementalGroups`    | Control which group IDs containers add                                      | ``                                   |
+| `containerSecurityContext`              | Additional Container securityContext (ex. allowPrivilegeEscalation)         | `{}`                                 |
 | `priorityClassName      `               | priorityClassName                                                           | `""`                                 |
 | `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |

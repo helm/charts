@@ -130,6 +130,12 @@ collectors:
   verticalpodautoscalers: false
   volumeattachments: true
 
+# Enabling kubeconfig will pass the --kubeconfig argument to the container
+kubeconfig:
+  enabled: false
+  # base64 encoded kube-config file
+  secret:
+
 # Namespace to be enabled for collecting resources. By default all namespaces are collected.
 # namespace: ""
 

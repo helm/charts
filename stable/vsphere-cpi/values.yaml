@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # vSohere CPI values are grouped by component
 
+global:
+  config:
+    enabled: false
+
 config:
   enabled: false
   vcenter: "vcenter.local"
@@ -25,9 +29,9 @@ podSecurityPolicy:
 
 # Run containers to have security context. Default is 'nobody' (65534/65534) in distroless
 securityContext:
-  enabled: false
-  runAsUser: 65534
-  fsGroup: 65534
+  enabled: true
+  runAsUser: 1001
+  fsGroup: 1001
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -42,7 +46,7 @@ serviceAccount:
 daemonset:
   annotations: {}
   image: gcr.io/cloud-provider-vsphere/cpi/release/manager
-  tag: v1.1.0
+  tag: v1.2.1
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdline:

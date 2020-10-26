@@ -125,6 +125,7 @@ data:
                 {{ if not $.Values.kubeConfig.nameSpaces }}--omit-namespaces={{ template "omittedNameSpaces" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.omittedKinds }}--omit-kinds={{ template "omittedKinds" $ }}{{ end }} \
                 {{ if $.Values.kubeConfig.kinds }}--kinds={{ template "k8sKinds" $ }}{{ end }} \
+                {{ if $.Values.kubeConfig.liveManifestCalls }}--live-manifest-calls true{{ end }} \
                 --provider-version v2
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \

@@ -70,7 +70,7 @@ Add Helm metadata to selector labels specifically for deployments/daemonsets/sta
 */}}
 {{- define "instana-agent.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "instana-agent.name" . }}
-{{ if not .Values.templating -}}
+{{- if not .Values.templating }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}

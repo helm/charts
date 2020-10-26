@@ -1,9 +1,10 @@
+# This chart is deprecated and moved to https://github.com/jenkinsci/helm-charts
 apiVersion: v1
 name: jenkins
 home: https://jenkins.io/
-version: 2.5.0
+version: 2.5.4
 appVersion: lts
-description: Open source continuous integration server. It supports multiple SCM tools
+description: DEPRECATED - Open source continuous integration server. It supports multiple SCM tools
   including CVS, Subversion and Git. It can execute Apache Ant and Apache Maven-based
   projects as well as arbitrary scripts.
 sources:
@@ -11,17 +12,8 @@ sources:
 - https://github.com/jenkinsci/docker-jnlp-slave
 - https://github.com/maorfr/kube-tasks
 - https://github.com/jenkinsci/configuration-as-code-plugin
-maintainers:
-- name: lachie83
-  email: lachlan.evenson@microsoft.com
-- name: viglesiasce
-  email: viglesias@google.com
-- name: maorfr
-  email: maor.friedman@redhat.com
-- name: torstenwalter
-  email: mail@torstenwalter.de
-- name: mogaal
-  email: garridomota@gmail.com
-- name: wmcdona89
-  email: wmcdona89@gmail.com
 icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png
+# The stable/jenkins chart is deprecated and no longer maintained.
+# It was moved to https://github.com/jenkinsci/helm-charts
+# For details on deprecation, including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true

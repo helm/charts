@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.68
+  tag: v0.72
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -63,6 +63,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Labels to be added to pod
+podLabels: {}
+
+# Annotations to be added to pod
+podAnnotations: {}
 
 securityContext: {}
 

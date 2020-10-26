@@ -66,12 +66,12 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
-| `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  false                                 |
+| `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  true                                  |
 | `podSecurityPolicy.annotations`          | Annotations for pd sec policy       |  nil                                   |
 | `securityContext.enabled`                | Enable sec context for container    |  false                                 |
-| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  65534                                 |
+| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  1001                                 |
 |                                          |    distroless image                 |                                        |
-| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  65534                                 |
+| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  1001                                 |
 |                                          |    distroless image                 |                                        |
 | `config.enabled`                         | Create a simple single VC config    |  false                                 |
 | `config.vcenter`                         | FQDN or IP of vCenter               |  vcenter.local                         |

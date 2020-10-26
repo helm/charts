@@ -109,16 +109,24 @@ image: openpolicyagent/opa
 imageTag: 0.15.1
 imagePullPolicy: IfNotPresent
 
+# One or more secrets to be used when pulling images
+imagePullSecrets: []
+# - registrySecretName
+
 # Port to which the opa pod will bind itself
 # NOTE IF you use a different port make sure it maches the ones in the readinessProbe
 # and livenessProbe
 port: 443
+
+extraArgs: []
 
 mgmt:
   enabled: true
   image: openpolicyagent/kube-mgmt
   imageTag: "0.10"
   imagePullPolicy: IfNotPresent
+# NOTE insecure http port conjointly used for mgmt access and prometheus metrics export
+  port: 8181
   extraArgs: []
   resources: {}
   data:

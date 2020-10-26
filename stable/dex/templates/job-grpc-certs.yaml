@@ -38,6 +38,16 @@ spec:
         fsGroup: {{ .Values.certs.securityContext.fsGroup }}
       {{- end }}
       serviceAccountName: {{ template "dex.serviceAccountName" . }}
+      nodeSelector:
+{{ toYaml .Values.certs.grpc.pod.nodeSelector | indent 8 }}
+{{- with .Values.certs.grpc.pod.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.certs.grpc.pod.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
       restartPolicy: OnFailure
       containers:
       - name: main
