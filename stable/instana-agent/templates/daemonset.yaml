@@ -33,6 +33,7 @@ spec:
       {{- if .Values.agent.pod.priorityClassName }}
       priorityClassName: {{ .Values.agent.pod.priorityClassName | quote }}
       {{- end }}
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: instana-agent
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
