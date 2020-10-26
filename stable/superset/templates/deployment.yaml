@@ -9,6 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
   selector:
     matchLabels:
       app: {{ include "superset.name" . }}
