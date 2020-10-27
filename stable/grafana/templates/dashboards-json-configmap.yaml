@@ -14,7 +14,7 @@ data:
 {{- $dashboardFound := false }}
 {{- range $key, $value := $dashboards }}
 {{- if (or (hasKey $value "json") (hasKey $value "file")) }}
-{{- $dashboardFound = true }}
+{{- $dashboardFound := true }}
 {{ print $key | indent 2 }}.json:
 {{- if hasKey $value "json" }}
     |-
