@@ -240,7 +240,11 @@ spec:
           readinessProbe:
             httpGet:
               scheme: {{ .Values.web.readinessProbe.scheme }}
+              {{- if .Values.ingress.web.readinessPath }}
+              path: "{{ .Values.ingress.web.readinessPath }}"
+              {{- else }}
               path: "{{ .Values.ingress.web.path }}/health"
+              {{- end }}
               port: web
             initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}

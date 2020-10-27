@@ -1107,12 +1107,19 @@ ingress:
     ##
     host: ""
 
-    ## the livenessPath for the web Ingress
+    ## the livenessPath for the Deployment
     ##
     ## NOTE:
     ## - if set to "", defaults to: `{ingress.web.path}/health`
     ##
     livenessPath: ""
+
+    ## the readinessPath for the Deployment
+    ##
+    ## NOTE:
+    ## - if set to "", defaults to: `{ingress.web.path}/health`
+    ##
+    readinessPath: ""
 
     ## configs for web Ingress TLS
     ##
