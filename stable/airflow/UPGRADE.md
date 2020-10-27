@@ -4,6 +4,7 @@
 
 __The following values have been ADDED:__
 * `flower.oauthDomains`
+* `ingress.web.readinessPath`
 
 ## `v7.11.X` → `v7.12.0`
 
