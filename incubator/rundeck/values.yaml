@@ -36,7 +36,7 @@ rundeck:
   # sshSecrets: "ssh-secret"
 
   # Name of secret containing to mount under ~/.aws/
-  # awsConfigSecret: "aws-secret"
+  # awsConfigCredentialsSecret: "aws-secret"
 
   # Name of secret to mount under ~/.kube/
   # kubeConfigSecret: "kube-secret"

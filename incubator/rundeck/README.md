@@ -18,7 +18,7 @@ deployment.replicaCount | How many replicas to run. Rundeck can really only work
 deployment.annotations | You can pass annotations inside deployment.spec.template.metadata.annotations. Useful for KIAM/Kube2IAM and others for example. | {}
 deployment.strategy | Sets the K8s rollout strategy for the Rundeck deployment | { type: RollingUpdate }
 image.repository | Name of the image to run, without the tag. | [rundeck/rundeck](https://github.com/rundeck/rundeck)
-image.tag | The image tag to use. | 3.2.7
+image.tag | The image tag to use. | 3.3.4
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
 image.pullSecrets | The kubernetes secret to pull the image from a private registry. | None
 service.type | The kubernetes service type to use. | ClusterIP
@@ -29,7 +29,7 @@ rundeck.adminUser | The config to set up the admin user that should be placed at
 rundeck.env | The rundeck environment variables that you would want to set | Default variables provided in docker file
 rundeck.envSecret | Name of secret containing environment variables to add to the Rundeck deployment | ""
 rundeck.sshSecrets | A reference to the Kubernetes Secret that contains the ssh keys. | ""
-rundeck.awsConfigSecret | Name of secret to mount under the `~/.aws/` directory. Useful when AWS IRSA is not an option. | ""
+rundeck.awsConfigCredentialsSecret | Name of secret to mount under the `~/.aws/` directory. Useful when AWS IRSA is not an option. | ""
 rundeck.kubeConfigSecret | Name of secret to mount under the `~/.kube/` directory. Useful when Rundeck needs configuration for multiple K8s clusters. | ""
 rundeck.extraConfigSecret | Name of secret containing additional files to mount at `~/extra/`. Can be useful for working with RUNDECK_TOKENS_FILE configuration | ""
 nginxConfOverride | An optional multi-line value that can replace the default nginx.conf. | ""

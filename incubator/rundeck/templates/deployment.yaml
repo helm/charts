@@ -89,9 +89,10 @@ spec:
             mountPath: /home/rundeck/.ssh
             readOnly: true
         {{- end }}
-        {{- if .Values.rundeck.awsConfigSecret }}
-          - name: aws-config
-            mountPath: /home/rundeck/.aws/
+        {{- if .Values.rundeck.awsConfigCredentialsSecret }}
+          - name: aws-config-credentials
+            mountPath: /home/rundeck/.aws/credentials
+            subPath: credentials
         {{- end }}
         {{- if .Values.rundeck.kubeConfigSecret }}
           - name: kube-config
@@ -149,10 +150,10 @@ spec:
           secret:
             secretName: {{ .Values.rundeck.sshSecrets }}
         {{- end }}
-        {{- if .Values.rundeck.awsCredentialsSecret }}
-        - name: aws-credentials
+        {{- if .Values.rundeck.awsConfigCredentialsSecret }}
+        - name: aws-config-credentials
           secret:
-            secretName: {{ .Values.rundeck.awsCredentialsSecret}}
+            secretName: {{ .Values.rundeck.awsConfigCredentialsSecret}}
         {{- end }}
         {{- if .Values.rundeck.kubeConfigSecret }}
         - name: kube-config
