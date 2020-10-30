@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.13.1
 description: Quassel IRC is a modern, cross-platform, distributed IRC client.
 name: quassel
-version: 0.2.10
+version: 0.2.11
 icon: https://avatars3.githubusercontent.com/u/2965670
 home: https://quassel-irc.org/
 maintainers:
