@@ -6,5 +6,6 @@ chart-dirs:
 excluded-charts:
   - common
 chart-repos:
-  - incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
+  - stable=https://charts.helm.sh/stable
+  - incubator=https://charts.helm.sh/incubator
 helm-extra-args: --timeout 600
