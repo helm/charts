@@ -21,7 +21,7 @@ The default [image](https://hub.docker.com/r/pedrocesarti/jmeter-docker/) allows
 
 To change the version running on the helm you only need:
 ```
-$ helm install --name distributed-jmeter --set master.image.tag=4.0 --set server.image.tag=4.0 stable/distributed-jmeter
+$ helm install --name distributed-jmeter --set image.tag=5.0 --set image.tag=5.0 stable/distributed-jmeter
 ```
 
 Enjoy! :)
