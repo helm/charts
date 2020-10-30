@@ -10113,6 +10113,23 @@ entries:
   haproxy-ingress:
   - apiVersion: v1
     appVersion: 0.7.2
+    created: "2020-10-30T18:32:14.85965435Z"
+    deprecated: true
+    description: DEPRECATED Ingress controller implementation for haproxy loadbalancer.
+    digest: 7015ce9979c5d5ee9ee7da45897cc082adee33bf115a7909c98df262a7075424
+    home: https://github.com/jcmoraisjr/haproxy-ingress
+    icon: http://www.haproxy.org/img/HAProxyCommunityEdition_60px.png
+    keywords:
+    - ingress
+    - haproxy
+    name: haproxy-ingress
+    sources:
+    - https://github.com/jcmoraisjr/haproxy-ingress
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/haproxy-ingress-0.0.28.tgz
+    version: 0.0.28
+  - apiVersion: v1
+    appVersion: 0.7.2
     created: "2020-10-15T10:42:07.182287-04:00"
     description: Ingress controller implementation for haproxy loadbalancer.
     digest: 3af9d6c74524b979589178107063f3e1e8cb559148db133447e3eaaf3bc54466
@@ -25843,4 +25860,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-10-30T16:13:47.08513541Z"
+generated: "2020-10-30T18:32:14.856972793Z"
