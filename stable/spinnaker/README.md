@@ -1,4 +1,7 @@
-# Spinnaker Chart
+# Spinnaker Chart (Deprecated)
+
+Due to the deprecation of this repository, the code base of spinnaker will be moved to [dwardu89/helm-charts](https://github.com/dwardu89/helm-charts).
+We have raised an issue in [spinnaker/spinnaker](https://github.com/spinnaker/spinnaker/issues/6126) to have maintenance taken over in the future.
 
 [Spinnaker](http://spinnaker.io/) is an open source, multi-cloud continuous delivery platform.
 
