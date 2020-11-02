@@ -1,3 +1,23 @@
+# **DEPRECATED** This repository has moved
+
+With upcoming deprecation of `helm/charts` repository, the Node Problem Detector Helm Chart has moved to Delivery Hero's Helm Repository: https://github.com/deliveryhero/helm-charts
+
+You can use this new Helm repository by doing:
+
+```bash
+helm repo add deliveryhero https://charts.deliveryhero.io/public
+helm search repo deliveryhero
+```
+
+You can now use `deliveryhero/node-problem-detector` instead of `stable/node-problem-detector` in all your Helm commands, e.g.:
+
+```bash
+# New installation
+helm install --name <RELEASE_NAME> deliveryhero/node-problem-detector
+# Upgrade existing installation
+helm upgrade --name <RELEASE_NAME> deliveryhero/node-problem-detector
+```
+
 # Kubernetes Node Problem Detector
 
 This chart installs a [node-problem-detector](https://github.com/kubernetes/node-problem-detector) daemonset. This tool aims to make various node problems visible to the upstream layers in cluster management stack. It is a daemon which runs on each node, detects node problems and reports them to apiserver.
