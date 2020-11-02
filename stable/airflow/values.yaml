@@ -317,7 +317,7 @@ scheduler:
 
   ##  if we run `airflow upgradedb` (prior airflow 2.0) or `airflow db upgrade` (> airflow 2.0)
   ##
-  ## Note: 
+  ## Note:
   ## - create all the tables required for operation
   ## - needs an empty DB and anairflow’s user with permission to CREATE/ALTER it
   ## - upgrade keeps track of migrations already applies, so it’s safe to run as often as you need
