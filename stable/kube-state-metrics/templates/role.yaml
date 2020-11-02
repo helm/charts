@@ -188,7 +188,5 @@ rules:
     - verticalpodautoscalers
   verbs: ["list", "watch"]
 {{ end -}}
-{{- if eq .Values.rbac.useClusterRole false }}
-{{-   end -}}
 {{- end -}}
 {{- end -}}
