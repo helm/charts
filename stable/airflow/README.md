@@ -414,6 +414,10 @@ If the value `scheduler.initdb` is set to `true` (this is the default), the airf
 If the value `scheduler.preinitdb` is set to `true`, then we ALSO RUN `airflow initdb` in an init-container (retrying 5 times).
 This is unusually NOT necessary unless your synced DAGs include custom database hooks that prevent `airflow initdb` from running.
 
+If the value `scheduler.upgradedb` is set to `true`, `airflow upgradedb` will be run in an init-container. This creates all tables
+needed by airflow without a lot of default connection, charts, etc. which might be prefered over `initdb` for production environments.
+`upgrade` keeps track of migrations already applies, so it’s safe to run as often as you need.
+
 ## Docs (Database) - Passwords
 
 PostgreSQL is the default database in this chart, because we use insecure username/password combinations by default, you should create secure credentials before installing the Helm chart.

@@ -78,7 +78,7 @@ spec:
         {{- toYaml .Values.scheduler.securityContext | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "airflow.serviceAccountName" . }}
-      {{- if or (.Values.dags.initContainer.enabled) (.Values.scheduler.preinitdb) (.Values.scheduler.extraInitContainers) }}
+      {{- if or (.Values.dags.initContainer.enabled) (.Values.scheduler.preinitdb) (.Values.scheduler.extraInitContainers) (.Values.scheduler.upgradedb) }}
       initContainers:
         {{- if .Values.scheduler.preinitdb }}
         - name: {{ .Chart.Name }}-preinitdb
@@ -91,6 +91,28 @@ spec:
             - "/bin/bash"
             - "-c"
             - "/home/airflow/scripts/preinit-db.sh"
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.scheduler.resources | nindent 12 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /home/airflow/scripts
+        {{- end }}
+        {{- if .Values.scheduler.upgradedb }}
+        - name: {{ .Chart.Name }}-upgradedb
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          command:
+            - "/usr/bin/dumb-init"
+            - "--"
+          args:
+            - "/bin/bash"
+            - "-c"
+            - "/home/airflow/scripts/upgrade-db.sh"
           envFrom:
             - configMapRef:
                 name: "{{ include "airflow.fullname" . }}-env"
