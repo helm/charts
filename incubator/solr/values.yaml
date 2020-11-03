@@ -106,6 +106,18 @@ service:
   type: ClusterIP
   annotations: {}
 
+# ----------------------------------------
+# Zookeepeer:
+# ----------------------------------------
+
+zookeeper:
+  ## If true, install the Zookeeper chart
+  enabled: true
+  ## If the Zookeeper Chart is disabled a URL and port are required to connect
+  url: ""
+  port: 2181
+
+
 # Configuration for the solr prometheus exporter
 exporter:
   image: {}

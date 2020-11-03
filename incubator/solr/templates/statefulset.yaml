@@ -131,7 +131,7 @@ spec:
               done
               rm crt-*
 {{ end }}
-              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ include "solr.zookeeper-service-name" . }}:2181" -cmd clusterprop -name urlScheme -val https
+              /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost "{{ include "solr.zookeeper-service-name" . }}:{{ .Values.zookeeper.port }}" -cmd clusterprop -name urlScheme -val https
           volumeMounts:
             - name: "keystore-volume"
               mountPath: "/tmp/keystore"
@@ -168,7 +168,7 @@ spec:
             - name: "SOLR_HOST"
               value: "$(POD_HOSTNAME).{{ include "solr.headless-service-name" . }}.{{ .Release.Namespace }}"
             - name: "ZK_HOST"
-              value: "{{ include "solr.zookeeper-service-name" . }}:2181"
+              value: "{{ include "solr.zookeeper-service-name" . }}:{{ .Values.zookeeper.port }}"
             - name: "SOLR_LOG_LEVEL"
               value: "{{ .Values.logLevel }}"
 {{- if .Values.extraEnvVars }}

@@ -56,7 +56,11 @@ The name of the zookeeper service
 The name of the zookeeper headless service
 */}}
 {{- define "solr.zookeeper-service-name" -}}
+{{- if .Values.zookeeper.enabled -}}
 {{ printf "%s-%s" (include "solr.zookeeper-name" .) "headless" | trunc 63 | trimSuffix "-"  }}
+{{- else -}}
+{{- printf "%s" .Values.zookeeper.url }}
+{{- end -}}
 {{- end -}}
 
 {{/*
