@@ -64,6 +64,9 @@ The following table shows the configuration options for the Solr helm chart:
 | `tls.certSecret.certPath`                     | The key in the Kubernetes secret that contains the TLS certificate | `tls.crt`                                                             |
 | `service.type`                                | The type of service for the solr client service | `ClusterIP`                                                           |
 | `service.annotations`                         | Annotations to apply to the solr client service | `{}` |
+| `zookeeper.enabled`                           | If true, deploy Zookeeper | `true`
+| `zookeeper.url`                               | If the Zookeeper Chart is disabled a URL and port are required to connect | `nil`
+| `zookeeper.port`                              | If the Zookeeper Chart is disabled a URL and port are required to connect. If Zookeeper chart is enabled leave the default value | `2181`
 | `exporter.enabled`                            | Whether to enable the Solr Prometheus exporter | `false`                                                               |
 | `exporter.image.pullSecrets`                  | Specify docker-registry secret names as an array      | `[]` (does not add image pull secrets to deployed pods)      |
 | `exporter.configFile`                         | The path in the docker image that the exporter loads the config from | `/opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml` |
