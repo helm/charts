@@ -1,4 +1,10 @@
-# Sysdig
+# DEPRECATED - Sysdig
+
+**This chart is deprecated and moved to its new home:**
+
+**GitHub repo:** https://github.com/sysdiglabs/charts
+
+**Charts repo:** https://charts.sysdig.com
 
 [Sysdig](https://sysdig.com/) is a unified platform for container and microservices monitoring, troubleshooting, security and forensics. Sysdig platform has been built on top of [Sysdig tool](https://sysdig.com/opensource/sysdig/) and [Sysdig Inspect](https://sysdig.com/blog/sysdig-inspect/) open-source technologies.
 
