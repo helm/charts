@@ -150,10 +150,21 @@ rbac:
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
-  create: true
+  create: false
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   # name:
+  # if rules are set, these are the permissions granted to the pods
+  rules: {}
+  # - apiGroups:
+  #   - ""
+  #   resources:
+  #   - pods
+  #   verbs:
+  #   - get
+  #   - list
+  #   - watch
+
 
 # Use host network for Cassandra pods
 # You must pass seed list into config.seeds property if set to true

@@ -1,0 +1,20 @@
+{{- if and .Values.serviceAccount.create .Values.serviceAccount.rules -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cassandra.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "cassandra.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cassandra.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

@@ -147,6 +147,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `rbac.create`                        | Specifies whether RBAC resources should be created                                                  | `true` |
 | `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                | `true` |
 | `serviceAccount.name`                | The name of the ServiceAccount to use           |                                                            |
+| `serviceAccount.rules`               | Permissions you would like granting to the pods | `{}`                                                       |
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
