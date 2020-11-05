@@ -7,7 +7,7 @@ podAnnotations: {}
 podLabels: {}
 image:
   repository: metabase/metabase
-  tag: v0.36.3
+  tag: v0.37.0.2
   pullPolicy: IfNotPresent
 
 ## String to fully override metabase.fullname template
@@ -61,12 +61,37 @@ password:
 timeZone: UTC
 emojiLogging: true
 # javaOpts:
-# pluginsDirectory:
+# pluginsDirectory: /plugins
 # siteUrl:
 
 session: {}
   # maxSessionAge:
   # sessionCookies:
+
+# specify init containers, e.g. for module download
+extraInitContainers: []
+#  - name: download-modules
+#    image: "curlimages/curl:7.70.0"
+#    imagePullPolicy: "IfNotPresent"
+#    volumeMounts:
+#      - name: plugins
+#        mountPath: /plugins
+#    workingDir: /plugins
+#    command:
+#      - "/bin/sh"
+#      - "-ec"
+#      - |
+#        curl -Lso /plugins/athena.metabase-driver.jar \
+#                  https://github.com/dacort/metabase-athena-driver/releases/download/v1.1.0/athena.metabase-driver.jar
+
+extraVolumeMounts: []
+#  - name: plugins
+#    mountPath: /plugins
+#    readOnly: false
+
+extraVolumes: []
+#  - name: plugins
+#    emptyDir: {}
 
 livenessProbe:
   initialDelaySeconds: 120
