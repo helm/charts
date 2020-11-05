@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "kubewatch.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   labels:
@@ -28,6 +28,7 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+{{- include "kubewatch.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "kubewatch.name" . }}
         image: {{ template "kubewatch.image" . }}

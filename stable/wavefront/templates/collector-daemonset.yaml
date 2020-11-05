@@ -1,0 +1,77 @@
+{{- if and .Values.collector.enabled .Values.collector.useDaemonset }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/name : {{ template "wavefront.fullname" . }}
+    helm.sh/chart: {{ template "wavefront.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io.instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/component: collector
+  name: {{ template "wavefront.collector.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+      app.kubernetes.io/component: collector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name : {{ template "wavefront.fullname" .}}
+        app.kubernetes.io/component: collector
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        key: node.alpha.kubernetes.io/role
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists      
+      serviceAccountName: {{ template "wavefront.collector.serviceAccountName" . }}
+      containers:
+      - name: wavefront-collector
+        image: {{ .Values.collector.image.repository }}:{{ .Values.collector.image.tag }}
+        imagePullPolicy: {{ .Values.collector.image.pullPolicy }}
+        command:
+        - /wavefront-collector
+        - --daemon=true
+        - --config-file=/etc/collector/config.yaml
+        {{- if .Values.collector.maxProcs }}
+        - --max-procs={{ .Values.collector.maxProcs }}
+        {{- end }}
+        {{- if .Values.collector.logLevel }}
+        - --log-level={{ .Values.collector.logLevel }}
+        {{- end }}
+        env:
+        - name: HOST_PROC
+          value: /host/proc
+        - name: POD_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: POD_NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace        
+        ports:
+        - containerPort: 8088
+          protocol: TCP
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
+        volumeMounts:
+        - name: procfs
+          mountPath: /host/proc
+          readOnly: true          
+        - name: config
+          mountPath: /etc/collector/
+          readOnly: true        
+      volumes:
+      - name: procfs
+        hostPath:
+          path: /proc
+      - name: config
+        configMap:
+          name: {{ template "wavefront.collector.fullname" . }}-config
+{{- end }}

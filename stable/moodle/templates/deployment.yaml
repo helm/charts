@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "moodle.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "moodle.fullname" . }}
@@ -32,12 +32,7 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "moodle.imagePullSecrets" . | indent 6 }}
       hostAliases:
       - ip: "127.0.0.1"
         hostnames:
@@ -78,6 +73,8 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
+        - name: MOODLE_SKIP_INSTALL
+          value: {{ default "no" .Values.moodleSkipInstall | quote }}
         - name: MOODLE_USERNAME
           value: {{ default "" .Values.moodleUsername | quote }}
         - name: MOODLE_PASSWORD
@@ -134,7 +131,7 @@ spec:
           mountPath: /bitnami
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: {{ template "metrics.image" . }}
+        image: {{ template "moodle.metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
         ports:
@@ -159,7 +156,7 @@ spec:
       - name: moodle-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.moodle.fullname" . ) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

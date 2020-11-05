@@ -1,0 +1,160 @@
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.flower.annotations }}
+  annotations:
+    {{- toYaml .Values.flower.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: flower
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.flower.labels }}
+    {{- toYaml .Values.flower.labels | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.flower.replicas }}
+  minReadySeconds: {{ .Values.flower.minReadySeconds }}
+  strategy:
+    # this is safe - multiple flower pods can run concurrently
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: flower
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/config/configmap-env.yaml") . | sha256sum }}
+        {{- if .Values.flower.podAnnotations }}
+        {{- toYaml .Values.flower.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.flower.safeToEvict }}
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        {{- end }}
+      labels:
+        app: {{ include "airflow.labels.app" . }}
+        component: flower
+        release: {{ .Release.Name }}
+        {{- if .Values.flower.podLabels }}
+        {{- toYaml .Values.flower.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.flower.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.flower.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.flower.affinity }}
+      affinity:
+        {{- toYaml .Values.flower.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.flower.tolerations }}
+      tolerations:
+        {{- toYaml .Values.flower.tolerations | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "airflow.serviceAccountName" . }}
+      {{- if .Values.flower.securityContext }}
+      securityContext:
+        {{- toYaml .Values.flower.securityContext | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-flower
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          ports:
+            - name: flower
+              containerPort: 5555
+              protocol: TCP
+          {{- if .Values.flower.extraConfigmapMounts }}
+          volumeMounts:
+            {{- range .Values.flower.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          command:
+            - "/usr/bin/dumb-init"
+            - "--"
+          args:
+            - "bash"
+            - "-c"
+            - >
+              true \
+              {{- if gt .Values.flower.initialStartupDelay 0.0 }}
+               && echo "*** waiting {{ .Values.flower.initialStartupDelay }}s..." \
+               && sleep {{ .Values.flower.initialStartupDelay }} \
+              {{- end }}
+               && mkdir -p /home/airflow/.local/bin \
+               && export PATH="/home/airflow/.local/bin:$PATH" \
+               && echo "*** running flower..." \
+              {{- if .Values.flower.oauthDomains }}
+               && exec airflow flower --auth={{ .Values.flower.oauthDomains | quote }}
+              {{- else }}
+               && exec airflow flower
+              {{- end }}
+
+          livenessProbe:
+            {{- if and (.Values.flower.basicAuthSecret) (not .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH) }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -H 'Authorization: Basic $(echo -n $AIRFLOW__CELERY__FLOWER_BASIC_AUTH | base64)' 'http://localhost:5555
+                  {{- if .Values.ingress.flower.livenessPath -}}
+                  {{ .Values.ingress.flower.livenessPath }}
+                  {{- else -}}
+                  {{ .Values.ingress.flower.path }}/
+                  {{- end -}}
+                  '"
+            {{- else }}
+            httpGet:
+              {{- if .Values.ingress.flower.livenessPath }}
+              path: "{{ .Values.ingress.flower.livenessPath }}"
+              {{- else }}
+              path: "{{ .Values.ingress.flower.path }}/"
+              {{- end }}
+              port: flower
+              {{- if .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH }}
+              httpHeaders:
+                - name: Authorization
+                  value: Basic {{ .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH | b64enc }}
+              {{- end }}
+            {{- end }}
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.flower.resources | nindent 12 }}
+      {{- if .Values.flower.extraConfigmapMounts }}
+      volumes:
+        {{- range .Values.flower.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+      {{- end }}
+{{- end }}

@@ -1,4 +1,11 @@
 {{/*
+Expand to the namespace sealed-secrets installs into.
+*/}}
+{{- define "sealed-secrets.namespace" -}}
+{{- default .Release.Namespace .Values.namespace -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "sealed-secrets.chart" -}}

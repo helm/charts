@@ -1,0 +1,52 @@
+{{ if and .Values.pro.enabled .Values.pro.devPortal.enabled  }}
+{{- if .Values.crds.enabled }}
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-devportal
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /docs/
+  rewrite: ""
+  service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-devportal-api
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  prefix: /openapi/
+  rewrite: ""
+  service: 127.0.0.1:{{ .Values.pro.ports.auth }}
+{{- end }}
+---
+apiVersion: getambassador.io/v1beta2
+kind: FilterPolicy
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-internal-access-control
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  rules:
+    - host: "*"
+      path: "*/.ambassador-internal/*"
+      filters:
+        - name: ambassador-pro-internal-access-control
+---
+apiVersion: getambassador.io/v1beta2
+kind: Filter
+metadata:
+  name: {{ include "ambassador.fullname" . }}-pro-internal-access-control
+spec:
+  {{- if hasKey .Values.env "AMBASSADOR_ID" }}
+  ambassador_id: {{ .Values.env.AMBASSADOR_ID | quote }}
+  {{- end }}
+  Internal: {}
+{{ end }}

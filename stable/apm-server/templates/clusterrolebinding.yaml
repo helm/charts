@@ -4,10 +4,10 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ template "apm-server.fullname" . }}
   labels:
-    app: {{ template "apm-server.name" . }}
-    chart: {{ template "apm-server.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "apm-server.name" . }}
+    helm.sh/chart: {{ include "apm-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

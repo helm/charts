@@ -1,0 +1,33 @@
+{{- define "container-system-probe" -}}
+- name: system-probe
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  securityContext:
+    capabilities:
+      add: ["SYS_ADMIN", "SYS_RESOURCE", "SYS_PTRACE", "NET_ADMIN", "IPC_LOCK"]
+  command: ["/opt/datadog-agent/embedded/bin/system-probe", "--config=/etc/datadog-agent/system-probe.yaml"]
+  env:
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.agents.containers.systemProbe.logLevel | default .Values.datadog.logLevel | quote }}
+{{- if .Values.agents.containers.systemProbe.env }}
+{{ toYaml .Values.agents.containers.systemProbe.env | indent 4 }}
+{{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.systemProbe.resources | indent 4 }}
+  volumeMounts:
+    - name: debugfs
+      mountPath: /sys/kernel/debug
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent
+    - name: sysprobe-socket-dir
+      mountPath: /var/run/sysprobe
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: src
+      mountPath: /usr/src
+      readOnly: true
+{{- end -}}

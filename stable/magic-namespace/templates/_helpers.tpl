@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "magic-namespace.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Allow a custom secretName to be defined
+*/}}
+{{- define "magic-namespace.tillerTlsSecret" -}}
+{{- if .Values.tiller.tls.secretName -}}
+{{- .Values.tiller.tls.secretName }}
+{{- else -}}
+{{- template "magic-namespace.fullname" . }}-tiller-secret
+{{- end -}}
+{{- end -}}

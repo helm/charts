@@ -1,0 +1,4 @@
+# Empty values file for testing default parameters.
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"

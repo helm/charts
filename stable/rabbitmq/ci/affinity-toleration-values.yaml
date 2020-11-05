@@ -1,0 +1,14 @@
+tolerations:
+  - key: foo
+    operator: "Equal"
+    value: bar
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      preference:
+        matchExpressions:
+        - key: foo
+          operator: In
+          values:
+          - bar

@@ -45,13 +45,15 @@ The following table lists the configurable parameters of the SignalSciences char
 | `signalsciences.accessKeyIdExistingSecret`     | If set, use the secret with a provided name instead of creating a new one | `nil`                                           |
 | `signalsciences.secretAccessKey`               | Your SignalSciences secretAccessKey                                       | `Nil` You must provide your own secretAccessKey |
 | `signalsciences.secretAccessKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one | `nil`                                           |
-| `image.repository`                             | The image repository to pull from                                         | `marc/sigsci-agent`                             |
-| `image.tag`                                    | The image tag to pull                                                     | `3.12.1`                                        |
+| `image.repository`                             | The image repository to pull from                                         | `signalsciences/sigsci-agent`                             |
+| `image.tag`                                    | The image tag to pull                                                     | `4.6.0`                                        |
 | `image.pullPolicy`                             | Image pull policy                                                         | `IfNotPresent`                                  |
+| `signalsciences.agentTempVolume`       | Temporary volume to mount the socket and a writeable dir                                                    | `/sigsci/tmp`                                        |
 | `signalsciences.resources.requests.cpu`        | CPU resource requests                                                     | `200m`                                          |
 | `signalsciences.resources.limits.cpu`          | CPU resource limits                                                       | `200m`                                          |
 | `signalsciences.resources.requests.memory`     | Memory resource requests                                                  | `256Mi`                                         |
 | `signalsciences.resources.limits.memory`       | Memory resource limits                                                    | `256Mi`                                         |
+| `signalsciences.socketAddress`       | If set, allows you to change the default socket location                                                    | `nil`                                         |
 | `daemonset.podAnnotations`                     | Annotations to add to the DaemonSet's Pods                                | `nil`                                           |
 | `daemonset.tolerations`                        | List of node taints to tolerate (requires Kubernetes >= 1.6)              | `nil`                                           |
 | `daemonset.nodeSelector`                       | Node selectors                                                            | `nil`                                           |

@@ -11,16 +11,33 @@ metadata:
 spec:
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/halyard-config.yaml") . | sha256sum }}
+          {{- if .Values.halyard.annotations }}
+{{ toYaml .Values.halyard.annotations | indent 8 }}
+          {{- end }}
       labels:
 {{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
+      {{- if .Values.serviceAccount.halyardName }}
+      serviceAccountName: {{ .Values.serviceAccount.halyardName }}
+      {{- else }}
+      serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
+      {{- end }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       restartPolicy: OnFailure
       volumes:
-      {{- if .Values.kubeConfig.enabled }}
+      {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
       - name: kube-config
         secret:
           secretName: {{ .Values.kubeConfig.secretName }}
@@ -33,10 +50,14 @@ spec:
         configMap:
           name: {{ .Values.halyard.additionalScripts.configMapName }}
       {{- end }}
-      {{- if .Values.halyard.additionalSecrets.create }}
+      {{- if or .Values.halyard.additionalSecrets.create (hasKey .Values.halyard.additionalSecrets "name") }}
       - name: additional-secrets
         secret:
+        {{- if .Values.halyard.additionalSecrets.create }}
           secretName: {{ template "spinnaker.fullname" . }}-additional-secrets
+        {{- else if .Values.halyard.additionalSecrets.name }}
+          secretName: {{ .Values.halyard.additionalSecrets.name }}
+        {{- end }}
       {{- end }}
       {{- if .Values.halyard.additionalConfigMaps.create }}
       - name: additional-config-maps
@@ -48,16 +69,31 @@ spec:
         configMap:
           name: {{ template "spinnaker.fullname" . }}-additional-scripts
       {{- end }}
+      {{- if .Values.halyard.bom }}
+      - name: halyard-bom
+        configMap:
+          name: {{ template "spinnaker.fullname" . }}-halyard-bom
+      {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
+        {{- if .Values.gcs.secretName }}
+          secretName: {{ .Values.gcs.secretName }}
+        {{- else }}
           secretName: {{ template "spinnaker.fullname" . }}-gcs
+        {{- end }}
       {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets
         secret:
           secretName: {{ template "spinnaker.fullname" .}}-s3
       {{- end }}
+      {{- if .Values.halyard.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.halyard.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
@@ -68,7 +104,7 @@ spec:
         - name: additional-config
           mountPath: /opt/halyard/additional
         {{- end }}
-        {{- if .Values.halyard.additionalSecrets.create }}
+        {{- if or .Values.halyard.additionalSecrets.create (hasKey .Values.halyard.additionalSecrets "name") }}
         - name: additional-secrets
           mountPath: /opt/halyard/additionalSecrets
         {{- end }}
@@ -80,6 +116,10 @@ spec:
         - name: additional-scripts
           mountPath: /opt/halyard/additionalScripts
         {{- end }}
+        {{- if .Values.halyard.bom }}
+        - name: halyard-bom
+          mountPath: /opt/halyard/bom
+        {{- end }}
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
           mountPath: /opt/gcs
@@ -88,7 +128,7 @@ spec:
         - name: s3-secrets
           mountPath: /opt/s3
         {{- end }}
-        {{- if .Values.kubeConfig.enabled }}
+        {{- if and .Values.kubeConfig.enabled .Values.kubeConfig.secretName }}
         - name: kube-config
           mountPath: /opt/kube
         {{- end }}

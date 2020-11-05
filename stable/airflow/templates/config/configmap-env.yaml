@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "airflow.fullname" . }}-env
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  ## Force UTC timezone
+  TZ: Etc/UTC
+
+  ## ----------------
+  ## Database
+  ## ----------------
+  {{- if .Values.postgresql.enabled }}
+  DATABASE_HOST: "{{ include "airflow.postgresql.fullname" . }}"
+  DATABASE_PORT: "5432"
+  DATABASE_USER: "{{ .Values.postgresql.postgresqlUsername }}"
+  DATABASE_DB: "{{ .Values.postgresql.postgresqlDatabase }}"
+  {{- else }}
+  DATABASE_HOST: "{{ .Values.externalDatabase.host }}"
+  DATABASE_PORT: "{{ .Values.externalDatabase.port }}"
+  DATABASE_USER: "{{ .Values.externalDatabase.user }}"
+  DATABASE_DB: "{{ .Values.externalDatabase.database }}"
+  DATABASE_PROPERTIES: |-
+    {{ .Values.externalDatabase.properties }}
+  {{- end }}
+  # bash command which echos the URL encoded value of $DATABASE_PASSWORD
+  DATABASE_PASSWORD_CMD: |-
+    echo ${DATABASE_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(encoded_pass)"
+  # bash command which echos the DB connection string in SQLAlchemy format
+  DATABASE_SQLALCHEMY_CMD: |-
+    {{ include "DATABASE_SQLALCHEMY_CMD" . }}
+  # bash command which echos the DB connection string in Celery result_backend format
+  DATABASE_CELERY_CMD: |-
+    {{ include "DATABASE_CELERY_CMD" . }}
+
+  {{- if eq .Values.airflow.executor "CeleryExecutor" }}
+  ## ----------------
+  ## Redis
+  ## ----------------
+  {{- if .Values.redis.enabled }}
+  REDIS_HOST: "{{ include "airflow.redis.fullname" . }}-master"
+  REDIS_PORT: "6379"
+  REDIS_DBNUM: "1"
+  {{- else }}
+  REDIS_HOST: "{{ .Values.externalRedis.host }}"
+  REDIS_PORT: "{{ .Values.externalRedis.port }}"
+  REDIS_DBNUM: "{{ .Values.externalRedis.databaseNumber }}"
+  {{- end }}
+  # a bash command which echos the URL encoded value of $REDIS_PASSWORD
+  # NOTE: if $REDIS_PASSWORD is non-empty, prints `:${REDIS_PASSWORD}@`, else ``
+  REDIS_PASSWORD_CMD: |-
+    echo ${REDIS_PASSWORD} | python3 -c "import urllib.parse; encoded_pass = urllib.parse.quote(input()); print(f\":{encoded_pass}@\") if len(encoded_pass) > 0 else None"
+  # a bash command which echos the Redis connection string
+  REDIS_CONNECTION_CMD: |-
+    {{ include "REDIS_CONNECTION_CMD" . }}
+  {{- end }}
+
+  ## ----------------
+  ## Airflow
+  ## ----------------
+  AIRFLOW__CORE__BASE_LOG_FOLDER: "{{ .Values.logs.path }}"
+  AIRFLOW__CORE__DAGS_FOLDER: "{{ .Values.dags.path }}"
+  AIRFLOW__CORE__DAG_PROCESSOR_MANAGER_LOG_LOCATION: "{{ .Values.logs.path }}/dag_processor_manager/dag_processor_manager.log"
+  AIRFLOW__CORE__DONOT_PICKLE: "{{ .Values.dags.doNotPickle }}"
+  AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "false" # for forward compatibility with 2.0
+  AIRFLOW__CORE__EXECUTOR: "{{ .Values.airflow.executor }}"
+  {{- if .Values.airflow.fernetKey }}
+  AIRFLOW__CORE__FERNET_KEY: "{{ .Values.airflow.fernetKey }}"
+  {{- end }}
+  AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD: |-
+    bash -c 'eval "$DATABASE_SQLALCHEMY_CMD"'
+  {{- if .Values.web.serializeDAGs }}
+  AIRFLOW__CORE__STORE_SERIALIZED_DAGS: "{{ .Values.web.serializeDAGs }}"
+  {{- end }}
+  AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY: "{{ .Values.logs.path }}/scheduler"
+  AIRFLOW__WEBSERVER__BASE_URL: "{{ .Values.web.baseUrl }}"
+  AIRFLOW__WEBSERVER__WEB_SERVER_PORT: "8080"
+
+  {{- if (eq .Values.airflow.executor "CeleryExecutor") }}
+  ## ----------------
+  ## Airflow - CeleryExecutor
+  ## ----------------
+  AIRFLOW__CELERY__BROKER_URL_CMD: |-
+    bash -c 'eval "$REDIS_CONNECTION_CMD"'
+  {{- if .Values.flower.enabled }}
+  AIRFLOW__CELERY__FLOWER_PORT: "5555"
+  AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.flower.urlPrefix }}"
+  {{- end }}
+  AIRFLOW__CELERY__RESULT_BACKEND_CMD: |-
+    bash -c 'eval "$DATABASE_CELERY_CMD"'
+  AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
+  AIRFLOW__CELERY__WORKER_LOG_SERVER_PORT: "8793"
+  {{- end }}
+
+  {{- if (eq .Values.airflow.executor "KubernetesExecutor") }}
+  ## ----------------
+  ## Airflow - KubernetesExecutor
+  ## ----------------
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF) }}
+  AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF: "{{ include "airflow.fullname" . }}-env"
+  {{- end }}
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__NAMESPACE) }}
+  AIRFLOW__KUBERNETES__NAMESPACE: "{{ .Release.Namespace }}"
+  {{- end }}
+  {{- if (not .Values.airflow.config.AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME) }}
+  AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME: "{{ include "airflow.serviceAccountName" . }}"
+  {{- end }}
+  {{- end }}
+
+  {{- if .Values.airflow.config }}
+  ## ----------------
+  ## Airflow - User Configs
+  ## ----------------
+  {{- toYaml .Values.airflow.config | nindent 2 }}
+  {{- end }}

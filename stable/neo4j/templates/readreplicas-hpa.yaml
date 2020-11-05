@@ -1,0 +1,23 @@
+{{- if .Values.readReplica.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "neo4j.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "neo4j.name" . }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "neo4j.name" . }}
+  minReplicas: {{ .Values.readReplica.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.readReplica.autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.readReplica.autoscaling.targetAverageUtilization }}
+{{- end }}

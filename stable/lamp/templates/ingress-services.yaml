@@ -1,5 +1,9 @@
 {{- if and .Values.ingress.enabled (or .Values.phpmyadmin.enabled .Values.webdav.enabled) }}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ template "lamp.fullname" . }}-service

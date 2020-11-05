@@ -2,12 +2,15 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
- name: {{ template "fullname" . }}
+ name: {{ template "sentry.fullname" . }}
  labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sentry.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
  annotations:
    {{- range $key, $value := .Values.ingress.annotations }}
      {{ $key }}: {{ $value | quote }}
@@ -17,9 +20,15 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /
+          {{- range .Values.ingress.extraPaths }}
+          - path: {{ .path | quote }}
             backend:
-              serviceName: {{ template "fullname" . }}
+              serviceName: {{ .backend.serviceName }}
+              servicePort: {{ .backend.servicePort}}
+          {{- end }}
+          - path: {{ default "/" .Values.ingress.path | quote }}
+            backend:
+              serviceName: {{ template "sentry.fullname" . }}
               servicePort: {{ .Values.service.externalPort }}
 {{- if .Values.ingress.tls }}
   tls:

@@ -4,9 +4,11 @@
 
 replicaCount: 1
 
+deploymentStrategy: RollingUpdate
+
 image:
   repository: hackmdio/hackmd
-  tag: 1.2.1-alpine
+  tag: 1.3.0-alpine
   pullPolicy: IfNotPresent
 
 service:
@@ -64,6 +66,8 @@ persistence:
   ##
   # storageClass: "-"
 
+podAnnotations: {}
+
 extraVars: []
 
 nodeSelector: {}
@@ -77,8 +81,9 @@ affinity: {}
 ##
 postgresql:
   install: true
-  imageTag: "9.6.2"
-  postgresUser: "hackmd"
-  postgresDatabase: "hackmd"
+  image:
+    tag: "9.6"
+  postgresqlUsername: "hackmd"
+  postgresqlDatabase: "hackmd"
   ## Default: random 10 character string
-  # postgresPassword:
+  # postgresqlPassword:

@@ -1,0 +1,6 @@
+dependencies:
+- name: zookeeper
+  repository: https://charts.helm.sh/incubator
+  version: 2.1.3
+digest: sha256:6f0f8fc26381329ccae43bae46e93f1a1b81b64b042017c76a70c402bc1f8770
+generated: "2020-10-30T00:43:04.044163-04:00"

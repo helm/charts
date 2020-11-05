@@ -1,55 +1,66 @@
 {{- if .Values.sysdig.accessKey }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sysdig.fullname" . }}
   labels:
-    app: {{ template "sysdig.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "sysdig.labels" . | indent 4 }}
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sysdig.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "sysdig.fullname" .}}
       labels:
-        app: {{ template "sysdig.fullname" .}}
-        role: monitoring
+{{ include "sysdig.labels" . | indent 8 }}
+      {{- if .Values.daemonset.annotations }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/custom-app-checks: {{ include (print $.Template.BasePath "/configmap-custom-app-checks.yaml") . | sha256sum }}
+{{ toYaml .Values.daemonset.annotations | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
+      terminationGracePeriodSeconds: 5
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
-      containers:
-        - name: {{ .Chart.Name }}
-          image: {{ template "sysdig.image" . }}
+      {{- if .Values.slim.enabled }}
+      initContainers:
+        - name: sysdig-agent-kmodule
+          image: {{ template "sysdig.image.kmodule" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          {{- if .Values.image.pullSecrets }}
+          imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 12 }}
+          {{- end }}
           securityContext:
+            capabilities:
+              drop:
+                - ALL
             privileged: true
-          readinessProbe:
-            exec:
-              command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
-            initialDelaySeconds: 10
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
+          resources:
+{{ toYaml .Values.slim.resources | indent 12 }}
           volumeMounts:
-            - mountPath: /host/var/run/docker.sock
-              name: docker-sock
-              readOnly: false
-            - mountPath: /host/dev
-              name: dev-vol
-              readOnly: false
-            - mountPath: /host/proc
-              name: proc-vol
+            - mountPath: /etc/modprobe.d
+              name: modprobe-d
               readOnly: true
             - mountPath: /host/boot
               name: boot-vol
@@ -60,23 +71,111 @@ spec:
             - mountPath: /host/usr
               name: usr-vol
               readOnly: true
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ template "sysdig.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
+          env:
+            {{- if .Values.ebpf.enabled }}
+            - name: SYSDIG_BPF_PROBE
+              value:
+            {{- end }}
+            {{- if .Values.proxy.httpProxy }}
+            - name: http_proxy
+              value: {{ .Values.proxy.httpProxy }}
+            {{- end }}
+            {{- if .Values.proxy.httpsProxy }}
+            - name: https_proxy
+              value: {{ .Values.proxy.httpsProxy }}
+            {{- end }}
+            {{- if .Values.proxy.noProxy }}
+            - name: no_proxy
+              value: {{ .Values.proxy.noProxy }}
+            {{- end }}
+            {{- if .Values.timezone }}
+            - name: TZ
+              value: {{ .Values.timezone }}
+            {{- end }}
+            {{- range $key, $value := .Values.daemonset.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
+          readinessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
+            initialDelaySeconds: 10
+          livenessProbe:
+            exec:
+              command: [ "test", "-e", "/opt/draios/logs/running" ]
+            initialDelaySeconds: 10
+          volumeMounts:
+            {{- if not .Values.slim.enabled }}
+            - mountPath: /etc/modprobe.d
+              name: modprobe-d
+              readOnly: true
+            {{- end }}
+            - mountPath: /host/dev
+              name: dev-vol
+              readOnly: false
+            - mountPath: /host/proc
+              name: proc-vol
+              readOnly: true
+            {{- if not .Values.slim.enabled }}
+            - mountPath: /host/boot
+              name: boot-vol
+              readOnly: true
+            - mountPath: /host/lib/modules
+              name: modules-vol
+              readOnly: true
+            - mountPath: /host/usr
+              name: usr-vol
+              readOnly: true
+            {{- end }}
+            - mountPath: /host/run
+              name: run-vol
+            - mountPath: /host/var/run
+              name: varrun-vol
             - mountPath: /dev/shm
               name: dshm
             - mountPath: /opt/draios/etc/kubernetes/config
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
               name: sysdig-agent-secrets
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            - mountPath: /host/etc
+              name: etc-fs
+              readOnly: true
+            {{- end }}
             {{- if .Values.customAppChecks }}
             - mountPath: /opt/draios/lib/python/checks.custom.d
               name: custom-app-checks-volume
             {{- end }}
+            - mountPath: /host/etc/os-release
+              name: osrel
+              readOnly: true
       volumes:
+        - name: modprobe-d
+          hostPath:
+            path: /etc/modprobe.d
+        - name: osrel
+          hostPath:
+            path: /etc/os-release
+            type: FileOrCreate
         - name: dshm
           emptyDir:
             medium: Memory
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
         - name: dev-vol
           hostPath:
             path: /dev
@@ -92,6 +191,17 @@ spec:
         - name: usr-vol
           hostPath:
             path: /usr
+        - name: run-vol
+          hostPath:
+            path: /run
+        - name: varrun-vol
+          hostPath:
+            path: /var/run
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        - name: etc-fs
+          hostPath:
+            path: /etc
+        {{- end }}
         - name: sysdig-agent-config
           configMap:
             name: {{ template "sysdig.fullname" . }}
@@ -105,5 +215,5 @@ spec:
             name: {{ template "sysdig.fullname" . }}-custom-app-checks
         {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
 {{- end }}

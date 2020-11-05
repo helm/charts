@@ -10,7 +10,7 @@ spec:
     storage: 10Mi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.storageClass.accessModes }}
   persistentVolumeReclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
   storageClassName: ""
   {{- if .Values.nfs.mountOptions }}

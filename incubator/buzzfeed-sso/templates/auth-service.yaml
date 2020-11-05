@@ -1,0 +1,24 @@
+{{- if .Values.auth.enabled -}}
+{{- $name := include "buzzfeed-sso.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "buzzfeed-sso.fullname" . }}-auth
+  labels:
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-auth
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.auth.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.auth.service.port }}
+      targetPort: 4180
+      protocol: TCP
+  selector:
+    app: {{ $name }}
+    component: {{ $name }}-auth
+    release: {{ .Release.Name }}
+{{- end }}

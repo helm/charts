@@ -29,14 +29,6 @@ spec:
       {{- end}}
       protocol: TCP
       name: http
-
-    - port: {{ .Values.server.service.httpsPort }}
-      targetPort: 8154
-      {{- if .Values.server.service.nodeHttpsPort }}
-      nodePort: {{ .Values.server.service.nodeHttpsPort }}
-      {{- end}}
-      protocol: TCP
-      name: https
   selector:
     app: {{ template "gocd.name" . }}
     release: {{ .Release.Name | quote }}

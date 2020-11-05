@@ -1,0 +1,30 @@
+{{- if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cpi.name" . }}
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller-manager
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.service.annotations }}
+  annotations:
+  {{- toYaml .Values.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  ports:
+  - name: cpi-api
+    port: {{ .Values.service.endpointPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.targetPort }}
+  selector:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: service
+    component: cloud-controller-manager
+  type: {{ .Values.service.type }}
+{{- template "loadBalancerSourceRanges" .Values }}
+{{- end -}}

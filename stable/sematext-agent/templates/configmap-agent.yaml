@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}-agent
+  labels:
+    app: {{ template "sematext-agent.name" . }}-agent
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  REGION: {{ .Values.region | quote }}
+  {{- range $key, $val := .Values.agent.config }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- if .Values.serverBaseUrl }}
+  SERVER_BASE_URL: {{ default "" .Values.serverBaseUrl | quote }}
+  {{- end }}
+  {{- if .Values.eventsReceiverUrl }}
+  EVENTS_RECEIVER_URL: {{ default "" .Values.eventsReceiverUrl | quote }}
+  {{- end }}
+  {{- if .Values.logsReceiverUrl }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.logsReceiverUrl | quote }}
+  {{- end }}
+  API_SERVER_PORT: "{{ .Values.agent.service.port }}"

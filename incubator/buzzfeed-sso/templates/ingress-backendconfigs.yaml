@@ -1,0 +1,15 @@
+{{- if and .Values.ingress.enabled .Values.ingress.gcpBackendConfig }}
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: {{ template "buzzfeed-sso.fullname" . }}
+  labels:
+    app: {{ template "buzzfeed-sso.name" . }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- with .Values.ingress.gcpBackendConfig }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end }}

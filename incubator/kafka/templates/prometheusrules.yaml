@@ -1,0 +1,16 @@
+{{ if and .Values.prometheus.operator.enabled .Values.prometheus.operator.prometheusRule.enabled .Values.prometheus.operator.prometheusRule.rules }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "kafka.fullname" . }}
+  namespace: {{ include "serviceMonitor.namespace" . }}
+  labels:
+  {{- include "kafka.monitor.labels" . | nindent 4 }}
+  {{- toYaml .Values.prometheus.operator.prometheusRule.selector | nindent 4 }}
+spec:
+  groups:
+  - name: {{ include "kafka.fullname" . }}
+    rules:
+    {{- toYaml .Values.prometheus.operator.prometheusRule.rules | nindent 6 }}
+{{- end }}
+

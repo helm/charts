@@ -1,0 +1,13 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- if .Values.rbac.clusterWide }}
+kind: ClusterRole
+{{- else }}
+kind: Role
+{{- end }}
+metadata:
+  name: {{ template "telegraf.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+{{ toYaml .Values.rbac.rules | indent 2 }}
+{{- end }}

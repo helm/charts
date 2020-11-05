@@ -1,0 +1,42 @@
+{{- if .Values.serviceMonitor.enabled }}
+{{- range .Values.serviceMonitor.targets }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-blackbox-exporter.fullname" $ }}-{{ .name }}
+  labels:
+    app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    helm.sh/chart: {{ include "prometheus-blackbox-exporter.chart" $ }}
+    {{- if or $.Values.serviceMonitor.defaults.labels .labels }}
+    {{- toYaml (.labels | default $.Values.serviceMonitor.defaults.labels) | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: {{ .interval | default $.Values.serviceMonitor.defaults.interval }}
+    scrapeTimeout: {{ .scrapeTimeout | default $.Values.serviceMonitor.defaults.scrapeTimeout }}
+    params:
+      module:
+      - {{ .module | default $.Values.serviceMonitor.defaults.module }}
+      target:
+      - {{ .url }}
+    metricRelabelings:
+      - targetLabel: instance
+        replacement: {{ .url }}
+      - targetLabel: target
+        replacement: {{ .name }}
+  jobLabel: "{{ $.Release.Name }}"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "prometheus-blackbox-exporter.name" $ }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ $.Release.Namespace }}
+{{- end }}
+{{- end }}

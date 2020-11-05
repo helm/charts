@@ -1,0 +1,163 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: '{{.Release.Name}}'
+    app.kubernetes.io/managed-by: '{{.Release.Service}}'
+    app.kubernetes.io/name: '{{include "jenkins-operator.name" .}}'
+    app.kubernetes.io/version: '{{.Chart.AppVersion | replace "+" "_" | trunc 63}}'
+    controller-tools.k8s.io: "1.0"
+    helm.sh/chart: '{{include "jenkins-operator.chart" .}}'
+  name: jenkinsinstances.jenkins.jenkinsoperator.samsung-cnct.github.com
+spec:
+  group: jenkins.jenkinsoperator.samsung-cnct.github.com
+  names:
+    kind: JenkinsInstance
+    plural: jenkinsinstances
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            adminsecret:
+              type: string
+            affinity:
+              description: Affinity settings
+              type: object
+            annotations:
+              description: Jenkins deployment annotations
+              type: object
+            cascconfig:
+              description: configuration-as-code spec
+              properties:
+                configmap:
+                  description: or casc config(s) mounted from a named config map
+                  type: string
+                configstring:
+                  description: casc config as multi-line yaml string
+                  type: string
+              type: object
+            cascsecret:
+              description: configuration-as-code secret name
+              type: string
+            dnspolicy:
+              description: dns policy
+              type: string
+            env:
+              description: Dictionary of environment variable values
+              type: object
+            groovysecret:
+              description: groovy configuration secret name
+              type: string
+            image:
+              description: What container image to use for a new jenkins instance
+              pattern: .+:.+
+              type: string
+            imagepullpolicy:
+              description: image pull policy
+              type: string
+            imagepullsecrets:
+              description: image pull secrets
+              items:
+                type: object
+              type: array
+            nodename:
+              description: specific node name
+              type: string
+            nodeselector:
+              description: node selector
+              type: object
+            plugins:
+              description: Array of plugins to be installed
+              items:
+                properties:
+                  id:
+                    description: plugin id
+                    type: string
+                  version:
+                    description: plugin version string, follows the format at https://github.com/jenkinsci/docker#plugin-version-format
+                    type: string
+                required:
+                - id
+                - version
+                type: object
+              type: array
+            resources:
+              description: container resource requests
+              type: object
+            service:
+              description: Jenkins service options
+              properties:
+                annotations:
+                  description: Jenkins service annotations
+                  type: object
+                name:
+                  description: Jenkins service name
+                  type: string
+                nodeport:
+                  description: If type is node port, use this node port value
+                  format: int32
+                  type: integer
+                servicetype:
+                  description: Jenkins instance service type
+                  type: string
+              type: object
+            serviceaccount:
+              description: Service account name for jenkins to run under
+              type: string
+            storage:
+              description: Jenkins storage options
+              properties:
+                jobspvc:
+                  description: Name of pre-existing (or not) PVC for jobs
+                  type: string
+                jobspvcspec:
+                  description: If PVC is to be created, what is its spec
+                  type: object
+              type: object
+            tolerations:
+              description: tolerations
+              items:
+                type: object
+              type: array
+          type: object
+        status:
+          properties:
+            adminsecret:
+              description: setup secret
+              type: string
+            phase:
+              description: state if jenkins server instance
+              type: string
+          required:
+          - phase
+          type: object
+  versions:
+  - name: v1alpha1
+    served: false
+    storage: false
+  - name: v1alpha2
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -1,7 +1,9 @@
+{{- if .Values.controller.create -}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}
@@ -11,5 +13,8 @@ metadata:
 spec:
   ports:
     - port: 8080
+      targetPort: 8080
   selector:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+  type: ClusterIP
+{{- end }}

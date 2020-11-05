@@ -1,15 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.service.discovery.annotations }}
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-{{- if .Values.service.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{ tpl (toYaml .Values.discovery.annotations) . | indent 4 }}
+{{- else if and (.Values.service.annotations) (not .Values.service.discovery.separateAnnotations) }}
+  annotations:
+{{ tpl (toYaml .Values.service.annotations) . | indent 4 }}
 {{- end }}
-  name: {{ template "rabbitmq-ha.fullname" . }}-discovery
+  name: {{ printf "%s-discovery" (include "rabbitmq-ha.fullname" .) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

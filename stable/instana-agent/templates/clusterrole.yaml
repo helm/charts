@@ -1,0 +1,70 @@
+{{- if .Values.rbac.create -}}
+kind: ClusterRole
+{{- if .Values.agent.supportOpenshift }}
+apiVersion: v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- end }}
+metadata:
+  name: {{ template "instana-agent.fullname" . }}
+  labels:
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
+rules:
+- nonResourceURLs:
+    - "/version"
+    - "/healthz"
+  verbs: ["get"]
+- apiGroups: ["batch"]
+  resources:
+    - "jobs"
+    - "cronjobs"
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["extensions"]
+  resources:
+    - "deployments"
+    - "replicasets"
+    - "ingresses"
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources:
+    - "deployments"
+    - "replicasets"
+    - "daemonsets"
+    - "statefulsets"
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+    - "namespaces"
+    - "events"
+    - "services"
+    - "endpoints"
+    - "nodes"
+    - "pods"
+    - "replicationcontrollers"
+    - "componentstatuses"
+    - "resourcequotas"
+    - "persistentvolumes"
+    - "persistentvolumeclaims"
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+    - "endpoints"
+  verbs: ["create", "update", "patch"]
+- apiGroups: ["networking.k8s.io"]
+  resources:
+    - "ingresses"
+  verbs: ["get", "list", "watch"]
+{{- if .Values.agent.supportOpenshift }}
+- apiGroups: ["apps.openshift.io"]
+  resources:
+    - "deploymentconfigs"
+  verbs: ["get", "list", "watch"]
+{{- end -}}
+{{- if .Values.podSecurityPolicy.enable}}
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  verbs:     ["use"]
+  resourceNames:
+  - {{ template "instana-agent.podSecurityPolicyName" . }}
+{{- end -}}
+{{- end -}}

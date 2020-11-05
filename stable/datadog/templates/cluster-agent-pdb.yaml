@@ -1,0 +1,17 @@
+{{- if .Values.clusterAgent.createPodDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "datadog.fullname" . }}-cluster-agent
+  labels:
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/name: "{{ template "datadog.fullname" . }}"
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: {{ template "datadog.fullname" . }}-cluster-agent
+{{- end -}}

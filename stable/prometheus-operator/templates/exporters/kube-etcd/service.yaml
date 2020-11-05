@@ -17,7 +17,11 @@ spec:
       targetPort: {{ .Values.kubeEtcd.service.targetPort }}
 {{- if .Values.kubeEtcd.endpoints }}{{- else }}
   selector:
-  {{ include "prometheus-operator.rangeskipempty" .Values.kubeEtcd.service.selector | indent 4 }}
+    {{- if .Values.kubeEtcd.service.selector }}
+{{ toYaml .Values.kubeEtcd.service.selector | indent 4 }}
+    {{- else}}
+    component: etcd
+    {{- end}}
 {{- end }}
   type: ClusterIP
 {{- end -}}

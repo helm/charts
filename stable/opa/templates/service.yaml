@@ -11,4 +11,11 @@ spec:
   - name: https
     protocol: TCP
     port: 443
-    targetPort: 443
+    targetPort: {{ .Values.port }}
+{{- if .Values.prometheus.enabled }}
+  - name: http
+    port: {{ .Values.mgmt.port }}
+{{- end }}
+{{- if .Values.extraPorts }}
+{{ toYaml .Values.extraPorts | indent 2}}
+{{- end }}

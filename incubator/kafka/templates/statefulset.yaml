@@ -1,14 +1,14 @@
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  {{- include "kafka.broker.labels" . | nindent 4 }}
 spec:
+  selector:
+    matchLabels:
+    {{- include "kafka.broker.matchLabels" . | nindent 6 }}
   serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
@@ -16,6 +16,7 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
+{{- if or .Values.podAnnotations (and .Values.prometheus.jmx.enabled (not .Values.prometheus.operator.enabled)) }}
       annotations:
 {{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
@@ -24,36 +25,23 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
+{{- end }}
       labels:
-        app: {{ include "kafka.name" . }}
-        release: {{ .Release.Name }}
+      {{- include "kafka.broker.labels" . | nindent 8 }}
+        {{- if .Values.podLabels }}
+        ## Custom pod labels
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
-{{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ .Release.Name }}
+{{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
 {{- end }}
-    {{- if .Values.external.enabled }}
-      ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
-      initContainers:
-      - name: init-ext
-        image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
-        imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
-        command:
-          - sh
-          - -euxc
-          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME} --overwrite"
-        env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-    {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
@@ -158,8 +146,18 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: {{ include "kafka.replication.factor" . | quote }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
@@ -179,7 +177,7 @@ spec:
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
-        - name: {{ (print $secret.name "_" $key) | upper }}
+        - name: {{ (print ($secret.name | replace "-" "_") "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
@@ -200,8 +198,15 @@ spec:
         - -exc
         - |
           unset KAFKA_PORT && \
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          {{- if eq .Values.external.type "LoadBalancer" }}
+          export LOAD_BALANCER_IP=$(echo '{{ .Values.external.loadBalancerIP }}' | tr -d '[]' | cut -d ' ' -f "$(($KAFKA_BROKER_ID + 1))") && \
+          {{- end }}
+          {{- if eq .Values.external.type "NodePort" }}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          {{- else }}
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "kafka.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
@@ -236,10 +241,16 @@ spec:
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
       {{- end }}
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
       {{- range .Values.secrets }}
+      {{- if .mountPath }}
       - name: {{ include "kafka.fullname" $ }}-{{ .name }}
         secret:
           secretName: {{ .name }}
+      {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}

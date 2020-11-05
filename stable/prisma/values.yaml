@@ -19,7 +19,7 @@ image:
 
   ## Prisma image version
   ##
-  tag: 1.20-heroku
+  tag: 1.29.1-heroku
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -34,6 +34,18 @@ database:
   ## following values so that Prisma can use them as the database endpoint
   host: ""
   port: ""
+
+  ## Database name where model will be created
+  ##
+  name: prisma
+
+  ## Enable SSL
+  ##
+  ssl: false
+
+  ## The maximum number of database connections (must be at least 2).
+  ##
+  connectionLimit: 2
 
   ## Database credentials
   ##

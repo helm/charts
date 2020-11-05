@@ -1,0 +1,19 @@
+{{- if .Values.web.hpa.enabled -}}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "sentry.fullname" . }}-web
+  labels:
+    app: {{ template "sentry.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    apiVersion: apps/v1
+    name: {{ template "sentry.fullname" . }}-web
+  minReplicas: {{ .Values.web.hpa.minpods }}
+  maxReplicas: {{ .Values.web.hpa.maxpods }}
+  targetCPUUtilizationPercentage: {{ .Values.web.hpa.cputhreshold }}
+{{- end }}

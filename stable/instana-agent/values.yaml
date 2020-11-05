@@ -1,0 +1,122 @@
+# name is the value which will be used as the base resource name for various resources associated with the agent.
+# name: instana-agent
+
+agent:
+  # agent.key is the secret token which your agent uses to authenticate to Instana's servers.
+  key: null
+  # agent.mode is used to set agent mode and it can be APM, INFRASTRUCTURE or AWS
+  # mode: APM
+  # agent.downloadKey is optional, if used it doesn't have to match agent.key
+  # downloadKey: null
+  # agent.listenAddress is the IP address the agent HTTP server will listen to.
+  # listenAddress: *
+
+  # agent.endpointHost is the hostname of the Instana server your agents will connect to.
+  endpointHost: ingress-red-saas.instana.io
+  # agent.endpointPort is the port number (as a String) of the Instana server your agents will connect to.
+  endpointPort: 443
+
+  # These are additional backends the Instana agent will report to besides
+  # the one configured via the `agent.endpointHost`, `agent.endpointPort` and `agent.key` setting
+  additionalBackends: []
+    # - endpointHost: ingress.instana.io
+    #   endpointPort: 443
+    #   key: <agent_key>
+
+  image:
+    # agent.image.name is the name of the container image of the Instana agent.
+    name: instana/agent
+    # agent.image.tag is the tag name of the agent container image.
+    tag: latest
+    # agent.image.pullPolicy specifies when to pull the image container.
+    pullPolicy: Always
+
+  pod:
+    # agent.pod.annotations are additional annotations to be added to the agent pods.
+    annotations: {}
+
+    # agent.pod.tolerations are tolerations to influence agent pod assignment.
+    #   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    tolerations: []
+
+    # agent.pod.priorityClassName is the name of an existing PriorityClass that should be set on the agent pods
+    #   https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+    priorityClassName: null
+
+    requests:
+      # agent.pod.requests.memory is the requested memory allocation in MiB for the agent pods.
+      memory: 512
+      # agent.pod.requests.cpu are the requested CPU units allocation for the agent pods.
+      cpu: 0.5
+    limits:
+      # agent.pod.limits.memory set the memory allocation limits in MiB for the agent pods.
+      memory: 512
+      # agent.pod.limits.cpu sets the CPU units allocation limits for the agent pods.
+      cpu: 1.5
+
+  # agent.proxyHost sets the INSTANA_AGENT_PROXY_HOST environment variable.
+  # proxyHost: null
+  # agent.proxyPort sets the INSTANA_AGENT_PROXY_PORT environment variable.
+  # proxyPort: 80
+  # agent.proxyProtocol sets the INSTANA_AGENT_PROXY_PROTOCOL environment variable.
+  # proxyProtocol: HTTP
+  # agent.proxyUser sets the INSTANA_AGENT_PROXY_USER environment variable.
+  # proxyUser: null
+  # agent.proxyPassword sets the INSTANA_AGENT_PROXY_PASSWORD environment variable.
+  # proxyPassword: null
+  # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
+  # proxyUseDNS: false
+
+  # use this to set additional environment variables for the instana agent
+  # for example:
+  # env:
+  #   INSTANA_AGENT_TAGS: dev
+  env: {}
+
+  configuration_yaml: |
+    # Place agent configuration here
+
+  # agent.redactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
+  # redactKubernetesSecrets: null
+
+  # agent.host.repository sets a host path to be mounted as the agent maven repository (for debugging or development purposes)
+  host:
+    repository: null
+
+  # agent.supportOpenshift specifies whether the cluster role should include openshift permissions
+  # supportOpenshift: true
+
+cluster:
+  # cluster.name represents the name that will be assigned to this cluster in Instana
+  name: null
+
+leaderElector:
+  image:
+    # leaderElector.image.name is the name of the container image of the leader elector.
+    name: instana/leader-elector
+    # leaderElector.image.tag is the tag name of the agent container image.
+    tag: 0.5.4
+  port: 42655
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and `create` is true, a name is generated using the fullname template
+  # name: instana-agent
+
+podSecurityPolicy:
+  # Specifies whether a PodSecurityPolicy should be authorized for the Instana Agent pods.
+  # Requires `rbac.create` to be `true` as well.
+  enable: false
+  # The name of an existing PodSecurityPolicy you would like to authorize for the Instana Agent pods.
+  # If not set and `enable` is true, a PodSecurityPolicy will be created with a name generated using the fullname template.
+  name: null
+
+zone:
+  # zone.name is the custom zone that detected technologies will be assigned to
+  name: null

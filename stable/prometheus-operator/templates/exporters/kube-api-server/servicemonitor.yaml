@@ -1,17 +1,28 @@
 {{- if .Values.kubeApiServer.enabled }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-apiserver
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-apiserver
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    interval: 30s
+    {{- if .Values.kubeApiServer.serviceMonitor.interval }}
+    interval: {{ .Values.kubeApiServer.serviceMonitor.interval }}
+    {{- end }}
     port: https
     scheme: https
+{{- if .Values.kubeApiServer.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.kubeApiServer.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.kubeApiServer.relabelings }}
+    relabelings:
+{{ toYaml .Values.kubeApiServer.relabelings | indent 6 }}
+{{- end }}
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       serverName: {{ .Values.kubeApiServer.tlsConfig.serverName }}

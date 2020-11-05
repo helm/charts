@@ -60,11 +60,25 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 | --------- | ----------- | ------- |
 | `replicaCount` | The number of `SchemaRegistryUI` Pods in the Deployment | `1` |
 | `image.repository` | The `SchemaRegistryUI` image repository | `landoop/schema-registry-ui` |
-| `image.tag` | The `SchemaRegistryUI` image tag | `0.9.4` |
+| `image.tag` | The `SchemaRegistryUI` image tag | `0.9.5` |
 | `image.imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
-| `service.type` | Type of the service | `LoadBalancer` |
-| `service.port` | Port to use | `80` |
-| `ingress.enabled` | Ingress rules. Disabled by default | `false` |
 | `schemaRegistry.url` | URL to the schema registry endpoint | `http://localhost` |
 | `schemaRegistry.port` | Port for the schema registry | `8081` |
+| `schemaRegistry.proxy` | Whether to proxy Schema Registry endpoint via the internal webserver | `false` |
+| `schemaRegistry.allowGlobal` | Support for global compatibility level configuration support —i.e change the default compatibility level of your schema registry | `false` |
+| `schemaRegistry.allowTransitive` | Support for transitive compatibility levels (Schema Registry version 3.1.1 or better) | `false` |
+| `schemaRegistry.allowDeletion` | Support for Schema deletion (Schema Registry version 3.3.0 or better) | `false` |
+| `schemaRegistry.readOnlyMode` | Support for readonly mode (overwrites settings for global compatibility configuration and schema deletion) | `false` |
+| `service.type` | Type of the service | `LoadBalancer` |
+| `service.port` | Port to use | `80` |
+| `service.annotations` | Kubernetes service annotations | `{}` |
+| `service.loadBalancerSourceRanges` | Limit load balancer source IPs to list of CIDRs (where available)) | None |
+| `ingress.enabled` | Ingress rules. Disabled by default | `false` |
+| `ingress.annotations` | Ingress annotations | `{}` |
+| `ingress.path` | Ingress path | `/` |
+| `ingress.hosts` | Ingress accepted hostnames | `[schema-registry-ui.local]` |
+| `ingress.tls` | Ingress TLS configuration | `/` |
+| `nodeSelector` | Node labels for pod assignment | `{}` |
+| `tolerations` | List of node taints to tolerate | `[]` |
+| `affinity` | Node/pod affinities | `{}` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |

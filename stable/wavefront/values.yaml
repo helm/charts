@@ -1,0 +1,218 @@
+## Default values for Wavefront
+
+## This is a unique name for the cluster
+## All metrics will receive a `cluster` tag with this value
+## Required
+clusterName: KUBERNETES_CLUSTER_NAME
+
+
+## Wavefront URL (cluster) and API Token
+## Required
+wavefront:
+  url: https://YOUR_CLUSTER.wavefront.com
+  token: YOUR_API_TOKEN
+
+
+## Wavefront Collector is responsible to get all Kubernetes metrics from your cluster.
+## It will capture Kubernetes resources metrics available from the kubelets,
+## as well as auto-discovery capabilities.
+collector:
+  enabled: true
+  image:
+    repository: wavefronthq/wavefront-kubernetes-collector
+    tag: 1.0.3
+    pullPolicy: IfNotPresent
+
+  ## If set to true, DaemonSet will be used for the collector.
+  ## If set to false, Deployment will be used for the collector.
+  ## Setting this to true is strongly recommended
+  useDaemonset: true
+
+  ## max number of CPUs that can be used simultaneously. Less than 1 for default (number of cores)
+  # maxProcs: 0
+
+  ## log level one of: info, debug, or trace. (default info)
+  # logLevel: info
+
+  ## The resolution at which the collector will retain metrics. (default 60s)
+  # interval: 60s
+
+  ## How often collected data is flushed (default 10s)
+  # flushInterval: 10s
+
+  ## Timeout for exporting data (default 20s)
+  # sinkDelay: 20s
+
+  ## If set to true, will use the unauthenticated real only port for the kubelet
+  ## If set to false, will use the encrypted full access port for the kubelet (default false)
+  # useReadOnlyPort: false
+
+  ## If set to true, metrics will be sent to Wavefront via a Wavefront Proxy.
+  ## When true you must either specify a value for `collector.proxyAddress` or set `proxy.enabled` to true
+  ## If set to false, metrics will be sent to Wavefront via the Direct Ingestion API
+  useProxy: true
+
+  ## Can be used to specify a specific address for the Wavefront Proxy
+  ## The proxy can be anywhere network reachable including outside of the cluster
+  ## Required if `collector.useProxy` is true and `proxy.enabled` is false
+  # proxyAddress: wavefront-proxy:2878
+
+  ## If set to true Kubernetes API Server will also be scraped for metrics (default false)
+  # apiServerMetrics: false
+
+  ## Map of tags to apply to all metrics collected by the collector (default empty)
+  # tags:
+  ## sample tags to include (env, region)
+  #   env: production
+  #   region: us-west-2
+
+  ## Rules based discovery configuration
+  ## Ref: https://github.com/wavefrontHQ/wavefront-kubernetes-collector/blob/master/docs/discovery.md
+  discovery:
+    enabled: true
+
+  ## When specified, this replaces `prometheus.io` as the prefix for annotations used to
+  ## auto-discover Prometheus endpoints
+  #   annotationPrefix: "wavefront.com"
+
+  ## Can be used to add additional discovery rules
+  #   config:
+  ## auto-discover a sample prometheus application
+  #   - name: prom-example
+  #     type: prometheus
+  #     selectors:
+  #       labels:
+  #         k8s-app:
+  #         - prom-example
+  #     port: 8080
+  #     path: /metrics
+  #     prefix: kube.prom-example.
+  #     tags:
+  #       alt_name: sample-app
+  ## auto-discover mongodb pods (replace USER:PASSWORD)
+  #   - name: mongodb
+  #     type: telegraf/mongodb
+  #     selectors:
+  #       images:
+  #       - '*mongodb:*'
+  #     port: 27017
+  #     conf: |
+  #       servers = ["mongodb://USER:PASSWORD${host}:${port}"]
+  #       gather_perdb_stats = true
+  #     filters:
+  #       metricBlacklist:
+  #       - 'mongodb.member.status'
+  #       - 'mongodb.state'
+  #       - 'mongodb.db.stats.type'
+  ## auto-discover rabbitmq pods (replace USER and PASSWORD)
+  #   - name: rabbitmq
+  #     type: telegraf/rabbitmq
+  #     selectors:
+  #       images:
+  #       - '*rabbitmq:*'
+  #     port: 15672
+  #     conf: |
+  #       url = "http://${host}:${port}"
+  #       username = "USER"
+  #       password = "PASSWORD"
+
+  ## Wavefront Collector resource requests and limits
+  ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+
+## Wavefront Proxy is a metrics forwarder that is used to relay metrics to the Wavefront SaaS service.
+## It can receive metrics from the Wavefront Collector as well as other metrics collection services
+## within your cluster. The proxy also supports preprocessor rules to allow you to further filter
+## and enhance your metric names, and tags. Should network connectivity fall between the proxy and
+## Wavefront SaaS service, the proxy will buffer metrics, which will be flushed when connectivity resumes.
+## Ref: https://docs.wavefront.com/proxies.html
+proxy:
+  enabled: true
+  image:
+    repository: wavefronthq/proxy
+    tag: 5.7
+    pullPolicy: IfNotPresent
+
+  ## The port number the proxy will listen on for metrics in Wavefront data format.
+  ## This is usually 2878
+  port: 2878
+
+  ## The port nubmer the proxy will listen on for tracing spans in Wavefront trace data format.
+  ## This is usually 30000
+  # tracePort: 30000
+
+  ## The port nubmer the proxy will listen on for tracing spans in Jaeger data format.
+  ## This is usually 30001
+  # jaegerPort: 30001
+
+  ## The port nubmer the proxy will listen on for tracing spans in Zipkin data format.
+  ## This is usually 9411
+  # zipkinPort: 9411
+
+  ## Sampling rate to apply to tracing spans sent to the proxy.
+  ## This rate is applied to all data formats the proxy is listening on.
+  ## Value should be between 0.0 and 1.0.  Default is 1.0
+  # traceSamplingRate: 0.25
+
+  ## When this is set to a value greater than 0,
+  ## spans that are greater than or equal to this value will be sampled.
+  # traceSamplingDuration: 500
+
+  ## Any configuration property can be passed to the proxy via command line args in
+  ## in the format: `--<property_name> <value>`. Multiple properties can be specified
+  ## separated by whitespace.
+  ## Ref: https://docs.wavefront.com/proxies_configuring.html
+  # args:
+
+  ## Proxy is a Java application. By default Java will consume upto 4G of heap memory.
+  ## This can be used to override the default. Uses the `-Xmx` command line option for java
+  # heap: 1024m
+
+  ## Preprocessor rules is a powerful way to apply filtering or to enhance metrics as they flow
+  ## through the proxy. You can configure the rules here. By default a rule to drop Kubernetes
+  ## generated labels is applied to remove unecessary and often noisy tags.
+  ## Ref: https://docs.wavefront.com/proxies_preprocessor_rules.html
+  # preprocessor:
+  #   rules.yaml: |
+  #     '2878':
+  #     # fix %2F to be a / instead.  May be required on EKS.
+  #     - rule    : fix-forward-slash
+  #       action  : replaceRegex
+  #       scope   : pointLine
+  #       search  : "%2F"
+  #       replace : "/"
+  #     # replace bad characters ("&", "$", "!", "@") with underscores in the entire point line string
+  #     - rule    : replace-badchars
+  #       action  : replaceRegex
+  #       scope   : pointLine
+  #       search  : "[&\\$!@]"
+  #       replace : "_"
+
+
+## Specifies whether RBAC resources should be created
+rbac:
+  create: true
+
+
+## Specifies whether a ServiceAccount should be created
+serviceAccount:
+  create: true
+
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
+
+## kube-state-metrics are used to get metrics about the state of the Kubernetes scheduler
+## If enabled the kube-state-metrics chart will be installed as a subchart and the collector
+## will be configured to capture metrics.
+kubeStateMetrics:
+  enabled: true

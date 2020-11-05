@@ -1,11 +1,11 @@
 apiVersion: v1
-description: Watch and action AWS spot termination events
+appVersion: "0.0.1"
+deprecated: true
+description: DEPRECATED - incubator/kube-spot-termination-notice-handler
 name: kube-spot-termination-notice-handler
-version: 0.4.0
-appVersion: 1.10.8-1
+# This chart is deprecated and no longer maintained. For details on the
+# deprecation policy, including how to un-deprecate a chart, see the
+# PROCESSES.md file.
+version: 0.4.1
 home: https://github.com/kube-aws/kube-spot-termination-notice-handler
-source:
-  - https://hub.docker.com/r/kubeaws/kube-spot-termination-notice-handler/
-maintainers:
-  - name: egeland
-    email: egeland@gmail.com
+maintainers: []

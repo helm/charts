@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "usePassword": {
+      "type": "boolean",
+      "title": "Use password authentication",
+      "form": true
+    },
+    "password": {
+      "type": "string",
+      "title": "Password",
+      "form": true,
+      "description": "Defaults to a random 10-character alphanumeric string if not set",
+      "hidden": {
+        "condition": false,
+        "value": "usePassword"
+      }
+    },
+    "cluster": {
+      "type": "object",
+      "title": "Cluster Settings",
+      "form": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable master-slave",
+          "description": "Enable master-slave architecture"
+        },
+        "slaveCount": {
+          "type": "integer",
+          "title": "Slave Replicas",
+          "form": true,
+          "hidden": {
+            "condition": false,
+            "value": "cluster.enabled"
+          }
+        }
+      }
+    },
+    "master": {
+      "type": "object",
+      "title": "Master replicas settings",
+      "form": true,
+      "properties": {
+        "persistence": {
+          "type": "object",
+          "title": "Persistence for master replicas",
+          "form": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "form": true,
+              "title": "Enable persistence",
+              "description": "Enable persistence using Persistent Volume Claims"
+            },
+            "size": {
+              "type": "string",
+              "title": "Persistent Volume Size",
+              "form": true,
+              "render": "slider",
+              "sliderMin": 1,
+              "sliderMax": 100,
+              "sliderUnit": "Gi",
+              "hidden": {
+                "condition": false,
+                "value": "master.persistence.enabled"
+              }
+            },
+            "matchLabels": {
+              "type": "object",
+              "title": "Persistent Match Labels Selector"
+            },
+            "matchExpressions": {
+              "type": "object",
+              "title": "Persistent Match Expressions Selector"
+            }
+          }
+        }
+      }
+    },
+    "slave": {
+      "type": "object",
+      "title": "Slave replicas settings",
+      "form": true,
+      "hidden": {
+        "condition": false,
+        "value": "cluster.enabled"
+      },
+      "properties": {
+        "persistence": {
+          "type": "object",
+          "title": "Persistence for slave replicas",
+          "form": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "form": true,
+              "title": "Enable persistence",
+              "description": "Enable persistence using Persistent Volume Claims"
+            },
+            "size": {
+              "type": "string",
+              "title": "Persistent Volume Size",
+              "form": true,
+              "render": "slider",
+              "sliderMin": 1,
+              "sliderMax": 100,
+              "sliderUnit": "Gi",
+              "hidden": {
+                "condition": false,
+                "value": "slave.persistence.enabled"
+              }
+            },
+            "matchLabels": {
+              "type": "object",
+              "title": "Persistent Match Labels Selector"
+            },
+            "matchExpressions": {
+              "type": "object",
+              "title": "Persistent Match Expressions Selector"
+            }
+          }
+        }
+      }
+    },
+    "volumePermissions": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "form": true,
+          "title": "Enable Init Containers",
+          "description": "Use an init container to set required folder permissions on the data volume before mounting it in the final destination"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "form": true,
+      "title": "Prometheus metrics details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Create Prometheus metrics exporter",
+          "description": "Create a side-car container to expose Prometheus metrics",
+          "form": true
+        },
+        "serviceMonitor": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Create Prometheus Operator ServiceMonitor",
+              "description": "Create a ServiceMonitor to track metrics using Prometheus Operator",
+              "form": true,
+              "hidden": {
+                "condition": false,
+                "value": "metrics.enabled"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

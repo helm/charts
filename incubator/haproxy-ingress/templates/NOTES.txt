@@ -3,15 +3,15 @@ The haproxy-ingress controller has been installed.
 {{- if contains "NodePort" .Values.controller.service.type }}
 Get the application URL by running these commands:
 
-{{- if (not (empty .Values.controller.service.nodePorts.http)) }}
+{{- if (not (empty .Values.controller.service.nodePorts)) }}
   export HTTP_NODE_PORT={{ .Values.controller.service.nodePorts.http }}
 {{- else }}
-  export HTTP_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "haproxy-ingress.fullname" . }})
+  export HTTP_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "haproxy-ingress.controller.fullname" . }})
 {{- end }}
-{{- if (not (empty .Values.controller.service.nodePorts.https)) }}
+{{- if (not (empty .Values.controller.service.nodePorts)) }}
   export HTTPS_NODE_PORT={{ .Values.controller.service.nodePorts.https }}
 {{- else }}
-  export HTTPS_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[1].nodePort}" {{ template "haproxy-ingress.fullname" . }})
+  export HTTPS_NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[1].nodePort}" {{ template "haproxy-ingress.controller.fullname" . }})
 {{- end }}
   export NODE_IP=$(kubectl --namespace {{ .Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
 
@@ -43,3 +43,5 @@ An example Ingress that makes use of the controller:
                 serviceName: exampleService
                 servicePort: 80
               path: /
+
+DEPRECATION: incubator/haproxy-ingress is deprecated in favor of https://github.com/haproxy-ingress/charts

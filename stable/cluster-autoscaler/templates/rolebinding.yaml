@@ -1,12 +1,9 @@
 {{- if .Values.rbac.create -}}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    app: {{ template "cluster-autoscaler.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "cluster-autoscaler.labels" . | indent 4 }}
   name: {{ template "cluster-autoscaler.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -14,6 +11,6 @@ roleRef:
   name: {{ template "cluster-autoscaler.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "cluster-autoscaler.fullname" . }}
+    name: {{ template "cluster-autoscaler.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}

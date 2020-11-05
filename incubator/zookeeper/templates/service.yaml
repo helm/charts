@@ -7,9 +7,11 @@ metadata:
     chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
   annotations:
 {{- with .Values.service.annotations }}
 {{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -18,6 +20,22 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
   {{- end }}
+{{- if .Values.exporters.jmx.enabled }}
+  {{- range $key, $port := .Values.exporters.jmx.ports }}
+    - name: {{ $key }}
+      port: {{ $port.containerPort }}
+      targetPort: {{ $key }}
+      protocol: {{ $port.protocol }}
+  {{- end }}
+{{- end}}
+{{- if .Values.exporters.zookeeper.enabled }}
+  {{- range $key, $port := .Values.exporters.zookeeper.ports }}
+    - name: {{ $key }}
+      port: {{ $port.containerPort }}
+      targetPort: {{ $key }}
+      protocol: {{ $port.protocol }}
+  {{- end }}
+{{- end}}
   selector:
     app: {{ template "zookeeper.name" . }}
     release: {{ .Release.Name }}

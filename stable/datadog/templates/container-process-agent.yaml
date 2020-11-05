@@ -1,0 +1,72 @@
+{{- define "container-process-agent" -}}
+- name: process-agent
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  {{- if eq .Values.targetSystem "linux" }}
+  command: ["process-agent", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
+  {{- if eq .Values.targetSystem "windows" }}
+  command: ["process-agent", "-foreground", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.processAgent.resources | indent 4 }}
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    {{- if .Values.datadog.processAgent.processCollection }}
+    - name: DD_PROCESS_AGENT_ENABLED
+      value: "true"
+    {{- end }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.agents.containers.processAgent.logLevel | default .Values.datadog.logLevel | quote }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: DD_SYSTEM_PROBE_ENABLED
+      value: {{ .Values.datadog.systemProbe.enabled | quote }}
+    {{- end }}
+    {{- if .Values.datadog.orchestratorExplorer.enabled }}
+    - name: DD_ORCHESTRATOR_EXPLORER_ENABLED
+      value: "true"
+    - name: DD_ORCHESTRATOR_CLUSTER_ID
+      valueFrom:
+        configMapKeyRef:
+          name: datadog-cluster-id
+          key: id
+    {{- end }}
+{{- if .Values.agents.containers.processAgent.env }}
+{{ toYaml .Values.agents.containers.processAgent.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    - name: config
+      mountPath: {{ template "datadog.confPath" . }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    {{- end }}
+    {{- if .Values.agents.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: cgroups
+      mountPath: /host/sys/fs/cgroup
+      readOnly: true
+    - name: passwd
+      mountPath: /etc/passwd
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /var/run/sysprobe
+      readOnly: true
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
+    {{- end }}
+    {{- end }}
+{{- end -}}

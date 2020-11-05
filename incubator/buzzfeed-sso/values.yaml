@@ -1,0 +1,134 @@
+# Default values for buzzfeed-sso.
+
+emailDomain: "<your_email_domain>"  # Required. e.g "email.mydomain.foo"
+rootDomain: "<your_root_domain>"  # Required. e.g "mydomain.foo"
+# whitelistedEmails: "<whitelisted_addresses>" # Optional. e.g. "userA.nameA@mydomain.foo,userB.nameB@mydomain.foo"
+cluster: dev
+
+auth:
+  enabled: true
+  annotations: {}
+  domain: "<your_auth_domain>"  # Required. e.g "sso-auth.mydomain.foo"
+  extraEnv: []
+  replicaCount: 1
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  # Generate these secrets with the command:
+  # 'openssl rand -base64 32 | head -c 32 | base64'
+  secret: {}  # Required (if customSecret is not set)
+    # codeSecret: ''
+    # cookieSecret: ''
+  # # Or if you do not want to create the secret via helm
+  # customSecret: my-sso-auth-secret
+  # Include Auth application in ingress, useful if the auth component is
+  # exposed independently.
+  ingressEnabled: true
+  # Auth application ingress path.
+  # For GKE and AWS ALB ingresses use "/*"
+  # For Nginx ingress use "/"
+  ingressPath: /
+  tls: {}
+    # secretName: sso-auth-tls-secret
+
+proxy:
+  enabled: true
+  annotations: {}
+  extraEnv:
+    - name: STATSD_HOST
+      value: localhost
+    - name: STATSD_PORT
+      value: "11111"
+  # providerUrlInternal: https://sso-auth.mydomain.com
+  replicaCount: 1
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  # Generate these secrets with the command:
+  # 'openssl rand -base64 32 | head -c 32 | base64'
+  secret: {}  # Required (if customSecret is not set)
+    # clientId: ''
+    # clientSecret: ''
+    # cookieSecret: ''
+  # # Or if you do not want to create the secret via helm
+  # customSecret: my-sso-proxy-secret
+
+  # If you are using_allowed groups in upstreams, DEFAULT_ALLOWED_EMAIL_DOMAINS needs to be an empty string
+  # this is explained in this pr https://github.com/buzzfeed/sso/pull/280#issuecomment-584088825
+  # to get an empty value, set the string below to -, as per this issue https://github.com/helm/helm/issues/2600#issuecomment-310108850
+  # otherwise populate it with your default allowed email domains
+  defaultAllowedEmailDomains: ""
+
+provider:
+  google: {}  # Required.
+  # google:
+  #   adminEmail: me@mydomain.foo
+  #   slug: oauth2
+  #   secret:
+  #     clientId: foo123123-fake123123.apps.googleusercontent.com
+  #     clientSecret: googleOauthClientSecret
+  #     serviceAccount: 'service account content in JSON format'
+  # # Or if you do not want to create the secret via helm
+  # google:
+  #   adminEmail: me@mydomain.foo
+  #   customSecret: my-sso-google-secret
+
+image:
+  repository: buzzfeed/sso
+  tag: v2.1.0
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer
+    # ingress.kubernetes.io/ssl-redirect: "true"
+  extraLabels: {}
+  hosts: []
+  #  - domain: mybackend.mydomain.foo
+  #    # The "path" field is deprecated and will be removed in the
+  #    # next major release. Use "paths" instead.
+  #    path: /
+  #    paths:
+  #      - /endpoint1
+  #      - /endpoint2
+  tls: []
+  #  - secretName: mybackend-mydomain-tls
+  #    hosts:
+  #      - mybackend.mydomain.foo
+  # GCP backend service configuration
+  # Possible values can be found here : https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig#backendconfigspec_v1beta1_cloudgooglecom
+  gcpBackendConfig: {}
+  # timeoutSec: 60
+  # connectionDraining:
+  #   drainingTimeoutSec: 60
+
+upstreams: []
+# See https://github.com/buzzfeed/sso/blob/f437f237ac977201f15868601c9bc0e9dff11f40/docs/sso_config.md#proxy-config
+# - service: mybackend
+#   default:
+#     from: mybackend.mydomain.foo
+#     to: http://mybackend.mynamespace.svc.cluster.local:9091
+#     options:
+#       allowed_groups:
+#         - sso-test-group-1@example.com
+#         - sso-test-group-2@example.com
+#       skip_auth_regex:
+#         - ^\/github-webhook\/$
+#       header_overrides:
+#         X-Frame-Options: DENY

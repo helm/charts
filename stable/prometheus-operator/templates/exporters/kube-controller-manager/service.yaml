@@ -14,7 +14,14 @@ spec:
     - name: http-metrics
       port: {{ .Values.kubeControllerManager.service.port }}
       protocol: TCP
+      targetPort: {{ .Values.kubeControllerManager.service.targetPort }}
+{{- if .Values.kubeControllerManager.endpoints }}{{- else }}
   selector:
-{{ include "prometheus-operator.rangeskipempty" .Values.kubeControllerManager.service.selector | indent 4 }}
+    {{- if .Values.kubeControllerManager.service.selector }}
+{{ toYaml .Values.kubeControllerManager.service.selector | indent 4 }}
+    {{- else}}
+    component: kube-controller-manager
+    {{- end}}
+{{- end }}
   type: ClusterIP
 {{- end }}

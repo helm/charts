@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "instana-agent.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "instana-agent.commonLabels" . | nindent 4 }}
+data:
+  configuration.yaml: |
+    # Manual a-priori configuration. Configuration will be only used when the sensor
+    # is actually installed by the agent.
+    # The commented out example values represent example configuration and are not
+    # necessarily defaults. Defaults are usually 'absent' or mentioned separately.
+    # Changes are hot reloaded unless otherwise mentioned.
+
+    # It is possible to create files called 'configuration-abc.yaml' which are
+    # merged with this file in file system order. So 'configuration-cde.yaml' comes
+    # after 'configuration-abc.yaml'. Only nested structures are merged, values are
+    # overwritten by subsequent configurations.
+
+    # Secrets
+    # To filter sensitive data from collection by the agent, all sensors respect
+    # the following secrets configuration. If a key collected by a sensor matches
+    # an entry from the list, the value is redacted.
+    #com.instana.secrets:
+    #  matcher: 'contains-ignore-case' # 'contains-ignore-case', 'contains', 'regex'
+    #  list:
+    #    - 'key'
+    #    - 'password'
+    #    - 'secret'
+
+    # Host
+    #com.instana.plugin.host:
+    #  tags:
+    #    - 'dev'
+    #    - 'app1'
+
+    # Hardware & Zone
+    #com.instana.plugin.generic.hardware:
+    #  enabled: true # disabled by default
+    #  availability-zone: 'zone'
+  {{- if .Values.agent.configuration_yaml -}}
+  {{ .Values.agent.configuration_yaml | nindent 4 }}
+  {{- end }}
+  {{- if .Values.agent.additionalBackends }}
+  {{- $proxyHost := .Values.agent.proxyHost }}
+  {{- $proxyPort := .Values.agent.proxyPort }}
+  {{- $proxyUser := .Values.agent.proxyUser }}
+  {{- $proxyPassword := .Values.agent.proxyPassword }}
+  {{- $proxyUseDNS := .Values.agent.proxyUseDNS }}
+  {{- range $index,$backend := .Values.agent.additionalBackends }}
+  {{ $backendIndex :=add $index 2 -}}
+  additional-backend-{{$backendIndex}}: |
+    host={{ .endpointHost }}
+    port={{ default 443 .endpointPort }}
+    key={{ .key }}
+    protocol=HTTP/2
+  {{- if $proxyHost }}
+    proxy.type=HTTP
+    proxy.host={{ $proxyHost }}
+    proxy.port={{ $proxyPort }}
+  {{- if $proxyUser }}
+    proxy.user={{ $proxyUser }}
+    proxy.password={{ $proxyPassword }}
+  {{- end }}
+  {{- if $proxyUseDNS }}
+    proxyUseDNS=true
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}

@@ -1,7 +1,8 @@
+apiVersion: v1
 name: sonarqube
-description: Sonarqube is an open sourced code quality scanning tool
-version: 0.12.1
-appVersion: 7.4
+description: DEPRECATED SonarQube is an open sourced code quality scanning tool
+version: 4.0.1
+appVersion: 7.9.2
 keywords:
   - coverage
   - security
@@ -11,6 +12,6 @@ home: https://www.sonarqube.org/
 icon: https://www.sonarqube.org/assets/logo-31ad3115b1b4b120f3d1efd63e6b13ac9f1f89437f0cf6881cc4d8b5603a52b4.svg
 sources:
   - https://github.com/SonarSource/docker-sonarqube
-maintainers:
-  - name: rjkernick
-    email: rjkernick@gmail.com
+# This chart has been deprecated https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+# It is now maintained at https://github.com/oteemo/charts
+deprecated: true

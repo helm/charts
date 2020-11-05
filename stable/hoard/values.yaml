@@ -1,0 +1,78 @@
+replicaCount: 1
+
+image:
+  repository: quay.io/monax/hoard
+  tag: 6.0.0
+  pullPolicy: IfNotPresent
+
+config:
+  listenaddress: tcp://:53431
+  storage:
+    # aws | azure | filesystem | gcp | ipfs
+    storagetype: filesystem
+    addressencoding: base64
+    chunksize: 65536
+    filesystemconfig:
+      rootdirectory: "/data"
+    cloudconfig:
+      bucket: ""
+      prefix: ""
+      region: ""
+    ipfsconfig:
+      remoteapi: ""
+  logging:
+    loggingtype: json
+    channels:
+    - info
+    - trace
+  secrets:
+    symmetric: []
+    openpgp:
+      privateid: ""
+      file: "keyring"
+
+controller:
+  enabled: false
+  keep: false
+
+secrets:
+  creds: "cloud-credentials"
+  keyring: "private-keyring"
+
+# only filesystem
+persistence:
+  size: 10Gi
+  storageClass: standard
+  accessMode: ReadWriteOnce
+  persistentVolumeReclaimPolicy: "Retain"
+  annotations:
+    "helm.sh/resource-policy": keep
+
+service:
+  type: ClusterIP
+  port: 53431
+
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  hosts:
+    - hoard.local
+  tls: []
+  #  - secretName: hoard-tls
+  #    hosts:
+  #      - hoard.local
+
+resources: {}
+#   limits:
+#     cpu: 500m
+#     memory: 1Gi
+#   requests:
+#     cpu: 100m
+#     memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

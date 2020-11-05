@@ -1,7 +1,13 @@
 {{- if and .Values.prometheus.enabled .Values.prometheus.ingress.enabled }}
-{{- $routePrefix := .Values.prometheus.prometheusSpec.routePrefix }}
 {{- $serviceName := printf "%s-%s" (include "prometheus-operator.fullname" .) "prometheus" }}
+{{- $servicePort := .Values.prometheus.service.port -}}
+{{- $routePrefix := list .Values.prometheus.prometheusSpec.routePrefix }}
+{{- $paths := .Values.prometheus.ingress.paths | default $routePrefix -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
 apiVersion: extensions/v1beta1
+{{ end -}}
 kind: Ingress
 metadata:
 {{- if .Values.prometheus.ingress.annotations }}
@@ -9,6 +15,7 @@ metadata:
 {{ toYaml .Values.prometheus.ingress.annotations | indent 4 }}
 {{- end }}
   name: {{ $serviceName }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -17,17 +24,30 @@ metadata:
 {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.prometheus.ingress.hosts }}
-    - host: {{ . }}
+  {{- if .Values.prometheus.ingress.hosts }}
+  {{- range $host := .Values.prometheus.ingress.hosts }}
+    - host: {{ tpl $host $ }}
       http:
         paths:
-          - path: "{{ $routePrefix }}"
+  {{- range $p := $paths }}
+          - path: {{ tpl $p $ }}
             backend:
               serviceName: {{ $serviceName }}
-              servicePort: 9090
-    {{- end }}
-{{- if .Values.prometheus.ingress.tls }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- end -}}
+  {{- else }}
+    - http:
+        paths:
+  {{- range $p := $paths }}
+          - path: {{ tpl $p $ }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- end -}}
+  {{- if .Values.prometheus.ingress.tls }}
   tls:
 {{ toYaml .Values.prometheus.ingress.tls | indent 4 }}
-{{- end }}
-{{- end }}
+  {{- end -}}
+{{- end -}}

@@ -1,0 +1,138 @@
+on:
+  push:
+    branches:
+      - master
+    # Only bother running workflow if files in one of these subfolder have
+    # changed since most recent commit to master.
+    paths:
+      - 'stable/*/**'
+      - 'incubator/*/**'
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      stable: ${{ steps.filter.outputs.stable }}
+      incubator: ${{ steps.filter.outputs.incubator }}
+      stable_dirs: ${{ steps.dirs.outputs.stable_dirs }}
+      incubator_dirs: ${{ steps.dirs.outputs.incubator_dirs }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2.5.0
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            stable:
+              - added|modified: 'stable/*/**'
+            incubator:
+              - added|modified: 'incubator/*/**'
+      # Exports space-separated lists of changed chart dirs
+      #   "xargs -n1" converts to newlines
+      #   "cut -d/ -f 1-2" gets the first two dirs (example: stable/wordpress)
+      #   "sort -u" gets sorted unique dirs
+      #   "xargs" converts back to space-separated string
+      - id: dirs
+        run: |
+          echo "stable files: ${{ steps.filter.outputs.stable_files }}"
+          echo "incubator files: ${{ steps.filter.outputs.stable_files }}"
+          stable_dirs=$(echo ${{ steps.filter.outputs.stable_files }} | xargs -n1 | cut -d/ -f 1-2 | sort -u | xargs)
+          echo "::set-output name=stable_dirs::$stable_dirs"
+          echo "stable dirs: $stable_dirs"
+          incubator_dirs=$(echo ${{ steps.filter.outputs.incubator_files }} | xargs -n1 | cut -d/ -f 1-2 | sort -u | xargs)
+          echo "::set-output name=incubator_dirs::$incubator_dirs"
+          echo "incubator dirs: $incubator_dirs"
+
+  package:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: package stable
+        if: ${{ needs.changes.outputs.stable == 'true' }}
+        run: |
+          echo "dirs: ${{ needs.changes.outputs.stable_dirs }}"
+          mkdir -p ${{ runner.temp }}/stable/packages
+          for dir in ${{ needs.changes.outputs.stable_dirs }}; do
+              if helm package --dependency-update --destination ${{ runner.temp }}/stable/packages "$dir"; then
+                  echo "✅ built dependencies and packaged $dir"
+              else
+                  echo "❌ unable to build dependencies for $dir"
+                  exit 1
+              fi
+          done
+      - uses: actions/upload-artifact@v2
+        if: ${{ needs.changes.outputs.stable == 'true' }}
+        with:
+          name: stable-packages
+          path: ${{ runner.temp }}/stable/packages/
+      - name: package incubator
+        if: ${{ needs.changes.outputs.incubator == 'true' }}
+        run: |
+          mkdir -p ${{ runner.temp }}/incubator/packages
+          for dir in ${{ needs.changes.outputs.incubator_dirs }}; do
+              if helm package --dependency-update --destination ${{ runner.temp }}/incubator/packages "$dir"; then
+                  echo "✅ built dependencies and packaged $dir"
+              else
+                  echo "❌ unable to build dependencies for $dir"
+                  exit 1
+              fi
+          done
+      - uses: actions/upload-artifact@v2
+        if: ${{ needs.changes.outputs.incubator == 'true' }}
+        with:
+          name: incubator-packages
+          path: ${{ runner.temp }}/incubator/packages/
+
+  index-release:
+    needs:
+      - changes
+      - package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+      - name: configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - uses: actions/download-artifact@v2
+        if: ${{ needs.changes.outputs.stable == 'true' }}
+        with:
+          name: stable-packages
+          path: ${{ runner.temp }}/stable/packages
+      - name: sync stable
+        if: ${{ needs.changes.outputs.stable == 'true' }}
+        run: |
+          if helm repo index --url https://charts.helm.sh/stable --merge stable/index.yaml ${{ runner.temp }}/stable; then
+              mv -f ${{ runner.temp }}/stable/index.yaml stable/index.yaml
+              git add stable/index.yaml
+          else
+              echo "❌ unable to update index"
+              exit 1
+          fi
+          mkdir -p stable/packages
+          cp -f ${{ runner.temp }}/stable/packages/*.tgz stable/packages
+          git add stable/packages/*.tgz
+          git commit --signoff -m "Sync stable [ci skip]"
+          git push
+      - uses: actions/download-artifact@v2
+        if: ${{ needs.changes.outputs.incubator == 'true' }}
+        with:
+          name: incubator-packages
+          path: ${{ runner.temp }}/incubator/packages
+      - name: sync incubator
+        if: ${{ needs.changes.outputs.incubator == 'true' }}
+        run: |
+          if helm repo index --url https://charts.helm.sh/stable/incubator --merge incubator/index.yaml ${{ runner.temp }}/incubator; then
+              mv -f ${{ runner.temp }}/incubator/index.yaml incubator/index.yaml
+              git add incubator/index.yaml
+          else
+              echo "❌ unable to update index"
+              exit 1
+          fi
+          mkdir -p incubator/packages
+          cp -f ${{ runner.temp }}/incubator/packages/*.tgz incubator/packages
+          git add incubator/packages/*.tgz
+          git commit --signoff -m "Sync incubator [ci skip]"
+          git push

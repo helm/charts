@@ -1,0 +1,58 @@
+{{- define "container-trace-agent" -}}
+- name: trace-agent
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  {{- if eq .Values.targetSystem "linux" }}
+  command: ["trace-agent", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
+  {{- if eq .Values.targetSystem "windows" }}
+  command: ["trace-agent", "-foreground", "-config={{ template "datadog.confPath" . }}/datadog.yaml"]
+  {{- end }}
+  resources:
+{{ toYaml .Values.agents.containers.traceAgent.resources | indent 4 }}
+  ports:
+  - containerPort: {{ .Values.datadog.apm.port }}
+    hostPort: {{ .Values.datadog.apm.port }}
+    name: traceport
+    protocol: TCP
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.agents.containers.traceAgent.logLevel | default .Values.datadog.logLevel | quote }}
+    - name: DD_APM_ENABLED
+      value: "true"
+    - name: DD_APM_NON_LOCAL_TRAFFIC
+      value: "true"
+    - name: DD_APM_RECEIVER_PORT
+      value: {{ .Values.datadog.apm.port | quote }}
+  {{- if .Values.datadog.apm.useSocketVolume }}
+    - name: DD_APM_RECEIVER_SOCKET
+      value: {{ .Values.datadog.apm.socketPath | quote }}
+  {{- end }}
+{{- if .Values.agents.containers.traceAgent.env }}
+{{ toYaml .Values.agents.containers.traceAgent.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    - name: config
+      mountPath: {{ template "datadog.confPath" . }}
+    {{- if .Values.agents.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    {{- end }}
+    {{- if .Values.datadog.apm.useSocketVolume }}
+    - name: apmsocket
+      mountPath: {{ (dir .Values.datadog.apm.socketPath) }}
+    {{- end }}
+  livenessProbe:
+{{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}
+{{- end -}}

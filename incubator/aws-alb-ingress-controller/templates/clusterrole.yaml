@@ -19,6 +19,7 @@ rules:
       - ingresses
       - ingresses/status
       - services
+      - pods/status
     verbs:
       - create
       - get

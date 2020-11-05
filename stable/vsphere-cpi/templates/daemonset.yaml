@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "cpi.name" . }}
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: daemonset
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller-manager
+    tier: control-plane
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+    {{- if .Values.daemonset.annotations }}
+    {{- toYaml .Values.daemonset.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "cpi.name" . }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.daemonset.podAnnotations | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "cpi.name" . }}
+        component: cloud-controller-manager
+        tier: control-plane
+        release: {{ .Release.Name }}
+        vsphere-cpi-infra: daemonset
+        {{- if .Values.daemonset.podLabels }}
+        {{- toYaml .Values.daemonset.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      {{- if .Values.daemonset.nodeSelector }}
+      {{- toYaml .Values.daemonset.nodeSelector | nindent 8 }}
+      {{- end }}
+      tolerations:
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        value: "true"
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        effect: NoSchedule
+        operator: Exists
+      {{- if .Values.daemonset.tolerations }}
+      {{- toYaml .Values.daemonset.tolerations | nindent 6 }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      hostNetwork: true
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+      containers:
+      - name: {{ template "cpi.name" . }}
+        image: {{ .Values.daemonset.image }}:{{ .Values.daemonset.tag }}
+        imagePullPolicy: {{ .Values.daemonset.pullPolicy }}
+        args:
+          - --cloud-provider=vsphere
+          - --v={{ .Values.daemonset.cmdline.logging }}
+          - --cloud-config={{ .Values.daemonset.cmdline.cloudConfig.dir }}/{{ .Values.daemonset.cmdline.cloudConfig.file }}
+          {{- range $key, $value := .Values.daemonset.cmdline.additionalParams }}
+          - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+          {{- end }}
+        {{- if .Values.service.enabled }}
+        env:
+          - name: VSPHERE_API_DISABLE
+            value: "true"
+          - name: VSPHERE_API_BINDING
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "cpi.fullname" . }}
+                key: api.binding
+        ports:
+        - containerPort: {{ .Values.service.endpointPort }}
+          protocol: TCP
+        {{- end }}
+        volumeMounts:
+          - mountPath: {{ .Values.daemonset.cmdline.cloudConfig.dir }}
+            name: vsphere-config-volume
+            readOnly: true
+        {{- if .Values.daemonset.resources }}
+        resources:
+          {{- toYaml .Values.daemonset.resources | nindent 10 }}
+        {{- end }}
+      volumes:
+        - name: vsphere-config-volume
+          configMap:
+            name: cloud-config

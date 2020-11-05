@@ -1,0 +1,76 @@
+{{- $relName := .Release.Name -}}
+{{- $relService := .Release.Service -}}
+{{- $fullname :=  include "cluster-overprovisioner.fullname" . -}}
+{{- $name :=  include "cluster-overprovisioner.name" . -}}
+{{- $chart :=  include "cluster-overprovisioner.chart" . -}}
+{{- $chartName := .Chart.Name }}
+{{- $podSecurityContext := .Values.podSecurityContext }}
+{{- $priorityClassName := .Values.priorityClassOverprovision.name }}
+{{- $repository := .Values.image.repository }}
+{{- $imageTag := .Values.image.tag }}
+{{- $pullPolicy := .Values.image.pullPolicy }}
+{{- $imagePullSecrets := .Values.image.pullSecrets }}
+
+{{ range .Values.deployments }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ $fullname }}-{{ .name }}"
+  labels:
+    app.kubernetes.io/name: {{ $name }}
+    cluster-overprovisioner-name: {{ .name }}
+    helm.sh/chart: {{ $chart }}
+    app.kubernetes.io/instance: {{ $relName }}
+    app.kubernetes.io/managed-by: {{ $relService }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $name }}
+      cluster-overprovisioner-name: {{ .name }}
+      app.kubernetes.io/instance: {{ $relName }}
+  template:
+    metadata:
+    {{- with .annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ $name }}
+        cluster-overprovisioner-name: {{ .name }}
+        app.kubernetes.io/instance: {{ $relName }}
+    {{- with .labels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+      priorityClassName: {{ $priorityClassName }}
+      securityContext:
+        {{- toYaml $podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $chartName }}
+          image: "{{ $repository }}:{{ $imageTag }}"
+          imagePullPolicy: {{ $pullPolicy }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+    {{- if $imagePullSecrets }}
+      imagePullSecrets:
+      {{- range $imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+---
+{{- end }}

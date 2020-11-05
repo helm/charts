@@ -1,13 +1,26 @@
-# IMPORTANT: Specify your New Relic API key here.
+# - Specify either the New Relic license key or the secret which
+#   contains it.
+#
+# - Specify the Kubernetes cluster name.
+#   https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+#
 # licenseKey:
-
-# IMPORTANT: The Kubernetes cluster name
-# https://docs.newrelic.com/docs/kubernetes-monitoring-integration
-# cluster: ""
-
+# customSecretName:
+# customSecretLicenseKey:
+# cluster:
+#
+# IMPORTANT: the previous values can also be set as global so that they
+# can be shared by other newrelic product's charts
+#
+# global:
+#   licenseKey:
+#   customSecretName:
+#   customSecretLicenseKey:
+#   cluster:
+#
 # kubeStateMetricsUrl - if provided, the discovery process for kube-state-metrics endpoint won't be triggered
 # Only HTTP is accepted. This is an example value: http://172.17.0.3:8080
-# kubeStateMetricsUrl:
+# disableKubeStateMetrics - disables KSM parsing by the DaemonSet. Defaults to "false" if not provided.
 
 verboseLog: false
 
@@ -16,20 +29,22 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.3.1
+  tag: 1.21.0
   pullPolicy: IfNotPresent
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    memory: 300M
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 150M
+
+privileged: true
 
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
+  pspEnabled: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -43,9 +58,9 @@ serviceAccount:
 # podLabels:
 
 # If you wish to provide your own newrelic.yml file include it under config:
-# the sample config file is included here as an example. Three options have
+# the sample config file is included here as an example. Some options have
 # been omitted because they are handled either by variables, or a secret. They
-# are license_key, log_file and verbose.
+# are display_name, license_key, log_file and verbose.
 # config:
   #
   # New Relic Infrastructure configuration file
@@ -54,14 +69,6 @@ serviceAccount:
   # Infrastructure agent. If options have command line equivalents, New Relic
   # will use the command line option to override any value set in this file.
   #
-
-  #
-  # Option : display_name
-  # Value  : Hostname to replace the automatically generated hostname for
-  #          reporting.
-  # Default: Automatically generated hostname
-  #
-  # display_name: new_name
 
   #
   # Option : proxy
@@ -82,10 +89,58 @@ serviceAccount:
   #  team: alpha-team
   #
 
+# Pod scheduling proirity
+# Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+# priorityClassName: high-priority
+
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
-tolerations: []
+# These are default tolerations to be able to run the New Relic Kubernetes
+# integration.
+tolerations:
+  - operator: "Exists"
+    effect: "NoSchedule"
+  - operator: "Exists"
+    effect: "NoExecute"
 
 updateStrategy: RollingUpdate
+
+# Custom attributes to be passed to the New Relic agent
+customAttribues: "'{\"clusterName\":\"$(CLUSTER_NAME)\"}'"
+
+# etcdTlsSecretName: newrelic-infra-etcd-tls-secret
+etcdTlsSecretNamespace: default
+
+# If you wish to monitor services running on Kubernetes you can provide integrations
+# configuration under integrations_config. You just need to create a new entry where
+# the "name" is the filename of the configuration file and the data is the content of
+# the integration configuration. The name must end in ".yaml" as this will be the
+# filename generated and the Infrastructure agent only looks for YAML files. The data
+# part is the actual integration configuration as described in the spec here:
+# https://docs.newrelic.com/docs/integrations/integrations-sdk/file-specifications/integration-configuration-file-specifications-agent-v180
+
+# For example, if you wanted do to monitor a Redis instance that has a label "app=redis"
+# you could do so by adding following entry:
+  # integrations_config:
+  #   - name: nri-rabbit.yaml
+  #     data:
+  #       discovery:
+  #         command:
+  #           # Run NRI Discovery for Kubernetes
+  #           # https://github.com/newrelic/nri-discovery-kubernetes
+  #           exec: /var/db/newrelic-infra/nri-discovery-kubernetes
+  #           match:
+  #             label.app: redis
+  #       integrations:
+  #         - name: nri-redis
+  #           env:
+  #             # using the discovered IP as the hostname address
+  #             HOSTNAME: ${discovery.ip}
+  #             PORT: 6379
+  #           labels:
+  #             env: test
+# For more details on monitoring services on Kubernetes see
+# https://docs.newrelic.com/docs/integrations/kubernetes-integration/link-apps-services/monitor-services-running-kubernetes
+integrations_config: {}

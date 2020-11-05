@@ -37,3 +37,14 @@ Secret name for cloudsql credentials
 {{- define "prometheus-mysql-exporter.cloudsqlsecret" -}}
 {{ template "prometheus-mysql-exporter.fullname" . }}-cloudsqlsecret
 {{- end -}}
+
+{{/*
+Secret name for DATA_SOURCE_NAME
+*/}}
+{{- define "prometheus-mysql-exporter.secret" -}}
+    {{- if .Values.mysql.existingSecret -}}
+        {{- printf "%s" .Values.mysql.existingSecret -}}
+    {{- else -}}
+        {{ template "prometheus-mysql-exporter.fullname" . }}
+    {{- end -}}
+{{- end -}}

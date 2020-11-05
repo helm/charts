@@ -1,0 +1,145 @@
+{{- if and (eq true .Values.firefoxDebug.enabled) (eq true .Values.firefoxDebug.runAsDaemonSet) -}}
+apiVersion: {{ template "deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ template "selenium.firefoxDebug.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.firefoxDebug.replicas }}
+  selector:
+    matchLabels:
+       app: {{ template "selenium.firefoxDebug.fullname" . }}
+       release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "selenium.firefoxDebug.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      {{- with .Values.firefoxDebug.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}
+      {{- if .Values.firefoxDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.firefoxDebug.podAnnotations | indent 8 }}
+      {{- end}}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.firefoxDebug.image }}:{{ .Values.firefoxDebug.tag }}"
+          imagePullPolicy: {{ .Values.firefoxDebug.pullPolicy }}
+          ports:
+            {{- if .Values.firefoxDebug.jmxPort }}
+            - containerPort: {{ .Values.firefoxDebug.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
+            - containerPort: 5900
+              name: vnc
+          {{- if .Values.firefoxDebug.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.firefoxDebug.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.firefoxDebug.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.firefoxDebug.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "selenium.hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.servicePort | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ default "" .Values.firefoxDebug.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.firefoxDebug.seOpts | quote }}
+            {{- if .Values.firefoxDebug.firefoxVersion }}
+            - name: FIREFOX_VERSION
+              value: {{ .Values.firefoxDebug.firefoxVersion | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.firefoxDebug.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.firefoxDebug.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.firefoxDebug.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.firefoxDebug.nodePort | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.firefoxDebug.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.firefoxDebug.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.firefoxDebug.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.display }}
+            - name: DISPLAY
+              value: {{ .Values.firefoxDebug.display | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.timeZone }}
+            - name: TZ
+              value: {{ .Values.firefoxDebug.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.extraEnvs }}
+{{ toYaml .Values.firefoxDebug.extraEnvs | indent 12 }}
+            {{- end }}
+          volumeMounts:
+{{ if .Values.firefoxDebug.volumeMounts -}}
+{{ toYaml .Values.firefoxDebug.volumeMounts | indent 12 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.firefoxDebug.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.firefoxDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.firefoxDebug.volumes -}}
+{{ toYaml .Values.firefoxDebug.volumes | indent 8 }}
+{{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
+      nodeSelector:
+{{- if .Values.firefoxDebug.nodeSelector }}
+{{ toYaml .Values.firefoxDebug.nodeSelector | indent 8  }}
+{{- else if .Values.global.nodeSelector }}
+{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.firefoxDebug.affinity }}
+{{ toYaml .Values.firefoxDebug.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.firefoxDebug.tolerations }}
+{{ toYaml .Values.firefoxDebug.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
+{{- end }}
+{{- end -}}

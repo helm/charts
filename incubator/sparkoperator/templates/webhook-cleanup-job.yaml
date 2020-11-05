@@ -2,9 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "sparkoperator.fullname" . }}-cleanup
+  name: {{ include "sparkoperator.fullname" . }}-webhook-cleanup
+  namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-delete
+    "helm.sh/hook": pre-delete, pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app.kubernetes.io/name: {{ include "sparkoperator.name" . }}
@@ -13,13 +14,27 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   template:
+    metadata:
+      name: {{ include "sparkoperator.fullname" . }}-webhook-cleanup
+      {{- if .Values.istio.enabled }}
+      annotations:
+        "sidecar.istio.io/inject": "false"
+      {{- end }}
     spec:
       serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
       restartPolicy: OnFailure
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | trim | indent 8 }}
       containers:
-      - name: main
+      - name: clean-secret
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.securityContext }}
+        securityContext:
+          {{- range $securityPolicy, $value := .Values.securityContext }}
+            {{ $securityPolicy }}: {{ $value }}
+            {{- end }}
+        {{- end }}
         command:
         - "/bin/sh"
         - "-c"
@@ -28,5 +43,13 @@ spec:
           -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \
           -H \"Accept: application/json\" \
           -H \"Content-Type: application/json\" \
-          https://kubernetes.default.svc/api/v1/namespaces/{{ .Release.Namespace }}/secrets/spark-webhook-certs"
+          https://kubernetes.default.svc/api/v1/namespaces/{{ .Release.Namespace }}/secrets/spark-webhook-certs \
+          && \
+          curl -ik \
+          -X DELETE \
+          -H \"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\" \
+          -H \"Accept: application/json\" \
+          -H \"Content-Type: application/json\" \
+          --data \"{\\\"kind\\\":\\\"DeleteOptions\\\",\\\"apiVersion\\\":\\\"batch/v1\\\",\\\"propagationPolicy\\\":\\\"Foreground\\\"}\" \
+          https://kubernetes.default.svc/apis/batch/v1/namespaces/{{ .Release.Namespace }}/jobs/{{ include "sparkoperator.fullname" . }}-webhook-init"
 {{ end }}

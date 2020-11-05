@@ -1,9 +1,9 @@
 ## Image Settings
 ##
 image:
-  repository: "docker.io/chronograf"
-  tag: "1.7-alpine"
-  pullPolicy: "Always"
+  repository: quay.io/influxdb/chronograf
+  tag: 1.7.12
+  pullPolicy: IfNotPresent
 
 ## Specify a service type
 ## ClusterIP is default
@@ -38,6 +38,21 @@ resources:
   limits:
     memory: 2Gi
     cpu: 2
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+nodeSelector: {}
+
+ ## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+ ## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
 
 ## Configure the ingress object to hook into existing infastructure
 ## ref : http://kubernetes.io/docs/user-guide/ingress/

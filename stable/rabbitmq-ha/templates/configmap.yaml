@@ -3,9 +3,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
@@ -43,9 +44,14 @@ data:
       rabbitmq_auth_backend_http,
       {{- end }}
 
+      {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+      rabbitmq_prometheus,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_management,
       rabbitmq_peer_discovery_k8s
+      
     ].
 
   rabbitmq.conf: |
@@ -65,13 +71,19 @@ data:
     # Set to false if automatic cleanup of absent nodes is desired.
     # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
     cluster_formation.node_cleanup.only_log_warning = true
-    cluster_partition_handling = autoheal
+    cluster_partition_handling = {{ .Values.rabbitmqClusterPartitionHandling }}
 
+    {{- if eq .Values.rabbitmqUsername "guest" }}
     ## The default "guest" user is only permitted to access the server
     ## via a loopback interface (e.g. localhost)
     loopback_users.guest = false
+    {{- end }}
 
+    {{- if semverCompare ">=3.8.2" .Chart.AppVersion }}
+    load_definitions = /etc/definitions/definitions.json
+    {{ else }}
     management.load_definitions = /etc/definitions/definitions.json
+    {{- end }}
 
     ## Memory-based Flow Control threshold
     vm_memory_high_watermark.{{ .Values.rabbitmqMemoryHighWatermarkType }} = {{ .Values.rabbitmqMemoryHighWatermark }}
@@ -106,6 +118,13 @@ data:
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
     {{- end }}
 
+    ## Prometheus Plugin
+    {{- if .Values.rabbitmqPrometheusPlugin.enabled }}
+{{ .Values.rabbitmqPrometheusPlugin.config | indent 4 }}
+    prometheus.path = {{ .Values.rabbitmqPrometheusPlugin.path }}
+    prometheus.tcp.port =  {{ .Values.rabbitmqPrometheusPlugin.port }}
+    {{- end }}
+
     ## AMQPS support
     {{- if .Values.rabbitmqAmqpsSupport.enabled }}
 {{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
@@ -113,4 +132,9 @@ data:
 
 {{ .Values.extraConfig | indent 4 }}
 
+{{- end }}
+
+{{- if .Values.advancedConfig }}
+  advanced.config: |
+{{ .Values.advancedConfig | indent 4 }}
 {{- end }}

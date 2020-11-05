@@ -1,0 +1,37 @@
+podSecurityContext: {}
+  # fsGroup: 2000
+
+priorityClassOverprovision:
+  name: overprovisioning
+  value: -1
+
+priorityClassDefault:
+  enabled: true
+  name: default
+  value: 0
+
+image:
+  repository: k8s.gcr.io/pause
+  tag: 3.1
+  pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+nameOverride: ""
+
+fullnameOverride: ""
+
+deployments: []
+  # - name: default
+  #   annotations: {}
+  #   replicaCount: 1
+  #   nodeSelector: {}
+  #   resources: {}
+  #   tolerations: []
+  #   affinity: {}
+  #   labels: {}

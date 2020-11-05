@@ -1,0 +1,7 @@
+dependencies:
+
+  - name: kube-state-metrics
+    version: "2.8.*"
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: kubeStateMetrics.enabled
+

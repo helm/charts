@@ -1,0 +1,21 @@
+datadog:
+  apiKey: "00000000000000000000000000000000"
+  appKey: "0000000000000000000000000000000000000000"
+  clusterChecks:
+    enabled: true
+
+clusterAgent:
+  enabled: true
+
+clusterChecksRunner:
+  enabled: true
+
+  volumes:
+    - name: tmp
+      hostPath:
+        path: /tmp
+
+  volumeMounts:
+    - name: tmp
+      mountPath: /etc/tmp
+      readOnly: true

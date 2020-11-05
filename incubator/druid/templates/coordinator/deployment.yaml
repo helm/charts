@@ -1,0 +1,86 @@
+{{- if .Values.coordinator.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "druid.coordinator.fullname" . }}
+  labels:
+    app: {{ include "druid.name" . }}
+    chart: {{ include "druid.chart" . }}
+    component: {{ .Values.coordinator.name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.coordinator.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "druid.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.coordinator.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "druid.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.coordinator.name }}
+      {{- with .Values.coordinator.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: [ "coordinator" ]
+          env:
+          {{- range $key, $val := .Values.coordinator.config }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+          {{- end}}
+          envFrom:
+            - configMapRef:
+                name: {{ template "druid.name" . }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.coordinator.port }}
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /status/health
+              port: {{ .Values.coordinator.port }}
+          readinessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /status/health
+              port: {{ .Values.coordinator.port }}
+          resources:
+{{ toYaml .Values.coordinator.resources | indent 12 }}
+          volumeMounts:
+  {{- if .Values.gCloudStorage.enabled }}
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+  {{- end }}
+      volumes:
+  {{- if .Values.gCloudStorage.enabled }}
+      - name: google-cloud-key
+        secret:
+          secretName: {{ .Values.gCloudStorage.secretName }}
+  {{- end }}
+    {{- with .Values.coordinator.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.coordinator.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.coordinator.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

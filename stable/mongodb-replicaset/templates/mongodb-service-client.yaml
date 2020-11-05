@@ -1,4 +1,5 @@
-# A headless service for client applications to use
+{{- if .Values.clientService.enabled -}}
+# An optional headless service for client applications to use
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,6 +16,7 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}-client
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -29,4 +31,4 @@ spec:
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}
-
+{{- end -}}

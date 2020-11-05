@@ -46,3 +46,13 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccounts.spark.name }}
 {{- end -}}
 {{- end -}}
+ {{/*
+Create the leader-election namespace to use
+*/}}
+{{- define "sparkoperator.leaderElectionLockNamespace" -}}
+{{- if .Values.leaderElection.lockNamespace -}}
+    {{- .Values.leaderElection.lockNamespace -}}
+{{- else -}}
+    {{- .Release.Namespace -}}
+{{- end -}}
+{{- end -}}

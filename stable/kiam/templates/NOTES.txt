@@ -1,3 +1,7 @@
+This version of the kiam Helm chart is deprecated.
+All future updates should be instead made to the uSwitch-hosted Helm chart,
+located at https://github.com/uswitch/kiam/tree/master/helm/kiam.
+
 To verify that kiam has started, run:
 
   kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kiam.name" . }},release={{ .Release.Name }}"

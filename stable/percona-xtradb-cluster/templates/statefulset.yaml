@@ -1,10 +1,9 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "percona-xtradb-cluster.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "percona-xtradb-cluster.fullname" . }}
   labels:
     app: {{ template "percona-xtradb-cluster.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -26,9 +25,18 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
     spec:
+      {{- with .Values.serviceAccountName }}
+      serviceAccountName: "{{ . }}"
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{ . | toYaml | nindent 8 }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
         imagePullPolicy: IfNotPresent
         command:
         - "rm"
@@ -79,6 +87,8 @@ spec:
           value: {{ template "percona-xtradb-cluster.shortname" . }}
         - name: K8S_SERVICE_NAME
           value: {{ template "percona-xtradb-cluster.fullname" . }}-repl
+        - name: PXC_STRICT_MODE
+          value: {{ default "ENFORCING" .Values.pxc_strict_mode | quote }}
         - name: DEBUG
           value: "true"
         ports:
@@ -92,12 +102,15 @@ spec:
           containerPort: 4444
         livenessProbe:
           exec:
-            command: ["mysqladmin","ping"]
+            command:
+              - "/bin/bash"
+              - "-c"
+              - "mysqladmin ping || test -e /var/lib/mysql/sst_in_progress"
           initialDelaySeconds: 30
           timeoutSeconds: 2
         readinessProbe:
           exec:
-            command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+            command: ["mysql", "--defaults-extra-file=/root/.my.cnf", "-h", "127.0.0.1", "-e", "SELECT 1"]
           initialDelaySeconds: 30
           timeoutSeconds: 2
         volumeMounts:
@@ -118,6 +131,8 @@ spec:
       {{ if .Values.logTail }}
       - name: "logs"
         image: "busybox:1.25.0"
+        resources:
+{{ toYaml .Values.initResources | indent 10 }}
         imagePullPolicy: IfNotPresent
         command:
         - "tail"
@@ -129,7 +144,11 @@ spec:
       {{ end }}
       {{ if .Values.metricsExporter.enabled }}
       - name: metrics
+        {{- if .Values.metricsExporter.tag }}
+        image: prom/mysqld-exporter:{{ .Values.metricsExporter.tag }}
+        {{- else }}
         image: prom/mysqld-exporter
+        {{- end }}
         imagePullPolicy: IfNotPresent
 {{- if .Values.metricsExporter.commandOverrides }}
         command:

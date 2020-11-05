@@ -1,0 +1,20 @@
+{{- if and .Values.kubeControllerManager.enabled .Values.kubeControllerManager.endpoints }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+    k8s-app: kube-controller-manager
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system 
+subsets:
+  - addresses:
+      {{- range .Values.kubeControllerManager.endpoints }}
+      - ip: {{ . }}
+      {{- end }}
+    ports:
+      - name: http-metrics
+        port: {{ .Values.kubeControllerManager.service.port }}
+        protocol: TCP
+{{- end }}

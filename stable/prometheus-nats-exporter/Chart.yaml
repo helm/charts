@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "0.6.2"
+# The prometheus-nats-exporter chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED A Helm chart for prometheus-nats-exporter
+name: prometheus-nats-exporter
+version: 2.5.1
+home: https://github.com/nats-io/prometheus-nats-exporter
+sources:
+  - https://github.com/nats-io/prometheus-nats-exporter
+keywords:
+  - nats
+  - prometheus
+  - exporter

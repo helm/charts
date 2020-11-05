@@ -16,7 +16,7 @@ spec:
     component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
   type: {{ .Values.Zeppelin.ServiceType }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "zeppelin-fullname" . }}

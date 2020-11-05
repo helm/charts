@@ -32,3 +32,22 @@ data:
   ORDERER_GENERAL_TLS_CLIENTROOTCAS: "/var/hyperledger/tls/client/cert/*"
   GODEBUG: "netdns=go"
   ADMIN_MSP_PATH: /var/hyperledger/admin_msp
+  ##############
+  # Operations #
+  ##############
+  {{- if eq .Values.ord.metrics.provider "prometheus" }}
+  ORDERER_OPERATIONS_LISTENADDRESS: 0.0.0.0:9443
+  {{- end }}
+  {{- if eq .Values.ord.metrics.provider "statsd" }}
+  ORDERER_OPERATIONS_LISTENADDRESS: 127.0.0.1:8125
+  {{- end }}
+  ###########
+  # Metrics #
+  ###########
+  ORDERER_METRICS_PROVIDER: {{ .Values.ord.metrics.provider | quote }}
+  {{- if eq .Values.ord.metrics.provider "statsd" }}
+  ORDERER_METRICS_STATSD_NETWORK: {{ .Values.ord.metrics.statsd.network | quote }}
+  ORDERER_METRICS_STATSD_ADDRESS: {{ .Values.ord.metrics.statsd.address | quote }}
+  ORDERER_METRICS_STATSD_WRITEINTERVAL: {{ .Values.ord.metrics.statsd.WriteInterval | quote }}
+  ORDERER_METRICS_STATSD_PREFIX: {{ .Values.ord.metrics.statsd.prefix | quote }}
+  {{- end }}

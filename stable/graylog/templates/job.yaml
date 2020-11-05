@@ -1,0 +1,59 @@
+{{ if .Values.graylog.provisioner.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "graylog.fullname" . }}-provisioner-job
+  labels:
+{{ include "graylog.metadataLabels" . | indent 4 }}
+{{- with .Values.graylog.provisioner.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+{{ include "graylog.metadataLabels" . | indent 8 }}
+    spec:
+      {{ if .Values.graylog.provisioner.useGraylogServiceAccount }}
+      serviceAccountName: {{ template "graylog.serviceAccountName" . }}
+      {{ end }}
+      containers:
+      - name: {{ template "graylog.fullname" . }}-provisioner-job
+        image: "alpine"
+        imagePullPolicy: "IfNotPresent"
+        command:
+          - /bin/sh
+          - -c
+          - |
+            apk update && apk add --no-cache curl bash && bash /configmap/script.sh
+        env:
+          - name: GRAYLOG_PASSWORD_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
+
+                key: graylog-password-secret
+        volumeMounts:
+          - name: configmap
+            mountPath: /configmap
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{ template "graylog.fullname" . }}-provisioner-job
+            items:
+              - key: script.sh
+                path: script.sh
+                mode: 365
+      restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "graylog.fullname" . }}-provisioner-job
+  labels:
+{{ include "graylog.metadataLabels" . | indent 4 }}
+data:
+  script.sh: |
+{{ .Values.graylog.provisioner.script | indent 4 }}
+{{ end }}

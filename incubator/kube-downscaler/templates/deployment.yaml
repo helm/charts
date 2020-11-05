@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kube-downscaler.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "kube-downscaler.name" . }}
+    helm.sh/chart: {{ include "kube-downscaler.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kube-downscaler.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kube-downscaler.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8}}
+      {{- end }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          - --interval={{ .Values.interval }}
+          {{- if .Values.namespace}}
+          {{- if .Values.namespace.active_in}}
+          - --namespace="{{ .Values.namespace.active_in }}"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.debug.enable }}
+          - --debug
+          {{- end }}
+          - --include-resources={{- join "," .Values.downscaleResources }}
+          {{- if .Values.excludedNamespaces }}
+          - --exclude-namespaces={{- join "," .Values.excludedNamespaces }}
+          {{- end }}
+          {{- if .Values.excludedDeployments }}
+          - --exclude-deployments={{- join "," .Values.excludedDeployments }}
+          {{- end }}
+{{- with .Values.extraArgs }}
+{{ toYaml . | indent 10 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-downscaler.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}

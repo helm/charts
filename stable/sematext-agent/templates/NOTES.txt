@@ -1,0 +1,4 @@
+This chart has been DEPRECATED and moved to its new home:
+
+* GitHub repo: https://github.com/sematext/helm-charts/
+* Charts repo: https://cdn.sematext.com/helm-charts/

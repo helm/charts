@@ -1,0 +1,95 @@
+# The purpose of this template is to define a minimal set of environment
+# variables required to operate dedicated containers in the daemonset
+{{- define "containers-common-env" -}}
+- name: DD_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "datadog.apiSecretName" . }}
+      key: api-key
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+- name: DD_KUBERNETES_KUBELET_HOST
+  valueFrom:
+    fieldRef:
+      fieldPath: status.hostIP
+{{- end }}
+{{- if .Values.datadog.clusterName }}
+{{- if not (regexMatch "^([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?\\.)*([a-z]([a-z0-9\\-]{0,38}[a-z0-9])?)$" .Values.datadog.clusterName) }}
+{{- fail "Your `clusterName` isn’t valid. It must be dot-separated tokens where a token start with a lowercase letter followed by up to 39 lowercase letters, numbers, or hyphens and cannot end with a hyphen."}}
+{{- end}}
+- name: DD_CLUSTER_NAME
+  value: {{ .Values.datadog.clusterName | quote }}
+{{- end }}
+{{- if .Values.datadog.tags }}
+- name: DD_TAGS
+  value: {{ .Values.datadog.tags | join " " | quote }}
+{{- end }}
+{{- if .Values.datadog.nodeLabelsAsTags }}
+- name: DD_KUBERNETES_NODE_LABELS_AS_TAGS
+  value: '{{ toJson .Values.datadog.nodeLabelsAsTags }}'
+{{- end }}
+{{- if .Values.datadog.podLabelsAsTags }}
+- name: DD_KUBERNETES_POD_LABELS_AS_TAGS
+  value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
+{{- end }}
+{{- if .Values.datadog.podAnnotationsAsTags }}
+- name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
+  value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
+{{- end }}
+- name: KUBERNETES
+  value: "yes"
+{{- if .Values.datadog.site }}
+- name: DD_SITE
+  value: {{ .Values.datadog.site | quote }}
+{{- end }}
+{{- if .Values.datadog.dd_url }}
+- name: DD_DD_URL
+  value: {{ .Values.datadog.dd_url | quote }}
+{{- end }}
+{{- if .Values.datadog.env  }}
+{{ toYaml .Values.datadog.env }}
+{{- end }}
+{{- if .Values.datadog.acInclude }}
+- name: DD_AC_INCLUDE
+  value: {{ .Values.datadog.acInclude | quote }}
+{{- end }}
+{{- if .Values.datadog.acExclude }}
+- name: DD_AC_EXCLUDE
+  value: {{ .Values.datadog.acExclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerInclude }}
+- name: DD_CONTAINER_INCLUDE
+  value: {{ .Values.datadog.containerInclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExclude }}
+- name: DD_CONTAINER_EXCLUDE
+  value: {{ .Values.datadog.containerExclude | quote }}
+{{- end }}
+{{- if .Values.datadog.containerIncludeMetrics }}
+- name: DD_CONTAINER_INCLUDE_METRICS
+  value: {{ .Values.datadog.containerIncludeMetrics | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExcludeMetrics }}
+- name: DD_CONTAINER_EXCLUDE_METRICS
+  value: {{ .Values.datadog.containerExcludeMetrics | quote }}
+{{- end }}
+{{- if .Values.datadog.containerIncludeLogs }}
+- name: DD_CONTAINER_INCLUDE_LOGS
+  value: {{ .Values.datadog.containerIncludeLogs | quote }}
+{{- end }}
+{{- if .Values.datadog.containerExcludeLogs }}
+- name: DD_CONTAINER_EXCLUDE_LOGS
+  value: {{ .Values.datadog.containerExcludeLogs | quote }}
+{{- end }}
+{{- if .Values.datadog.criSocketPath }}
+- name: DD_CRI_SOCKET_PATH
+  value: {{ print "/host/" .Values.datadog.criSocketPath | clean }}
+{{- else }}
+- name: DOCKER_HOST
+{{- if eq .Values.targetSystem "linux" }}
+  value: unix://{{ print "/host/" (include "datadog.dockerOrCriSocketPath" .) | clean }}
+{{- end }}
+{{- if eq .Values.targetSystem "windows" }}
+  value: npipe://{{ (include "datadog.dockerOrCriSocketPath" .) | replace "\\" "/" }}
+{{- end }}
+{{- end }}
+{{- end -}}

@@ -1,7 +1,9 @@
+{{- if .Values.testFramework.enabled  }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "mysql.fullname" . }}-test
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -18,4 +20,4 @@ data:
       mysql --host={{ template "mysql.fullname" . }} --port={{ .Values.service.port | default "3306" }} -u root -p{{ .Values.mysqlRootPassword }}
     }
     {{- end }}
-
+{{- end }}

@@ -2,18 +2,25 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+# upgrade strategy type (e.g. Recreate or RollingUpdate)
+strategyType: Recreate
 
 image:
-  repository: nodered/node-red-docker
-  tag: 0.19.4-v8
+  repository: nodered/node-red
+  tag: 1.0.4-12-minimal
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
 
-# flows: ""
+livenessProbePath: /
+readinessProbePath: /
+
+flows: "flows.json"
+safeMode: "false"
+enableProjects: "false"
 # nodeOptions: ""
+extraEnvs: []
 timezone: "UTC"
 
 service:
@@ -66,6 +73,8 @@ persistence:
   # existingClaim: your-claim
   accessMode: ReadWriteOnce
   size: 5Gi
+  ## When mounting the data volume you may specify a subPath
+  # subPath: /configs/node-red
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -84,3 +93,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+podAnnotations: {}

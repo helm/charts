@@ -1,0 +1,134 @@
+Please be patient: buzzfeed-sso might take a few minutes to install.
+
+{{- if eq .Values.emailDomain "<your_email_domain>" }}
+
+###############################################################################
+####   ERROR: You did not provide an email domain.                         ####
+###############################################################################
+
+This deployment will be incomplete until you configure a valid email domain.
+The email domain is required for the auth and proxy deployments.
+
+{{- end }}
+
+{{- if and .Values.auth.enabled (eq .Values.rootDomain "<your_root_domain>") }}
+
+###############################################################################
+####   ERROR: You did not provide a root domain.                           ####
+###############################################################################
+
+This deployment will be incomplete until you configure a valid root domain.
+The root domain is required for the auth deployment.
+
+{{- end }}
+
+{{- if eq .Values.auth.domain "<your_auth_domain>" }}
+
+###############################################################################
+####   ERROR: You did not provide proper auth domain.                      ####
+###############################################################################
+
+This deployment will be incomplete until you configure a valid auth domain.
+For instance, "sso-auth.mydomain.foo".
+
+{{- end }}
+
+{{- if and .Values.auth.enabled (not (or .Values.auth.secret .Values.auth.customSecret)) }}
+
+###############################################################################
+####   ERROR: You did not provide proper auth secrets.                     ####
+###############################################################################
+
+This deployment will be incomplete until you configure proper auth secrets.
+You can generate an auth secret by running
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set auth.secret.codeSecret="$(openssl rand -base64 32 | head -c 32 | base64)" \
+      --set auth.secret.cookieSecret="$(openssl rand -base64 32 | head -c 32 | base64)" \
+      incubator/buzzfeed-sso
+
+Or you can provide a custom auth secret that is a reference to an already created
+Kubernetes secret resource.
+    kubectl create secret generic buzzfeed-sso-auth-secret \
+      --namespace={{ .Release.Namespace }} \
+      --from-literal=auth-code-secret="auth-code-secret"
+      --from-literal=auth-cookie-secret="auth-cookie-secret"
+
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set auth.customSecret="buzzfeed-sso-auth-secret" \
+      incubator/buzzfeed-sso
+
+{{- end }}
+
+{{- if not (or .Values.proxy.secret .Values.proxy.customSecret) }}
+
+###############################################################################
+####   ERROR: You did not provide proper proxy secrets.                    ####
+###############################################################################
+
+This deployment will be incomplete until you configure proper proxy secrets.
+You can generate a proxy secret by running
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set proxy.secret.clientId="$(openssl rand -base64 32 | head -c 32 | base64)" \
+      --set proxy.secret.clientSecret="$(openssl rand -base64 32 | head -c 32 | base64)" \
+      --set proxy.secret.cookieSecret="$(openssl rand -base64 32 | head -c 32 | base64)" \
+      incubator/buzzfeed-sso
+
+Or you can provide a custom proxy secret that is a reference to an already created
+Kubernetes secret resource.
+    kubectl create secret generic buzzfeed-sso-proxy-secret \
+      --namespace={{ .Release.Namespace }} \
+      --from-literal=proxy-client-id="proxy-client-id"
+      --from-literal=proxy-client-secret="proxy-client-secret"
+      --from-literal=proxy-cookie-secret="proxy-cookie-secret"
+
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set proxy.customSecret="buzzfeed-sso-proxy-secret" \
+      incubator/buzzfeed-sso
+
+{{- end }}
+
+{{- if not (or .Values.provider.google.secret .Values.provider.google.customSecret) }}
+
+###############################################################################
+####   ERROR: You did not provide a proper Google provider.                ####
+###############################################################################
+
+This deployment will be incomplete until you configure a valid provider.
+
+Currently, the only accepted provider is Google. You need to specify it with
+a given secret or custom secret.
+
+You can define the secret with your Google's client id, client secret and
+service account in JSON format.
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set provider.google.secret.clientId="foo123123-fake123123.apps.googleusercontent.com" \
+      --set provider.google.secret.clientSecret="googleOauthClientSecret" \
+      --set provider.google.secret.serviceAccount="$(cat myserviceaccount.json)" \
+      incubator/buzzfeed-sso
+
+Or you can provide a custom secret that is a reference to an already created
+Kubernetes secret resource.
+    kubectl create secret generic buzzfeed-sso-google-secret \
+      --namespace={{ .Release.Namespace }} \
+      --from-literal=google-client-id="foo123123-fake123123.apps.googleusercontent.com"
+      --from-literal=google-client-secret="googleOauthClientSecret"
+      --from-literal=service-account="$(cat myserviceaccount.json)"
+
+    helm upgrade {{ .Release.Name }} \
+      --reuse-values \
+      --set provider.google.customSecret="buzzfeed-sso-google-secret" \
+      incubator/buzzfeed-sso
+
+{{- end }}
+
+{{- if .Values.ingress.hosts }}
+Visit the external application URLs to use your application:
+{{- range .Values.ingress.hosts }}
+  https://{{ .domain }}{{ .path }}
+{{- end }}
+{{- end }}

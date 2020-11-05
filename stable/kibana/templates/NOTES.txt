@@ -1,3 +1,8 @@
+
+THE CHART HAS BEEN DEPRECATED! 
+
+Find the new  official version @ https://github.com/elastic/helm-charts/tree/master/kibana
+
 To verify that {{ template "kibana.fullname" . }} has started, run:
 
   kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kibana.name" . }}"

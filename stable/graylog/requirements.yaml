@@ -1,0 +1,11 @@
+dependencies:
+- name: elasticsearch
+  version: 1.32.2
+  repository: https://charts.helm.sh/stable
+  tags:
+    - install-elasticsearch
+- name: mongodb-replicaset
+  version: 3.11.2
+  repository: https://charts.helm.sh/stable
+  tags:
+    - install-mongodb

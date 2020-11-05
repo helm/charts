@@ -1,0 +1,24 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "scdf.fullname" . }} 
+spec:
+  rules:
+  - host: {{ .Values.ingress.server.host }}
+    {{ .Values.ingress.protocol }}:
+      paths:
+      - backend:
+          serviceName: {{ template "scdf.fullname" . }}-server
+          servicePort: {{ .Values.server.service.externalPort }}
+        path: /
+  {{- if .Values.features.monitoring.enabled }}
+  - host: {{ .Values.ingress.grafana.host }}
+    {{ .Values.ingress.protocol }}:
+      paths:
+      - backend:
+          serviceName: {{ .Release.Name }}-grafana
+          servicePort: {{ .Values.grafana.service.port }}
+        path: /
+  {{- end }}
+{{- end }}

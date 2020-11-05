@@ -1,0 +1,34 @@
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.serviceMonitor.enabled ) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- if .Values.serviceMonitor.labels }}
+  labels:
+{{ toYaml .Values.serviceMonitor.labels | indent 4 }}
+{{- end }}
+  name: {{ template "chartmuseum.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- if .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: 8080
+{{- if .Values.serviceMonitor.interval }}
+    interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}
+{{- if .Values.serviceMonitor.metricsPath }}
+    path: {{ .Values.serviceMonitor.metricsPath }}
+{{- end }}
+{{- if .Values.serviceMonitor.timeout }}
+    scrapeTimeout: {{ .Values.serviceMonitor.timeout }}
+{{- end }}
+  jobLabel: {{ template "chartmuseum.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "chartmuseum.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}

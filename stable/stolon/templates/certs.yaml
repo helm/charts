@@ -1,0 +1,19 @@
+{{ if and (not .Values.tls.existingSecret) ( .Values.tls.enabled) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "stolon.fullname" . }}-certs
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+type: Opaque
+data:
+  rootCa.crt:
+    {{ .Values.tls.rootCa | b64enc | quote }}
+  serverCrt.crt:
+    {{ .Values.tls.serverCrt| b64enc | quote }}
+  serverKey.key:
+    {{ .Values.tls.serverKey | b64enc | quote }}
+{{- end }}

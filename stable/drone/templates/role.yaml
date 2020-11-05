@@ -10,6 +10,12 @@ metadata:
     heritage: "{{ .Release.Service }}"
 rules:
   - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - "*"
+  - apiGroups:
       - extensions
     resources:
       - deployments

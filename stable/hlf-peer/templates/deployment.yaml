@@ -29,7 +29,15 @@ spec:
         {{- end }}
         - name: dockersocket
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.dockerSocketPath }}
+        {{- if .Values.dockerConfig }}
+        - name: docker-config
+          secret:
+            secretName: {{ include "hlf-peer.fullname" . }}-dockerconfigjson
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+        {{- end }}
         {{- if .Values.secrets.peer.cert }}
         - name: id-cert
           secret:
@@ -70,10 +78,12 @@ spec:
           secret:
             secretName: {{ .Values.secrets.peer.tlsClientRootCert }}
         {{- end }}
-        {{- if .Values.secrets.channel }}
-        - name: channel
+        {{- if .Values.secrets.channels }}
+          {{- range .Values.secrets.channels }}
+        - name: {{ . }}
           secret:
-            secretName: {{ .Values.secrets.channel }}
+            secretName: {{ . }}
+          {{- end }}
         {{- end }}
         {{- if .Values.secrets.adminCert }}
         - name: admin-cert
@@ -101,6 +111,11 @@ spec:
             - name: event
               containerPort: 7053
               protocol: TCP
+            {{- if eq .Values.peer.metrics.provider "prometheus" }}
+            - name: metrics
+              containerPort: 9443
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             exec:
               command:
@@ -161,6 +176,10 @@ spec:
               name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
+            {{- if .Values.dockerConfig }}
+            - name: docker-config
+              mountPath: {{ .Values.dockerConfigMountPath }}
+            {{ end }}
             {{- if .Values.secrets.peer.cert }}
             - mountPath: /var/hyperledger/msp/signcerts
               name: id-cert
@@ -201,9 +220,11 @@ spec:
             - mountPath: /var/hyperledger/tls/ord/cert
               name: ord-tls-rootcert
             {{- end }}
-            {{- if .Values.secrets.channel }}
-            - mountPath: /hl_config/channel
-              name: channel
+            {{- if .Values.secrets.channels }}
+              {{- range .Values.secrets.channels }}
+            - mountPath: /hl_config/channel/{{ . }}
+              name: {{ . }}
+              {{- end }}
             {{- end }}
             {{- if .Values.secrets.adminCert }}
             - mountPath: /var/hyperledger/admin_msp/admincerts

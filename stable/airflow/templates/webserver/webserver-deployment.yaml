@@ -1,0 +1,302 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "airflow.fullname" . }}-web
+  {{- if .Values.web.annotations }}
+  annotations:
+    {{- toYaml .Values.web.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: web
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.web.labels }}
+    {{- toYaml .Values.web.labels | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  minReadySeconds: {{ .Values.web.minReadySeconds }}
+  strategy:
+    # this is safe - multiple web pods can run concurrently
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: web
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/config/configmap-env.yaml") . | sha256sum }}
+        checksum/config-git-clone: {{ include (print $.Template.BasePath "/config/configmap-scripts-git.yaml") . | sha256sum }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/config/configmap-scripts.yaml") . | sha256sum }}
+        {{- if and (.Values.dags.git.url) (.Values.dags.git.ref) }}
+        checksum/dags-git-ref: {{ .Values.dags.git.ref | sha256sum }}
+        {{- end }}
+        {{- if .Values.airflow.podAnnotations }}
+        {{- toYaml .Values.airflow.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.web.podAnnotations }}
+        {{- toYaml .Values.web.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.web.safeToEvict }}
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        {{- end }}
+      labels:
+        app: {{ include "airflow.labels.app" . }}
+        component: web
+        release: {{ .Release.Name }}
+        {{- if .Values.web.podLabels }}
+        {{- toYaml .Values.web.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.web.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.web.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.web.affinity }}
+      affinity:
+        {{- toYaml .Values.web.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.web.tolerations }}
+      tolerations:
+        {{- toYaml .Values.web.tolerations | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "airflow.serviceAccountName" . }}
+      {{- if .Values.web.securityContext }}
+      securityContext:
+        {{- toYaml .Values.web.securityContext | nindent 8 }}
+      {{- end }}
+      {{- if and ( .Values.dags.initContainer.enabled ) ( not .Values.web.serializeDAGs ) }}
+      initContainers:
+        - name: git-clone
+          image: {{ .Values.dags.initContainer.image.repository }}:{{ .Values.dags.initContainer.image.tag }}
+          imagePullPolicy: {{ .Values.dags.initContainer.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.dags.initContainer.resources | nindent 12 }}
+          command:
+            - /home/airflow/git/git-clone.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath }}"
+            - "{{ .Values.dags.git.repoHost }}"
+            - "{{ .Values.dags.git.repoPort }}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /home/airflow/git
+            - name: dags-data
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+      {{- end }}
+      containers:
+        {{- if and ( .Values.dags.git.gitSync.enabled ) ( not .Values.web.serializeDAGs ) }}
+        - name: git-sync
+          image: {{ .Values.dags.git.gitSync.image.repository }}:{{ .Values.dags.git.gitSync.image.tag }}
+          imagePullPolicy: {{ .Values.dags.git.gitSync.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          command:
+            - /home/airflow/git/git-sync.sh
+          args:
+            - "{{ .Values.dags.git.url }}"
+            - "{{ .Values.dags.git.ref }}"
+            - "{{ .Values.dags.initContainer.mountPath }}{{ .Values.dags.initContainer.syncSubPath }}"
+            - "{{ .Values.dags.git.repoHost }}"
+            - "{{ .Values.dags.git.repoPort }}"
+            - "{{ .Values.dags.git.privateKeyName }}"
+            - "{{ .Values.dags.git.gitSync.refreshTime }}"
+          volumeMounts:
+            - name: git-clone
+              mountPath: /home/airflow/git
+            - name: dags-data
+              mountPath: "{{ .Values.dags.initContainer.mountPath }}"
+            {{- if .Values.dags.git.secret }}
+            - name: git-clone-secret
+              mountPath: /keys
+            {{- end }}
+          resources:
+            {{- toYaml .Values.dags.git.gitSync.resources | nindent 12 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}-web
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: "{{ include "airflow.fullname" . }}-env"
+          env:
+            {{- include "airflow.mapenvsecrets" . | indent 12 }}
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /home/airflow/scripts
+            {{- if .Values.web.secretsMap }}
+            - name: {{ .Values.web.secretsMap }}-volume
+              readOnly: true
+              mountPath: {{ $.Values.web.secretsDir }}
+            {{- else }}
+            {{- range .Values.web.secrets }}
+            - name: {{ . }}-volume
+              readOnly: true
+              mountPath: {{ $.Values.web.secretsDir }}/{{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.dags.persistence.enabled }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+              subPath: {{ .Values.dags.persistence.subPath }}
+            {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            {{- end }}
+            {{- if .Values.logs.persistence.enabled }}
+            - name: logs-data
+              mountPath: {{ .Values.logs.path }}
+              subPath: {{ .Values.logs.persistence.subPath }}
+            {{- end }}
+            {{- range .Values.airflow.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+              {{- if .subPath }}
+              subPath: {{ .subPath }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.airflow.extraVolumeMounts }}
+            {{- toYaml .Values.airflow.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          command:
+            - "/usr/bin/dumb-init"
+            - "--"
+          args:
+            - "bash"
+            - "-c"
+            - >
+              true \
+              {{- if gt .Values.web.initialStartupDelay 0.0 }}
+               && echo "*** waiting {{ .Values.web.initialStartupDelay }}s..." \
+               && sleep {{ .Values.web.initialStartupDelay }} \
+              {{- end }}
+               && mkdir -p /home/airflow/.local/bin \
+               && export PATH="/home/airflow/.local/bin:$PATH" \
+              {{- if .Values.dags.installRequirements }}
+               && echo "*** installing requirements..." \
+               && /home/airflow/scripts/install-requirements.sh \
+              {{- end }}
+              {{- if .Values.airflow.extraPipPackages }}
+               && echo "*** installing global extra pip packages..." \
+               && pip install --user {{ range .Values.airflow.extraPipPackages }} {{ . | quote }} {{ end }} \
+              {{- end }}
+              {{- if .Values.web.extraPipPackages }}
+               && echo "*** installing extra pip packages..." \
+               && pip install --user {{ range .Values.web.extraPipPackages }} {{ . | quote }} {{ end }} \
+              {{- end }}
+               && echo "*** running webserver..." \
+               && exec airflow webserver
+          {{- if .Values.web.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              scheme: {{ .Values.web.livenessProbe.scheme }}
+              {{- if .Values.ingress.web.livenessPath }}
+              path: "{{ .Values.ingress.web.livenessPath }}"
+              {{- else }}
+              path: "{{ .Values.ingress.web.path }}/health"
+              {{- end }}
+              port: web
+            initialDelaySeconds: {{ .Values.web.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.web.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              scheme: {{ .Values.web.readinessProbe.scheme }}
+              path: "{{ .Values.ingress.web.path }}/health"
+              port: web
+            initialDelaySeconds: {{ .Values.web.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.readinessProbe.failureThreshold }}
+          {{- end }}
+        {{- if .Values.airflow.extraContainers }}
+        {{- toYaml .Values.airflow.extraContainers | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        {{- if .Values.web.secretsMap }}
+        - name: {{ .Values.web.secretsMap }}-volume
+          secret:
+            secretName: {{ .Values.web.secretsMap }}
+        {{- else }}
+        {{- range .Values.web.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.dags.persistence.enabled }}
+        - name: dags-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.dags.persistence.existingClaim | default (include "airflow.fullname" . ) }}
+        {{- else if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: dags-data
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.logs.persistence.enabled }}
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.logs.persistence.existingClaim | default (printf "%s-logs" (include "airflow.fullname" . | trunc 58 )) }}
+        {{- end }}
+        {{- if or (.Values.dags.initContainer.enabled) (.Values.dags.git.gitSync.enabled) }}
+        - name: git-clone
+          configMap:
+            name: {{ include "airflow.fullname" . }}-scripts-git
+            defaultMode: 0755
+        {{- if .Values.dags.git.secret }}
+        - name: git-clone-secret
+          secret:
+            secretName: {{ .Values.dags.git.secret }}
+            defaultMode: 0700
+        {{- end }}
+        {{- end }}
+        {{- range .Values.airflow.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+        {{- end }}
+        {{- if .Values.airflow.extraVolumes }}
+        {{- toYaml .Values.airflow.extraVolumes | nindent 8 }}
+        {{- end }}

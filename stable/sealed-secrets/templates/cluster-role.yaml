@@ -19,11 +19,25 @@ rules:
       - list
       - watch
   - apiGroups:
+      - bitnami.com
+    resources:
+      - sealedsecrets/status
+    verbs:
+      - update
+  - apiGroups:
       - ""
     resources:
       - secrets
     verbs:
+      - get
       - create
       - update
       - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
 {{ end }}

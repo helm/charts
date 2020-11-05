@@ -13,7 +13,7 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.monitoring.service.type }}
-  {{- if and (eq .Values.monitoring.service.type "LoadBalancer") .Values.monitoring.service.loadBalancerIP -}}
+  {{- if and (eq .Values.monitoring.service.type "LoadBalancer") .Values.monitoring.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.monitoring.service.loadBalancerIP }}
   {{- end }}
   ports:

@@ -2,7 +2,7 @@
 
 image:
   repository: gcr.io/heptio-images/eventrouter
-  tag: v0.2
+  tag: v0.3
   pullPolicy: IfNotPresent
 resources: {}
   # limits:
@@ -32,3 +32,8 @@ sink: glog
 podAnnotations: {}
 
 containerPorts: []
+
+securityContext: {}
+  # runAsUser: 1000
+
+enablePrometheus: true

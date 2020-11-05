@@ -1,6 +1,5 @@
 dependencies:
 - name: zookeeper
-  version: 1.2.0
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: zookeeper.enabled
-
+  version: 2.1.0
+  repository: https://charts.helm.sh/incubator
+  condition: kafka.zookeeper.enabled,zookeeper.enabled

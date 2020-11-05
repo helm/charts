@@ -1,8 +1,10 @@
+apiVersion: v1
 name: drone
+deprecated: true
 home: https://drone.io/
 icon: https://drone.io/apple-touch-icon.png
-version: 1.7.5
-appVersion: 0.8.9
+version: 2.7.2
+appVersion: 1.6.5
 description: Drone is a Continuous Delivery system built on container technology
 keywords:
 - continuous-delivery
@@ -14,6 +16,3 @@ keywords:
 - go
 sources:
 - https://github.com/drone/drone
-maintainers:
-- name: christian-roggia
-  email: christian.roggia@gmail.com

@@ -5,6 +5,10 @@ metadata:
   name: {{ template "prometheus-operator.fullname" . }}-operator
   labels:
     app: {{ template "prometheus-operator.name" . }}-operator
+{{- if .Values.global.rbac.pspAnnotations }}
+  annotations:
+{{ toYaml .Values.global.rbac.pspAnnotations | indent 4 }}
+{{- end }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   privileged: false
@@ -22,7 +26,7 @@ spec:
     - 'secret'
     - 'downwardAPI'
     - 'persistentVolumeClaim'
-  hostNetwork: false
+  hostNetwork: {{ .Values.prometheusOperator.hostNetwork }}
   hostIPC: false
   hostPID: false
   runAsUser:

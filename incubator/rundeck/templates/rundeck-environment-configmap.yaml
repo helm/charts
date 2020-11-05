@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-environment-configmap
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+data:
+{{ toYaml .Values.rundeck.env | indent 4}}

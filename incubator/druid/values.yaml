@@ -1,0 +1,401 @@
+# Default values for druid.
+
+image:
+  repository: apache/druid
+  tag: 0.19.0
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+configMap:
+  ## If false, configMap will not be applied
+  ##
+  enabled: true
+
+## Define the key value pairs in the configmap
+configVars:
+  ## DRUID env vars. ref: https://github.com/apache/druid/blob/master/distribution/docker/druid.sh#L29
+  # DRUID_LOG_LEVEL: "warn"
+  # DRUID_LOG4J: <?xml version="1.0" encoding="UTF-8" ?><Configuration status="WARN"><Appenders><Console name="Console" target="SYSTEM_OUT"><PatternLayout pattern="%d{ISO8601} %p [%t] %c - %m%n"/></Console></Appenders><Loggers><Root level="info"><AppenderRef ref="Console"/></Root><Logger name="org.apache.druid.jetty.RequestLog" additivity="false" level="DEBUG"><AppenderRef ref="Console"/></Logger></Loggers></Configuration>
+  DRUID_USE_CONTAINER_IP: "true"
+
+  ## Druid Common Configurations. ref: https://druid.apache.org/docs/latest/configuration/index.html#common-configurations
+  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage"]'
+  druid_metadata_storage_type: postgresql
+  druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
+  druid_metadata_storage_connector_user: druid
+  druid_metadata_storage_connector_password: druid
+  druid_storage_type: local
+  druid_indexer_logs_type: file
+  druid_indexer_logs_directory: /opt/data/indexing-logs
+
+  ## Druid Emitting Metrics. ref: https://druid.apache.org/docs/latest/configuration/index.html#emitting-metrics
+  druid_emitter: noop
+  druid_emitter_logging_logLevel: debug
+  druid_emitter_http_recipientBaseUrl: http://druid_exporter_url:druid_exporter_port/druid
+
+gCloudStorage:
+  enabled: false
+  secretName: google-cloud-key
+
+broker:
+  ## If false, broker will not be installed
+  ##
+  enabled: true
+  name: broker
+  replicaCount: 1
+  port: 8082
+  serviceType: ClusterIP
+
+  config:
+    DRUID_XMX: 512m
+    DRUID_XMS: 512m
+    DRUID_MAXDIRECTMEMORYSIZE: 400m
+    druid_processing_buffer_sizeBytes: '50000000'
+    druid_processing_numMergeBuffers: 2
+    druid_processing_numThreads: 1
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+coordinator:
+  ## If false, coordinator will not be installed
+  ##
+  enabled: true
+  name: coordinator
+  replicaCount: 1
+  port: 8081
+  serviceType: ClusterIP
+
+  config:
+    DRUID_XMX: 256m
+    DRUID_XMS: 256m
+    # druid_monitoring_monitors: '["org.apache.druid.server.metrics.TaskCountStatsMonitor"]'
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 512Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+overlord:
+  ## If true, the separate overlord will be installed
+  ##
+  enabled: false
+  name: overlord
+  replicaCount: 1
+  port: 8081
+  serviceType: ClusterIP
+
+  javaOpts: "-Xms1G -Xmx1G"
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+historical:
+  ## If false, historical will not be installed
+  ##
+  enabled: true
+  name: historical
+  replicaCount: 1
+  port: 8083
+  serviceType: ClusterIP
+
+  config:
+    DRUID_XMX: 512m
+    DRUID_XMS: 512m
+    DRUID_MAXDIRECTMEMORYSIZE: 400m
+    druid_processing_buffer_sizeBytes: '50000000'
+    druid_processing_numMergeBuffers: 2
+    druid_processing_numThreads: 1
+    # druid_monitoring_monitors: '["org.apache.druid.client.cache.CacheMonitor", "org.apache.druid.server.metrics.HistoricalMetricsMonitor", "org.apache.druid.server.metrics.QueryCountStatsMonitor"]'
+    # druid_segmentCache_locations: '[{"path":"/var/druid/segment-cache","maxSize":300000000000}]'
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "4Gi"
+    # storageClass: "ssd"
+
+  antiAffinity: "soft"
+
+  nodeAffinity: {}
+
+  nodeSelector: {}
+
+  securityContext:
+    fsGroup: 1000
+
+  tolerations: []
+
+  resources: {}
+    # limits:
+    #   cpu: 2
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+
+  ## (dict) If specified, apply these annotations to each master Pod
+  podAnnotations: {}
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 2
+    maxUnavailable: 1
+
+  updateStrategy:
+    type: RollingUpdate
+
+middleManager:
+  ## If false, middleManager will not be installed
+  ##
+  enabled: true
+  name: middle-manager
+  replicaCount: 1
+  port: 8091
+  serviceType: ClusterIP
+
+  config:
+    DRUID_XMX: 64m
+    DRUID_XMS: 64m
+    druid_indexer_runner_javaOptsArray: '["-server", "-Xms256m", "-Xmx256m", "-XX:MaxDirectMemorySize=300m", "-Duser.timezone=UTC", "-Dfile.encoding=UTF-8", "-XX:+ExitOnOutOfMemoryError", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"]'
+    druid_indexer_fork_property_druid_processing_buffer_sizeBytes: '25000000'
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "4Gi"
+    # storageClass: "ssd"
+
+  antiAffinity: "soft"
+
+  nodeAffinity: {}
+
+  nodeSelector: {}
+
+  securityContext:
+    fsGroup: 1000
+
+  tolerations: []
+
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
+
+  ## (dict) If specified, apply these annotations to each master Pod
+  podAnnotations: {}
+
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 2
+    maxUnavailable: 1
+
+  updateStrategy:
+    type: RollingUpdate
+
+router:
+  ## If false, router will not be installed
+  ##
+  enabled: true
+  name: router
+  replicaCount: 1
+  port: 8888
+  serviceType: ClusterIP
+
+  config:
+    DRUID_XMX: 128m
+    DRUID_XMS: 128m
+    DRUID_MAXDIRECTMEMORYSIZE: 128m
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # limits:
+    #   cpu: 250m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podAnnotations: {}
+
+# ------------------------------------------------------------------------------
+# Zookeeper:
+# ------------------------------------------------------------------------------
+
+# zkHosts: druid-zookeeper-headless:2181
+
+zookeeper:
+  enabled: true
+  ## Environmental variables to set in Zookeeper
+  ##
+  env:
+    ## The JVM heap size to allocate to Zookeeper
+    ZK_HEAP_SIZE: "512M"
+  ## Configure Zookeeper headless
+  headless:
+    publishNotReadyAddresses: true
+
+
+# ------------------------------------------------------------------------------
+# MySQL:
+# ------------------------------------------------------------------------------
+mysql:
+  enabled: false
+  mysqlRootPassword: druidroot
+  mysqlUser: druid
+  mysqlPassword: druid
+  mysqlDatabase: druid
+  configurationFiles:
+    mysql_collate.cnf: |-
+      [mysqld]
+      character-set-server=utf8
+      collation-server=utf8_unicode_ci
+
+# ------------------------------------------------------------------------------
+# postgres:
+# ------------------------------------------------------------------------------
+postgresql:
+  enabled: true
+  postgresqlUsername: druid
+  postgresqlPassword: druid
+  postgresqlDatabase: druid
+  service:
+    port: 5432
+
+# Secrets

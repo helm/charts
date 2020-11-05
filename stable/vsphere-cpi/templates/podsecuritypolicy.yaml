@@ -1,0 +1,46 @@
+{{- if .Values.podSecurityPolicy.enabled }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "cpi.name" . }}
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: pod-security-policy
+    component: cloud-controller-manager
+    release: {{ .Release.Name }}
+  {{- if .Values.podSecurityPolicy.annotations }}
+  annotations:
+  {{- toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
+  {{- end }}
+spec:
+  allowPrivilegeEscalation: false
+  privileged: false
+  volumes:
+    - 'configMap'
+    - 'secret'
+    - 'emptyDir'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAs'
+    ranges:
+      - min: {{ .Values.securityContext.runAsUser }}
+        max: {{ .Values.securityContext.runAsUser }}
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: {{ .Values.securityContext.runAsUser }}
+        max: {{ .Values.securityContext.runAsUser }}
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: true
+  requiredDropCapabilities:
+    - ALL
+{{- end }}

@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "influxdb.fullname" . }}
+  labels:
+    {{- include "influxdb.labels" . | nindent 4 }}
+data:
+  influxdb.conf: |+
+    reporting-disabled = {{ .Values.config.reporting_disabled | default false }}
+    bind-address = ":{{ .Values.config.rpc.bind_address | default 8088 }}"
+
+    [meta]
+      dir = "/var/lib/influxdb/meta"
+      {{- range $key, $value := index .Values.config.meta }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+      {{- if .Values.enterprise.enabled }}
+      internal-shared-secret = "{{ sha256sum .Values.enterprise.meta.seed }}"
+      meta-auth-enabled = {{ .Values.config.meta.authEnabled }}
+      {{- end }}
+
+    [data]
+      dir = "/var/lib/influxdb/data"
+      wal-dir = "/var/lib/influxdb/wal"
+      {{- range $key, $value := index .Values.config.data }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [coordinator]
+      {{- range $key, $value := index .Values.config.coordinator }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [retention]
+      {{- range $key, $value := index .Values.config.retention }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [shard-precreation]
+      {{- range $key, $value := index .Values.config.shard_precreation }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [monitor]
+      {{- range $key, $value := index .Values.config.monitor }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [subscriber]
+      {{- range $key, $value := index .Values.config.subscriber }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [http]
+      {{- range $key, $value := index .Values.config.http }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    # TODO: allow multiple graphite listeners
+
+    [[graphite]]
+      {{- range $key, $value := index .Values.config.graphite }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+      {{- if .Values.config.graphite.templates }}
+      templates = [
+        {{- range .Values.config.graphite.templates }}
+          {{ quote . }},
+        {{- end }}
+      ]
+      {{- end }}
+
+    # TODO: allow multiple collectd listeners with templates
+
+    [[collectd]]
+      {{- range $key, $value := index .Values.config.collectd }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    # TODO: allow multiple opentsdb listeners with templates
+
+    [[opentsdb]]
+      {{- range $key, $value := index .Values.config.opentsdb }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    # TODO: allow multiple udp listeners with templates
+
+    [[udp]]
+      {{- range $key, $value := index .Values.config.udp }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [continuous_queries]
+      {{- range $key, $value := index .Values.config.continuous_queries }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    [logging]
+      {{- range $key, $value := index .Values.config.logging }}
+      {{ $key }} = {{ $value }}
+      {{- end }}
+
+    {{ if .Values.enterprise.enabled -}}
+    [enterprise]
+      license-key = {{ .Values.enterprise.licensekey | quote }}
+
+    [hinted-handoff]
+      enabled = true
+      dir = "/var/lib/influxdb/hh"
+    {{- end }}

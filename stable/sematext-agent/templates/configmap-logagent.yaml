@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sematext-agent.fullname" . }}-logagent
+  labels:
+    app: {{ template "sematext-agent.name" . }}-logagent
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  REGION: {{ .Values.region | quote }}
+  {{- range $key, $val := .Values.logagent.config }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- if .Values.logsReceiverUrl }}
+  LOGS_RECEIVER_URL: {{ default "" .Values.logsReceiverUrl | quote }}
+  {{- end }}

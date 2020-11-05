@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-configmap
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+data:
+  nginx.conf: |-
+{{- if .Values.nginxConfOverride }}
+{{ tpl .Values.nginxConfOverride . | indent 4 }}
+{{- else }}
+{{ .Files.Get "files/nginx/nginx.conf" | indent 4 }}
+{{- end }}

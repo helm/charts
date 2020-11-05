@@ -1,0 +1,196 @@
+## Discovery configuration examples
+## Use the sections below in your values file to enable auto-discovery
+## Some of these will require you to sepcify some details specific to your environment such as user/passwords
+
+## Ensure you include the following object structure (collector.discovery.config), 
+## then copy / paste the appropriate snippets you need below 
+collector:
+  discovery:
+    config:
+
+
+    # activemq
+    - name: activemq
+      type: telegraf/activemq
+      selectors:
+        images:
+        - "*activemq*"
+      port: 8161
+      conf: |
+        server = "${host}"
+        port = ${port}
+        username = "admin"
+        password = "admin"
+        webadmin = "admin"
+
+    # apache httpd
+    - name: apache
+      type: telegraf/apache
+      selectors:
+        images:
+        - 'httpd*'
+        - '*httpd*'
+      port: 80
+      conf: |
+        urls = ["http://${host}:${port}/server-status?auto"]
+
+    # consul
+    - name: consul
+      type: telegraf/consul
+      selectors:
+        images:
+        - 'consul*'
+      port: 8500
+      conf: |
+        address = "${host}:${port}"
+        scheme = "http"
+
+    # couchbase
+    - name: couchbase
+      type: telegraf/couchbase
+      selectors:
+        images:
+        - 'couchbase/server:enterprise-6.0.1'
+      port: 8091
+      conf: |
+        servers = ["http://Administrator:password@${host}:${port}"]
+
+    # couchdb
+    - name: couchdb
+      type: telegraf/couchdb
+      selectors:
+        images:
+        - '*couchdb*'
+      port: 5984
+      conf: |
+        hosts = ["http://admin:password@${host}:${port}/_node/_local/_stats"]
+
+    # elasticsearch
+    - name: elasticsearch
+      type: telegraf/elasticsearch
+      selectors:
+        images:
+        - '*elastic*'
+      port: 9200
+      conf: |
+        servers = ["http://${host}:${port}"]
+        local = false
+        cluster_health = true
+        cluster_stats = true
+
+    # haProxy
+    - name: haproxy
+      type: telegraf/haproxy
+      selectors:
+        images:
+        - "*haproxy*"
+      port: 8181
+      conf: |
+        servers = ["http://username:password@${host}:${port}/haproxy?stats"]
+
+    # memcached
+    - name: memcached
+      type: telegraf/memcached
+      selectors:
+        images:
+        - 'memcached:*'
+      port: 11211
+      conf: |
+        servers = ["${host}:${port}"]
+
+    # mongodb
+    - name: mongodb
+      type: telegraf/mongodb
+      selectors:
+        images:
+        - 'mongo*'
+      port: 27017
+      conf: |
+        servers = ["mongodb://main_admin:abc123@${host}:${port}"]
+
+    # mysql
+    - name: mysql
+      type: telegraf/mysql
+      selectors:
+        images:
+        - "mysql*"
+      collection:
+        interval: "180s"
+      port: 3306
+      conf: |
+        servers = ["root:password@tcp(${host}:${port})/?tls=false"]
+        perf_events_statements_digest_text_limit  = 120
+        perf_events_statements_limit              = 250
+        perf_events_statements_time_limit         = 86400
+        table_schema_databases                    = []
+        gather_process_list                       = true
+        gather_table_io_waits                     = true
+        gather_table_lock_waits                   = true
+        gather_index_io_waits                     = true
+        gather_event_waits                        = true
+        gather_file_events_stats                  = true
+        interval_slow                             = "30m"
+
+    # nginx
+    - name: nginx
+      type: telegraf/nginx
+      selectors:
+        images:
+        - 'nginx*'
+      port: 80
+      conf: |
+        urls = ["http://${host}:${port}/metrics"]
+
+    # nginx_plus
+    - name: nginx_plus
+      type: telegraf/nginx_plus
+      selectors:
+        images:
+        - 'nginxplus*'
+      conf: |
+        urls = ["http://${host}/api"]
+
+    # rabbitmq
+    - name: rabbitmq
+      type: telegraf/rabbitmq
+      selectors:
+        images:
+        - 'rabbitmq*'
+      port: 15672
+      conf: |
+        url = "http://${host}:${port}"
+        username = "guest"
+        password = "guest"
+
+    # redis master and slaves
+    - name: redis
+      type: telegraf/redis
+      selectors:
+        images:
+        - 'redis:*'
+        - '*redis*'
+      port: 6379
+      scheme: "tcp"
+      conf: |
+        servers = ["${server}"]
+
+    # riak
+    - name: riak
+      type: telegraf/riak
+      selectors:
+        images:
+        - 'riak-kv:*'
+        - '*riak-kv:*'
+      port: 8098
+      conf: |
+        servers = ["http://${host}:${port}"]
+
+    # zookeeper
+    - name: zookeeper
+      type: telegraf/zookeeper
+      selectors:
+        images:
+        - '*zookeeper'
+      port: 2181
+      conf: |
+        servers = ["${host}:${port}"]

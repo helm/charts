@@ -9,8 +9,17 @@ metadata:
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
+{{- if .Values.statefulSetAnnotations }}
+  annotations:
+{{ toYaml .Values.statefulSetAnnotations | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
+  namespace: {{ template "mongodb-replicaset.namespace" . }}
 spec:
+{{- if .Values.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "mongodb-replicaset.name" . }}
@@ -45,9 +54,16 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
+    {{- if .Values.securityContext.enabled }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
       initContainers:
         - name: copy-config
           image: "{{ .Values.copyConfigImage.repository }}:{{ .Values.copyConfigImage.tag }}"
@@ -116,6 +132,10 @@ spec:
               value: {{ .Values.replicaSetName }}
             - name: TIMEOUT
               value: "{{ .Values.init.timeout }}"
+            - name: SKIP_INIT
+              value: "{{ .Values.skipInitialization }}"
+            - name: TLS_MODE
+              value: {{ .Values.tls.mode }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -181,7 +201,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --sslMode=requireSSL
+            - --sslMode={{ .Values.tls.mode }}
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
@@ -201,6 +221,24 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+          startupProbe:
+            exec:
+              command:
+                - mongo
+              {{- if .Values.tls.enabled }}
+                - --ssl
+                - --sslCAFile=/data/configdb/tls.crt
+                - --sslPEMKeyFile=/work-dir/mongo.pem
+              {{- end }}
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+{{- end }}
           readinessProbe:
             exec:
               command:
@@ -230,23 +268,12 @@ spec:
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command:
             - sh
-            - -ec
+            - -c
             - >-
               /bin/mongodb_exporter
-            {{- if .Values.auth.enabled }}
-              -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-            {{- else }}
-              -mongodb.uri mongodb://localhost:{{ .Values.port }}
-            {{- end }}
-            {{- if .Values.tls.enabled }}
-              -mongodb.tls
-              -mongodb.tls-ca=/ca/tls.crt
-              -mongodb.tls-cert=/work-dir/mongo.pem
-            {{- end }}
-              -mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
-              -mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
-              -web.metrics-path={{ .Values.metrics.path }}
-              -web.listen-address=:{{ .Values.metrics.port }}
+              --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+              --web.telemetry-path={{ .Values.metrics.path }}
+              --web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:
           {{- if and (.Values.tls.enabled) }}
             - name: ca
@@ -274,27 +301,41 @@ spec:
               containerPort: {{ .Values.metrics.port  }}
           resources:
 {{ toYaml .Values.metrics.resources | indent 12 }}
+          {{- if .Values.metrics.securityContext.enabled }}
+          securityContext:
+            runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
                 - sh
-                - -ec
+                - -c
                 - >-
                   /bin/mongodb_exporter
-                {{- if .Values.auth.enabled }}
-                  -mongodb.uri mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-                {{- else }}
-                  -mongodb.uri mongodb://localhost:{{ .Values.port }}
-                {{- end }}
-                {{- if .Values.tls.enabled }}
-                  -mongodb.tls
-                  -mongodb.tls-ca=/ca/tls.crt
-                  -mongodb.tls-cert=/work-dir/mongo.pem
-                {{- end }}
-                  -test
-              initialDelaySeconds: 30
-              periodSeconds: 10
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+                  --test
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+{{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - >-
+                  /bin/mongodb_exporter
+                  --mongodb.uri {{ template "mongodb-replicaset.connection-string" . }}
+                  --test
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+{{- end }}
 {{ end }}
+        {{- if .Values.extraContainers }}
+        {{- tpl (toYaml .Values.extraContainers) . | nindent 8 }}
+        {{- end }}
    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -331,13 +372,16 @@ spec:
           emptyDir: {}
         - name: configdir
           emptyDir: {}
+{{- if .Values.extraVolumes }}
+{{- tpl (toYaml .Values.extraVolumes) . | nindent 8 }}
+{{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: datadir
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
+          {{ $key }}: "{{ $value }}"
         {{- end }}
       spec:
         accessModes:

@@ -1,0 +1,38 @@
+{{- if .Values.graylog.ingress.enabled -}}
+{{- $extraPaths := .Values.graylog.ingress.extraPaths -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.graylog.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+{{ include "graylog.metadataLabels" . | indent 4 }}
+    app.kubernetes.io/component: "web"
+  name: {{ template "graylog.fullname" . }}-web
+spec:
+  rules:
+  {{- range .Values.graylog.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          {{ if $extraPaths }}
+{{ toYaml $extraPaths | indent 10 }}
+          {{- end }}
+          - backend:
+              serviceName: {{ template "graylog.fullname" $ }}-web
+              servicePort: graylog
+            {{- if $.Values.graylog.ingress.path }}
+            path: {{ $.Values.graylog.ingress.path }}
+            {{- end -}}
+  {{- end -}}
+  {{- if .Values.graylog.ingress.tls }}
+  tls:
+{{ toYaml .Values.graylog.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

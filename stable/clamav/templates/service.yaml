@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "clamav.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "clamav.name" . }}
+    helm.sh/chart: {{ include "clamav.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 3310
+      protocol: TCP
+      name: clamavport
+  selector:
+    app.kubernetes.io/name: {{ include "clamav.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

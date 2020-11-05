@@ -1,0 +1,173 @@
+# Default values for rundeck.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: rundeck/rundeck
+  tag: 3.2.7
+  pullPolicy: IfNotPresent
+
+deployment:
+  replicaCount: 1
+  annotations: {}
+  strategy:
+    type: RollingUpdate
+    # Recreate can help when using persistent volumes
+    # type: Recreate
+
+rundeck:
+  adminUser: "admin:admin,user,admin,architect,deploy,build"
+  env:
+    RUNDECK_GRAILS_URL: "http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
+    RUNDECK_SERVER_FORWARDED: "true"
+    RUNDECK_LOGGING_STRATEGY: "CONSOLE"
+    # RUNDECK_DATABASE_DRIVER: com.mysql.jdbc.Driver
+    # RUNDECK_DATABASE_USERNAME: rundeck
+    # RUNDECK_DATABASE_PASSWORD: rundeck
+    # RUNDECK_DATABASE_URL: jdbc:mysql://mysql/rundeck?autoReconnect=true&useSSL=false
+    # RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_NAME: com.rundeck.rundeckpro.amazon-s3
+    # RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_BUCKET: ${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_BUCKET}
+    # RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION: ${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_REGION}
+    # RUNDECK_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
+    # RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: ${RUNDECK_STORAGE_PASSWORD}
+    # RUNDECK_TOKENS_FILE: /home/rundeck/extra/tokens.properties
+
+  # Name of the secret containing SSH files to mount under ~/.ssh
+  # sshSecrets: "ssh-secret"
+
+  # Name of secret containing to mount under ~/.aws/
+  # awsConfigSecret: "aws-secret"
+
+  # Name of secret to mount under ~/.kube/
+  # kubeConfigSecret: "kube-secret"
+
+  # Name of secret containing additional sensitive Runtime environment variables (eg: RUNDECK_DATABASE_PASSWORD)
+  # See https://hub.docker.com/r/rundeck/rundeck/
+  # envSecret: "env-secret"
+
+  # Name of secret containing additional files to mount into Rundeck's ~/extra directory.
+  # This can be useful for populating a file you reference with RUNDECK_TOKENS_FILE above.
+  # extraConfigSecret: "extra-secret"
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+persistence:
+  enabled: false
+  # Set existingClaim to the name of an existing PVC to reuse a volume managed outside this helm chart
+  # existingClaim:
+  # If deployed on AWS you can optionally specify an existing EBS volume by ID
+  # awsVolumeId:
+
+  # Set claim.create:true  to have the helm chart manage the creation of a new PVC for this deployment
+  claim:
+    create: false
+    # storageClass:
+    # accessMode: ReadWriteOnce
+    # size: 10G
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  annotations: {}
+    # AWS IRSA annotation
+    # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/rundeck
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  paths: []
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## Replace the nginx.conf file in this chart with a customised config.
+nginxConfOverride: ""
+  # # This example adds configuration for external auth e.g. via oauth2-proxy
+  # # It also demonstrates templating in another arbitrary value (authRoles)
+  # # to create a map of external users to rundeck roles
+  # events {
+  #   worker_connections  1024;
+  # }
+  # http {
+  #   map $http_x_forwarded_user $x_forwarded_roles {
+  # {{- .Values.authRoles | nindent 4 }}
+  #   }
+  #   server {
+  #     location /metrics/ {
+  #       proxy_pass http://localhost:4440;
+  #       proxy_set_header Host $http_host;
+  #       proxy_set_header X-Forwarded-User metrics;
+  #       proxy_set_header X-Forwarded-Roles user;
+  #     }
+  #     location / {
+  #       recursive_error_pages on;
+  #       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #       proxy_set_header X-Forwarded-Proto $scheme;
+  #       proxy_set_header X-Forwarded-Roles $x_forwarded_roles;
+  #       proxy_set_header User-Agent $http_user_agent;
+  #       proxy_pass http://localhost:4440;
+  #     }
+  #   }
+  # }
+
+# volumes made available to all containers.
+volumes: ""
+  # - name: plugins
+  #   emptyDir: {}
+
+# volumeMounts to add to the rundeck container and configurable paths
+volumeMounts:
+  - name: data
+    mountPath: /home/rundeck/server/data
+
+# initContainers can be used to download plugins or customise your rundeck installation
+initContainers: ""
+  # - name: download-plugins
+  #   image: alpine:3.8
+  #   command: [sh, -c]
+  #   args:
+  #     - wget https://github.com/rundeck-plugins/kubernetes/releases/download/1.0.16/kubernetes-plugin-1.0.16.zip -O /home/rundeck/libext/kubernetes-plugin-1.0.16.zip
+  #   volumeMounts:
+  #     - mountPath: /home/rundeck/libext/
+  #       name: plugins
+
+# sideCars can run additional containers in the pod
+sideCars: ""
+  # - name: cloudsql-proxy
+  #   image: gcr.io/cloudsql-docker/gce-proxy:1.17
+  #   command:
+  #     - "/cloud_sql_proxy"
+  #     - "-instances=<instance_end_point>=tcp:3306"
+  #   securityContext:
+  #     runAsNonRoot: true

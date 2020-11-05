@@ -2,7 +2,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: sealed-secrets-key-admin
+  name: {{ template "sealed-secrets.fullname" . }}-key-admin
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}
@@ -24,4 +25,28 @@ rules:
       - secrets
     verbs:
       - create
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "sealed-secrets.fullname" . }}-service-proxier
+  namespace: {{ template "sealed-secrets.namespace" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - 'http:{{ template "sealed-secrets.fullname" . }}:'
+  - {{ template "sealed-secrets.fullname" . }}
+  resources:
+  - services/proxy
+  verbs:
+  - create
+  - get
 {{ end }}

@@ -1,0 +1,8 @@
+# Testing native Prometheus plugin
+
+rabbitmqPrometheusPlugin:
+  enabled: true
+
+prometheus:
+  operator:
+    enabled: false

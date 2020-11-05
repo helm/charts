@@ -1,0 +1,69 @@
+{{- if .Values.prometheusRules.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "vault.fullname" . }}
+  labels:
+    app: {{ template "vault.name" . }}
+    chart: {{ template "vault.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
+{{- end }}
+spec:
+  groups:
+  # Adapted from https://github.com/bosh-prometheus/prometheus-boshrelease/blob/master/jobs/vault_alerts/templates/vault.alerts.yml
+  - name: vault.rules
+    rules:
+      {{- if .Values.prometheusRules.defaultRules.vaultUp }}
+      - alert: VaultUp
+        expr: vault_up{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 0
+        for: 10m
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance {{`{{$labels.pod_name}}`}} is down"
+          description: "The Vault instance {{`{{$labels.pod_name}}`}} has been down for the last 10m"
+      {{- end }}
+
+      {{- if .Values.prometheusRules.defaultRules.vaultUninitialized }}
+      - alert: VaultUninitialized
+        expr: vault_initialized{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 0
+        for: 10m
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance {{`{{$labels.pod_name}}`}} is uninitialized"
+          description: "The Vault instance {{`{{$labels.pod_name}}`}} has been uninitialized for the last 10m"
+      {{- end }}
+
+      {{- if .Values.prometheusRules.defaultRules.vaultSealed }}
+      - alert: VaultSealed
+        expr: vault_sealed{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 1
+        for: 5m
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance {{`{{$labels.pod_name}}`}} is sealed"
+          description: "The Vault instance {{`{{$labels.pod_name}}`}} has been sealed for the last 5m"
+      {{- end }}
+
+      {{- if .Values.prometheusRules.defaultRules.vaultStandby }}
+      - alert: VaultStandby
+        expr: vault_standby{app="{{ template "vault.name" . }}", release="{{ .Release.Name }}"} == 1
+        for: 10m
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance {{`{{$labels.pod_name}}`}} is in standby mode"
+          description: "The Vault instance {{`{{$labels.pod_name}}`}} has been in standby mode for the last 10m"
+      {{- end }}
+{{- if .Values.prometheusRules.extraRules }}
+{{ toYaml .Values.prometheusRules.extraRules | indent 6 }}
+{{- end }}
+{{- end -}}

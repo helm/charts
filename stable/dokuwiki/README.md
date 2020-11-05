@@ -2,32 +2,55 @@
 
 [DokuWiki](https://www.dokuwiki.org) is a standards-compliant, simple to use wiki optimized for creating documentation. It is targeted at developer teams, workgroups, and small companies. All data is stored in plain text files, so no database is required.
 
+## This Helm chart is deprecated
+
+Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the Bitnami maintained DokuWiki Helm chart is now located at [bitnami/charts](https://github.com/bitnami/charts/).
+
+The Bitnami repository is already included in the Hubs and we will continue providing the same cadence of updates, support, etc that we've been keeping here these years. Installation instructions are very similar, just adding the _bitnami_ repo and using it during the installation (`bitnami/<chart>` instead of `stable/<chart>`)
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm install my-release bitnami/<chart>           # Helm 3
+$ helm install --name my-release bitnami/<chart>    # Helm 2
+```
+
+To update an exisiting _stable_ deployment with a chart hosted in the bitnami repository you can execute
+
+```bash
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm upgrade my-release bitnami/<chart>
+```
+
+Issues and PRs related to the chart itself will be redirected to `bitnami/charts` GitHub repository. In the same way, we'll be happy to answer questions related to this migration process in [this issue](https://github.com/helm/charts/issues/20969) created as a common place for discussion.
+
 ## TL;DR;
 
 ```console
-$ helm install stable/dokuwiki
+$ helm install my-release stable/dokuwiki
 ```
 
 ## Introduction
 
 This chart bootstraps a [DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters. This chart has been tested to work with NGINX Ingress, cert-manager, fluentd and Prometheus on top of the [BKPR](https://kubeprod.io/).
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.12+
+- Helm 2.11+ or Helm 3.0-beta3+
 - PV provisioner support in the underlying infrastructure
+- ReadWriteMany volumes for deployment scaling
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/dokuwiki
+$ helm install my-release stable/dokuwiki
 ```
 
-The command deploys DokuWiki on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys DokuWiki on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -41,27 +64,31 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## Parameters
 
 The following table lists the configurable parameters of the DokuWiki chart and their default values.
 
 |              Parameter               |               Description                                  |                   Default                     |
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
 | `global.imageRegistry`               | Global Docker image registry                               | `nil`                                         |
+| `global.imagePullSecrets`            | Global Docker registry secret names as an array            | `[]` (does not add image pull secrets to deployed pods) |
+| `global.storageClass`                     | Global storage class for dynamic provisioning                                               | `nil`                                                        |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
-| `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
+| `image.tag`                          | DokuWiki image tag                                         | `{TAG_NAME}`                                  |
 | `image.pullPolicy`                   | Image pull policy                                          | `Always`                                      |
-| `image.pullSecrets`                  | Specify image pull secrets                                 | `nil`                                         |
+| `image.pullSecrets`                  | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods) |
+| `nameOverride`                       | String to partially override dokuwiki.fullname template with a string (will prepend the release name) | `nil` |
+| `fullnameOverride`                   | String to fully override dokuwiki.fullname template with a string                                     | `nil` |
 | `dokuwikiUsername`                   | User of the application                                    | `user`                                        |
 | `dokuwikiFullName`                   | User's full name                                           | `User Name`                                   |
 | `dokuwikiPassword`                   | Application password                                       | _random 10 character alphanumeric string_     |
 | `dokuwikiEmail`                      | User email                                                 | `user@example.com`                            |
 | `dokuwikiWikiName`                   | Wiki name                                                  | `My Wiki`                                     |
-| `service.type`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
-| `service.port`                    | Service HTTP port                    | `80`                                          |
-| `service.httpsPort`                    | Service HTTPS port                    | `443`                                          |
-| `service.loadBalancerIP`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
+| `service.type`                       | Kubernetes Service type                                    | `LoadBalancer`                                |
+| `service.port`                       | Service HTTP port                                          | `80`                                          |
+| `service.httpsPort`                  | Service HTTPS port                                         | `443`                                         |
+| `service.loadBalancerIP`             | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
 | `service.nodePorts.http`             | Kubernetes http node port                                  | `""`                                          |
 | `service.nodePorts.https`            | Kubernetes https node port                                 | `""`                                          |
@@ -76,9 +103,6 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                     | `nil`                                         |
 | `ingress.secrets[0].key`             | TLS Secret Key                                             | `nil`                                         |
 | `persistence.enabled`                | Enable persistence using PVC                               | `true`                                        |
-| `persistence.apache.storageClass`    | PVC Storage Class for apache volume                        | `nil` (uses alpha storage class annotation)   |
-| `persistence.apache.accessMode`      | PVC Access Mode for apache volume                          | `ReadWriteOnce`                               |
-| `persistence.apache.size`            | PVC Storage Request for apache volume                      | `1Gi`                                         |
 | `persistence.dokuwiki.storageClass`  | PVC Storage Class for DokuWiki volume                      | `nil` (uses alpha storage class annotation)   |
 | `persistence.dokuwiki.accessMode`    | PVC Access Mode for DokuWiki volume                        | `ReadWriteOnce`                               |
 | `persistence.dokuwiki.size`          | PVC Storage Request for DokuWiki volume                    | `8Gi`                                         |
@@ -98,23 +122,22 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
 | `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
 | `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
-| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
-| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
-| `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
-| `metrics.image.tag`                        | Apache exporter image tag                                                                                       | `v0.5.0`                                            |
-| `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
-| `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
-| `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}`                                                   |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | {}                        |
-
+| `podAnnotations`                     | Pod annotations                                            | `{}`                                          |
+| `metrics.enabled`                    | Start a side-car prometheus exporter                       | `false`                                       |
+| `metrics.image.registry`             | Apache exporter image registry                             | `docker.io`                                   |
+| `metrics.image.repository`           | Apache exporter image name                                 | `bitnami/apache-exporter`                     |
+| `metrics.image.tag`                  | Apache exporter image tag                                  | `{TAG_NAME}`                                  |
+| `metrics.image.pullPolicy`           | Image pull policy                                          | `IfNotPresent`                                |
+| `metrics.image.pullSecrets`          | Specify docker-registry secret names as an array           | `[]` (does not add image pull secrets to deployed pods)      |
+| `metrics.podAnnotations`             | Additional annotations for Metrics exporter pod            | `{prometheus.io/scrape: "true", prometheus.io/port: "9117"}` |
+| `metrics.resources`                  | Exporter resource requests/limit                           | {}                                            |
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
+$ helm install my-release \
   --set dokuwikiUsername=admin,dokuwikiPassword=password \
     stable/dokuwiki
 ```
@@ -124,20 +147,36 @@ The above command sets the DokuWiki administrator account username and password 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/dokuwiki
+$ helm install my-release -f values.yaml stable/dokuwiki
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Configuration and installation details
+
+### [Rolling VS Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
 ## Persistence
 
-The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` and `/bitnami/apache` paths of the container.
+The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image stores the DokuWiki data and configurations at the `/bitnami/dokuwiki` path of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. There is a [known issue](https://github.com/kubernetes/kubernetes/issues/39178) in Kubernetes Clusters with EBS in different availability zones. Ensure your cluster is configured properly to create Volumes in the same availability zone where the nodes are running. Kuberentes 1.12 solved this issue with the [Volume Binding Mode](https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode).
 
-See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
 ## Upgrading
+
+### To 6.0.0
+
+Helm performs a lookup for the object based on its group (apps), version (v1), and kind (Deployment). Also known as its GroupVersionKind, or GVK. Changing the GVK is considered a compatibility breaker from Kubernetes' point of view, so you cannot "upgrade" those objects to the new GVK in-place. Earlier versions of Helm 3 did not perform the lookup correctly which has since been fixed to match the spec.
+
+In https://github.com/helm/charts/pull/17294 the `apiVersion` of the deployment resources was updated to `apps/v1` in tune with the api's deprecated, resulting in compatibility breakage.
+
+This major version signifies this change.
 
 ### To 3.0.0
 

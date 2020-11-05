@@ -1,0 +1,4 @@
+redis:
+  enabled: true
+  master:
+    port: 6379

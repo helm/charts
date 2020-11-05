@@ -1,0 +1,185 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rundeck.fullname" . }}
+  labels: {{ include "rundeck.labels" . | indent 4 }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  strategy:
+    {{- toYaml .Values.deployment.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rundeck.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        # This will restart the rundeck pod if its environment configuration is updated by helm
+        checksum/config: {{ include (print $.Template.BasePath "/rundeck-environment-configmap.yaml") . | sha256sum }}
+        {{- with .Values.deployment.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ include "rundeck.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "rundeck.serviceAccountName" . }}
+      securityContext:
+        fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
+      containers:
+        {{- if .Values.sideCars }}
+          {{- toYaml .Values.sideCars | nindent 8 }}
+        {{- end }}
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+              scheme: HTTP
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+              scheme: HTTP
+            periodSeconds: 5
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx
+        - name: {{ .Chart.Name }}
+          command:
+          - /bin/sh
+          - -c
+          - echo {{ .Values.rundeck.adminUser  }} > /home/rundeck/server/config/realm.properties && /home/rundeck/docker-lib/entry.sh
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-environment-configmap
+          {{- if .Values.rundeck.envSecret }}
+          - secretRef:
+              name: {{ .Values.rundeck.envSecret }}
+          {{- end }}
+          env:
+            - name: RUNDECK_GRAILS_URL
+              value: {{ .Values.rundeck.env.RUNDECK_GRAILS_URL }}
+            - name: RUNDECK_SERVER_FORWARDED
+              value: "true"
+            - name: RUNDECK_LOGGING_STRATEGY
+              value: "CONSOLE"
+          volumeMounts:
+        {{- if .Values.volumeMounts }}
+          {{- toYaml .Values.volumeMounts | nindent 10}}
+        {{- end }}
+        {{- if .Values.rundeck.sshSecrets }}
+          - name: sshkeys
+            mountPath: /home/rundeck/.ssh
+            readOnly: true
+        {{- end }}
+        {{- if .Values.rundeck.awsConfigSecret }}
+          - name: aws-config
+            mountPath: /home/rundeck/.aws/
+        {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+          - name: kube-config
+            mountPath: /home/rundeck/.kube/
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+          - name: extra-config
+            mountPath: /home/rundeck/extra/
+        {{- end }}
+          ports:
+            - name: rundeck
+              containerPort: 4440
+          livenessProbe:
+            httpGet:  
+              path: /
+              port: 4440
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 120
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4440
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ .Release.Name }}-nginx-configmap
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: data
+        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.awsVolumeId }}
+          # This AWS EBS volume must already exist.
+          awsElasticBlockStore:
+            volumeID: {{ .Values.rundeck.awsVolumeId }}
+            fsType: ext4
+        {{- else if .Values.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+        {{- else if .Values.persistence.claim.create }}
+          persistentVolumeClaim:
+            claimName: {{ include "rundeck.fullname" . }}
+        {{- end }}  
+        {{- else }}
+          emptyDir: {}
+        {{- end }}  
+        {{- if .Values.rundeck.sshSecrets }}
+        - name: sshkeys
+          secret:
+            secretName: {{ .Values.rundeck.sshSecrets }}
+        {{- end }}
+        {{- if .Values.rundeck.awsCredentialsSecret }}
+        - name: aws-credentials
+          secret:
+            secretName: {{ .Values.rundeck.awsCredentialsSecret}}
+        {{- end }}
+        {{- if .Values.rundeck.kubeConfigSecret }}
+        - name: kube-config
+          secret:
+            secretName: {{ .Values.rundeck.kubeConfigSecret}}
+        {{- end }}
+        {{- if .Values.rundeck.extraConfigSecret }}
+        - name: extra-config
+          secret:
+            secretName: {{ .Values.rundeck.extraConfigSecret}}
+        {{- end }}
+      {{- if .Values.volumes }}
+        {{- toYaml .Values.volumes | nindent 8}}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+        {{- toYaml .Values.initContainers | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

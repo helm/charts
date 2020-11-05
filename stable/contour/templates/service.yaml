@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: {{ template "contour.fullname" . }}
+ annotations:
+  # This annotation puts the AWS ELB into "TCP" mode so that it does not
+  # do HTTP negotiation for HTTPS connections at the ELB edge.
+  # The downside of this is the remote IP address of all connections will
+  # appear to be the internal address of the ELB. See docs/proxy-proto.md
+  # for information about enabling the PROXY protocol on the ELB to recover
+  # the original remote IP address.
+  service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+
+  # Scrape metrics for the contour container
+  # The envoy container is scraped by annotations on the pod spec
+  prometheus.io/port: "8000"
+  prometheus.io/scrape: "true"
+spec:
+  ports:
+  - port: 80
+    name: http
+    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.http)))}}
+    nodePort: {{ .Values.service.nodePorts.http }}
+    {{- end }}
+    targetPort: http
+  - port: 443
+    name: https
+    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.https)))}}
+    nodePort: {{ .Values.service.nodePorts.https }}
+    {{- end }}
+    targetPort: https
+  selector:
+    app: {{ template "contour.fullname" . }}
+  type: {{ .Values.serviceType }}

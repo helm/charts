@@ -24,7 +24,7 @@ data:
 
 {{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
         ldap_server ldapserver {
-            url ldap://{{ .Values.proxy.ldapHost }}:{{ .Values.proxy.ldapPort }}/{{ .Values.proxy.ldapDN }}?uid?sub?(&({{ .Values.proxy.ldapFilter}}));
+            url {{ .Values.proxy.protocol }}://{{ .Values.proxy.ldapHost }}:{{ .Values.proxy.ldapPort }}/{{ .Values.proxy.ldapDN }}?uid?sub?(&({{ .Values.proxy.ldapFilter}}));
             binddn "{{ .Values.proxy.ldapBindDN }}";
             binddn_passwd {{ .Values.secrets.ldapBindPassword }};
             group_attribute {{ .Values.proxy.ldapGroup }};

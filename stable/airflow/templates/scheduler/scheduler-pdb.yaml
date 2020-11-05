@@ -1,0 +1,24 @@
+{{- if .Values.scheduler.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "airflow.fullname" . }}-scheduler
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: scheduler
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if .Values.scheduler.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.scheduler.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if .Values.scheduler.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.scheduler.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: scheduler
+      release: {{ .Release.Name }}
+{{- end }}

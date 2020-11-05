@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: lmierzwa/karma
-  tag: v0.20
+  tag: v0.72
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -21,6 +21,7 @@ service:
   port: 80
   annotations: {}
     # prometheus.io/scrape: "true"
+  labels: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
@@ -42,6 +43,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+deployment:
+  annotations: {}
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -59,3 +63,84 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Labels to be added to pod
+podLabels: {}
+
+# Annotations to be added to pod
+podAnnotations: {}
+
+securityContext: {}
+
+# configuration for liveness probe
+livenessProbe:
+  delay: 5
+  period: 5
+  path: /health
+
+# configMap dictates if a configmap based configuration for Karma should be used
+# to provide advanced configuration. NOTE, you must use port 8080!
+configMap:
+  enabled: false
+  annotations: {}
+  # rawConfig:
+  #   alertmanager:
+  #   interval: 30s
+  #   servers:
+  #     - name: local
+  #       uri: http://localhost:9093
+  #       timeout: 10s
+  #       proxy: true
+  #       headers:
+  #         x-auth-token: some-token
+  #         any-header: string-value
+  #     - name: client-auth
+  #       uri: https://localhost:9093
+  #       timeout: 10s
+  #       tls:
+  #         ca: /etc/ssl/certs/ca-bundle.crt
+  #         cert: /etc/karma/client.pem
+  #         key: /etc/karma/client.key
+  #   annotations:
+  #     default:
+  #       hidden: false
+  #     hidden:
+  #       - help
+  #     visible: []
+  #   filters:
+  #     default:
+  #       - "@receiver=by-cluster-service"
+  #   labels:
+  #     color:
+  #       static:
+  #         - job
+  #       unique:
+  #         - cluster
+  #         - instance
+  #         - "@receiver"
+  #     keep: []
+  #     strip: []
+  #   listen:
+  #     address: "0.0.0.0"
+  #     port: 8080
+  #     prefix: /
+  #   log:
+  #     config: false
+  #     level: info
+  #   jira:
+  #     - regex: DEVOPS-[0-9]+
+  #       uri: https://jira.example.com
+  #   receivers:
+  #     keep: []
+  #     strip: []
+  #   sentry:
+  #     private: secret
+  #   public: 123456789
+
+# Names of secrets that will be mounted to `/etc/certs/<secret_name>` in the karma container.
+# These secrets can be used to configure TLS for Karma's Alertmanagers by passing their paths to
+# the appropriate Karma configuration parameters. For example, secret `foo` containing a `ca.crt`
+# will yield a file at `/etc/certs/foo/ca.crt`. That path can then be provided as the value to
+# `configMap.rawConfig.alertmanager.servers[].tls.ca`.
+# See <https://github.com/prymitive/karma/blob/master/docs/CONFIGURATION.md#alertmanagers>.
+certSecretNames: []

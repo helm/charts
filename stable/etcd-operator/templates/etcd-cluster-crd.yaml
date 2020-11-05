@@ -9,12 +9,10 @@ metadata:
     app: {{ template "etcd-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": "post-install"
-    "helm.sh/hook-delete-policy": "before-hook-creation"
 spec:
   size: {{ .Values.etcdCluster.size }}
   version: "{{ .Values.etcdCluster.version }}"
+  repository: "{{ .Values.etcdCluster.image.repository }}"
   pod:
 {{ toYaml .Values.etcdCluster.pod | indent 4 }}
   {{- if .Values.etcdCluster.enableTLS }}
@@ -22,4 +20,3 @@ spec:
 {{ toYaml .Values.etcdCluster.tls | indent 4 }}
   {{- end }}
 {{- end }}
-

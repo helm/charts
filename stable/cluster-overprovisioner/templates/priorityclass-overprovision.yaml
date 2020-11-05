@@ -1,0 +1,12 @@
+apiVersion: scheduling.k8s.io/{{ template "PriorityClass.apiVersion" . }}
+kind: PriorityClass
+metadata:
+  name: {{ .Values.priorityClassOverprovision.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "cluster-overprovisioner.name" . }}
+    helm.sh/chart: {{ include "cluster-overprovisioner.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+value: {{ .Values.priorityClassOverprovision.value }}
+globalDefault: false
+description: "Priority class used for overprovision pods"

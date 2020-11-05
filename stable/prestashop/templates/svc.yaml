@@ -29,4 +29,5 @@ spec:
       nodePort: {{ .Values.service.nodePorts.https }}
       {{- end }}
   selector:
-    app: "{{ template "prestashop.fullname" . }}"
+    app: "{{ template "prestashop.name" . }}"
+    release: "{{ .Release.Name }}"

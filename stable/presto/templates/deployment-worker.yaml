@@ -31,9 +31,6 @@ spec:
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/bash"]
-          args:
-            - {{ .Values.server.config.path }}/docker-presto.sh
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume

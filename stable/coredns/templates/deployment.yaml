@@ -1,42 +1,64 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "coredns.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- end }}
-    app: {{ template "coredns.name" . }}
+    app.kubernetes.io/name: {{ template "coredns.name" . }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels | indent 4 }}
+{{- end }}
 spec:
+  {{- if not .Values.autoscaler.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
   selector:
     matchLabels:
-      release: {{ .Release.Name | quote }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
       {{- end }}
-      app: {{ template "coredns.name" . }}
+      app.kubernetes.io/name: {{ template "coredns.name" . }}
   template:
     metadata:
       labels:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
         {{- end }}
-        app: {{ template "coredns.name" . }}
-        release: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "coredns.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        {{- if .Values.customLabels }}
+        {{ toYaml .Values.customLabels }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       serviceAccountName: {{ template "coredns.serviceAccountName" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       {{- if .Values.isClusterService }}
       dnsPolicy: Default
       {{- end }}
@@ -60,6 +82,14 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+{{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{- toYaml .Values.extraVolumeMounts | nindent 8}}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -73,6 +103,21 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8181
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        {{- if .Values.preStopSleep }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/bin/sleep", "{{ .Values.preStopSleep }}"]
+        {{- end }}
       volumes:
         - name: config-volume
           configMap:
@@ -84,3 +129,12 @@ spec:
             - key: {{ .filename }}
               path: {{ .filename }}
             {{ end }}
+{{- range .Values.extraSecrets }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+            defaultMode: 400
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}

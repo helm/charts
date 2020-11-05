@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "rethinkdb.fullname" . }}-proxy"
@@ -9,6 +9,12 @@ metadata:
     release: {{ .Release.Name | quote }}
 spec:
   replicas: {{ .Values.proxy.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "rethinkdb.name" . }}-proxy
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      chart: {{ template "rethinkdb.chart" . }}
   template:
     metadata:
       name: {{ template "rethinkdb.fullname" . }}-proxy

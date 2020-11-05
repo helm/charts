@@ -5,9 +5,8 @@ metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
   namespace: {{ .Release.Namespace }}
 data:
-apiVersion: v1
-data:
   config.json: |-
     {
-      "sink": "{{ .Values.sink }}"
+      "sink": "{{ .Values.sink }}",
+      "enable-prometheus": "{{ .Values.enablePrometheus }}"
     }

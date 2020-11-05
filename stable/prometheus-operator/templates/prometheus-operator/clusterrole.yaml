@@ -7,21 +7,27 @@ metadata:
     app: {{ template "prometheus-operator.name" . }}-operator
 {{ include "prometheus-operator.labels" . | indent 4 }}
 rules:
+{{- if or .Values.prometheusOperator.manageCrds .Values.prometheusOperator.cleanupCustomResource }}
 - apiGroups:
   - apiextensions.k8s.io
   resources:
   - customresourcedefinitions
   verbs:
   - '*'
+{{- end }}
 - apiGroups:
-  - {{ .Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com" }}
+  - monitoring.coreos.com
   resources:
   - alertmanagers
   - prometheuses
+  - thanosrulers
   - prometheuses/finalizers
   - alertmanagers/finalizers
+  - thanosrulers/finalizers
   - servicemonitors
+  - podmonitors
   - prometheusrules
+  - podmonitors
   verbs:
   - '*'
 - apiGroups:
@@ -48,11 +54,13 @@ rules:
   - ""
   resources:
   - services
+  - services/finalizers
   - endpoints
   verbs:
   - get
   - create
   - update
+  - delete
 - apiGroups:
   - ""
   resources:

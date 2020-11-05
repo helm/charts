@@ -1,0 +1,6 @@
+---
+# enable the superset security manager
+
+extraConfigFiles:
+  custom_sso_security_manager.py: |-
+    from superset.security import SupersetSecurityManager

@@ -1,0 +1,144 @@
+{{- if and (eq true .Values.chromeDebug.enabled) (eq true .Values.chromeDebug.runAsDaemonSet) -}}
+apiVersion: {{ template "deployment.apiVersion" . }}
+kind: DaemonSet
+metadata:
+  name: {{ template "selenium.chromeDebug.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "selenium.chromeDebug.fullname" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "selenium.chromeDebug.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      {{- with .Values.chromeDebug.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
+      {{- if .Values.chromeDebug.podAnnotations }}
+      annotations:
+{{ toYaml .Values.chromeDebug.podAnnotations | indent 8 }}
+      {{- end}}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.chromeDebug.image }}:{{ .Values.chromeDebug.tag }}"
+          imagePullPolicy: {{ .Values.chromeDebug.pullPolicy }}
+          ports:
+            {{- if .Values.hub.jmxPort }}
+            - containerPort: {{ .Values.hub.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
+            - containerPort: 5900
+              name: vnc
+          {{- if .Values.chromeDebug.enableLivenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: {{ default "5555" .Values.chromeDebug.nodePort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 1
+          {{- end }}
+          {{- if .Values.chromeDebug.waitForRunningSessions }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - "while [ $(wget -q -O - http://localhost:{{ default "5555" .Values.chromeDebug.nodePort }}/wd/hub/sessions | grep -c capabilities) -gt 0 ]; do sleep 1; done"
+          {{- end }}
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "selenium.hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.servicePort | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.chromeDebug.seOpts | quote }}
+            {{- if .Values.chromeDebug.chromeVersion }}
+            - name: CHROME_VERSION
+              value: {{ .Values.chromeDebug.chromeVersion | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.chromeDebug.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.chromeDebug.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.chromeDebug.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.chromeDebug.nodePort | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.chromeDebug.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.chromeDebug.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.chromeDebug.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.display }}
+            - name: DISPLAY
+              value: {{ .Values.chromeDebug.display | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.timeZone }}
+            - name: TZ
+              value: {{ .Values.chromeDebug.timeZone | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.extraEnvs }}
+{{ toYaml .Values.chromeDebug.extraEnvs | indent 12 }}
+            {{- end }}
+          volumeMounts:
+{{ if .Values.chromeDebug.volumeMounts -}}
+{{ toYaml .Values.chromeDebug.volumeMounts | indent 12 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.chromeDebug.resources | indent 12 }}
+{{- if or .Values.global.imagePullSecrets .Values.chromeDebug.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.chromeDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.chromeDebug.volumes -}}
+{{ toYaml .Values.chromeDebug.volumes | indent 8 }}
+{{- end }}
+      hostAliases:
+{{ toYaml .Values.global.hostAliases | indent 8 }}
+      nodeSelector:
+{{- if .Values.chromeDebug.nodeSelector }}
+{{ toYaml .Values.chromeDebug.nodeSelector | indent 8  }}
+{{- else if .Values.global.nodeSelector }}
+{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{- end }}
+      affinity:
+{{- if .Values.chromeDebug.affinity }}
+{{ toYaml .Values.chromeDebug.affinity | indent 8  }}
+{{- else if .Values.global.affinity }}
+{{ toYaml .Values.global.affinity | indent 8  }}
+{{- end }}
+      tolerations:
+{{- if .Values.chromeDebug.tolerations }}
+{{ toYaml .Values.chromeDebug.tolerations | indent 8  }}
+{{- else if .Values.global.tolerations }}
+{{ toYaml .Values.global.tolerations | indent 8  }}
+{{- end }}
+{{- end -}}

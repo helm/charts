@@ -1,0 +1,264 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "graylog.fullname" . }}
+  labels:
+{{ include "graylog.metadataLabels" . | indent 4 }}
+spec:
+  serviceName: {{ template "graylog.service.headless.name" . }}
+  replicas: {{ .Values.graylog.replicas }}
+  selector:
+    matchLabels:
+{{ include "graylog.selectorLabels" . | indent 6 }}
+  updateStrategy:
+    type: {{ .Values.graylog.updateStrategy }}
+  template:
+    metadata:
+      labels:
+{{ include "graylog.metadataLabels" . | indent 8 }}
+      annotations:
+      {{- if .Values.graylog.podAnnotations }}
+      {{- range $key, $value := .Values.graylog.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.graylog.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9000"
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "graylog.serviceAccountName" . }}
+{{- if .Values.graylog.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.graylog.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.graylog.affinity }}
+      affinity:
+{{ toYaml .Values.graylog.affinity | indent 8 }}
+
+{{- end }}
+{{- if .Values.graylog.tolerations }}
+      tolerations:
+{{ toYaml .Values.graylog.tolerations | indent 8 }}
+{{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: "setup"
+          image: "alpine"
+          imagePullPolicy: "IfNotPresent"
+          # Graylog journal will recursive in every subdirectories. Any invalid format directories will cause errors
+          command:
+            - /bin/sh
+            - -c
+            - |
+              rm -rf /usr/share/graylog/data/journal/lost+found
+            {{- if .Values.graylog.journal.deleteBeforeStart }}
+              rm -rf /usr/share/graylog/data/journal/graylog2-committed-read-offset
+              rm -rf /usr/share/graylog/data/journal/messagejournal-0
+              rm -rf /usr/share/graylog/data/journal/recovery-point-offset-checkpoint
+            {{- end }}
+              wget https://storage.googleapis.com/kubernetes-release/release/v1.16.3/bin/linux/amd64/kubectl -O /k8s/kubectl
+              chmod +x /k8s/kubectl
+
+              GRAYLOG_HOME=/usr/share/graylog
+              chown -R 1100:1100 ${GRAYLOG_HOME}/data/
+          env:
+            {{- range $key, $value := .Values.graylog.init.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: journal
+              mountPath: /usr/share/graylog/data/journal
+            - mountPath: /k8s
+              name: kubectl
+{{- if .Values.graylog.init.resources }}
+          resources:
+{{ toYaml .Values.graylog.init.resources | indent 12 }}
+{{- end }}
+{{- if .Values.graylog.extraInitContainers }}
+{{ toYaml .Values.graylog.extraInitContainers | indent 8 }}
+{{- end }}
+      containers:
+        - name: graylog-server
+          image: "{{ .Values.graylog.image.repository }}"
+          imagePullPolicy: {{ .Values.graylog.image.pullPolicy | quote }}
+          command:
+            - /entrypoint.sh
+          env:
+            - name: GRAYLOG_SERVER_JAVA_OPTS
+              {{- $javaOpts := "-Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow" }}
+              {{- if .Values.graylog.heapSize }}
+              value: "{{ $javaOpts }} {{ printf "-Xms%s -Xmx%s" .Values.graylog.heapSize .Values.graylog.heapSize}} {{ .Values.graylog.additionalJavaOpts }}"
+              {{- else }}
+              value: "{{ $javaOpts }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap {{ .Values.graylog.additionalJavaOpts }}"
+              {{- end }}
+            - name: GRAYLOG_PASSWORD_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
+                  key: graylog-password-secret
+            - name: GRAYLOG_ROOT_PASSWORD_SHA2
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.existingRootSecret | default (include "graylog.fullname" .) }}
+                  key: graylog-password-sha2
+            {{- if .Values.graylog.elasticsearch.uriSecretKey }}
+            - name: GRAYLOG_ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.elasticsearch.uriSecretName | default (printf "%s-es" (include "graylog.fullname" .)) }}
+                  key: {{ .Values.graylog.elasticsearch.uriSecretKey }}
+            {{- end }}
+            {{- if .Values.graylog.mongodb.uriSecretKey }}
+            - name: GRAYLOG_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.graylog.mongodb.uriSecretName | default (printf "%s-mongodb" (include "graylog.fullname" .)) }}
+                  key: {{ .Values.graylog.mongodb.uriSecretKey }}
+            {{- end }}
+            {{- range $key, $value := .Values.graylog.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- if .Values.graylog.envRaw }}
+            {{- with .Values.graylog.envRaw }}
+                {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- end }}
+          securityContext:
+            privileged: {{ .Values.graylog.privileged }}
+          ports:
+            - containerPort: 9000
+              name: graylog
+          {{- range .Values.graylog.service.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name}}
+              protocol: {{ .protocol }}
+          {{- end }}
+          {{- with .Values.graylog.input }}
+          {{- if .udp }}
+          {{- range .udp.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name }}
+              protocol: UDP
+          {{- end }}
+          {{- end }}
+          {{- if .tcp }}
+          {{- range .tcp.ports }}
+            - containerPort: {{ .port }}
+              name: {{ .name }}
+              protocol: TCP
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.graylog.resources | indent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /api/system/lbstatus
+              port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 3
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/system/lbstatus
+              port: 9000
+            {{- if .Values.graylog.tls.enabled }}
+              scheme: HTTPS
+            {{- end }}
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: journal
+              mountPath: /usr/share/graylog/data/journal
+            - name: config
+              mountPath: /usr/share/graylog/config
+            - name: entrypoint
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh
+          {{- if .Values.graylog.serverFiles }}
+            - name: files
+              mountPath: /etc/graylog/server
+          {{- end }}
+            - name: kubectl
+              mountPath: /k8s
+          {{- if .Values.graylog.extraVolumeMounts }}
+          {{ toYaml .Values.graylog.extraVolumeMounts | nindent 12 }}
+          {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - bash
+                  - -ec
+                  - |
+                    curl {{ if .Values.graylog.tls.enabled }}-k{{ end }} -XPOST -sS \
+                      -u "{{ .Values.graylog.rootUsername }}:${GRAYLOG_PASSWORD_SECRET}" \
+                      -H "X-Requested-By: {{ template "graylog.fullname" . }}" \
+                      {{ template "graylog.formatUrl" (list . "localhost:9000/api/system/shutdown/shutdown") }}
+      {{- if .Values.graylog.sidecarContainers }}
+        {{ toYaml .Values.graylog.sidecarContainers | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ default 30 .Values.graylog.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "graylog.fullname" . }}
+            items:
+              - key: graylog.conf
+                path: graylog.conf
+                mode: 292 # 0444
+              - key: log4j2.xml
+                path: log4j2.xml
+                mode: 292 # 0444
+        - name: entrypoint
+          configMap:
+            name: {{ template "graylog.fullname" . }}
+            items:
+              - key: entrypoint.sh
+                path: entrypoint.sh
+                mode: 365 # 0555
+        {{- if .Values.graylog.serverFiles }}
+        - name: files
+          configMap:
+            name: {{ template "graylog.fullname" . }}-files
+        {{- end }}
+        - name: kubectl
+          emptyDir: {}
+{{- if .Values.graylog.extraVolumes }}
+{{ toYaml .Values.graylog.extraVolumes | indent 8 }}
+{{- end }}
+{{- if not .Values.graylog.persistence.enabled }}
+        - name: journal
+          emptyDir: {}
+{{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: journal
+      spec:
+        accessModes:
+          - {{ .Values.graylog.persistence.accessMode | quote }}
+      {{- if .Values.graylog.persistence.storageClass }}
+      {{- if (eq "-" .Values.graylog.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.graylog.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+        resources:
+          requests:
+            storage: "{{ .Values.graylog.persistence.size }}"
+{{- end }}

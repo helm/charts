@@ -1,0 +1,31 @@
+suite: test cluster_role_binding
+templates:
+  - cluster_role_binding.yaml
+tests:
+  - it: should use service account \"logdna-agent\"
+    asserts:
+      - equal:
+          path: subjects[0].name
+          value: logdna-agent
+  - it: should use overridden service account name
+    set:
+      serviceAccount.name: my-service-account
+    asserts:
+      - equal:
+          path: subjects[0].name
+          value: my-service-account
+  - it: should use overriden service account name if not created
+    set:
+      serviceAccount.create: false
+      serviceAccount.name: my-service-account
+    asserts:
+      - equal:
+          path: subjects[0].name
+          value: my-service-account
+  - it: should use \"default\" service account name if not created and no name is supplied
+    set:
+      serviceAccount.create: false
+    asserts:
+      - equal:
+          path: subjects[0].name
+          value: default

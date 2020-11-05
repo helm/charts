@@ -23,3 +23,11 @@ https://www.percona.com/doc/percona-xtradb-cluster/LATEST/wsrep-system-index.htm
 {{- $name := default "pxc" .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 32 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "percona-xtradb-cluster.statefulset.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1/StatefulSet" -}}
+{{- print "apps/v1" -}}
+{{- else -}}
+{{- print "apps/v1beta2" -}}
+{{- end -}}
+{{- end -}}

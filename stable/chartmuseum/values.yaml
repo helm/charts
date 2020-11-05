@@ -1,3 +1,5 @@
+extraArgs:
+  # - --storage-timestamp-tolerance 1s
 replicaCount: 1
 strategy:
   type: RollingUpdate
@@ -5,11 +7,13 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.8.0
+  tag: v0.12.0
   pullPolicy: IfNotPresent
+secret:
+  labels: {}
 env:
   open:
-    # storage backend, can be one of: local, alibaba, amazon, google, microsoft
+    # storage backend, can be one of: local, alibaba, amazon, google, microsoft, oracle
     STORAGE: local
     # oss bucket to store charts for alibaba storage backend
     STORAGE_ALIBABA_BUCKET:
@@ -46,6 +50,12 @@ env:
     STORAGE_OPENSTACK_REGION:
     # path to a CA cert bundle for your openstack endpoint
     STORAGE_OPENSTACK_CACERT:
+    # compartment id for for oracle storage backend
+    STORAGE_ORACLE_COMPARTMENTID:
+    # oci bucket to store charts for oracle storage backend
+    STORAGE_ORACLE_BUCKET:
+    # prefix to store charts for oracle storage backend
+    STORAGE_ORACLE_PREFIX:
     # form field which will be queried for the chart file content
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
@@ -78,6 +88,12 @@ env:
     CACHE_REDIS_ADDR:
     # Redis database to be selected after connect
     CACHE_REDIS_DB: 0
+    # enable bearer auth
+    BEARER_AUTH: false
+    # auth realm used for bearer auth
+    AUTH_REALM:
+    # auth service used for bearer auth
+    AUTH_SERVICE:
   field:
     # POD_IP: status.podIP
   secret:
@@ -89,13 +105,28 @@ env:
     GOOGLE_CREDENTIALS_JSON:
     # Redis requirepass server configuration
     CACHE_REDIS_PASSWORD:
+  # Name of an existing secret to get the secret values ftom
+  existingSecret:
+  # Stores Enviromnt Variable to secret key name mappings
+  existingSecretMappings:
+    # username for basic http authentication
+    BASIC_AUTH_USER:
+    # password for basic http authentication
+    BASIC_AUTH_PASS:
+    # GCP service account json file
+    GOOGLE_CREDENTIALS_JSON:
+    # Redis requirepass server configuration
+    CACHE_REDIS_PASSWORD:
+
 deployment:
+  # Define scheduler name. Use of 'default' if empty
+  schedulerName: ""
   ## Chartmuseum Deployment annotations
   annotations: {}
   #   name: value
   labels: {}
   #   name: value
-  matchlabes: {}
+  matchlabels: {}
   #   name: value
 replica:
   ## Chartmuseum Replicas annotations
@@ -105,11 +136,23 @@ replica:
 service:
   servicename:
   type: ClusterIP
+  externalTrafficPolicy: Local
+  ## Limits which cidr blocks can connect to service's load balancer
+  ## Only valid if service.type: LoadBalancer
+  loadBalancerSourceRanges: []
   # clusterIP: None
   externalPort: 8080
   nodePort:
   annotations: {}
   labels: {}
+
+serviceMonitor:
+  enabled: false
+  # namespace: prometheus
+  labels: {}
+  metricsPath: "/metrics"
+  # timeout: 60
+  # interval: 60
 
 resources: {}
 #  limits:
@@ -136,13 +179,24 @@ probes:
 serviceAccount:
   create: false
   # name:
+  ## Annotations for the Service Account
+  annotations: {}
 
 # UID/GID 1000 is the default user "chartmuseum" used in
 # the container image starting in v0.8.0 and above. This
-# is required for local persistant storage. If your cluster
+# is required for local persistent storage. If your cluster
 # does not allow this, try setting securityContext: {}
 securityContext:
+  enabled: true
   fsGroup: 1000
+  ## Optionally, specify supplementalGroups and/or
+  ## runAsNonRoot for security purposes
+  # runAsNonRoot: true
+  # supplementalGroups: [1000]
+
+containerSecurityContext: {}
+
+priorityClassName: ""
 
 nodeSelector: {}
 
@@ -155,6 +209,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   labels: {}
+  path: /storage
   #   name: value
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -180,6 +235,22 @@ persistence:
       server:
       path:
 
+## Init containers parameters:
+## volumePermissions: Change the owner of the persistent volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: buster
+    pullPolicy: Always
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+
 ## Ingress for load balancer
 ingress:
   enabled: false
@@ -197,18 +268,19 @@ ingress:
 ## Chartmuseum Ingress hostnames
 ## Must be provided if Ingress is enabled
 ##
-#   hosts:
-#     chartmuseum.domain.com:
-#         - /charts
-#         - /index.yaml
-
-## Chartmuseum Ingress TLS configuration
-## Secrets must be manually created in the namespace
-##
-#   tls:
-#   - secretName: chartmuseum-server-tls
-#     hosts:
-#     - chartmuseum.domain.com
+#  hosts:
+#    - name: chartmuseum.domain1.com
+#      path: /
+#      tls: false
+#    - name: chartmuseum.domain2.com
+#      path: /
+#
+#      ## Set this to true in order to enable TLS on the ingress record
+#      tls: true
+#
+#      ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+#      ## Secrets must be added manually to the namespace
+#      tlsSecret: chartmuseum.domain2-tls
 
 # Adding secrets to tiller is not a great option, so If you want to use an existing
 # secret that contains the json file, you can use the following entries
@@ -219,3 +291,16 @@ gcp:
     name:
     # Secret key that holds the json value.
     key: credentials.json
+oracle:
+  secret:
+    enabled: false
+    # Name of the secret that contains the encoded config and key
+    name:
+    # Secret key that holds the oci config
+    config: config
+    # Secret key that holds the oci private key
+    key_file: key_file
+bearerAuth:
+  secret:
+    enabled: false
+    publicKeySecret: chartmuseum-public-key

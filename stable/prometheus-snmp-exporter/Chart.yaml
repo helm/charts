@@ -1,0 +1,15 @@
+apiVersion: v1
+# The prometheus-snmp-exporter chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Prometheus SNMP Exporter
+name: prometheus-snmp-exporter
+version: 0.0.6
+appVersion: 0.14.0
+home: https://github.com/prometheus/snmp_exporter
+sources:
+  - https://github.com/prometheus/snmp_exporter
+keywords:
+  - prometheus
+  - snmp
+  - monitoring

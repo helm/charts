@@ -54,6 +54,36 @@ Helm 2.11 supports the assignment of a value to a variable defined in a differen
 but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
 Also, we can't use a single if because lazy evaluation is not an option
 */}}
+{{- if .Values.image.overrideValue }}
+    {{- printf .Values.image.overrideValue -}}
+{{- else -}}
+    {{- if .Values.slim.enabled }}
+    {{- $repositoryName = printf "%s-%s" .Values.image.repository "slim" -}}
+    {{- end -}}
+    {{- if .Values.global }}
+        {{- if .Values.global.imageRegistry }}
+            {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
+        {{- else -}}
+            {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+        {{- end -}}
+    {{- else -}}
+        {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper Sysdig Agent image name for module building
+*/}}
+{{- define "sysdig.image.kmodule" -}}
+{{- $registryName := .Values.image.registry -}}
+{{- $repositoryName := .Values.slim.kmoduleImage.repository -}}
+{{- $tag := .Values.image.tag | toString -}}
+{{/*
+Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
+but Helm 2.9 and 2.10 doesn't support it, so we need to implement this if-else logic.
+Also, we can't use a single if because lazy evaluation is not an option
+*/}}
 {{- if .Values.global }}
     {{- if .Values.global.imageRegistry }}
         {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
@@ -63,4 +93,17 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- else -}}
     {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "sysdig.labels" -}}
+app.kubernetes.io/name: {{ include "sysdig.name" . }}
+helm.sh/chart: {{ include "sysdig.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}

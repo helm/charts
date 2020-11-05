@@ -1,0 +1,31 @@
+{{- if .Values.monitoring.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+{{- if not .Values.monitoring.serviceMonitor.enabled }}
+  annotations:
+{{- if .Values.monitoring.telemetryPath }}
+    prometheus.io/path: {{ .Values.monitoring.telemetryPath }}
+{{- else }}
+    prometheus.io/path: /metrics
+{{- end }}
+    prometheus.io/port: "{{ .Values.monitoring.exporterPort }}"
+    prometheus.io/scrape: "true"
+{{- end }}
+  name: {{ template "filebeat.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    helm.sh/chart: {{ template "filebeat.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ template "filebeat.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: metrics
+      port: {{ .Values.monitoring.exporterPort }}
+      targetPort: {{ .Values.monitoring.targetPort }}
+      protocol: TCP
+{{ end }}

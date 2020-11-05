@@ -1,9 +1,9 @@
 dependencies:
 - name: redis
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 3.8.0
+  repository: https://charts.helm.sh/stable
+  version: 10.5.3
 - name: minio
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.6.3
-digest: sha256:91008508c9ab75698d9ceadd02362d9169582065a185de15ccb41c78a12d1818
-generated: 2018-08-31T13:53:57.346842993+02:00
+  repository: https://charts.helm.sh/stable
+  version: 5.0.9
+digest: sha256:72e249fe367c62a208ceb0e8204ba5f8fc47ff40f59f2c5e3610b3507c00b260
+generated: "2020-10-30T11:42:26.055859-04:00"

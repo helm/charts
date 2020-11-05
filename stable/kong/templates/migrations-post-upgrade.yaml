@@ -1,0 +1,49 @@
+{{- if (and (.Values.runMigrations) (not (eq .Values.env.database "off"))) }}
+# Why is this Job duplicated and not using only helm hooks?
+# See: https://github.com/helm/charts/pull/7362
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "kong.fullname" . }}-post-upgrade-migrations
+  labels:
+    {{- include "kong.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: post-upgrade-migrations
+  annotations:
+    helm.sh/hook: "post-upgrade"
+    helm.sh/hook-delete-policy: "before-hook-creation"
+spec:
+  template:
+    metadata:
+      name: {{ template "kong.name" . }}-post-upgrade-migrations
+      labels:
+        {{- include "kong.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: post-upgrade-migrations
+    spec:
+      {{- if .Values.podSecurityPolicy.enabled }}
+      serviceAccountName: {{ template "kong.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      initContainers:
+      {{- if (eq .Values.env.database "postgres") }}
+      {{- include "kong.wait-for-postgres" . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ template "kong.name" . }}-post-upgrade-migrations
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- include "kong.final_env" . | nindent 8 }}
+        command: [ "/bin/sh", "-c", "kong migrations finish" ]
+        volumeMounts:
+        {{- include "kong.volumeMounts" . | nindent 8 }}
+      securityContext:
+      {{- include "kong.podsecuritycontext" . | nindent 8 }}
+      restartPolicy: OnFailure
+      volumes:
+      {{- include "kong.volumes" . | nindent 6 -}}
+{{- end }}

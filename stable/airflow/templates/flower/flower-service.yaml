@@ -1,0 +1,39 @@
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.flower.service.annotations }}
+  annotations:
+    {{- toYaml .Values.flower.service.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: flower
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.flower.service.type }}
+  selector:
+    app: {{ include "airflow.labels.app" . }}
+    component: flower
+    release: {{ .Release.Name }}
+  ports:
+    - name: flower
+      protocol: TCP
+      port: {{ .Values.flower.service.externalPort }}
+      {{- if and (eq .Values.flower.service.type "NodePort") (.Values.flower.service.nodePort.http) }}
+      nodePort: {{ .Values.flower.service.nodePort.http }}
+      {{- end }}
+      targetPort: 5555
+  {{- if eq .Values.flower.service.type "LoadBalancer" }}
+  {{- if .Values.flower.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.flower.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if .Values.flower.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.flower.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- end }}
+{{- end }}

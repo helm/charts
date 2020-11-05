@@ -1,0 +1,78 @@
+operatorImageName: gcr.io/spark-operator/spark-operator
+operatorVersion: v1beta2-1.2.0-3.0.0
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+
+rbac:
+  create: true
+
+serviceAccounts:
+  spark:
+    create: true
+    name:
+  sparkoperator:
+    create: true
+    name:
+
+sparkJobNamespace: ""
+installCrds: true
+controllerThreads: 10
+resyncInterval: 30
+ingressUrlFormat: ""
+logLevel: 2
+
+securityContext: {}
+
+enableWebhook: false
+webhookPort: 8080
+## The webhook will only operate on namespaces with this label, specified in the form key1=value1,key2=value2
+## empty string will operate on all namespaces
+webhookNamespaceSelector: ""
+
+enableMetrics: true
+metricsPort: 10254
+metricsEndpoint: "/metrics"
+metricsPrefix: ""
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for the sparkoperator deployment
+##
+## Example:
+##   - key: "toleration=key"
+##     operator: "Equal"
+##     value: "value"
+##     effect: "NoSchedule"
+##
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+podAnnotations: {}
+
+## Resources for the sparkoperator deployment
+## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources: {}
+
+## Whether to enable batch scheduler for pod scheduling,
+## if enabled, end user can specify batch scheduler name in spark application.
+enableBatchScheduler: false
+
+## Whether to enable the ResourceQuota enforcement for SparkApplication resources.
+## Requires the webhook to be enabled by setting enableWebhook to true.
+## Ref: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md#enabling-resource-quota-enforcement.
+enableResourceQuotaEnforcement: false
+
+## Whether to enable leader election when the operator Deployment has more than one replica.
+## Only applicable when `replicas` is set to a value greater than 1.
+## Ref: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md#enabling-leader-election-for-high-availability.
+leaderElection:
+  enable: false
+  lockName: "spark-operator-lock"
+  ## Optionally store the lock in another namespace. Defaults to operator's namespace
+  # lockNamespace: ""
+replicas: 1

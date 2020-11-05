@@ -1,0 +1,28 @@
+{{- if .Values.proxy.enabled -}}
+{{- $name := include "buzzfeed-sso.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "buzzfeed-sso.fullname" . }}-proxy
+  labels:
+    app: {{ $name }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
+    component: {{ $name }}-proxy
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if and .Values.ingress.enabled .Values.ingress.gcpBackendConfig }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"http":"{{ template "buzzfeed-sso.fullname" . }}"}}'
+{{- end }}
+spec:
+  type: {{ .Values.proxy.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.proxy.service.port }}
+      targetPort: 4180
+      protocol: TCP
+  selector:
+    app: {{ $name }}
+    component: {{ $name }}-proxy
+    release: {{ .Release.Name }}
+{{- end }}

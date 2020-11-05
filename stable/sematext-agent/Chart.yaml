@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "1.0"
+version: 1.0.31
+deprecated: true
+description: DEPRECATED Helm chart for deploying Sematext Agent and Logagent to Kubernetes
+keywords:
+  - sematext
+  - observability
+  - monitoring
+  - logging
+  - containers
+  - ebpf
+home: https://sematext.com/cloud
+icon: https://cdn.sematext.com/octi-square-logo.png
+name: sematext-agent

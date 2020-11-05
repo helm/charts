@@ -6,12 +6,16 @@ rabbitmqUsername: guest
 
 ## RabbitMQ Management user used for health checks
 managementUsername: management
-managementPassword: E9R3fjZm4ejFkVFE
+# managementPassword:
 
 ## Place any additional key/value configuration to add to rabbitmq.conf
 ## Ref: https://www.rabbitmq.com/configure.html#config-items
 extraConfig: |
 #  queue_master_locator = min-masters
+
+## Place advanced.config file in /etc/rabbitmq/advanced.config
+## Ref: https://www.rabbitmq.com/configure.html#advanced-config-file
+advancedConfig: |
 
 ## Definitions specification within the secret, will always be mounted
 ## at /etc/definitions/defintions.json
@@ -26,6 +30,11 @@ extraPlugins: |
   rabbitmq_federation_management,
 
 definitions:
+  globalParameters: |-
+#    {
+#        "name": "cluster_name",
+#        "value": "rabbitmq-ha"
+#    }
   users: |-
 #   {
 #     "name": "myUsername",
@@ -56,6 +65,14 @@ definitions:
 #     "user": "myUsername",
 #     "vhost": "/rabbit",
 #     "configure": ".*",
+#     "write": ".*",
+#     "read": ".*"
+#   }
+  topicPermissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "exchange": "myexchange",
 #     "write": ".*",
 #     "read": ".*"
 #   }
@@ -101,6 +118,8 @@ definitions:
 #      }
 #    }
 
+## Ref: https://www.rabbitmq.com/rabbitmqctl.8.html#force_boot
+forceBoot: false
 
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
@@ -148,6 +167,12 @@ rabbitmqCert:
   certfile: |
   keyfile: |
 
+## Extra volumes for statefulset
+extraVolumes: []
+
+## Extra volume mounts for statefulset
+extraVolumeMounts: []
+
 ## Authentication mechanism
 ## Ref: http://www.rabbitmq.com/authentication.html
 rabbitmqAuth:
@@ -157,6 +182,13 @@ rabbitmqAuth:
     # auth_mechanisms.1 = PLAIN
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
+
+## Automatic Partition Handling Strategy (split brain handling)
+## Ref: https://www.rabbitmq.com/partitions.html#automatic-handling
+## Note: pause-if-all-down is not supported without using a custom configmap since it requires extra
+## configuration.
+
+rabbitmqClusterPartitionHandling: autoheal
 
 ## Authentication backend
 ## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
@@ -229,6 +261,27 @@ rabbitmqWebSTOMPPlugin:
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
 
+## Prometheus Plugin
+## Ref: https://www.rabbitmq.com/prometheus.html
+rabbitmqPrometheusPlugin:
+  enabled: false
+
+  ## NodePort
+  nodePort: null
+
+  ## metrics port, overrides configuration:
+  ## prometheus.tcp.port
+  port: 15692
+
+  ## metrics path, overrides configuration:
+  ## prometheus.path
+  path: /metrics
+
+  ## Prometheus configuration:
+  ## https://github.com/rabbitmq/rabbitmq-prometheus
+  config: |
+   ## prometheus.path and prometheus.tcp.port can be set above
+
 ## AMQPS support
 ## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqAmqpsSupport:
@@ -251,7 +304,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7-alpine
+  tag: 3.8.7-alpine
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -262,8 +315,8 @@ image:
 
 busyboxImage:
   repository: busybox
-  tag: latest
-  pullPolicy: Always
+  tag: 1.30.1
+  pullPolicy: IfNotPresent
 
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
@@ -278,8 +331,23 @@ service:
   externalIPs: []
 
   loadBalancerIP: ""
+  externalTrafficPolicy: ""
   loadBalancerSourceRanges: []
   type: ClusterIP
+
+  ## Customize nodePort number when the service type is NodePort
+  ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  ###
+  epmdNodePort: null
+  amqpNodePort: null
+  managerNodePort: null
+
+  ## Custom annotations for discovery service
+  ## Will fallback to `service.annotations` while `separateAnnotations: false`
+  ##
+  discovery:
+    separateAnnotations: false
+    annotations: {}
 
 podManagementPolicy: OrderedReady
 
@@ -303,19 +371,36 @@ updateStrategy: OnDelete
 ##
 resources: {}
   # limits:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
   # requests:
-  #   cpu: 100mm
+  #   cpu: 100m
   #   memory: 1Gi
 initContainer:
+  enabled: true
+  securityContext:
+    runAsGroup: 0
+    runAsNonRoot: false
+    runAsUser: 0
+  chownFiles: true
   resources: {}
   #   limits:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
   #   requests:
-  #     cpu: 100mm
+  #     cpu: 100m
   #     memory: 128Mi
+
+## Additional init containers
+extraInitContainers: []
+
+## Additional containers
+extraContainers: []
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Data Persistency
 persistentVolume:
@@ -327,11 +412,14 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## selector can be used to match an existing PersistentVolume
+  selector: {}
   name: data
   accessModes:
     - ReadWriteOnce
   size: 8Gi
   annotations: {}
+  labels: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -346,9 +434,19 @@ tolerations: []
 ## Extra Annotations to be added to pod
 podAnnotations: {}
 
+## Extra Annotations to be added to the StatefulSet
+statefulSetAnnotations: {}
+
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft
+podAntiAffinityTopologyKey: "kubernetes.io/hostname"
+
+## Affinity settings
+## Defining 'affinity' will disable any podAntiAffinity settings.
+## If you still need anti-affinity, you must include the configuration here.
+##
+affinity: {}
 
 ## Create default configMap
 ##
@@ -374,6 +472,10 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the fullname template
   # name:
 
+  ## Automount API credentials for a service account.
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+  automountServiceAccountToken: true
+
 ingress:
   ## Set to true to enable ingress record generation
   enabled: false
@@ -391,7 +493,7 @@ ingress:
   tlsSecret: myTlsSecret
 
   ## Ingress annotations done as key:value pairs
-  annotations:
+  annotations: {}
   #  kubernetes.io/ingress.class: nginx
 
 livenessProbe:
@@ -399,15 +501,37 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'timeout 5 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
 readinessProbe:
-  failureThreshold: 6
   initialDelaySeconds: 20
-  timeoutSeconds: 3
   periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - 'timeout 3 wget -O - -q --header "Authorization: Basic `echo -n \"$RABBIT_MANAGEMENT_USER:$RABBIT_MANAGEMENT_PASSWORD\" | base64`" http://127.0.0.1:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
 
-# Specifies an existing secret to be used for RMQ password and Erlang Cookie
+# Specifies an existing secret to be used for RMQ password, management user password and Erlang Cookie
 existingSecret: ""
+
+
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  fsGroup: 101
+  runAsGroup: 101
+  runAsNonRoot: true
+  runAsUser: 100
+
+## Sets environment variables for the rabbitmq container
+env: {}
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
@@ -464,3 +588,10 @@ prometheus:
 
 ## Kubernetes Cluster Domain
 clusterDomain: cluster.local
+
+## Pod Disruption Budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1
+
+lifecycle: {}

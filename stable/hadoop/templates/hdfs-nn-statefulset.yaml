@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-hdfs-nn
@@ -12,6 +12,11 @@ metadata:
 spec:
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hadoop.name" . }}
+      release: {{ .Release.Name }}
+      component: hdfs-nn
   template:
     metadata:
       labels:

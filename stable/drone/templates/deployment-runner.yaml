@@ -1,0 +1,87 @@
+{{- if and (not .Values.server.kubernetes.enabled) .Values.runner.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "drone.fullname" . }}-runner
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: runner
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "drone.name" . }}
+      release: "{{ .Release.Name }}"
+      component: runner
+  replicas: {{ .Values.runner.replicas }}
+  template:
+    metadata:
+{{- if .Values.runner.annotations }}
+      annotations:
+{{ toYaml .Values.runner.annotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        component: runner
+    spec:
+{{- if .Values.runner.schedulerName }}
+      schedulerName: "{{ .Values.runner.schedulerName }}"
+{{- end }}
+{{- if .Values.runner.affinity }}
+      affinity:
+{{ toYaml .Values.runner.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.runner.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.runner.nodeSelector | indent 8 }}
+{{- end }}
+{{- with .Values.runner.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+{{- end }}
+      serviceAccountName: {{ template "drone.pipelineServiceAccount" . }}
+      containers:
+      - name: runner
+        image: "{{ .Values.images.runner.repository }}:{{ .Values.images.runner.tag }}"
+        imagePullPolicy: {{ .Values.images.runner.pullPolicy }}
+        env:
+          - name: DRONE_LOGS_DEBUG
+            value: {{ .Values.runner.logs.debug | quote }}
+          - name: DRONE_LOGS_TRACE
+            value: {{ .Values.runner.logs.trace | quote }}
+          - name: DRONE_LOGS_COLOR
+            value: "false"
+          - name: DRONE_LOGS_PRETTY
+            value: "false"
+          - name: DRONE_LOGS_TEXT
+            value: "true"
+          - name: DRONE_RPC_PROTO
+            value: {{ .Values.server.rpcProtocol }}
+          - name: DRONE_RPC_HOST 
+            value: "{{ template "drone.fullname" . }}"
+          - name: DRONE_RPC_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+          - name: DRONE_NAMESPACE_DEFAULT
+            value: {{ default .Release.Namespace .Values.runner.namespace }}
+        {{- if .Values.secrets.enabled }}
+          - name: DRONE_SECRET_PLUGIN_ENDPOINT
+            value: http://{{ template "drone.fullname" . }}-secrets:{{ .Values.secrets.service.httpPort }}
+          - name: DRONE_SECRET_PLUGIN_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+        {{- end }}
+          {{- range $key, $value := .Values.runner.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        resources:
+{{ toYaml .Values.runner.resources | indent 10 }}
+{{- end }}

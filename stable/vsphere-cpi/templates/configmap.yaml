@@ -1,0 +1,31 @@
+{{- if .Values.config.enabled | default .Values.global.config.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloud-config
+  labels:
+    app: {{ template "cpi.name" . }}
+    vsphere-cpi-infra: cloud-config
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  vsphere.conf: |
+    # Global properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
+    global:
+      port: 443
+      # set insecure-flag to true if the vCenter uses a self-signed cert
+      insecureFlag: true
+      # settings for using k8s secret
+      secretName: vsphere-cpi
+      secretNamespace: {{ .Release.Namespace }}
+
+    # VirtualCenter section
+    vcenter:
+      {{ .Release.Name }}:
+        server: {{ .Values.config.vcenter | default .Values.global.config.vcenter }}
+        datacenters:
+          - {{ .Values.config.datacenter | default .Values.global.config.datacenter }}
+{{- end -}}

@@ -1,0 +1,15 @@
+{{- if not .Values.logdna.key -}}
+#############################################################
+###  ERROR: Please specify an ingestion key `logdna.key`  ###
+#############################################################
+
+Try:
+
+helm upgrade --set logdna.key=INGESTION_KEY {{ .Release.Name }} {{ .Chart.Name }}
+
+{{- else -}}
+
+LogDNA's collector agent(s) are being deployed to each node in your cluster.
+You should see logs at https://app.logdna.com in a few seconds.
+
+{{- end }}

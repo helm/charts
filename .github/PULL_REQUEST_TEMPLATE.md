@@ -3,7 +3,7 @@ Thank you for contributing to helm/charts. Before you submit this PR we'd like t
 make sure you are aware of our technical requirements and best practices:
 
 * https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements
-* https://github.com/helm/helm/tree/master/docs/chart_best_practices
+* https://helm.sh/docs/chart_best_practices/
 
 For a quick overview across what we will look at reviewing your PR, please read
 our review guidelines:
@@ -24,6 +24,8 @@ will run across your changes and do some initial checks and linting. These check
 very quickly. Please check the results. We would like these checks to pass before we
 even continue reviewing your changes.
 -->
+#### Is this a new chart
+> NOTE: We're experiencing a high volume of PRs to this repo and reviews will be delayed. Please host your own chart repository and submit your repository to the Helm Hub instead of this repo to make them discoverable to the community. [Here](https://github.com/helm/hub/blob/master/Repositories.md) is how to submit new chart repositories to the Helm Hub.
 
 #### What this PR does / why we need it:
 
@@ -35,6 +37,7 @@ even continue reviewing your changes.
 
 #### Checklist
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] [DCO](https://www.helm.sh/blog/helm-dco/index.html) signed
+- [ ] [DCO](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#sign-your-work) signed
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the README.md
+- [ ] Title of the PR starts with chart name (e.g. `[stable/mychartname]`)

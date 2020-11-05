@@ -1,18 +1,17 @@
 {{- if .Values.hotrod.enabled -}}
 {{- if .Values.hotrod.ingress.enabled -}}
 {{- $serviceName := include "jaeger.fullname" . -}}
-{{- $servicePort := .Values.hotrod.service.externalPort -}}
+{{- $servicePort := .Values.hotrod.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.fullname" . }}-hotrod
+  name: {{ include "jaeger.fullname" . }}-hotrod
   labels:
-    app: {{ template "jaeger.name" . }}
-    jaeger-infra: hotrod-ingress
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: hotrod
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "jaeger.name" . }}
+    helm.sh/chart: {{ include "jaeger.chart" . }}
+    app.kubernetes.io/component: hotrod
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.hotrod.ingress.annotations }}
   annotations:
 {{ toYaml .Values.hotrod.ingress.annotations | indent 4 }}

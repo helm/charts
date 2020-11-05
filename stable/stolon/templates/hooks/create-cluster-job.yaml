@@ -1,0 +1,50 @@
+{{ if and .Release.IsInstall .Values.job.autoCreateCluster }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "stolon.fullname" . }}-create-cluster
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "stolon.fullname" . }}
+        release: {{ .Release.Name }}
+{{- if .Values.job.annotations }}
+      annotations:
+{{ toYaml .Values.job.annotations | indent 8 }}
+{{- end }}
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+  {{- if eq .Values.store.backend "etcdv2" "etcdv3" }}
+      initContainers:
+        - name: {{ .Chart.Name }}-etcd-wait
+          image: "{{ .Values.etcdImage.repository }}:{{ .Values.etcdImage.tag }}"
+          imagePullPolicy: {{ .Values.etcdImage.pullPolicy }}
+          command: ["sh", "-c", "while ! etcdctl --endpoints {{ .Values.store.endpoints }} cluster-health; do sleep 1 && echo -n .; done"]
+  {{- end }}
+      containers:
+        - name: {{ template "stolon.fullname" . }}-create-cluster
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/local/bin/stolonctl"]
+          args:
+            - init
+            - --cluster-name={{ template "stolon.clusterName" . }}
+            - --store-backend={{ .Values.store.backend }}
+            {{- if eq .Values.store.backend "kubernetes" }}
+            - --kube-resource-kind={{ .Values.store.kubeResourceKind }}
+            {{- else }}
+            - --store-endpoints={{ .Values.store.endpoints }}
+            {{- end }}
+            - --yes
+            - '{ "initMode": "new", {{- range $key, $value := .Values.clusterSpec }} {{ $key | quote }}: {{ if typeIs "string" $value }} {{ $value | quote }} {{ else }} {{ $value }} {{ end }}, {{- end }} {{ if .Values.tls.enabled }} "pgParameters": {{- $pgParameters := .Values.pgParameters -}}{{ $all_init := set $pgParameters "ssl" "on" }}{{ $all_init := set $all_init "ssl_cert_file" "/certs/serverCrt.crt" }} {{ $all_init := set $all_init "ssl_key_file" "/certs/serverKey.key" }}{{ $all_init := set $all_init "ssl_ca_file" "/certs/rootCa.crt" }}{{ toJson $all_init }}{{ else }}"pgParameters": {{ toJson .Values.pgParameters }} {{ end}} }'
+{{ end }}

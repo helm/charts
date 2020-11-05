@@ -1,0 +1,23 @@
+{{- if .Values.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "prometheus-redis-exporter.fullname" . }}
+{{- with .Values.prometheusRule.namespace }}
+  namespace: {{ . }}
+{{- end }}
+  labels:
+    app: {{ template "prometheus-redis-exporter.name" . }}
+    chart: {{ template "prometheus-redis-exporter.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+{{- with .Values.prometheusRule.additionalLabels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- with .Values.prometheusRule.rules }}
+  groups:
+    - name: {{ template "prometheus-redis-exporter.name" $ }}
+      rules: {{ tpl (toYaml .) $ | nindent 8 }}
+{{- end }}
+{{- end }}

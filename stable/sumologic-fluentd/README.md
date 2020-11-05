@@ -28,7 +28,7 @@ SumoLogic.
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
+- Kubernetes 1.10+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specify the minimum Kubernetes version required in the parameter description.
 
 ## Installing the Chart
 
@@ -60,7 +60,11 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
+| `daemonsetAnnotations` | Annotations to add to the DaemonSet itself | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
+| `nodeSelector` | Node labels for fluentd pod assignment | `{}` |
+| `affinity` | Expressions for affinity | `{}` |
+| `extraEnv` | List of additional env vars to append to pods | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own value |
 | `sumologic.collectorUrlExistingSecret` | If set, use the secret with the name provided instead of creating a new one | `Nil` You must reference an existing secret |
@@ -71,7 +75,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.sourceName` | Set the sumo `_sourceName` | `%{namespace}.%{pod}.%{container}` |
 | `sumologic.sourceHost` | Set the sumo `_sourceHost` | `Nil` |
 | `sumologic.sourceCategory` | Set the sumo `_sourceCategory` | `%{namespace}/%{pod_name}` |
-| `sumologic.sourceCategoryPrefix` | Define a prefix, for `_sourceCategory` | `Nil` |
+| `sumologic.sourceCategoryPrefix` | Define a prefix, for `_sourceCategory` | `kubernetes/` |
 | `sumologic.sourceCategoryReplaceDash` | Used to replace `-` with another character | `/` |
 | `sumologic.logFormat` | Format to post logs, into sumo (`json`, `json_merge`, or `text`) | `json` |
 | `sumologic.kubernetesMeta` | Include or exclude kubernetes metadata, with `json` format | `true` |
@@ -91,11 +95,13 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
 | `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
+| `sumologic.addTime` | Option to control adding time to logs. | `true`
+| `sumologic.addStream` | Option to control adding stream to logs. | `true`
 | `sumologic.containerLogsPath` | Specify the path in_tail should watch for container logs. | `/mnt/log/containers/*.log`
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
 | `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `v2.1.0` |
+| `image.tag` | The image tag to pull | `v2.3.0` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |
@@ -106,6 +112,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `resources.limits.memory` | Memory resource limits | 256Mi |
 | `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
+| `daemonset.priorityClassName` | Priority Class to use for the daemonset | `Nil` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

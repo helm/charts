@@ -2,50 +2,56 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+ # This will use the default deployment strategy unless it is overriden
+deploymentStrategy: {}
+
 image:
   repository: sonarqube
-  tag: 7.4-community
+  tag: 7.9.2-community
   # If using a private repository, the name of the imagePullSecret to use
   # pullSecret: my-repo-secret
-# Starting 6.7.6 and 7.4 official sonarqube docker image, command is not required
-# anymore. For older images, uncomment the following lines.
-# command: [
-#   "sh",
-#   "-ce",
-#   "mkdir /scripts &&
-#   cp /tmp-script/startup.sh /scripts/startup.sh &&
-#   chmod 0755 /scripts/startup.sh &&
-#   /scripts/startup.sh
-#   "
-#   ]
 
 # Set security context for sonarqube pod
 securityContext:
   fsGroup: 999
 
+# Settings to configure elasticsearch host requirements
+elasticsearch:
+  configureNode: true
+  bootstrapChecks: true
+
 service:
-  name: sonarqube
-  type: LoadBalancer
+  type: ClusterIP
   externalPort: 9000
   internalPort: 9000
   labels:
-  annotations:
+  annotations: {}
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
+  # loadBalancerSourceRanges:
+  #   - 0.0.0.0/0
   # loadBalancerIP: 1.2.3.4
 ingress:
   enabled: false
   # Used to create an Ingress record.
   hosts:
-    - sonar.organization.com
-  annotations:
+    - name: sonar.organization.com
+      # default paths for "/" and "/*" will be added
+      path: /
+      # If a different path is defined, that path and {path}/* will be added to the ingress resource
+      # path: /sonarqube
+  annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
   # This property allows for reports up to a certain size to be uploaded to SonarQube
   # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
-  tls:
+
+# Additional labels for Ingress manifest file
+  # labels:
+  #  traffic-type: external
+  #  traffic-type: internal
+  tls: []
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
@@ -74,12 +80,39 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 6
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
+  sonarWebContext: /
+  # sonarWebContext: /sonarqube/
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  # If an ingress *path* other than the root (/) is defined, it should be reflected here
+  # A trailing "/" must be included
+  sonarWebContext: /
+  # sonarWebContext: /sonarqube/
+  # If an ingress *path* is defined, it should be reflected here
+  # sonar.web.context: /sonarqube
 
-# Set extra env variables. Like proxy settings.
-extraEnv: {}
+## Provide a secret containing one or more certificate files in the keys that will be added to cacerts
+## The cacerts file will be set via SONARQUBE_WEB_JVM_OPTS
+##
+# caCerts:
+#   secret: my-secret
+
+## Values to add to SONARQUBE_WEB_JVM_OPTS
+##
+# jvmOpts: "-Djava.net.preferIPv4Stack=true"
+jvmOpts: ""
+
+## Environment variables to attach to the pods
+##
+# env:
+#   - name: VARIABLE
+#     value: my-value
+
+# Set annotations for pods
+annotations: {}
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
@@ -94,15 +127,27 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: false
+  ## Set annotations on pvc
+  annotations: {}
+
+  ## Specify an existing volume claim instead of creating a new one.
+  ## When using this option all following options like storageClass, accessMode and size are ignored.
+  # existingClaim:
+
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  # accessMode: ReadWriteOnce
-  # size: 10Gi
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
 
 # List of plugins to install.
 # For example:
@@ -112,16 +157,28 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+  lib: []
+
+  # initContainerImage: alpine:3.10.3
+  # deleteDefaultPlugins: true
   resources: {}
   # We allow the plugins init container to have a separate resources declaration because
   # the initContainer does not take as much resources.
 
-# A custom sonar.properties file can be provided using a multiline YAML string.
+# A custom sonar.properties file can be provided via dictionary.
 # For example:
-# sonarProperties: |
-#   sonar.forceAuthentication=true
-#   sonar.security.realm=LDAP
-#   ldap.url=ldaps://organization.com
+# sonarProperties:
+#   sonar.forceAuthentication: true
+#   sonar.security.realm: LDAP
+#   ldap.url: ldaps://organization.com
+
+# Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
+# sonarSecretProperties:
+
+# Kubernetes secret that contains the encryption key for the sonarqube instance.
+# The secret must contain the key 'sonar-secret.txt'.
+# The 'sonar.secretKeyPath' property will be set automatically.
+# sonarSecretKey: "settings-encryption-secret"
 
 ## Configuration value to select database type
 ## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
@@ -136,10 +193,14 @@ postgresql:
   enabled: true
   # To use an external PostgreSQL instance, set enabled to false and uncomment
   # the line below:
-  # postgresServer: ""
-  postgresUser: "sonarUser"
-  postgresPassword: "sonarPass"
-  postgresDatabase: "sonarDB"
+  # postgresqlServer: ""
+  # To use an external secret for the password for an external PostgreSQL
+  # instance, set enabled to false and provide the name of the secret on the
+  # line below:
+  # postgresqlPasswordSecret: ""
+  postgresqlUsername: "sonarUser"
+  postgresqlPassword: "sonarPass"
+  postgresqlDatabase: "sonarDB"
   # Specify the TCP port that PostgreSQL should use
   service:
     port: 5432
@@ -153,6 +214,9 @@ mysql:
   # To use an external mySQL instance, set enabled to false and uncomment
   # the line below:
   # mysqlServer: ""
+  # To use an external secret for the password for an external mySQL instance,
+  # set enabled to false and provide the name of the secret on the line below:
+  # mysqlPasswordSecret: ""
   mysqlUser: "sonarUser"
   mysqlPassword: "sonarPass"
   mysqlDatabase: "sonarDB"
@@ -161,3 +225,10 @@ mysql:
   # Specify the TCP port that mySQL should use
   service:
     port: 3306
+#
+# Additional labels to add to the pods:
+# podLabels:
+#   key: value
+podLabels: {}
+# For compatibility with 8.0 replace by "/opt/sq"
+sonarqubeFolder: /opt/sonarqube

@@ -1,25 +1,25 @@
 {{- if include "ghost.host" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ template "ghost.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "ghost.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "ghost.fullname" . }}"
+    chart: "{{ template "ghost.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "ghost.fullname" . }}
-      release: "{{ .Release.Name }}"
+      app: "{{ template "ghost.fullname" . }}"
+      release: {{ .Release.Name | quote }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "ghost.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
+        app: "{{ template "ghost.fullname" . }}"
+        chart: "{{ template "ghost.chart" . }}"
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -35,12 +35,7 @@ spec:
         - mountPath: {{ .Values.persistence.path }}
           name: ghost-data
       {{- end }}
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
-      {{- end }}
+{{- include "ghost.imagePullSecrets" . | indent 6 }}
       containers:
       - name: {{ template "ghost.fullname" . }}
         image: {{ template "ghost.image" . }}
@@ -90,7 +85,11 @@ spec:
         - name: GHOST_PROTOCOL
           value: {{  .Values.ghostProtocol | quote }}
         - name: GHOST_PORT_NUMBER
+        {{- if .Values.ghostPort }}
+          value: {{ .Values.ghostPort | quote }}
+        {{- else }}
           value: {{ .Values.service.port | quote }}
+        {{- end }}
         - name: GHOST_USERNAME
           value: {{ .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD
@@ -102,22 +101,37 @@ spec:
           value: {{ .Values.ghostEmail | quote }}
         - name: BLOG_TITLE
           value: {{ .Values.ghostBlogTitle | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
           value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
           value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpFromAddress }}
+        - name: SMTP_FROM_ADDRESS
+          value: {{ .Values.smtpFromAddress | quote }}
+        {{- end }}
+        {{- if .Values.smtpService }}
         - name: SMTP_SERVICE
           value: {{ .Values.smtpService | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 2368
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: {{ .Values.ghostPath }}
@@ -125,9 +139,17 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: {{ .Values.ghostPath }}
@@ -135,11 +157,19 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "ghost.host" . | quote }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+            {{- if eq .Values.ghostProtocol "https" }}
+            - name: X-Forwarded-Proto
+              value: https
+            {{- end }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.resources }}
+        resources: {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: ghost-data
           mountPath: /bitnami/ghost
@@ -150,5 +180,13 @@ spec:
           claimName: {{ template "ghost.fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end -}}

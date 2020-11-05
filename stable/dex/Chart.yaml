@@ -1,7 +1,8 @@
+apiVersion: v1
 name: dex
-version: 0.6.0
-appVersion: 2.13.0
-description: CoreOS Dex
+version: 2.15.0
+appVersion: 2.24.0
+description: OpenID Connect Identity (OIDC) and OAuth 2.0 Provider with Pluggable Connectors
 keywords:
 - dex
 - oidc
@@ -16,3 +17,5 @@ maintainers:
   email: shane.starcher@gmail.com
 - name: rendhalver
   email: pete.brown@powerhrg.com
+- name: vi7
+  email: vi7alya@gmail.com

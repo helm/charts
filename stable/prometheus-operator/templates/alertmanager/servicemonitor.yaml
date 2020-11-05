@@ -1,8 +1,9 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.serviceMonitor.selfMonitor }}
-apiVersion: {{ printf "%s/v1" (.Values.prometheusOperator.crdApiGroup | default "monitoring.coreos.com") }}
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-alertmanager
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -10,12 +11,23 @@ spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-operator.name" . }}-alertmanager
-      release: {{ .Release.Name | quote }}
+      release: {{ $.Release.Name | quote }}
+      self-monitor: "true"
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace | quote }}
+      - {{ printf "%s" (include "prometheus-operator.namespace" .) | quote }}
   endpoints:
-  - port: web
-    interval: 30s
+  - port: {{ .Values.alertmanager.alertmanagerSpec.portName }}
+    {{- if .Values.alertmanager.serviceMonitor.interval }}
+    interval: {{ .Values.alertmanager.serviceMonitor.interval }}
+    {{- end }}
     path: "{{ trimSuffix "/" .Values.alertmanager.alertmanagerSpec.routePrefix }}/metrics"
+{{- if .Values.alertmanager.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.alertmanager.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.alertmanager.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.alertmanager.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}

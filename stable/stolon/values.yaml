@@ -1,7 +1,11 @@
+# clusterName:
 image:
   repository: sorintlab/stolon
-  tag: v0.12.0-pg10
+  tag: v0.16.0-pg10
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  # pullSecrets:
+  #   - name: "myKubernetesSecret"
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:
@@ -10,6 +14,10 @@ etcdImage:
   pullPolicy: IfNotPresent
 
 debug: false
+
+# Enable the creation of a shm volume
+shmVolume:
+  enabled: false
 
 persistence:
   enabled: true
@@ -32,14 +40,26 @@ serviceAccount:
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
   name:
 
-superuserUsername: "stolon"
+superuserSecret:
+  name: ""
+  usernameKey: pg_su_username
+  passwordKey: pg_su_password
 
-## password for the superuser (REQUIRED)
+replicationSecret:
+  name: ""
+  usernameKey: pg_repl_username
+  passwordKey: pg_repl_password
+
+superuserPasswordFile:
+
+superuserUsername: "stolon"
+## password for the superuser (REQUIRED if superuserSecret and superuserPasswordFile are not set)
 superuserPassword:
 
-replicationUsername: "repluser"
+replicationPasswordFile:
 
-## password for the replication user (REQUIRED)
+replicationUsername: "repluser"
+## password for the replication user (REQUIRED if replicationSecret and replicationPasswordFile are not set)
 replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
@@ -49,6 +69,7 @@ store:
   kubeResourceKind: configmap
 
 pgParameters: {}
+  # max_connections: "1000"
 
 ports:
   stolon:
@@ -56,14 +77,45 @@ ports:
   metrics:
     containerPort: 8080
 
+serviceMonitor:
+  # When set to true then use a ServiceMonitor to collect metrics
+  enabled: false
+  # Custom labels to use in the ServiceMonitor to be matched with a specific Prometheus
+  labels: {}
+  # Set the namespace the ServiceMonitor should be deployed to
+  # namespace: default
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set timeout for scrape
+  # scrapeTimeout: 10s
+
 job:
   autoCreateCluster: true
+  autoUpdateClusterSpec: true
+  annotations: {}
+
+clusterSpec: {}
+  # sleepInterval: 1s
+  # maxStandbys: 5
+
+## Enable support ssl into postgres, you must specify the certs.
+## ref: https://www.postgresql.org/docs/10/ssl-tcp.html
+##
+tls:
+  enabled: false
+  rootCa: |-
+  serverCrt: |-
+  serverKey: |-
+
+  # existingSecret: name-of-existing-secret-to-postgresql
 
 keeper:
+  uid_prefix: "keeper"
   replicaCount: 2
   annotations: {}
   resources: {}
   priorityClassName: ""
+  fsGroup: ""
   service:
     type: ClusterIP
     annotations: {}
@@ -77,6 +129,15 @@ keeper:
   tolerations: []
   volumes: []
   volumeMounts: []
+  hooks:
+    failKeeper:
+      enabled: false
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STKEEPER_LOG_LEVEL
+  #    value: "info"
 
 proxy:
   replicaCount: 2
@@ -95,6 +156,18 @@ proxy:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STPROXY_LOG_LEVEL
+  #    value: "info"
+  #  - name: STPROXY_TCP_KEEPALIVE_COUNT
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_IDLE
+  #    value: "0"
+  #  - name: STPROXY_TCP_KEEPALIVE_INTERVAL
+  #    value: "0"
 
 sentinel:
   replicaCount: 2
@@ -104,3 +177,27 @@ sentinel:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  podDisruptionBudget:
+    # minAvailable: 1
+    # maxUnavailable: 1
+  extraEnv: []
+  #  - name: STSENTINEL_LOG_LEVEL
+  #    value: "info"
+
+## initdb scripts
+## Specify dictionary of scripts to be run at first boot, the entry point script is create_script.sh
+## i.e. you can use pgsql to run sql script on the cluster.
+##
+# initdbScripts:
+#   create_script.sh: |
+#      #!/bin/sh
+#      echo "Do something."
+
+## nodePostStart scripts
+## Specify dictionary of scripts to be run at first boot, the entry point script is postStartScript.sh
+## i.e. you can create tablespace directory here.
+##
+# nodePostStartScript:
+#  postStartScript.sh: |
+#    #!/bin/bash
+#     echo "Do something."

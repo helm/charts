@@ -1,5 +1,14 @@
 # Verdaccio
 
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline). We will move this to an official repository [here](https://github.com/verdaccio/charts)*
+
+Please make PRs / Issues here from now on
+
+No further updates should be added to this chart, but we will be notifying people to submit PRs here from now on instead. If you have any questions, feel free to get in touch with either of the maintainers. 
+----------------------------------------
+
 [Verdaccio](http://www.verdaccio.org) is a lightweight private
 [NPM](https://www.npmjs.com) proxy registry.
 
@@ -55,10 +64,12 @@ and their default values.
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `IfNotPresent`                                           |
 | `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
-| `image.tag`                        | Verdaccio container image tag                                   | `3.10.0`                                                    |
+| `image.tag`                        | Verdaccio container image tag                                   | `3.11.6`                                                 |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
+| `tolerations`                      | List of node taints to tolerate                                 | `[]`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |
+| `persistence.existingClaim`        | Use existing PVC                                                | `nil`                                                    |
 | `persistence.mounts`               | Additional mounts                                               | `nil`                                                    |
 | `persistence.size`                 | PVC Storage Request for Verdaccio volume                        | `8Gi`                                                    |
 | `persistence.storageClass`         | PVC Storage Class for Verdaccio volume                          | `nil`                                                    |
@@ -73,7 +84,9 @@ and their default values.
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
+| `service.nodePort`                 | Service port to expose                                          | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
+| `extraEnvVars`                     | Define environment variables to be passed to the container                                       | `{}`  
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

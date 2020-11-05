@@ -1,0 +1,153 @@
+{{- define "container-agent" -}}
+- name: agent
+  image: "{{ .Values.agents.image.repository }}:{{ .Values.agents.image.tag }}"
+  imagePullPolicy: {{ .Values.agents.image.pullPolicy }}
+  command: ["agent", "run"]
+  resources:
+{{ toYaml .Values.agents.containers.agent.resources | indent 4 }}
+  ports:
+  - containerPort: {{ .Values.datadog.dogstatsd.port }}
+    {{- if .Values.datadog.dogstatsd.useHostPort }}
+    hostPort: {{ .Values.datadog.dogstatsd.port }}
+    {{- end }}
+    name: dogstatsdport
+    protocol: UDP
+  env:
+    {{- include "containers-common-env" . | nindent 4 }}
+    {{- if .Values.datadog.logLevel }}
+    - name: DD_LOG_LEVEL
+      value: {{ .Values.agents.containers.agent.logLevel | default .Values.datadog.logLevel | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dogstatsd.port }}
+    - name: DD_DOGSTATSD_PORT
+      value: {{ .Values.datadog.dogstatsd.port | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dogstatsd.nonLocalTraffic }}
+    - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
+      value: {{ .Values.datadog.dogstatsd.nonLocalTraffic | quote }}
+    {{- end }}
+    {{- if .Values.datadog.dogstatsd.originDetection }}
+    - name: DD_DOGSTATSD_ORIGIN_DETECTION
+      value: {{ .Values.datadog.dogstatsd.originDetection | quote }}
+    {{- end }}
+    {{- if not .Values.clusterAgent.enabled }}
+    {{- if .Values.datadog.leaderElection }}
+    - name: DD_LEADER_ELECTION
+      value: {{ .Values.datadog.leaderElection | quote}}
+    {{- end }}
+    {{- if .Values.datadog.leaderLeaseDuration }}
+    - name: DD_LEADER_LEASE_DURATION
+      value: {{ .Values.datadog.leaderLeaseDuration | quote }}
+    {{- end }}
+    {{- if .Values.datadog.collectEvents }}
+    - name: DD_COLLECT_KUBERNETES_EVENTS
+      value: {{.Values.datadog.collectEvents | quote}}
+    {{- end }}
+    {{- else }}
+    - name: DD_CLUSTER_AGENT_ENABLED
+      value: {{ .Values.clusterAgent.enabled | quote }}
+    - name: DD_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+      value: {{ template "datadog.fullname" . }}-cluster-agent
+    - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "clusterAgent.tokenSecretName" . }}
+          key: token
+    {{- end }}
+    - name: DD_APM_ENABLED
+      value: "false"
+    - name: DD_LOGS_ENABLED
+      value: {{  (default false (or .Values.datadog.logs.enabled .Values.datadog.logsEnabled)) | quote}}
+    - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
+      value: {{  (default false (or .Values.datadog.logs.containerCollectAll .Values.datadog.logsConfigContainerCollectAll)) | quote}}
+    - name: DD_LOGS_CONFIG_K8S_CONTAINER_USE_FILE
+      value: {{ .Values.datadog.logs.containerCollectUsingFiles | quote }}
+    {{- if not .Values.datadog.livenessProbe }}
+    - name: DD_HEALTH_PORT
+      value: "5555"
+    {{- end }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
+    - name: DD_DOGSTATSD_SOCKET
+      value: {{ .Values.datadog.dogstatsd.socketPath | quote }}
+    {{- end }}
+    {{- if .Values.datadog.clusterChecks.enabled }}
+    {{- if .Values.clusterChecksRunner.enabled }}
+    - name: DD_EXTRA_CONFIG_PROVIDERS
+      value: "endpointschecks"
+    {{ else }}
+    - name: DD_EXTRA_CONFIG_PROVIDERS
+      value: "clusterchecks endpointschecks"
+    {{- end }}
+    {{- end }}
+{{- if .Values.agents.containers.agent.env }}
+{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
+{{- end }}
+  volumeMounts:
+    - name: config
+      mountPath: {{ template "datadog.confPath" . }}
+    {{- if eq .Values.targetSystem "linux" }}
+    - name: runtimesocketdir
+      mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
+      readOnly: true
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+    - name: runtimesocket
+      mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
+    {{- end }}
+    {{- if .Values.agents.useConfigMap }}
+    - name: {{ template "datadog.fullname" . }}-datadog-yaml
+      mountPath: {{ template "datadog.confPath" . }}/datadog.yaml
+      subPath: datadog.yaml
+    {{- end }}
+    {{- if eq .Values.targetSystem "linux" }}
+    {{- if .Values.datadog.dogstatsd.useSocketVolume }}
+    - name: dsdsocket
+      mountPath: {{ (dir .Values.datadog.dogstatsd.socketPath) }}
+    {{- end }}
+    {{- if .Values.datadog.systemProbe.enabled }}
+    - name: sysprobe-socket-dir
+      mountPath: /var/run/sysprobe
+      readOnly: true
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
+    {{- end }}
+    - name: procdir
+      mountPath: /host/proc
+      readOnly: true
+    - name: cgroups
+      mountPath: /host/sys/fs/cgroup
+      readOnly: true
+    {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
+    - name: pointerdir
+      mountPath: /opt/datadog-agent/run
+    - name: logpodpath
+      mountPath: /var/log/pods
+      readOnly: true
+    {{- if not .Values.datadog.criSocketPath }}
+    - name: logdockercontainerpath
+      mountPath: /var/lib/docker/containers
+      readOnly: true
+    {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if eq .Values.targetSystem "windows" }}
+    {{- if or .Values.datadog.logs.enabled .Values.datadog.logsEnabled }}
+    - name: pointerdir
+      mountPath: C:/var/log
+    - name: logpodpath
+      mountPath: C:/var/log/pods
+      readOnly: true
+    - name: logdockercontainerpath
+      mountPath: C:/ProgramData/docker/containers
+      readOnly: true
+    {{- end }}
+    {{- end }}
+{{- if .Values.agents.volumeMounts }}
+{{ toYaml .Values.agents.volumeMounts | indent 4 }}
+{{- end }}
+  livenessProbe:
+{{ toYaml .Values.agents.containers.agent.livenessProbe | indent 4 }}
+  readinessProbe:
+{{ toYaml .Values.agents.containers.agent.readinessProbe | indent 4 }}
+{{- end -}}

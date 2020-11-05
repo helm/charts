@@ -1,0 +1,6 @@
+1. couchbase-operator deployed. Check the couchbase-operator logs
+  kubectl logs -f deployment/{{ template "couchbase-operator.fullname" . }}  --namespace {{ .Release.Namespace }}
+{{ if .Values.deployments.admissionController }}
+2. admission-controller deployed. Check the admission-controller logs
+  kubectl logs -f deployment/{{ template "admission-controller.fullname" . }} --namespace {{ .Release.Namespace }}
+{{- end }}

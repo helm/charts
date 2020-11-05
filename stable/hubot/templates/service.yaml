@@ -1,12 +1,14 @@
+---
+
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "hubot.fullname" . }}
   labels:
-    app: {{ template "hubot.name" . }}
-    chart: {{ template "hubot.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "hubot.labels" . | indent 4 }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,5 +17,5 @@ spec:
       targetPort: http
       protocol: TCP
   selector:
-    app: {{ template "hubot.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "hubot.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

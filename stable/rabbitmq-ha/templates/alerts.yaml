@@ -1,4 +1,4 @@
-{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled .Values.prometheus.operator.alerts.enabled }}
+{{ if and .Values.prometheus.operator.enabled .Values.prometheus.operator.alerts.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
     app: {{ template "rabbitmq-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "rabbitmq-ha.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.prometheus.operator.serviceMonitor.selector }}

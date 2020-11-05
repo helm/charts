@@ -1,0 +1,76 @@
+{{- if eq (include "pomerium.providerOK" .) "true" }}
+{{- if .Values.ingress.enabled }}
+From outside the cluster, the server URL(s) are:
+{{- range .Values.config.policy }}
+    {{ .from | quote}}
+{{- end }}
+
+{{- else if contains "NodePort" .Values.service.type }}
+
+Get the Pomerium URL by running:
+  export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "pomerium.fullname" . }})
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc -w {{ template "pomerium.fullname" . }}'
+
+Get the Pomerium URL by running:
+  export SERVICE_IP=$(kubectl get svc {{ template "pomerium.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+Get the Pomerium URL by running:
+  export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "component=server,app={{ template "pomerium.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8000/
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8000:8000
+{{- end }}
+{{- else -}}
+##############################################################################
+####        ERROR: You did not set a valid identity provider              ####
+##############################################################################
+
+This deployment will be incomplete until you configure a valid version
+control provider:
+
+    helm upgrade {{ .Release.Name }} \
+        --reuse-values \
+        --set config.sharedSecret=$(head -c32 /dev/urandom | base64) \
+        --set config.cookieSecret=$(head -c32 /dev/urandom | base64) \
+        --set config.cert=$(base64 -i cert.pem) \
+        --set config.key=$(base64 -i privkey.pem) \
+        --set config.policy="$(cat policy.example.yaml | base64)" \
+        --set authenticate.idp.provider="google" \
+        --set config.rootDomain="corp.pomerium.io" \
+        --set authenticate.redirectUrl="https://auth.corp.pomerium.io/oauth2/callback" \
+        --set authenticate.idp.clientID="REPLACE_ME" \
+        --set authenticate.idp.clientSecret="REPLACE_ME" \
+        --set proxy.authenticateServiceUrl="https://auth.corp.pomerium.io" \
+        --set proxy.authorizeServiceUrl="https://access.corp.pomerium.io"
+        stable/pomerium
+
+Currently supported providers:
+
+    - Okta
+    - Google
+    - Azure Active Directory
+    - OneLogin
+
+See the values.yaml file to see what values are required for each provider.
+
+If you are having trouble with the configuration of a provider please visit
+the official documentation:
+
+    https://www.pomerium.io/docs/identity-providers.html
+{{- end }}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                            !!!
+!!!                  WARNING                   !!!
+!!!          This chart is deprecated.         !!!
+!!!     Please use the chart maintained at     !!!
+!!!          https://helm.pomerium.io          !!! 
+!!!                                            !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

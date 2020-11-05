@@ -1,0 +1,20 @@
+{{- if .Values.networkPolicy -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ template "sealed-secrets.fullname" . }}
+  namespace: {{ template "sealed-secrets.namespace" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
+  ingress:
+    - ports:
+      - port: 8080
+{{- end -}}

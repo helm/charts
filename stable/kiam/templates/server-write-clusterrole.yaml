@@ -17,5 +17,6 @@ rules:
       - events
     verbs:
       - create
+      - patch
 {{- end -}}
 {{- end -}}

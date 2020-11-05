@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "janusgraph.fullname" . }}
@@ -23,6 +23,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraEnvs }}
+          env:
+              {{- with .Values.extraEnvs }}
+                {{- toYaml . | trim | nindent 12 -}}
+              {{- end }}
+          {{- end }}
           ports:
             - containerPort: 8182
               protocol: TCP
@@ -48,3 +54,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}

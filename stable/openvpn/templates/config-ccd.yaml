@@ -1,0 +1,13 @@
+{{- if .Values.openvpn.ccd.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "openvpn.fullname" . }}-ccd
+  labels:
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.openvpn.ccd.config | indent 2 }}
+{{- end }}

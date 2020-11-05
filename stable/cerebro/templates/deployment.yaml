@@ -7,6 +7,13 @@ metadata:
     chart: {{ template "cerebro.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    {{- range $key, $value := .Values.deployment.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+{{- if .Values.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -19,17 +26,28 @@ spec:
       labels:
         app: {{ template "cerebro.name" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.deployment.podLabels }}
+        {{- toYaml .Values.deployment.podLabels | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.deployment.podAnnotations }}
+        {{- toYaml .Values.deployment.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
-      initContainers:
-        - name: chown-db
-          image: {{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}
-          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
-          command: ["chown", "1000:1000", "/var/db/cerebro"]
-          volumeMounts:
-            - name: db
-              mountPath: /var/db/cerebro
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,14 +62,39 @@ spec:
               mountPath: /var/db/cerebro
             - name: config
               mountPath: /etc/cerebro
+            - name: logs
+              mountPath: /opt/cerebro/logs/
+            - name: tmp
+              mountPath: /tmp
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+          {{- end }}
+          {{- if .Values.env }}
+          env:
+          {{- range $index, $element := .Values.env }}
+          - name: {{ $index | quote }}
+            value: {{ $element | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.envFromSecretRef }}
+          envFrom:
+            - secretRef:
+                name: "{{ .Values.envFromSecretRef }}"
+          {{- end }}
+          {{- if .Values.deployment.livenessProbe.enabled}}
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
+            initialDelaySeconds: 120
+          {{- end }}
+          {{- if .Values.deployment.readinessProbe.enabled}}
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.config.basePath }}
               port: http
+            initialDelaySeconds: 5
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
@@ -60,6 +103,13 @@ spec:
         - name: config
           configMap:
             name: {{ template "cerebro.fullname" . }}
+        - name: logs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+    {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
