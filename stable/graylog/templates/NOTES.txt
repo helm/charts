@@ -1,3 +1,7 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the Graylog maintained Helm chart is now located at https://github.com/KongZ/charts.
+
 To connect to your Graylog server:
 
 1. Get the application URL by running these commands:
