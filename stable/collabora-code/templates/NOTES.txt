@@ -1,3 +1,7 @@
+This Helm chart is deprecated
+
+Given the `stable` deprecation timeline (https://github.com/helm/charts#deprecation-timeline), the maintained Helm chart is now located at chrisingenhaag/helm (https://github.com/chrisingenhaag/helm/tree/main/charts/collabora).
+
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
 {{- range $host := .Values.ingress.hosts }}
