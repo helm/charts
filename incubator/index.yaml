@@ -17395,6 +17395,23 @@ entries:
   kube-janitor:
   - apiVersion: v1
     appVersion: v0.1.0
+    created: "2020-11-09T22:22:16.529812057Z"
+    description: A Helm chart for running kube-janitor
+    digest: fec134d8bbc503d549306f93c17a6ef66362195c46dcb811dd80e8b2ede5a609
+    home: https://github.com/themagicalkarp/kube-janitor
+    maintainers:
+    - email: gameboy1092@gmail.com
+      name: theMagicalKarp
+    - email: simkev2@gmail.com
+      name: SimKev2
+    name: kube-janitor
+    sources:
+    - https://github.com/themagicalkarp/kube-janitor
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/kube-janitor-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
+    appVersion: v0.1.0
     created: "2020-10-15T10:42:07.569412-04:00"
     description: A Helm chart for running kube-janitor
     digest: 5baa22973ee9ab6d0bce555c6600bc0dc14c07170d6aab1e0d07f80dbacdb8d3
@@ -26127,4 +26144,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T22:21:45.047562355Z"
+generated: "2020-11-09T22:22:16.529182678Z"
