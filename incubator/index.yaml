@@ -20880,6 +20880,37 @@ entries:
   schema-registry:
   - apiVersion: v1
     appVersion: 5.0.1
+    created: "2020-11-09T22:23:24.474368343Z"
+    dependencies:
+    - condition: kafka.enabled
+      name: kafka
+      repository: https://charts.helm.sh/incubator
+      version: 0.21.2
+    description: Schema Registry provides a serving layer for your metadata. It provides
+      a RESTful interface for storing and retrieving Avro schemas. It stores a versioned
+      history of all schemas, provides multiple compatibility settings and allows
+      evolution of schemas according to the configured compatibility setting. It provides
+      serializers that plug into Kafka clients that handle schema storage and retrieval
+      for Kafka messages that are sent in the Avro format.
+    digest: 835978f87b339314022e117fd68c4d7288898dcdc7fb1440664334606adf175b
+    home: https://docs.confluent.io/current/schema-registry/docs/index.html
+    icon: https://www.confluent.io/wp-content/themes/confluent/assets/images/confluent-logo-300.png
+    keywords:
+    - confluent
+    - kafka
+    - schema-registry
+    maintainers:
+    - email: ben@spothero.com
+      name: benjigoldberg
+    name: schema-registry
+    sources:
+    - https://github.com/confluentinc/schema-registry
+    - https://github.com/confluentinc/cp-docker-images
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/schema-registry-1.2.2.tgz
+    version: 1.2.2
+  - apiVersion: v1
+    appVersion: 5.0.1
     created: "2020-10-30T15:47:10.884176592Z"
     dependencies:
     - condition: kafka.enabled
@@ -26163,4 +26194,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T22:23:02.775797163Z"
+generated: "2020-11-09T22:23:24.459863995Z"
