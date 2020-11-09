@@ -440,6 +440,49 @@ entries:
   azuremonitor-containers:
   - apiVersion: v1
     appVersion: 7.0.0-1
+    created: "2020-11-09T11:18:03.205427001Z"
+    description: Helm chart for deploying Azure Monitor container monitoring agent
+      in Kubernetes
+    digest: 908838ba0e166b83f58a513453ab61755d11f180a219492cdbaa57cca734ca1b
+    home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
+    icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
+    keywords:
+    - monitoring
+    - azuremonitor
+    - azure
+    - oms
+    - containerinsights
+    - metric
+    - event
+    - logs
+    - containerhealth
+    - kubernetesmonitoring
+    - acs-engine
+    - aks-engine
+    - azurestack
+    - openshift v4
+    - azure redhat openshift v4
+    - on-prem kubernetes monitoring
+    - containerlogs
+    - containerhealth
+    - containermonitoring
+    - hybrid kubernetes monitoring
+    - kubernetes
+    - kuberneteshealth
+    kubeVersion: ^1.10.0-0
+    maintainers:
+    - email: visnara@microsoft.com
+      name: vishiy
+    - email: gangams@microsoft.com
+      name: ganga1980
+    name: azuremonitor-containers
+    sources:
+    - https://github.com/microsoft/Docker-Provider/tree/ci_prod
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/azuremonitor-containers-2.7.7.tgz
+    version: 2.7.7
+  - apiVersion: v1
+    appVersion: 7.0.0-1
     created: "2020-10-15T10:42:06.821327-04:00"
     description: Helm chart for deploying Azure Monitor container monitoring agent
       in Kubernetes
@@ -25974,4 +26017,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T07:05:38.988935583Z"
+generated: "2020-11-09T11:18:03.204029709Z"
