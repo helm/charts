@@ -22063,6 +22063,21 @@ entries:
   sparkoperator:
   - apiVersion: v1
     appVersion: v1beta2-1.2.0-3.0.0
+    created: "2020-11-09T04:38:41.189932019Z"
+    description: A Helm chart for Spark on Kubernetes operator
+    digest: cb92dc3ef249794772826b051d7c43eb9cb5485089f3b1e304e6c6014f4703fd
+    home: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
+    keywords:
+    - spark
+    maintainers:
+    - email: yuchaoran2011@gmail.com
+      name: yuchaoran2011
+    name: sparkoperator
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/sparkoperator-0.8.5.tgz
+    version: 0.8.5
+  - apiVersion: v1
+    appVersion: v1beta2-1.2.0-3.0.0
     created: "2020-10-15T10:42:07.811282-04:00"
     description: A Helm chart for Spark on Kubernetes operator
     digest: 724961c1e978830442ecc48504fe126d22eb28cdf52628f5af17e427a3cf4347
@@ -25902,4 +25917,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T03:36:44.008567913Z"
+generated: "2020-11-09T04:38:41.185556807Z"
