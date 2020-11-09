@@ -3,7 +3,7 @@ appVersion: "1.0"
 description: A Helm chart for Rookout agent on Kubernetes
 icon: https://app.rookout.com/static/rookout/img/logo.svg
 name: rookout
-version: 0.1.0
+version: 0.1.1
 home: "http://rookout.com/"
 maintainers:
 - name: Zohar
