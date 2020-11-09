@@ -13054,6 +13054,39 @@ entries:
   kafka:
   - apiVersion: v1
     appVersion: 5.0.1
+    created: "2020-11-09T22:21:45.051113653Z"
+    dependencies:
+    - condition: kafka.zookeeper.enabled,zookeeper.enabled
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 2.1.0
+    description: Apache Kafka is publish-subscribe messaging rethought as a distributed
+      commit log.
+    digest: cd4daa7d19468cadedd77fe13ac72db153eb37e265b197116c20289bfdfa40e2
+    home: https://kafka.apache.org/
+    icon: https://kafka.apache.org/images/logo.png
+    keywords:
+    - kafka
+    - zookeeper
+    - kafka statefulset
+    maintainers:
+    - email: faraaz@rationalizeit.us
+      name: faraazkhan
+    - email: marc.villacorta@gmail.com
+      name: h0tbird
+    - email: ben@spothero.com
+      name: benjigoldberg
+    name: kafka
+    sources:
+    - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+    - https://github.com/Yolean/kubernetes-kafka
+    - https://github.com/confluentinc/cp-docker-images
+    - https://github.com/apache/kafka
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/kafka-0.21.4.tgz
+    version: 0.21.4
+  - apiVersion: v1
+    appVersion: 5.0.1
     created: "2020-10-30T16:13:23.374490487Z"
     dependencies:
     - condition: kafka.zookeeper.enabled,zookeeper.enabled
@@ -26094,4 +26127,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T19:45:13.840256892Z"
+generated: "2020-11-09T22:21:45.047562355Z"
