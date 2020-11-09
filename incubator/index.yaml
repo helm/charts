@@ -4914,6 +4914,43 @@ entries:
   druid:
   - apiVersion: v1
     appVersion: 0.19.0
+    created: "2020-11-09T05:15:03.794192378Z"
+    dependencies:
+    - condition: zookeeper.enabled
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 2.1.4
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.helm.sh/stable
+      version: 1.6.4
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.helm.sh/stable
+      version: 8.6.4
+    description: Apache Druid is a high performance real-time analytics database.
+    digest: 937b07974c945b29663392f6394ebe83ac522215e1b82b139b3ce85f97ccabaa
+    home: https://druid.apache.org/
+    icon: https://druid.apache.org/img/favicon.png
+    keywords:
+    - olap
+    - database
+    - analytics
+    maintainers:
+    - email: maciek@brynski.pl
+      name: maver1ck
+    - email: hellis@foxmail.com
+      name: AWaterColorPen
+    - email: asdf2014@apache.org
+      name: asdf2014
+    name: druid
+    sources:
+    - https://github.com/apache/druid
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/druid-0.2.17.tgz
+    version: 0.2.17
+  - apiVersion: v1
+    appVersion: 0.19.0
     created: "2020-10-30T05:01:27.198205775Z"
     dependencies:
     - condition: zookeeper.enabled
@@ -25917,4 +25954,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-09T04:38:41.185556807Z"
+generated: "2020-11-09T05:15:03.786261563Z"
