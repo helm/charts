@@ -12,4 +12,4 @@ keywords:
 sources:
   - https://github.com/kubernetes/ingress-nginx
 engine: gotpl
-kubeVersion: ">=1.10.0-0"
+kubeVersion: ">=1.6.0-0"
