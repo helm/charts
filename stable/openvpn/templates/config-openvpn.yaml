@@ -132,7 +132,7 @@ data:
 
       /etc/openvpn/setup/setup-certs.sh
 {{ if .Values.openvpn.istio.enabled }}
-      iptables -t nat -A PREROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
+      iptables -t nat -I PREROUTING 1 -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -i tun0 -p tcp -j REDIRECT --to-ports {{ .Values.openvpn.istio.proxy.port }}
 {{ end }}
 
 {{ range .Values.openvpn.iptablesExtra }}
