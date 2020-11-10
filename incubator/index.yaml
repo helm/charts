@@ -20385,6 +20385,24 @@ entries:
   puppet-forge:
   - apiVersion: v1
     appVersion: 1.10.0
+    created: "2020-11-10T09:21:58.776836896Z"
+    description: Distribute locally developed Puppet modules and proxy to the official
+      Puppet Forge server
+    digest: c1dd39c8b3ba4ba5576b600bcb4bee5d5934da178d4e324e926ef1480760cf22
+    home: https://github.com/unibet/puppet-forge-server
+    keywords:
+    - puppet
+    - repository
+    - forge
+    maintainers:
+    - email: hickey@kinetic-compute.com
+      name: hickey
+    name: puppet-forge
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/puppet-forge-0.1.9.tgz
+    version: 0.1.9
+  - apiVersion: v1
+    appVersion: 1.10.0
     created: "2020-10-15T10:42:07.670438-04:00"
     description: Distribute locally developed Puppet modules and proxy to the official
       Puppet Forge server
@@ -26321,4 +26339,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T09:14:14.761685649Z"
+generated: "2020-11-10T09:21:58.775971995Z"
