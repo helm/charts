@@ -9,5 +9,7 @@ keywords:
   - envoy
   - contour
 maintainers:
-  - name: pickledrick
-    email: pegrant@vmware.com
+  - name: cpanato
+    email: ctadeu@gmail.com
+  - name: scottrigby
+    email: scott@r6by.com
