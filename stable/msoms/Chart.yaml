@@ -16,7 +16,7 @@ sources:
   - https://github.com/Microsoft/OMS-Agent-for-Linux
   - https://github.com/Microsoft/Docker-Provider
 maintainers:
-  - name: Sambit Mishra
+  - name: samisms
     email: samis@microsoft.com
-  - name: Keiko Harada
+  - name: keikhara
     email: keikhara@microsoft.com
