@@ -9769,6 +9769,27 @@ entries:
   gogs:
   - apiVersion: v1
     appVersion: 0.11.86
+    created: "2020-11-10T09:14:14.8515006Z"
+    dependencies:
+    - condition: postgresql.install
+      name: postgresql
+      repository: https://charts.helm.sh/stable
+      version: 8.6.4
+    description: 'Gogs: Go Git Service'
+    digest: a6b3218672ed56bf317592d073275e1c3e4278d1fc6cedcbf53b5db8ecd5bff0
+    home: https://gogs.io/
+    icon: https://gogs.io/img/favicon.ico
+    keywords:
+    - git
+    maintainers:
+    - name: obeyler
+    - name: poblin-orange
+    name: gogs
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/gogs-0.7.13.tgz
+    version: 0.7.13
+  - apiVersion: v1
+    appVersion: 0.11.86
     created: "2020-10-30T15:29:40.316505476Z"
     dependencies:
     - condition: postgresql.install
@@ -26300,4 +26321,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T08:43:50.182409137Z"
+generated: "2020-11-10T09:14:14.761685649Z"
