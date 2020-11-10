@@ -1,16 +1,10 @@
 apiVersion: v1
 appVersion: "v1.0.2"
 home: https://comcast.github.io/kuberhealthy/
-description: The official Helm chart for Kuberhealthy.
+description: DEPRECATED. Please use https://comcast.github.io/kuberhealthy/ instead.
 name: kuberhealthy
-version: 1.2.6
-maintainers:
-  - name: integrii
-    email: eric.greer@comcast.com
-  - name: lolimjake
-    email: jacob.martin@comcast.com
-  - name: ihoegen
-    email: ianhoegen@gmail.com
+deprecated: true
+version: 1.2.7
 keywords:
 - kuberhealthy
 - kubernetes

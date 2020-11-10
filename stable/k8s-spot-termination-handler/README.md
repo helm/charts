@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Kubernetes AWS EC2 Spot Termination Notice Handler
 
 This chart installs the [k8s-spot-termination-handler](https://github.com/kube-aws/kube-spot-termination-notice-handler)

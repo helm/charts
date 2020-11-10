@@ -3,7 +3,7 @@ description: A micro application development and integration platform that enabl
   organizations to create and deliver secure micro applications that tie into existing
   business systems and track changes to key business data.
 name: sapho
-version: 0.2.2
+version: 0.2.3
 home: http://www.sapho.com
 icon: https://www.sapho.com/wp-content/uploads/2016/04/sapho-logotype.svg
 sources:

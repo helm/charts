@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Metabase
 
 [Metabase](http://metabase.com) is the easy, open source way for everyone in your company to ask questions and learn from data.
@@ -103,6 +108,8 @@ The following table lists the configurable parameters of the Metabase chart and 
 | jetty.maxQueued                  | Jetty max queue size                                        | null              |
 | jetty.maxIdleTime                | Jetty max idle time                                         | null              |
 | siteUrl                          | Base URL, useful for serving behind a reverse proxy         | null              |
+| session.maxSessionAge            | Session expiration defined in minutes                       | 20160             |
+| session.sessionCookies           | When browser is closed, user login session will expire      | null              |
 
 The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.36.3/).
 

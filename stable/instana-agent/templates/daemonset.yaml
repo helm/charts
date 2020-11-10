@@ -30,6 +30,10 @@ spec:
       hostIPC: true
       hostNetwork: true
       hostPID: true
+      {{- if .Values.agent.pod.priorityClassName }}
+      priorityClassName: {{ .Values.agent.pod.priorityClassName | quote }}
+      {{- end }}
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: instana-agent
           image: "{{ .Values.agent.image.name }}:{{ .Values.agent.image.tag }}"
@@ -134,6 +138,14 @@ spec:
             - name: repo
               mountPath: /opt/instana/agent/data/repo
             {{- end }}
+            {{- if .Values.agent.additionalBackends }}
+            {{- range $index,$backend := .Values.agent.additionalBackends }}
+            {{ $backendIndex :=add $index 2 -}}
+            - name: additional-backend-{{$backendIndex}}
+              subPath: additional-backend-{{$backendIndex}}
+              mountPath: /opt/instana/agent/etc/instana/com.instana.agent.main.sender.Backend-{{$backendIndex}}.cfg
+            {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /status
@@ -205,6 +217,15 @@ spec:
         - name: repo
           hostPath:
             path: {{ .Values.agent.host.repository }}
+        {{- end }}
+        {{- if .Values.agent.additionalBackends }}
+        {{- $fullname := include "instana-agent.fullname" . -}}
+        {{- range $index,$backend := .Values.agent.additionalBackends }}
+        {{ $backendIndex :=add $index 2 -}}
+        - name: additional-backend-{{$backendIndex}}
+          configMap:
+            name: {{ $fullname }}
+        {{- end }}
         {{- end }}
 {{- end -}}
 {{- end -}}

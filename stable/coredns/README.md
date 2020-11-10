@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # CoreDNS
 
 [CoreDNS](https://coredns.io/) is a DNS server that chains plugins and provides DNS Services
@@ -47,7 +52,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                               | Description                                                                           | Default                                                     |
 |:----------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
 | `image.repository`                      | The image repository to pull from                                                     | coredns/coredns                                             |
-| `image.tag`                             | The image tag to pull from                                                            | `v1.7.0`                                                    |
+| `image.tag`                             | The image tag to pull from                                                            | `v1.7.1`                                                    |
 | `image.pullPolicy`                      | Image pull policy                                                                     | IfNotPresent                                                |
 | `replicaCount`                          | Number of replicas                                                                    | 1                                                           |
 | `resources.limits.cpu`                  | Container maximum CPU                                                                 | `100m`                                                      |

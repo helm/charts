@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Helm Chart for Spark History Server
 
 [Spark History Server](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact) provides a web UI for completed and running Spark applications. The supported storage backends are HDFS, Google Cloud Storage (GCS), Azure Blob Storage (WASBS) and PersistentVolumeClaim (PVC). This chart is adapted from the [chart](https://github.com/SnappyDataInc/spark-on-k8s/tree/master/charts/spark-hs) from SnappyData Inc.
@@ -15,6 +20,8 @@
 * Secret (Only if using GCS, WASBS or S3 without IAM based authentication)
 
   If using GCS as storage, follow the preparatory steps below:
+
+  Note: Use the `gcs.enableIAM` flag if running on GKE with Workload Idenity or if the node's service account already has the required permissions. Otherwise follow the steps below.
 
   Set up `gsutil` and `gcloud` on your local laptop and associate them with your Google Cloud Platform (GCP) project, create a bucket, create an IAM service account `sparkonk8s`, generate a JSON key file `sparkonk8s.json`, to grant `sparkonk8s` admin permission to bucket `gs://spark-history-server`.
 

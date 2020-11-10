@@ -36,7 +36,7 @@ rbac:
 
 image:
   repository: hjacobs/kube-downscaler
-  tag: 20.5.0
+  tag: 20.10.0
   pullPolicy: IfNotPresent
 
 resources:
@@ -64,3 +64,5 @@ affinity: {}
 podLabels: {}
 
 podAnnotations: {}
+
+priorityClassName: ""

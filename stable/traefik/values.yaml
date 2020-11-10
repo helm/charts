@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.24
+imageTag: 1.7.26
 imagePullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -269,8 +269,8 @@ acme:
       AZURE_TENANT_ID: ""
       AZURE_RESOURCE_GROUP: ""
     cloudflare:
-      CLOUDFLARE_EMAIL: ""
-      CLOUDFLARE_API_KEY: ""
+      CF_API_EMAIL: ""
+      CF_API_KEY: ""
     digitalocean:
       DO_AUTH_TOKEN: ""
     dnsimple:

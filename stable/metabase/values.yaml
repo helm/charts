@@ -64,6 +64,10 @@ emojiLogging: true
 # pluginsDirectory:
 # siteUrl:
 
+session: {}
+  # maxSessionAge:
+  # sessionCookies:
+
 livenessProbe:
   initialDelaySeconds: 120
   timeoutSeconds: 30

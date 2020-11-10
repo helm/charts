@@ -109,7 +109,12 @@ spec:
                && mkdir -p /home/airflow/.local/bin \
                && export PATH="/home/airflow/.local/bin:$PATH" \
                && echo "*** running flower..." \
+              {{- if .Values.flower.oauthDomains }}
+               && exec airflow flower --auth={{ .Values.flower.oauthDomains | quote }}
+              {{- else }}
                && exec airflow flower
+              {{- end }}
+
           livenessProbe:
             {{- if and (.Values.flower.basicAuthSecret) (not .Values.airflow.config.AIRFLOW__CELERY__FLOWER_BASIC_AUTH) }}
             exec:

@@ -1,6 +1,6 @@
 dependencies:
 - name: sensu
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  repository: https://charts.helm.sh/stable
   version: 0.1.2
-digest: sha256:1637f3b0d5fafd0aca7a850bf02d2b876e2e2843c557b31e12773d0054008bc3
-generated: 2017-09-03T15:06:48.307803716-04:00
+digest: sha256:9470d3eb901ebb2b190b35db4228fbe0177829c587d20287b86e35fe5bef27ca
+generated: "2020-10-30T11:42:40.789899-04:00"

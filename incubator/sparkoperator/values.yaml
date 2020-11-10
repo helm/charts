@@ -76,3 +76,7 @@ leaderElection:
   ## Optionally store the lock in another namespace. Defaults to operator's namespace
   # lockNamespace: ""
 replicas: 1
+
+## When using istio Jobs need to run without a sidecar to properly terminate
+istio:
+  enabled: false

@@ -52,7 +52,8 @@ spec:
               IFS='-' read -ra ADDR <<< "$(hostname)"
               export STKEEPER_UID="{{ .Values.keeper.uid_prefix }}${ADDR[-1]}"
               export POD_IP=$(hostname -i)
-              export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
+              export STKEEPER_PG_ADVERTISE_ADDRESS=$POD_IP
+              export STKEEPER_PG_LISTEN_ADDRESS=${STKEEPER_PG_LISTEN_ADDRESS:-$POD_IP}
               export STOLON_DATA=/stolon-data
               chown stolon:stolon $STOLON_DATA
               {{- if .Values.shmVolume.enabled }}

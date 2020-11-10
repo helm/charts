@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'stable/README.md'
+      - 'incubator/README.md'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          mkdir -p ${{ runner.temp }}/stable ${{ runner.temp }}/incubator
+          cp -f stable/README.md ${{ runner.temp }}/stable/README.md
+          cp -f incubator/README.md ${{ runner.temp }}/incubator/README.md
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+      - run: |
+          cp -f ${{ runner.temp }}/stable/README.md stable
+          cp -f ${{ runner.temp }}/incubator/README.md incubator
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add stable/README.md incubator/README.md
+          git commit --signoff -m "Sync READMEs from master [ci skip]"
+          git push
