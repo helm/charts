@@ -20,7 +20,7 @@ We use this chart in production at [MindDoc](https://minddoc.de) for protecting 
 
 ## DEPRECATION NOTICE
 
-This chart repository is deprecated. It was moved to [minddocdev/buzzfeed-sso](https://github.com/minddocdev/buzfeed-sso).
+This chart repository is deprecated. It was moved to [minddocdev/buzzfeed-sso](https://github.com/minddocdev/buzzfeed-sso).
 
 ## Introduction
 
