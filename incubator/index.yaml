@@ -3651,6 +3651,27 @@ entries:
   check-mk:
   - apiVersion: v1
     appVersion: 1.4.0p26
+    created: "2020-11-10T08:39:51.831102076Z"
+    description: check_mk monitoring
+    digest: 9010a489132245301281c55e32fe3400f439e4a9c46d8d4210b13dfa00bf3572
+    home: https://mathias-kettner.de/check_mk.html
+    icon: http://git.mathias-kettner.de/git/?p=check_mk.git;a=blob_plain;f=web/htdocs/images/logo_mk.png;h=f41c2227828b79c035fa2e2d3fba5ec939c6f2c3;hb=HEAD
+    keywords:
+    - check_mk
+    - nagios
+    - monitoring
+    maintainers:
+    - email: junaid18183@gmail.com
+      name: junaid18183
+    name: check-mk
+    sources:
+    - https://github.com/kubernetes/charts
+    - http://git.mathias-kettner.de/git/
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/check-mk-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v1
+    appVersion: 1.4.0p26
     created: "2020-10-15T10:42:06.901291-04:00"
     description: check_mk monitoring
     digest: 3417e26a1e32db048f046dc9f2877c1bc0ed1b2eb104a0b3cde09babd96f7b9b
@@ -26254,4 +26275,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T08:31:57.542742699Z"
+generated: "2020-11-10T08:39:51.830189777Z"
