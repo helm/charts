@@ -8198,6 +8198,31 @@ entries:
   fluentd-cloudwatch:
   - apiVersion: v1
     appVersion: v1.7.3-debian-cloudwatch-1.0
+    created: "2020-11-10T08:43:50.183631033Z"
+    description: A Fluentd CloudWatch Helm chart for Kubernetes.
+    digest: 5a2e220f932efdc3ce0b47df04ec9cc03144a4b6daa9face0fe12a6129c32ae9
+    home: https://www.fluentd.org/
+    icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
+    keywords:
+    - fluentd
+    - cloudwatch
+    - logging
+    maintainers:
+    - email: jm.carp@gmail.com
+      name: jmcarp
+    - email: michael.haselton@gmail.com
+      name: icereval
+    - email: quentin.nerden@stylight.com
+      name: kenden
+    name: fluentd-cloudwatch
+    sources:
+    - https://github.com/kubernetes/charts
+    - https://github.com/fluent/fluentd-kubernetes-daemonset
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/fluentd-cloudwatch-0.13.1.tgz
+    version: 0.13.1
+  - apiVersion: v1
+    appVersion: v1.7.3-debian-cloudwatch-1.0
     created: "2020-10-15T10:42:07.10719-04:00"
     description: A Fluentd CloudWatch Helm chart for Kubernetes.
     digest: 1b56e3f91664a52e657578272d6bc06e17fd4aadd9b6e22fd243221a1a249448
@@ -26275,4 +26300,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T08:39:51.830189777Z"
+generated: "2020-11-10T08:43:50.182409137Z"
