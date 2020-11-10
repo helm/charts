@@ -22,7 +22,7 @@ spec:
         - path: {{ $.Values.ingress.path }}
           backend:
             serviceName: {{ $fullname }}
-            servicePort: historyport
+            servicePort: {{ .Values.service.port.number }}
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:

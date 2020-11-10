@@ -1,5 +1,9 @@
-# Graylog
+# DEPRECATED - Graylog
 
+**This chart has been deprecated and moved to its new home:**
+  - **GitHub repo:** https://github.com/KongZ/charts
+  - **Charts repo:** https://charts.kong-z.com/
+---
 This chart provide the [Graylog][1] deployments.
 Note: It is strongly recommend to use on Official Graylog image to run this chart.
 

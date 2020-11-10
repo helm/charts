@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ethereum.fullname" . }}-geth-tx
@@ -27,7 +27,7 @@ spec:
         image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
         - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --rpc --rpcaddr 0.0.0.0 --rpcapi={{ .Values.geth.tx.args.rpcapi }} --rpccorsdomain='*' --ws --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
         env:
@@ -98,7 +98,7 @@ spec:
       volumes:
       - name: data
         emptyDir: {}
-      - name: config 
+      - name: config
         configMap:
           name: {{ template "ethereum.fullname" . }}-geth-config
       - name: account

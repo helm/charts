@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Kuberos OIDC Helper
 
 This is a config snippet generator for a k8s cluster
@@ -91,4 +96,3 @@ kind: Cluster
 For G Suite :
 The redacted part of a ClientID is about 45 alphanumeric characters long (may also contain a hyphen or two)
 The client secret will be about 25 alphanumeric chacters (may also contain a hyphen or two)
-

@@ -124,7 +124,7 @@ jobs:
       - name: sync incubator
         if: ${{ needs.changes.outputs.incubator == 'true' }}
         run: |
-          if helm repo index --url https://charts.helm.sh/stable/incubator --merge incubator/index.yaml ${{ runner.temp }}/incubator; then
+          if helm repo index --url https://charts.helm.sh/incubator --merge incubator/index.yaml ${{ runner.temp }}/incubator; then
               mv -f ${{ runner.temp }}/incubator/index.yaml incubator/index.yaml
               git add incubator/index.yaml
           else
