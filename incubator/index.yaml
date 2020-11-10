@@ -155,7 +155,7 @@ entries:
     sources:
     - https://github.com/kubernetes-sigs/aws-alb-ingress-controller
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/aws-alb-ingress-controller-1.0.3.tgz
+    - https://charts.helm.sh/incubator/packages/aws-alb-ingress-controller-1.0.3.tgz
     version: 1.0.3
   - apiVersion: v1
     appVersion: v1.1.8
@@ -479,7 +479,7 @@ entries:
     sources:
     - https://github.com/microsoft/Docker-Provider/tree/ci_prod
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/azuremonitor-containers-2.7.7.tgz
+    - https://charts.helm.sh/incubator/packages/azuremonitor-containers-2.7.7.tgz
     version: 2.7.7
   - apiVersion: v1
     appVersion: 7.0.0-1
@@ -1387,7 +1387,7 @@ entries:
     sources:
     - https://hub.docker.com/r/buzzfeed/sso/
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/buzzfeed-sso-0.2.8.tgz
+    - https://charts.helm.sh/incubator/packages/buzzfeed-sso-0.2.8.tgz
     version: 0.2.8
   - apiVersion: v1
     appVersion: 2.1.0
@@ -1848,7 +1848,7 @@ entries:
       name: maorfr
     name: cassandra
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/cassandra-0.15.3.tgz
+    - https://charts.helm.sh/incubator/packages/cassandra-0.15.3.tgz
     version: 0.15.3
   - apiVersion: v1
     appVersion: 3.11.6
@@ -3668,7 +3668,7 @@ entries:
     - https://github.com/kubernetes/charts
     - http://git.mathias-kettner.de/git/
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/check-mk-0.2.2.tgz
+    - https://charts.helm.sh/incubator/packages/check-mk-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v1
     appVersion: 1.4.0p26
@@ -3789,7 +3789,7 @@ entries:
       name: prydonius
     name: common
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/common-0.0.6.tgz
+    - https://charts.helm.sh/incubator/packages/common-0.0.6.tgz
     version: 0.0.6
   - apiVersion: v1
     appVersion: 0.0.5
@@ -5068,7 +5068,7 @@ entries:
     sources:
     - https://github.com/apache/druid
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/druid-0.2.17.tgz
+    - https://charts.helm.sh/incubator/packages/druid-0.2.17.tgz
     version: 0.2.17
   - apiVersion: v1
     appVersion: 0.19.0
@@ -5105,7 +5105,7 @@ entries:
     sources:
     - https://github.com/apache/druid
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/druid-0.2.16.tgz
+    - https://charts.helm.sh/incubator/packages/druid-0.2.16.tgz
     version: 0.2.16
   - apiVersion: v1
     appVersion: 0.19.0
@@ -5142,7 +5142,7 @@ entries:
     sources:
     - https://github.com/apache/druid
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/druid-0.2.14.tgz
+    - https://charts.helm.sh/incubator/packages/druid-0.2.14.tgz
     version: 0.2.14
   - apiVersion: v1
     appVersion: 0.19.0
@@ -7700,7 +7700,7 @@ entries:
     sources:
     - https://github.com/coreos/etcd
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/etcd-0.7.6.tgz
+    - https://charts.helm.sh/incubator/packages/etcd-0.7.6.tgz
     version: 0.7.6
   - apiVersion: v1
     appVersion: 3.2.26
@@ -8219,7 +8219,7 @@ entries:
     - https://github.com/kubernetes/charts
     - https://github.com/fluent/fluentd-kubernetes-daemonset
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/fluentd-cloudwatch-0.13.1.tgz
+    - https://charts.helm.sh/incubator/packages/fluentd-cloudwatch-0.13.1.tgz
     version: 0.13.1
   - apiVersion: v1
     appVersion: v1.7.3-debian-cloudwatch-1.0
@@ -9786,7 +9786,7 @@ entries:
     - name: poblin-orange
     name: gogs
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/gogs-0.7.13.tgz
+    - https://charts.helm.sh/incubator/packages/gogs-0.7.13.tgz
     version: 0.7.13
   - apiVersion: v1
     appVersion: 0.11.86
@@ -9807,7 +9807,7 @@ entries:
     - name: poblin-orange
     name: gogs
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/gogs-0.7.12.tgz
+    - https://charts.helm.sh/incubator/packages/gogs-0.7.12.tgz
     version: 0.7.12
   - apiVersion: v1
     appVersion: 0.11.86
@@ -10229,7 +10229,7 @@ entries:
     sources:
     - https://github.com/Caiyeon/goldfish
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/goldfish-0.2.8.tgz
+    - https://charts.helm.sh/incubator/packages/goldfish-0.2.8.tgz
     version: 0.2.8
   - apiVersion: v1
     appVersion: 0.9.0
@@ -10390,7 +10390,7 @@ entries:
     sources:
     - https://github.com/jcmoraisjr/haproxy-ingress
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/haproxy-ingress-0.0.28.tgz
+    - https://charts.helm.sh/incubator/packages/haproxy-ingress-0.0.28.tgz
     version: 0.0.28
   - apiVersion: v1
     appVersion: 0.7.2
@@ -10970,7 +10970,7 @@ entries:
     sources:
     - https://github.com/SpectoLabs/hoverfly
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/hoverfly-0.1.3.tgz
+    - https://charts.helm.sh/incubator/packages/hoverfly-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: 1.1.1
@@ -13171,7 +13171,7 @@ entries:
     - https://github.com/confluentinc/cp-docker-images
     - https://github.com/apache/kafka
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/kafka-0.21.4.tgz
+    - https://charts.helm.sh/incubator/packages/kafka-0.21.4.tgz
     version: 0.21.4
   - apiVersion: v1
     appVersion: 5.0.1
@@ -13204,7 +13204,7 @@ entries:
     - https://github.com/confluentinc/cp-docker-images
     - https://github.com/apache/kafka
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/kafka-0.21.3.tgz
+    - https://charts.helm.sh/incubator/packages/kafka-0.21.3.tgz
     version: 0.21.3
   - apiVersion: v1
     appVersion: 5.0.1
@@ -17333,7 +17333,7 @@ entries:
     sources:
     - https://github.com/jboss-dockerfiles/keycloak/tree/master/proxy
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/keycloak-proxy-0.0.2.tgz
+    - https://charts.helm.sh/incubator/packages/keycloak-proxy-0.0.2.tgz
     version: 0.0.2
   - apiVersion: v1
     appVersion: 3.4.2.Final
@@ -17372,7 +17372,7 @@ entries:
     sources:
     - https://github.com/hjacobs/kube-downscaler
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/kube-downscaler-0.6.0.tgz
+    - https://charts.helm.sh/incubator/packages/kube-downscaler-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v1
     appVersion: 20.5.0
@@ -17516,7 +17516,7 @@ entries:
     sources:
     - https://github.com/themagicalkarp/kube-janitor
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/kube-janitor-0.1.1.tgz
+    - https://charts.helm.sh/incubator/packages/kube-janitor-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v1
     appVersion: v0.1.0
@@ -18945,7 +18945,7 @@ entries:
       name: aisuko
     name: mysqlha
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/mysqlha-2.0.1.tgz
+    - https://charts.helm.sh/incubator/packages/mysqlha-2.0.1.tgz
     version: 2.0.1
   - apiVersion: v1
     appVersion: 5.7.13
@@ -19561,7 +19561,7 @@ entries:
     - https://github.com/zalando/patroni
     - https://github.com/zalando/spilo
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/patroni-0.16.1.tgz
+    - https://charts.helm.sh/incubator/packages/patroni-0.16.1.tgz
     version: 0.16.1
   - apiVersion: v1
     appVersion: 1.5-p5
@@ -20399,7 +20399,7 @@ entries:
       name: hickey
     name: puppet-forge
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/puppet-forge-0.1.9.tgz
+    - https://charts.helm.sh/incubator/packages/puppet-forge-0.1.9.tgz
     version: 0.1.9
   - apiVersion: v1
     appVersion: 1.10.0
@@ -20452,7 +20452,7 @@ entries:
       name: mumoshu
     name: raw
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/raw-0.2.4.tgz
+    - https://charts.helm.sh/incubator/packages/raw-0.2.4.tgz
     version: 0.2.4
   - apiVersion: v1
     appVersion: 0.2.3
@@ -20550,7 +20550,7 @@ entries:
     - https://github.com/antirez/redis
     - https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/redis-cache-0.5.1.tgz
+    - https://charts.helm.sh/incubator/packages/redis-cache-0.5.1.tgz
     version: 0.5.1
   - apiVersion: v1
     appVersion: 4.0.12-alpine
@@ -20720,7 +20720,7 @@ entries:
     sources:
     - https://github.com/raykrueger/riemann-docker
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/riemann-0.1.3.tgz
+    - https://charts.helm.sh/incubator/packages/riemann-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: 0.2.14
@@ -21069,7 +21069,7 @@ entries:
     - https://github.com/confluentinc/schema-registry
     - https://github.com/confluentinc/cp-docker-images
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/schema-registry-1.2.2.tgz
+    - https://charts.helm.sh/incubator/packages/schema-registry-1.2.2.tgz
     version: 1.2.2
   - apiVersion: v1
     appVersion: 5.0.1
@@ -21100,7 +21100,7 @@ entries:
     - https://github.com/confluentinc/schema-registry
     - https://github.com/confluentinc/cp-docker-images
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/schema-registry-1.2.1.tgz
+    - https://charts.helm.sh/incubator/packages/schema-registry-1.2.1.tgz
     version: 1.2.1
   - apiVersion: v1
     appVersion: 5.0.1
@@ -22159,7 +22159,7 @@ entries:
     sources:
     - https://gitbox.apache.org/repos/asf?p=lucene-solr.git
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/solr-1.5.3.tgz
+    - https://charts.helm.sh/incubator/packages/solr-1.5.3.tgz
     version: 1.5.3
   - apiVersion: v1
     appVersion: 8.4.0
@@ -22513,7 +22513,7 @@ entries:
       name: yuchaoran2011
     name: sparkoperator
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/sparkoperator-0.8.5.tgz
+    - https://charts.helm.sh/incubator/packages/sparkoperator-0.8.5.tgz
     version: 0.8.5
   - apiVersion: v1
     appVersion: v1beta2-1.2.0-3.0.0
@@ -23694,7 +23694,7 @@ entries:
     - https://github.com/tensorflow/
     - https://tensorflow.github.io/serving/serving_inception.html
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/tensorflow-inception-0.4.2.tgz
+    - https://charts.helm.sh/incubator/packages/tensorflow-inception-0.4.2.tgz
     version: 0.4.2
   - apiVersion: v1
     appVersion: 1.4.0
@@ -23856,7 +23856,7 @@ entries:
     - https://github.com/hashicorp/vault
     - https://github.com/hashicorp/docker-vault
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/vault-0.23.7.tgz
+    - https://charts.helm.sh/incubator/packages/vault-0.23.7.tgz
     version: 0.23.7
   - apiVersion: v1
     appVersion: 1.2.3
@@ -25128,7 +25128,7 @@ entries:
       name: scottrigby
     name: vaultingkube
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/vaultingkube-0.1.3.tgz
+    - https://charts.helm.sh/incubator/packages/vaultingkube-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: 0.1.1
@@ -25179,7 +25179,7 @@ entries:
     sources:
     - https://github.com/WPO-Foundation/webpagetest
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/webpagetest-agent-0.2.1.tgz
+    - https://charts.helm.sh/incubator/packages/webpagetest-agent-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v1
     appVersion: "2018-01-23"
@@ -25285,7 +25285,7 @@ entries:
     sources:
     - https://github.com/WPO-Foundation/webpagetest
     urls:
-    - https://charts.helm.sh/stable/incubator/packages/webpagetest-server-0.2.2.tgz
+    - https://charts.helm.sh/incubator/packages/webpagetest-server-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v1
     appVersion: "2018-03-08"
