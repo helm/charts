@@ -1,20 +1,25 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "gogs.fullname" . }}
+  name: {{ include "gogs.fullname" . }}
   labels:
+    app: {{ include "gogs.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "gogs.fullname" . }}
+      app: {{ include "gogs.fullname" . }}
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   template:
     metadata:
       labels:
-        app: {{ template "gogs.fullname" . }}
+        app: {{ include "gogs.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       {{- with .Values.securityContext }}
       securityContext:
