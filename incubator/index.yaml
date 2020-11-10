@@ -23678,6 +23678,26 @@ entries:
   tensorflow-inception:
   - apiVersion: v1
     appVersion: 1.4.0
+    created: "2020-11-10T10:04:03.806660528Z"
+    description: Open source software library for numerical computation using data
+      flow graphs.
+    digest: f2792ea47a840492ad39bdff220983b09d09a8b4a452914954128fd792f0a2c0
+    home: https://github.com/kubernetes/charts
+    icon: https://camo.githubusercontent.com/ee91ac3c9f5ad840ebf70b54284498fe0e6ddb92/68747470733a2f2f7777772e74656e736f72666c6f772e6f72672f696d616765732f74665f6c6f676f5f7472616e73702e706e67
+    maintainers:
+    - email: lachlan.evenson@gmail.com
+      name: lachie83
+    - email: thomas.jungblut@gmail.com
+      name: thomasjungblut
+    name: tensorflow-inception
+    sources:
+    - https://github.com/tensorflow/
+    - https://tensorflow.github.io/serving/serving_inception.html
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/tensorflow-inception-0.4.2.tgz
+    version: 0.4.2
+  - apiVersion: v1
+    appVersion: 1.4.0
     created: "2020-10-15T10:42:07.829493-04:00"
     description: Open source software library for numerical computation using data
       flow graphs.
@@ -26391,4 +26411,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T09:56:10.940484457Z"
+generated: "2020-11-10T10:04:03.805766723Z"
