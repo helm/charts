@@ -20704,6 +20704,26 @@ entries:
   riemann:
   - apiVersion: v1
     appVersion: 0.2.14
+    created: "2020-11-10T09:56:10.941328159Z"
+    description: Riemann monitors distributed systems. Riemann aggregates events from
+      your servers and applications with a powerful stream processing language.
+    digest: 7a90648dc16fe056b6ed4b574fb67a2263334b9faae2792d348bd5d24c24f4ec
+    home: http://riemann.io/
+    keywords:
+    - riemann
+    - metrics
+    - monitoring
+    maintainers:
+    - email: raykrueger@gmail.com
+      name: raykrueger
+    name: riemann
+    sources:
+    - https://github.com/raykrueger/riemann-docker
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/riemann-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v1
+    appVersion: 0.2.14
     created: "2020-10-15T10:42:07.67659-04:00"
     description: Riemann monitors distributed systems. Riemann aggregates events from
       your servers and applications with a powerful stream processing language.
@@ -26371,4 +26391,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T09:41:55.505423052Z"
+generated: "2020-11-10T09:56:10.940484457Z"
