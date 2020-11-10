@@ -25165,6 +25165,24 @@ entries:
   webpagetest-agent:
   - apiVersion: v1
     appVersion: "2018-01-23"
+    created: "2020-11-10T10:07:57.426732978Z"
+    description: A Helm chart for Kubernetes
+    digest: 49f3eb52af5061fbfeb37ce270f6d4a53b2ee2e37e2d080abfd1f2f3a4fa7fc6
+    home: https://www.webpagetest.org/
+    icon: https://www.webpagetest.org/images/logo_wpt.png
+    maintainers:
+    - email: ghtimothy@timothy.fromnz.net
+      name: timothyclarke
+    - email: pmeenan@webpagetest.org
+      name: pmeenan
+    name: webpagetest-agent
+    sources:
+    - https://github.com/WPO-Foundation/webpagetest
+    urls:
+    - https://charts.helm.sh/stable/incubator/packages/webpagetest-agent-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v1
+    appVersion: "2018-01-23"
     created: "2020-10-15T10:42:07.876714-04:00"
     description: A Helm chart for Kubernetes
     digest: 8b1b81dfd15c5d0e57aea9b67a0db64937706500da4caeeae1e3a738217815d7
@@ -26411,4 +26429,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-10T10:04:03.805766723Z"
+generated: "2020-11-10T10:07:57.426076279Z"
