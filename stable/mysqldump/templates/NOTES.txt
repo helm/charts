@@ -1,3 +1,7 @@
+THE CHART HAS BEEN DEPRECATED! 
+
+It was moved too https://github.com/kokuwaio/helm-charts/tree/main/charts/mysqldump
+
 {{- if eq .Values.schedule "now" }}
 
 Running mysqldump now.

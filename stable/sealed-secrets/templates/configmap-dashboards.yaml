@@ -1,0 +1,25 @@
+{{- if .Values.dashboards.create }}
+{{- $namespace := .Values.dashboards.namespace | default $.Release.Namespace }}
+{{- range $path, $_ :=  .Files.Glob  "dashboards/*.json" }}
+{{- $filename := trimSuffix (ext $path) (base $path) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sealed-secrets.fullname" $ }}-{{ $filename }}
+  namespace: {{ $namespace }}
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/name: {{ template "sealed-secrets.name" $ }}
+    helm.sh/chart: {{ template "sealed-secrets.chart" $ }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion }}
+    {{- if $.Values.dashboards.labels }}
+    {{- toYaml $.Values.dashboards.labels | nindent 4 }}
+    {{- end }}
+data:
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+---
+{{- end }}
+{{- end }}

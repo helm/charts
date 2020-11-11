@@ -3,7 +3,7 @@
 {{-   range (split "," $.Values.namespace) }}
 {{- end }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 {{- if eq .Values.rbac.useClusterRole false }}
 kind: Role
 {{- else }}
