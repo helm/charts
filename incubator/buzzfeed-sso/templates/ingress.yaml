@@ -40,14 +40,21 @@ spec:
     - host: {{ .domain }}
       http:
         paths:
+          {{- $pathType := .pathType -}}
           {{- if .path }}
           - path: {{ .path }}
+            {{- if $pathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
             backend:
               serviceName: {{ $fullName }}-proxy
               servicePort: http
           {{- end }}
           {{- range .paths }}
           - path: {{ . }}
+            {{- if $pathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
             backend:
               serviceName: {{ $fullName }}-proxy
               servicePort: http
