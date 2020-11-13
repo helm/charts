@@ -9,6 +9,10 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 
 * https://github.com/kubernetes/contrib/pull/1295
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites Details
 * Kubernetes 1.5 (for `StatefulSets` support)
 * PV support on the underlying infrastructure
