@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # HELM Chart for Microsoft SQL Server 2017 on Linux
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 * This chart requires Docker Engine 1.8+ in any of their supported platforms.  Please see vendor requirements [here for more information](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker).
