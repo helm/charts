@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [sentry-kubernetes](https://github.com/getsentry/sentry-kubernetes) is a utility that pushes Kubernetes events to [Sentry](https://sentry.io).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 # Installation:
 
 ```console
