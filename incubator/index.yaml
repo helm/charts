@@ -3267,6 +3267,20 @@ entries:
   cassandra-reaper:
   - apiVersion: v1
     appVersion: 1.3.0
+    created: "2020-11-13T16:20:11.837001687Z"
+    deprecated: true
+    description: DEPRECATED Reaper is a centralized, stateful, and highly configurable
+      tool for running Apache Cassandra repairs against single or multi-site clusters.
+    digest: 13c11e87570f02efcbe312dd7c64a8eae23bb53a34a75607872d6ad40bb4bdc6
+    home: http://cassandra-reaper.io/
+    keywords:
+    - cassandra
+    name: cassandra-reaper
+    urls:
+    - https://charts.helm.sh/incubator/packages/cassandra-reaper-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v1
+    appVersion: 1.3.0
     created: "2020-11-13T14:29:13.598874577Z"
     description: Reaper is a centralized, stateful, and highly configurable tool for
       running Apache Cassandra repairs against single or multi-site clusters.
@@ -26692,4 +26706,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:19:46.443674492Z"
+generated: "2020-11-13T16:20:11.835195584Z"
