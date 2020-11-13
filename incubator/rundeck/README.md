@@ -7,6 +7,9 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Rundeck lets you turn your operations procedures into self-service jobs. Safely give others the control and visibility they need. Read more about Rundeck at [https://www.rundeck.com/open-source](https://www.rundeck.com/open-source).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Install
 
