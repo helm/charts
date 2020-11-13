@@ -12,6 +12,10 @@ Apache Spark is a fast and general-purpose cluster computing system including Ap
 
 Inspired from Helm Classic chart https://github.com/helm/charts
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will do the following:
 
