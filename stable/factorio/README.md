@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Factorio](https://www.factorio.com/) is a game in which you build and maintain factories.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart creates a single [Factorio Headless](https://www.factorio.com/download-headless) Pod, plus Services for the Factorio server and RCON.
