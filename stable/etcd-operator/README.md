@@ -11,6 +11,10 @@ configuration and management.
 __DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in beta.
 Current project status is available [here](https://github.com/coreos/etcd-operator).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps an etcd-operator and allows the deployment of etcd-cluster(s).
