@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 This chart installs an elasticsearch cluster with kibana and logstash by default.
 You can optionally disable logstash and install Fluentd if you prefer. It also optionally installs filebeat, nginx-ldapauth-proxy and elasticsearch-curator.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites Details
 
 * Kubernetes 1.10+
