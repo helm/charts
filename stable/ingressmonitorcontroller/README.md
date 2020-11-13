@@ -9,6 +9,10 @@ A Kubernetes/Openshift controller to watch ingresses/routes and create liveness 
 
 [![Get started with Stakater](https://stakater.github.io/README/stakater-github-banner.png)](http://stakater.com/?utm_source=IngressMonitorController&utm_medium=github)
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Problem Statement
 
 We want to monitor ingresses in a kubernetes cluster and routes in openshift cluster via any uptime checker but the problem is having to manually check for new ingresses or routes / removed ingresses or routes and add them to the checker or remove them.
