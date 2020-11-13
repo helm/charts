@@ -11,6 +11,10 @@ heart of Riemann is in its clojure based stream configurations. Read more about 
 Riemann was created by [Kyle Kingsbury](https://github.com/aphyr) with help
 from many others.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Install
 
     helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
