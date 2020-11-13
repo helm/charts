@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 [Burrow](https://github.com/hyperledger/burrow) is a permissioned Ethereum smart-contract blockchain node which provides transaction finality and high transaction throughput 
 on a proof-of-stake [Tendermint](https://tendermint.com) consensus engine.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps a burrow network on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
