@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [JanusGraph](http://janusgraph.org/) is a scalable graph database capable of handling an extremely large number of vertices and edges. It has a pluggable architecture that allows for choice of storage and indexing backends.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps a JanusGraph deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
