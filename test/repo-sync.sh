@@ -19,9 +19,9 @@ set -o nounset
 set -o pipefail
 
 readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
-readonly HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
-readonly STABLE_REPO_URL=https://kubernetes-charts.storage.googleapis.com/
-readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
+readonly HELM_TARBALL=helm-v2.17.0-linux-amd64.tar.gz
+readonly STABLE_REPO_URL=https://charts.helm.sh/stable
+readonly INCUBATOR_REPO_URL=https://charts.helm.sh/incubator
 readonly GCS_BUCKET_STABLE=gs://kubernetes-charts
 readonly GCS_BUCKET_INCUBATOR=gs://kubernetes-charts-incubator
 
