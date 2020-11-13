@@ -22694,6 +22694,19 @@ entries:
   sparkoperator:
   - apiVersion: v1
     appVersion: v1beta2-1.2.0-3.0.0
+    created: "2020-11-13T16:14:06.784321653Z"
+    deprecated: true
+    description: DEPRECATED A Helm chart for Spark on Kubernetes operator
+    digest: b39333aa179c6b5d7dbccb3adcb7346efe899c88c0b6cc586367eab500b3a325
+    home: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
+    keywords:
+    - spark
+    name: sparkoperator
+    urls:
+    - https://charts.helm.sh/incubator/packages/sparkoperator-0.8.6.tgz
+    version: 0.8.6
+  - apiVersion: v1
+    appVersion: v1beta2-1.2.0-3.0.0
     created: "2020-11-09T04:38:41.189932019Z"
     description: A Helm chart for Spark on Kubernetes operator
     digest: cb92dc3ef249794772826b051d7c43eb9cb5485089f3b1e304e6c6014f4703fd
@@ -26658,4 +26671,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:13:47.434878791Z"
+generated: "2020-11-13T16:14:06.746736743Z"
