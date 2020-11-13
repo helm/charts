@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # Selenium
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
