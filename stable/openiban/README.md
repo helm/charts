@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [OpenIBAN](https://github.com/fourcube/goiban-service) implements a basic REST Web-service for validating IBAN account numbers in GO.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
