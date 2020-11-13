@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This is a config snippet generator for a k8s cluster
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 Sorry you will need to look at the [configuration](#configuration) values below for this one.
 
