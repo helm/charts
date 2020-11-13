@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Helm chart for [Mcrouter](https://github.com/facebook/mcrouter), a Memcached protocol router for scaling memcached deployments.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Configuration
 
 The following table lists the configurable parameters of the Mcrouter chart and their default values.
