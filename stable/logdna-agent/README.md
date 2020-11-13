@@ -39,7 +39,7 @@ You should see logs in https://app.logdna.com in a few seconds.
 > **Note**: If you're running helm 3.0+ then you might need to run the following first (as described in the [helm/charts readme](https://github.com/helm/charts#how-do-i-enable-the-stable-repository-for-helm-3)):
 >
 > ```bash
-> $ helm repo add stable https://charts.helm.sh/stable
+> $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 > ```
 
 ### Tags support:

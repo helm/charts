@@ -110,7 +110,7 @@ You can deploy Reloader by following methods:
 if you have configured helm on your cluster, you can add reloader to helm from public chart repository and deploy it via helm using below mentioned commands
 
  ```bash
-helm repo add stable https://charts.helm.sh/stable/
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
 helm repo update
 
