@@ -6,6 +6,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 # Cassandra
 A cassandra-reaper Chart for Kubernetes
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Install Chart
 To install the cassandra-reaper Chart into your Kubernetes cluster
 
