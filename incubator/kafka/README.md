@@ -9,6 +9,10 @@ This is an implementation of Kafka StatefulSet found here:
 
  * https://github.com/Yolean/kubernetes-kafka
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Pre Requisites:
 
 * Kubernetes 1.3 with alpha APIs enabled and support for storage classes
