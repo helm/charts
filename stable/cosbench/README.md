@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [COSBench](https://github.com/intel-cloud/cosbench), is a benchmark tool for cloud object storage services. It is compatible with OpenStack Swift, Amazon S3, Scality Zenko, Ceph, CDMI, Google Cloud Storage, and other services.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
