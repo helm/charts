@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Spartakus](https://github.com/kubernetes-incubator/spartakus) aims to collect information about Kubernetes clusters. This information will help the Kubernetes development team to understand what people are doing with it, and to make it a better product.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
