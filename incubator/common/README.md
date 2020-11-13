@@ -11,6 +11,10 @@ charts.
 It provides utilities that reflect best practices of Kubernetes chart development,
 making it faster for you to write charts.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Tips
 
 A few tips for working with Common:
