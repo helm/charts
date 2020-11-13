@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This directory contains a Kubernetes chart to deploy the [Elasticsearch Curator](https://github.com/elastic/curator).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites Details
 
 * Elasticsearch
