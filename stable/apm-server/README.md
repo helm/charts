@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [apm-server](https://www.elastic.co/guide/en/apm/server/current/index.html)  is the server receives data from the Elastic APM agents and stores the data into a datastore like Elasticsearch.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart deploys apm-server agents to all the nodes in your cluster via a DaemonSet.
