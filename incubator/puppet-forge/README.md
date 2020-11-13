@@ -12,6 +12,10 @@ project allow one to serve locally developed Puppet forge modules and
 proxy requests to an upstream Puppet forge server (typically the official
 server run by Puppetlabs).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 How to use this container
 -------------------------
 The container when invoked with no arguments will start the Puppet forge
