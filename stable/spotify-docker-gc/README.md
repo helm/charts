@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This chart wraps the [spotify/docker-gc][] Docker image in the form of a [DaemonSet][], so that Docker resource garbage collection occurs on all nodes of a given Kubernetes cluster.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will do the following:
 
