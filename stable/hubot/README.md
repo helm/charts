@@ -9,6 +9,10 @@ Hubot 3 chatbot with the Slack adaptor
 
 Learn more: https://hubot.github.com
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
