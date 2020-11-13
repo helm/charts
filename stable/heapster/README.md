@@ -14,6 +14,10 @@ More info on: https://github.com/kubernetes-retired/heapster
 [Heapster](https://github.com/kubernetes/heapster) enables Container Cluster Monitoring and Performance Analysis. It collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints.
 The Chart can also enable eventer, which can send the kubernetes event logs to a remote location.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## QuickStart
 
 ```bash
