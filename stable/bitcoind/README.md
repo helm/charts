@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 [Bitcoin](https://bitcoin.org/) uses peer-to-peer technology to operate with no central authority or banks;
 managing transactions and the issuing of bitcoins is carried out collectively by the network.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps a single node Bitcoin deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
