@@ -14,6 +14,10 @@ This chart will deploy the Kubernetes [external-storage projects](https://github
 NFS server. If you have a pre-existing NFS Server, please consider using the [NFS Client Provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client)
 instead.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
