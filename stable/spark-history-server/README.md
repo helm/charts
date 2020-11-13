@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Spark History Server](https://spark.apache.org/docs/latest/monitoring.html#viewing-after-the-fact) provides a web UI for completed and running Spark applications. The supported storage backends are HDFS, Google Cloud Storage (GCS), Azure Blob Storage (WASBS) and PersistentVolumeClaim (PVC). This chart is adapted from the [chart](https://github.com/SnappyDataInc/spark-on-k8s/tree/master/charts/spark-hs) from SnappyData Inc.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 #### Prerequisites
 
 * ConfigMaps (Only if using HDFS)
