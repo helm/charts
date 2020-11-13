@@ -8,6 +8,10 @@ Risk advisor module for Kubernetes. This project is licensed under the terms of 
 
 It allows you to check how the cluster state would change if the request of creating provided pods was accepted by Kubernetes.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR
 
 ```console
