@@ -10,6 +10,10 @@ kubernetes cluster.
 
 The chart installs the Solr docker image from: https://hub.docker.com/_/solr/
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Dependencies
 
 - The zookeeper incubator helm chart
