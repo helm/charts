@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Orient DB helm chart
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installation:
 
 `helm install . --name <RELEASE-NAME> --namespace <NAMESPACE> --set rootpassword=<PASSWORD>`
