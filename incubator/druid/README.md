@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Apache Druid](https://druid.apache.org/) is a high performance real-time analytics database.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Install Chart
 
 To install the Druid Chart into your Kubernetes cluster :
