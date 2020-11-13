@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "namerd.fullname" . }}
@@ -9,10 +9,15 @@ metadata:
     release: "{{ .Release.Name }}"
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "namerd.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "namerd.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       volumes:
       - name: {{ template "namerd.fullname" . }}-config
