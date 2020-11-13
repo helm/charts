@@ -17,6 +17,10 @@ A possible alternative to use `magic-ip-address` is to use the downward API to o
 
 In contrast to the two alternatives, `magic-ip-address` allows you add meaningful node metadata to your application traces, without exposing the agent pods via the host network.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 - Kubernetes 1.9+
