@@ -3144,6 +3144,27 @@ entries:
   cassandra-operator:
   - apiVersion: v1
     appVersion: 0.3.1-mater
+    created: "2020-11-13T16:19:46.444447687Z"
+    deprecated: true
+    description: DEPRECATED A Helm chart for CassKop - the Orange Cassandra Kubernetes
+      operator
+    digest: 638616950e23147f31b5ea4cfabd388020e103a08128d9a97fed3effe0b367ec
+    home: https://github.com/Orange-OpenSource/cassandra-k8s-operator
+    icon: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cassandra_logo.svg/330px-Cassandra_logo.svg.png
+    keywords:
+    - operator
+    - cassandra
+    - casskop
+    - database
+    - nosql
+    name: cassandra-operator
+    sources:
+    - https://github.com/Orange-OpenSource/cassandra-k8s-operator
+    urls:
+    - https://charts.helm.sh/incubator/packages/cassandra-operator-0.3.5.tgz
+    version: 0.3.5
+  - apiVersion: v1
+    appVersion: 0.3.1-mater
     created: "2020-11-13T14:30:15.464342769Z"
     description: A Helm chart for CassKop - the Orange Cassandra Kubernetes operator
     digest: d62408373b995a11b1ac2a49fde5900f5a591444fcfe305003d978d265ab6ba3
@@ -26671,4 +26692,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:14:06.746736743Z"
+generated: "2020-11-13T16:19:46.443674492Z"
