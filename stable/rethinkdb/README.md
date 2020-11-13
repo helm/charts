@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # RethinkDB 2.3.5 Helm Chart
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites Details
 * Kubernetes 1.5+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
