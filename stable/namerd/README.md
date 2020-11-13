@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [namerd](https://linkerd.io/in-depth/namerd/) is a service that manages routing for multiple [linkerd](https://github.com/kubernetes/charts/tree/master/stable/linkerd) instances.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will do the following:
 
