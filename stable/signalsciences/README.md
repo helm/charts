@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [SignalSciences](https://www.signalsciences.com/) is a hosted web application firewall.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart adds the SignalSciences agent to all nodes in your cluster via a DaemonSet. This chart exposes a shared unix socket file on every node for your application code to connect to the agent with.
