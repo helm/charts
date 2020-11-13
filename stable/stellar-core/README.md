@@ -1,3 +1,10 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
+# ⚠️ Chart Deprecated
+
 # Stellar Core
 
 [Stellar](https://www.stellar.org) is an open-source and distributed payments infrastructure. Stellar Core is the software that powers the backbone of the Stellar network and validates and agrees on transactions. For more information see the [Stellar network overview](https://www.stellar.org/developers/guides/get-started/).
