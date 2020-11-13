@@ -11097,6 +11097,24 @@ entries:
   honeydipper:
   - apiVersion: v1
     appVersion: 0.2.0
+    created: "2020-11-13T16:21:15.171313914Z"
+    deprecated: true
+    description: DEPRECATED An event driven orchestration system
+    digest: 91e638b6459f24a47fd85806a967813ac579f4ab584698522c594075496d5ea1
+    home: https://honeydipper.io
+    icon: https://raw.githubusercontent.com/honeydipper/honeydipper/master/logo/log_medium.png
+    keywords:
+    - event-driven
+    - orchestration
+    - integration
+    - workflows
+    - templating
+    name: honeydipper
+    urls:
+    - https://charts.helm.sh/incubator/packages/honeydipper-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v1
+    appVersion: 0.2.0
     created: "2020-11-13T14:28:40.979100931Z"
     description: An event driven orchestration system
     digest: 1dc5735fdd1d262e21ab4fbdac51b1bd0a206718fc2f98d72bc41f888fee37f2
@@ -26706,4 +26724,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:20:11.835195584Z"
+generated: "2020-11-13T16:21:15.17007981Z"
