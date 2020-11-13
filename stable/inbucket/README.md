@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Inbucket](https://www.inbucket.org/) is an e-mail testing tool.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
