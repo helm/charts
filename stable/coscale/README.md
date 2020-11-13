@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [CoScale](https://www.coscale.com/) offers full-stack monitoring for containers and microservices.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart adds the CoScale Agent to all nodes in your cluster via a DaemonSet.
