@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This chart contains the resources to use [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 * Kubernetes >= 1.9
