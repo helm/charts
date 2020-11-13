@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 * Installs the [kube-state-metrics agent](https://github.com/kubernetes/kube-state-metrics).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
