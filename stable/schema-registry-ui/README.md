@@ -8,6 +8,9 @@ This helm chart creates a [Schema-Registry-UI server](https://github.com/Landoop
 
 This is a web tool for the confluentinc/schema-registry in order to create / view / search / evolve / view history & configure Avro schemas of your Kafka cluster.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites
 * Kubernetes 1.8
