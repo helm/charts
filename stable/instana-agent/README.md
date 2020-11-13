@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Instana is an [APM solution](https://www.instana.com/) built for microservices that enables IT Ops to build applications faster and deliver higher quality services by automating monitoring, tracing and root cause analysis. This solution is optimized for [Kubernetes](https://www.instana.com/automatic-kubernetes-monitoring/).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart adds the Instana Agent to all schedulable nodes in your cluster via a `DaemonSet`.
