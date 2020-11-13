@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Envoy](https://www.envoyproxy.io/) is an open source edge and service proxy, designed for cloud-native applications.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
