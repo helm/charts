@@ -13,6 +13,10 @@ In practice, this means that a hosted service can be made available
 only to the cluster, then cluster users can be granted access by
 giving them permission to run `port-forward` on the tunneller.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Basic usage
 
 ```
