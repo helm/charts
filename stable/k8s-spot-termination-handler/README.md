@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 This chart installs the [k8s-spot-termination-handler](https://github.com/kube-aws/kube-spot-termination-notice-handler)
 as a daemonset across the cluster nodes.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Purpose
 
 Spot instances on EC2 come with significant cost savings, but with the burden of instance being terminated if
