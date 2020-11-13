@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Katafygio](https://github.com/bpineau/katafygio) discovers Kubernetes objects (deployments, services, ...), and continuously saves them as YAML files in a Git repository. This provides real-time, continuous backups, and keeps detailed changes history.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
