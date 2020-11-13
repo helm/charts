@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 This directory contains a Kubernetes chart to deploy a
 [GCP Night King](https://github.com/itamaro/gcp-go-night-king) service.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
