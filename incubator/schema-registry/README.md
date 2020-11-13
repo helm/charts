@@ -6,6 +6,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 # Schema-Registry Helm Chart
 This helm chart creates a [Confluent Schema-Registry server](https://github.com/confluentinc/schema-registry).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 * Kubernetes 1.6
 * A running Kafka Installation
