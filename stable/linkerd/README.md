@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [linkerd](https://linkerd.io/) is a resilient service mesh for cloud native apps
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will do the following:
 
