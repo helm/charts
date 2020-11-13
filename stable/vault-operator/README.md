@@ -11,6 +11,10 @@ configuration and management.
 __DISCLAIMER:__ While this chart has been well-tested, the vault-operator is still currently in beta.
 Current project status is available [here](https://github.com/coreos/vault-operator).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps a vault-operator and allows the deployment of vault cluster(s). It depends on the `etcd-operator` being installed.
