@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Karma is an ASL2 licensed alert dashboard for Prometheus Alertmanager.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart deploys karma to your cluster via a Deployment and Service.
