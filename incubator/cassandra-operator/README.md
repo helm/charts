@@ -11,6 +11,9 @@ clusters in a Kubernetes Namespace.
 It will uses a Custom Ressource Definition CRD: `cassandraclusters.db.orange.com`, 
 which implements a `CassandraCluster` kubernetes custom ressource definition.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 
