@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Honeydipper](https://github.com/honeydipper/honeydipper) is basically, your swiss army knife for systems engineering and operations. An event-driven, policy-based orchestration system, with a pluggable open architecture.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart creates a deployment to run the Honeydipper daemon, and exposes a service pointing to the webhook listener.
