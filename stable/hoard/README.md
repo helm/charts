@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Hoard](https://github.com/monax/hoard) is a stateless, deterministically encrypted, content-addressed object store. It currently supports local persistent storage, [S3](https://aws.amazon.com/s3/), [GCS](https://cloud.google.com/storage/), [Azure](https://azure.microsoft.com/en-gb/services/storage/) and [IPFS](https://ipfs.io) backends. Files that are sent to Hoard are symmetrically encrypted, where the secret is the hash of the plaintext file, and then stored in the configured backend - this enables any party with knowledge of the hash or original file to retrieve it from the store.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps a hoard daemon on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
