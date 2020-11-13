@@ -11,6 +11,10 @@ TensorFlow is an open source software library for numerical computation using da
 
 My hope was to make TensorFlow more accessible by simplifying the following document -- https://tensorflow.github.io/serving/serving_inception.html
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will do the following:
 
