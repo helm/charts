@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This is the Helm chart for the [Kubernetes Operator for Apache Spark](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 #### Prerequisites
 
 The Operator requires Kubernetes version 1.13 or above to use the subresource support for CustomResourceDefinitions, which became beta in 1.13 and is enabled by default in 1.13 and higher.
