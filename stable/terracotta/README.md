@@ -11,6 +11,9 @@ The [Terracotta 5.x OSS](http://www.terracotta.org/) offering includes the follo
  *  Distributed In-Memory Data Management with fault-tolerance via Terracotta Server (1 stripe – active with optional mirror)
  *  In memory off-heap storage - take advantage of all the RAM in your server
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Quick Start
 
