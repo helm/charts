@@ -9,6 +9,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 To use, add the `kubernetes.io/ingress.class: "gce"` annotation to your Ingress resources.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```console
