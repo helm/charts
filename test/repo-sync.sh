@@ -47,6 +47,10 @@ setup_helm_client() {
 
     helm init --client-only
     helm repo add incubator "$INCUBATOR_REPO_URL"
+
+    # Add legacy locations for build
+    helm repo add stable-legacy https://kubernetes-charts.storage.googleapis.com
+    helm repo add incubator-legacy https://kubernetes-charts-incubator.storage.googleapis.com
 }
 
 authenticate() {
