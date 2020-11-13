@@ -10,6 +10,10 @@ TensorFlow Serving is an open-source software library for serving machine learni
 For more information,
 [visit the project on github](https://github.com/tensorflow/serving).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 - Kubernetes cluster v1.8+ 
