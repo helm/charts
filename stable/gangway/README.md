@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 An application that can be used to easily enable authentication flows via OIDC for a kubernetes cluster.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR
 
     helm install stable/gangway
