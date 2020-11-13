@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # newrelic-infrastructure
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## This Helm chart is deprecated
 
 Given the [`stable` deprecation timeline](https://github.com/helm/charts#deprecation-timeline), the New Relic infrastructure integration chart is now located at [newrelic/helm-charts](https://github.com/newrelic/helm-charts/).
