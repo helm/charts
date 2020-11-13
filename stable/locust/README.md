@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 This is a templated deployment of [Locust](http://locust.io) for Distributed Load
 testing using Kubernetes.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Pre Requisites:
 
 * Requires (and tested with) helm `v2.1.2` or above.
