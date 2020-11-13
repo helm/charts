@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # Kubernetes-vault Helm Chart
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites Details
 * Working Vault cluster configured per instructions found [here](https://github.com/Boostport/kubernetes-vault/blob/master/quick-start.md#22-set-up-the-root-certificate-authority)
 * Vault server API is available from Kubernetes pods
