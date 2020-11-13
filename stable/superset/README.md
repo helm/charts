@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # Apache superset
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart bootstraps an [Apache superset](https://superset.incubator.apache.org/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
