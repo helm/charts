@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Hyperledger Composer](https://hyperledger.github.io/composer) is a set of tools to aid in the development of Blockchain solutions using the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
