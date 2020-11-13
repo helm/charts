@@ -11,6 +11,10 @@ Pachyderm is a language-agnostic and cloud infrastructure-agnostic large-scale d
 * https://pachyderm.io
 * https://github.com/pachyderm/pachyderm
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 Prerequisites Details
 ---------------------
 
