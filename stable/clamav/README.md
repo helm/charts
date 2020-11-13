@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # ClamAV
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ##  An Open-Source antivirus engine for detecting trojans, viruses, malware & other malicious threats.
 
 [ClamAV](https://www.clamav.net/) is the open source standard for mail gateway scanning software.
