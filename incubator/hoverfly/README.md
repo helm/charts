@@ -7,6 +7,9 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Hoverfly](https://hoverfly.io/) is a lightweight, open source API simulation tool. Using Hoverfly, you can create realistic simulations of the APIs your application depends on.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
