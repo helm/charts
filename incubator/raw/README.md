@@ -17,6 +17,10 @@ maintenance of resources of kinds:
 - PriorityClass
 - Secret
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Usage
 
 ### Raw resources
