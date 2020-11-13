@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 This Helm chart simplifies the deployment of [goldfish](https://github.com/Caiyeon/goldfish) on Kubernetes.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Pre-requisites
 
 * Requires (and tested with) vault `0.8.1` or above.
