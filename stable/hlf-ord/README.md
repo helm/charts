@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Hyperledger Fabric Orderer](http://hyperledger-fabric.readthedocs.io/) is the node type responsible for "consensus" for the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
