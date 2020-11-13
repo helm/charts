@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [eventrouter](https://github.com/heptiolabs/eventrouter) simple introspective kubernetes service that forwards events to a specified sink.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installation
 
 ```console
