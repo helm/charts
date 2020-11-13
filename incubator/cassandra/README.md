@@ -6,6 +6,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 # Cassandra
 A Cassandra Chart for Kubernetes
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Install Chart
 To install the Cassandra Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart. To create storage class, see [Persist data](#persist_data) section)
 
