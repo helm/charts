@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 > [IPFS](https://ipfs.io/) is a part of the distributed web - a peer-to-peer hypermedia protocol to make the web faster, safer, and more open.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
