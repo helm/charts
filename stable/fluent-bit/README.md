@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Fluent Bit](http://fluentbit.io/) is an open source and multi-platform Log Forwarder.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 
 This chart will do the following:
