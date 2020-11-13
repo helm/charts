@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Azure Log Analytics is a software-as-a-service offering from Microsoft that allows Enterprise IT to manage any hybrid cloud. It offers log analytics, automation, backup and recovery, and security and compliance.  Sign up for a free subscription on [Azure](https://azure.microsoft.com/en-us/free/) or read more about [Azure Log Analytics ](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-overview)
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart deploys an OMS daemonset on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. The OMS agent enables rich and real-time analytics for Docker containers. With this solution, you can see which containers are running on your container hosts and what images are running in the containers. You can view detailed audit information showing commands used with containers. And, you can troubleshoot containers by viewing and searching centralized logs without having to remotely view Docker or hosts. You can find containers that may be noisy and consuming excess resources on a host. And, you can view centralized CPU, memory, storage, and network usage and performance information for containers. For more information refer to the [documentation](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-containers).
