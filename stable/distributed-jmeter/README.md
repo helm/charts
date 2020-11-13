@@ -9,6 +9,10 @@ Based on the work done [here](https://github.com/pedrocesar-ti/distributed-jmete
 
 Apache Jmeter™ is an open source tool that helps creating and running load test plans. This helm/chart was created to help you running different versions of JMeter in a distributed fashion (master -> server architecture), for more info.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details:
 This chart will do the following:
 - Deploy a JMeter master (by default 1) that is responsible to store the test plans and test results after running on the servers.
