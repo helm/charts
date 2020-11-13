@@ -22,7 +22,7 @@ helm install stable/airflow \
 
 __(Helm 3) install the Airflow Helm Chart:__
 ```bash
-helm repo add stable https://charts.helm.sh/stable
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
 
 helm install "airflow" stable/airflow \

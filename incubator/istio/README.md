@@ -7,7 +7,7 @@
 ## TL;DR;
 
 ```console
-$ helm repo add incubator https://charts.helm.sh/incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 $ helm install incubator/istio
 ```
 
