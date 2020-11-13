@@ -5,6 +5,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 # Weave Scope
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## About this chart
 
 This chart contains two subcharts (*weave-scope-frontend* and *weave-scope-agent*) which deploy the corresponding components of Weave Scope, an interactive container monitoring and visualization application.
