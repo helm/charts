@@ -25555,6 +25555,20 @@ entries:
   webpagetest-agent:
   - apiVersion: v1
     appVersion: "2018-01-23"
+    created: "2020-11-13T16:34:12.174776407Z"
+    deprecated: true
+    description: DEPRECATED A Helm chart for Kubernetes
+    digest: 4ee79aab1feba094e9af6ebbc8d804e610049a863cd4f788247ad64c531c03d0
+    home: https://www.webpagetest.org/
+    icon: https://www.webpagetest.org/images/logo_wpt.png
+    name: webpagetest-agent
+    sources:
+    - https://github.com/WPO-Foundation/webpagetest
+    urls:
+    - https://charts.helm.sh/incubator/packages/webpagetest-agent-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v1
+    appVersion: "2018-01-23"
     created: "2020-11-10T10:07:57.426732978Z"
     description: A Helm chart for Kubernetes
     digest: 49f3eb52af5061fbfeb37ce270f6d4a53b2ee2e37e2d080abfd1f2f3a4fa7fc6
@@ -26851,4 +26865,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:33:38.734496907Z"
+generated: "2020-11-13T16:34:12.174154409Z"
