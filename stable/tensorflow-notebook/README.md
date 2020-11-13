@@ -11,6 +11,10 @@ TensorFlow is an open source software library for numerical computation using da
 -  https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard
 -  http://jupyter.org/
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 - Kubernetes cluster v1.8+ 
