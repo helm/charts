@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [metricbeat](https://www.elastic.co/guide/en/beats/metricbeat/current/index.html) is used to ship Kubernetes and host metrics to multiple outputs.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 -   Kubernetes 1.9+
