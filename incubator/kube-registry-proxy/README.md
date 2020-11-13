@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 * Installs the [kube-registry-proxy cluster addon](https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/registry).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
