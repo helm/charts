@@ -11,6 +11,10 @@ In particular, make sure that have configured your API server as in
 https://github.com/kubernetes-sigs/aws-iam-authenticator#how-do-i-use-it. (This
 chart only installs the DaemonSet and a ConfigMap.)
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Values
 
 | Config                  | Description               | Default                                  |
