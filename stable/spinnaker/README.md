@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Spinnaker](http://spinnaker.io/) is an open source, multi-cloud continuous delivery platform.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Chart Details
 This chart will provision a fully functional and fully featured Spinnaker installation
 that can deploy and manage applications in the cluster that it is deployed to.
