@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Chart for [kube-slack](https://github.com/wongnai/kube-slack), a monitoring service for Kubernetes.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart adds a deployment, listening for cluster-wide pod failures and posting them to your slack channel. A cluster-wide [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/) is created by default, but can also be specified.
