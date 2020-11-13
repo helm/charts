@@ -61,7 +61,7 @@ Refer the [GoCD website](https://www.gocd.org/kubernetes) for getting started wi
 To install the chart with the release name `gocd-app`:
 
 ```bash
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm repo add stable https://charts.helm.sh/stable
 $ helm install --name gocd-app --namespace gocd stable/gocd
 ```
 

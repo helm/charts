@@ -6,7 +6,7 @@ dependencies:
   repository: ""
   version: 1.0.1
 - name: redis
-  repository: https://kubernetes-charts.storage.googleapis.com
+  repository: https://charts.helm.sh/stable
   version: 10.5.7
 digest: sha256:106bc6a69eed8b6caf211da47687c16c6415662ea2e83813e268010eb121f4e5
 generated: "2020-08-12T16:15:32.051109-07:00"

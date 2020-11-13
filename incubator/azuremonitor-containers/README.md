@@ -45,7 +45,7 @@ Monitoring your Kubernetes cluster and containers is critical, especially when r
 ### To Use Azure Log Analytics Workspace in Public Cloud
 
 ```bash
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://charts.helm.sh/incubator/
 $ helm install --name azmon-containers-release-1 \
 --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_prod_cluster>  incubator/azuremonitor-containers
 ```
@@ -53,7 +53,7 @@ $ helm install --name azmon-containers-release-1 \
 ### To Use Azure Log Analytics Workspace in Azure China Cloud
 
 ```bash
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://charts.helm.sh/incubator/
 $ helm install --name azmon-containers-release-1 \
 --set omsagent.domain=opinsights.azure.cn,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
 ```
@@ -61,7 +61,7 @@ $ helm install --name azmon-containers-release-1 \
 ### To Use Azure Log Analytics Workspace in Azure US Government Cloud
 
 ```bash
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://charts.helm.sh/incubator/
 $ helm install --name azmon-containers-release-1 \
 --set omsagent.domain=opinsights.azure.us,omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<your_cluster_name>  incubator/azuremonitor-containers
 ```

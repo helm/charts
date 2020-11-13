@@ -25,7 +25,7 @@ This chart deploys all components required to run the external vSphere CPI as de
 In Helm 3.0+, the stable charts repo isn't enabled by default because there is an effort to move the charts repo into a [distributed model](https://github.com/helm/hub/blob/master/Repositories.md). To enable the [stable charts](https://github.com/helm/charts/tree/master/stable), you can run the following command:
 
 ```bash
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm repo add stable https://charts.helm.sh/stable/
 $ helm repo update
 ```
 

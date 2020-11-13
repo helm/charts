@@ -30,7 +30,7 @@ using Kubernetes StatefulSets and Init Containers.
 To install the chart with the release name `my-release`:
 
 ``` console
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add stable https://charts.helm.sh/stable/
 helm install --name my-release stable/mongodb-replicaset
 ```
 

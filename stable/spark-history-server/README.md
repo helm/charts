@@ -106,7 +106,7 @@ Similarly for HDFS, you can run Spark jobs in any namespace, as long as pods in 
 To install the chart with the sample PVC setup:
 
 ```bash
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm repo add stable https://charts.helm.sh/stable
 $ helm install stable/spark-history-server --namespace spark-history-server
 ```
 
