@@ -9,6 +9,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 Notable users include Netflix, Amazon Web Services, Alcatel-Lucent, and Smug Mug.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart, based off of the Percona chart (which in turn is based off the MySQL chart), bootstraps a multi-node Percona XtraDB Cluster deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
