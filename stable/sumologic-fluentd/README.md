@@ -9,6 +9,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Sumo Logic](https://www.sumologic.com/) is a hosted logging platform.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart adds the [Sumo Logic FluentD Plugin](https://github.com/SumoLogic/fluentd-kubernetes-sumologic) to all nodes in your cluster as a
