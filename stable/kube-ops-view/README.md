@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Kubernetes Operational View](https://github.com/hjacobs/kube-ops-view) provides a read-only system dashboard for multiple K8s clusters
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installing the Chart
 
 To install the chart with the release name my-release:
