@@ -18,6 +18,10 @@ access scopes, then you must have
 
 Learn more: https://github.com/frodenas/stackdriver_exporter
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
