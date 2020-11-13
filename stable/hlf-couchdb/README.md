@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Hyperledger Fabric CouchDB](http://hyperledger-fabric.readthedocs.io/) is the node holding the blockchain ledger of each peers for the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR;
 
 ```bash
