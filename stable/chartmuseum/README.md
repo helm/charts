@@ -9,6 +9,10 @@ Deploy your own private ChartMuseum.
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Table of Content
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
