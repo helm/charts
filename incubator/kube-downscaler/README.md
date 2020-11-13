@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [kube-downscaler](https://github.com/hjacobs/kube-downscaler) Scale down Kubernetes deployments and/or statefulsets during non-work hours.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## TL;DR:
 ```bash
 helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
