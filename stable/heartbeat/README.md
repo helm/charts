@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [heartbeat](https://www.elastic.co/guide/en/beats/heartbeat/current/index.html) is a lightweight daemon that periodically check the status of your services and determine whether they are available.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart deploys heartbeat agents to all the nodes in your cluster via a DaemonSet.
