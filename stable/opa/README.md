@@ -8,6 +8,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 [OPA](https://www.openpolicyagent.org) is an open source general-purpose policy
 engine designed for cloud-native environments.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prerequisites
 
 - Kubernetes 1.9 (or newer) for validating and mutating webhook admission
