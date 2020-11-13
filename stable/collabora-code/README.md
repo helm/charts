@@ -7,6 +7,10 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 [Collabora](https://www.collaboraoffice.com/code/) is a online office suite.
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Introduction
 
 This chart creates a single Collabora CODE Pod to run Collabora CODE suite, for example as integration together with nextcloud. Installation is based on the docker documentation [CollaboraDocker](https://www.collaboraoffice.com/code/docker/).
