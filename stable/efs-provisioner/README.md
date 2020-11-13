@@ -25,6 +25,10 @@ The persisent volumes are created as folders with in an AWS EFS filesystem.
 
   https://aws.amazon.com/efs/
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Prequisites
 
 You must create the EFS file system and end points yourself first.
