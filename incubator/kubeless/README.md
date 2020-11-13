@@ -14,7 +14,7 @@ This chart is deprecated and no longer supported.
 ## TL;DR;
 
 ```bash
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm repo add incubator https://charts.helm.sh/incubator/
 $ helm install --namespace kubeless incubator/kubeless
 ```
 
