@@ -11,6 +11,10 @@ Apache Ignite is an open-source memory-centric distributed database, caching,
 and processing platform for transactional, analytical, and streaming workloads
 delivering in-memory speeds at petabyte scale
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Install
 
 ```console
