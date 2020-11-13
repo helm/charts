@@ -17604,6 +17604,24 @@ entries:
   keycloak-proxy:
   - apiVersion: v1
     appVersion: 3.4.2.Final
+    created: "2020-11-13T16:33:38.744905553Z"
+    deprecated: true
+    description: DEPRECATED Keycloak Proxy supports Single Sign-On with Keycloak
+    digest: e9c1fa9f6d17b6675490e901b335c4840047b7d68d899c96988cb3ab51e84570
+    home: https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html
+    icon: http://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+    keywords:
+    - authentication
+    - sso
+    - reverseproxy
+    name: keycloak-proxy
+    sources:
+    - https://github.com/jboss-dockerfiles/keycloak/tree/master/proxy
+    urls:
+    - https://charts.helm.sh/incubator/packages/keycloak-proxy-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
+    appVersion: 3.4.2.Final
     created: "2020-11-10T08:25:55.648559483Z"
     description: Keycloak Proxy supports Single Sign-On with Keycloak
     digest: 1e37865473f748f32a4eee03295d2c8b2791b47a2f60575e5c13fc95df149985
@@ -26833,4 +26851,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:31:47.699093261Z"
+generated: "2020-11-13T16:33:38.734496907Z"
