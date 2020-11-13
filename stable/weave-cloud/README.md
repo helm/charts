@@ -15,6 +15,10 @@ _To learn more and sign up please visit [Weaveworks website](https://weave.works
 
 You will need a service token which you can get from [cloud.weave.works](https://cloud.weave.works/).
 
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
+
 ## Installing the Chart
 
 To install the chart:
