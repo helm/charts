@@ -1,3 +1,10 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
+# ⚠️ Chart Deprecated
+
 # Sapho
 
 The Sapho Micro App Platform is the best way to put actionable business information into your employees’ hands. This micro application development and integration platform enables organizations to create and deliver secure micro apps that tie into existing business systems and track changes to key business data. The result is a work feed that keeps employees up-to-date with important information and their associated actions. Employees benefits from real time data updates and one-click task completion from a single unified app, browser, or messenger client. All of this runs on Azure, connects to your existing infrastructure, and integrates with your existing identity and access control solutions to maintain security. For more information, please visit [Sapho](https://www.sapho.com/).
