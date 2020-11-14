@@ -139,6 +139,22 @@ entries:
   aws-alb-ingress-controller:
   - apiVersion: v1
     appVersion: v1.1.8
+    created: "2020-11-14T07:58:40.972294-05:00"
+    deprecated: true
+    description: DEPRECATED A Helm chart for AWS ALB Ingress Controller
+    digest: 9da0e2f9f6264a1d1e17377d209ac3049d3c28c31ceca199361fd407c7199879
+    home: https://github.com/kubernetes-sigs/aws-alb-ingress-controller
+    keywords:
+    - aws
+    - ingress
+    name: aws-alb-ingress-controller
+    sources:
+    - https://github.com/kubernetes-sigs/aws-alb-ingress-controller
+    urls:
+    - https://charts.helm.sh/incubator/aws-alb-ingress-controller-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v1
+    appVersion: v1.1.8
     created: "2020-11-09T07:05:38.990163183Z"
     description: A Helm chart for AWS ALB Ingress Controller
     digest: e8ef8ac4e6fd51ed6b2aaf3d6a0cda55b1b9005cd8bc9ae4743cb87126f78027
@@ -438,6 +454,45 @@ entries:
     - https://charts.helm.sh/incubator/packages/aws-alb-ingress-controller-0.1.4.tgz
     version: 0.1.4
   azuremonitor-containers:
+  - apiVersion: v1
+    appVersion: 7.0.0-1
+    created: "2020-11-14T07:58:40.973427-05:00"
+    deprecated: true
+    description: DEPRECATED Helm chart for deploying Azure Monitor container monitoring
+      agent in Kubernetes
+    digest: c06fdf55b2cb6ca663e2571ba4d7464ad74b72bc08e72d81b965f10e7fc67afc
+    home: https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health
+    icon: https://raw.githubusercontent.com/Microsoft/OMS-docker/ci_feature/img/azuremonitor-containers.svg
+    keywords:
+    - monitoring
+    - azuremonitor
+    - azure
+    - oms
+    - containerinsights
+    - metric
+    - event
+    - logs
+    - containerhealth
+    - kubernetesmonitoring
+    - acs-engine
+    - aks-engine
+    - azurestack
+    - openshift v4
+    - azure redhat openshift v4
+    - on-prem kubernetes monitoring
+    - containerlogs
+    - containerhealth
+    - containermonitoring
+    - hybrid kubernetes monitoring
+    - kubernetes
+    - kuberneteshealth
+    kubeVersion: ^1.10.0-0
+    name: azuremonitor-containers
+    sources:
+    - https://github.com/microsoft/Docker-Provider/tree/ci_prod
+    urls:
+    - https://charts.helm.sh/incubator/azuremonitor-containers-2.7.8.tgz
+    version: 2.7.8
   - apiVersion: v1
     appVersion: 7.0.0-1
     created: "2020-11-09T11:18:03.205427001Z"
@@ -1272,6 +1327,31 @@ entries:
     - https://charts.helm.sh/incubator/packages/azuremonitor-containers-0.1.0.tgz
     version: 0.1.0
   burrow:
+  - apiVersion: v1
+    appVersion: 0.17.1
+    created: "2020-11-14T07:58:40.974518-05:00"
+    description: Burrow is a permissionable smart contract machine
+    digest: b73f638bae2c6fd3ed011ac8736da426f79042c2353f6dea6a0a54cabd2f4ed5
+    home: https://github.com/hyperledger/burrow
+    icon: https://pbs.twimg.com/profile_images/697035383679295488/_6vl74tM_400x400.png
+    keywords:
+    - blockchain
+    - smart_contracts
+    - smartContracts
+    - smart contracts
+    - ethereum
+    - hyperledger
+    - evm
+    maintainers:
+    - email: casey@monax.io
+      name: compleatang
+    name: burrow
+    sources:
+    - https://github.com/hyperledger/burrow
+    - https://quay.io/monax/db
+    urls:
+    - https://charts.helm.sh/incubator/burrow-0.4.3.tgz
+    version: 0.4.3
   - apiVersion: v1
     appVersion: 0.17.1
     created: "2020-10-15T10:42:06.824671-04:00"
@@ -3328,6 +3408,29 @@ entries:
     - https://charts.helm.sh/incubator/packages/cassandra-reaper-0.2.0.tgz
     version: 0.2.0
   chartmuseum:
+  - apiVersion: v1
+    appVersion: 0.7.0
+    created: "2020-11-14T07:58:40.975644-05:00"
+    description: Helm Chart Repository with support for Amazon S3 and Google Cloud
+      Storage
+    digest: 712eae874e3e6285feb02488b00df62e78093f459bc6c1b90f77251269857c10
+    home: https://github.com/chartmuseum/chartmuseum
+    icon: https://raw.githubusercontent.com/chartmuseum/chartmuseum/master/logo.png
+    keywords:
+    - chartmuseum
+    - helm
+    - charts repo
+    maintainers:
+    - email: opensource@codefresh.io
+      name: codefresh-io
+    - email: hello@cloudposse.com
+      name: cloudposse
+    - email: chartmuseum@gmail.com
+      name: chartmuseum
+    name: chartmuseum
+    urls:
+    - https://charts.helm.sh/incubator/chartmuseum-1.4.0.tgz
+    version: 1.4.0
   - apiVersion: v1
     appVersion: 0.5.1
     created: "2020-10-15T10:42:06.90031-04:00"
@@ -8411,6 +8514,25 @@ entries:
   fluentd-cloudwatch:
   - apiVersion: v1
     appVersion: v1.7.3-debian-cloudwatch-1.0
+    created: "2020-11-14T07:58:40.976559-05:00"
+    deprecated: true
+    description: DEPRECATED A Fluentd CloudWatch Helm chart for Kubernetes.
+    digest: 861026920b40c020574340d3e4a2ed078bbbb0888af80ebac2111c9aa0e54ff1
+    home: https://www.fluentd.org/
+    icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
+    keywords:
+    - fluentd
+    - cloudwatch
+    - logging
+    name: fluentd-cloudwatch
+    sources:
+    - https://github.com/kubernetes/charts
+    - https://github.com/fluent/fluentd-kubernetes-daemonset
+    urls:
+    - https://charts.helm.sh/incubator/fluentd-cloudwatch-0.13.2.tgz
+    version: 0.13.2
+  - apiVersion: v1
+    appVersion: v1.7.3-debian-cloudwatch-1.0
     created: "2020-11-10T08:43:50.183631033Z"
     description: A Fluentd CloudWatch Helm chart for Kubernetes.
     digest: 5a2e220f932efdc3ce0b47df04ec9cc03144a4b6daa9face0fe12a6129c32ae9
@@ -9777,6 +9899,36 @@ entries:
     version: 0.1.0
   gocd:
   - apiVersion: v1
+    appVersion: 18.3.0
+    created: "2020-11-14T07:58:40.978721-05:00"
+    description: GoCD is an open-source continuous delivery server to model and visualize
+      complex workflows with ease.
+    digest: 4bd84a717324847b1694d7f5d1cb2e036b81d447121d3b15681498bbb5c83d81
+    home: https://www.gocd.org/
+    icon: https://gocd.github.io/assets/images/go-icon-black-192x192.png
+    keywords:
+    - gocd
+    - ci
+    - cd
+    - ci/cd
+    - continuous-integration
+    - continuous-delivery
+    - continuous-deployment
+    - continuous-testing
+    maintainers:
+    - email: arvind@thoughtworks.com
+      name: arvindsv
+    - email: ganeshpl@thoughtworks.com
+      name: ganeshspatil
+    - email: varshasvaradarajan@gmail.com
+      name: varshavaradarajan
+    name: gocd
+    sources:
+    - https://github.com/gocd/gocd
+    urls:
+    - https://charts.helm.sh/incubator/gocd-1.0.7.tgz
+    version: 1.0.7
+  - apiVersion: v1
     appVersion: 0.0.1
     created: "2020-10-15T10:42:07.139524-04:00"
     deprecated: true
@@ -10442,6 +10594,23 @@ entries:
     - https://charts.helm.sh/incubator/packages/gogs-0.2.0.tgz
     version: 0.2.0
   goldfish:
+  - apiVersion: v1
+    appVersion: 0.9.0
+    created: "2020-11-14T07:58:40.980093-05:00"
+    deprecated: true
+    description: DEPRECATED A Helm chart for Goldfish - Vault UI
+    digest: bb562b2dfc5143cc3f95947bd025f3e4be38c768149032d1ffe5c290e4827b25
+    home: https://vault-ui.io
+    icon: https://github.com/Caiyeon/goldfish/blob/master/frontend/client/assets/logo@2x.png?raw=true
+    keywords:
+    - goldfish
+    - vault-ui
+    name: goldfish
+    sources:
+    - https://github.com/Caiyeon/goldfish
+    urls:
+    - https://charts.helm.sh/incubator/goldfish-0.2.9.tgz
+    version: 0.2.9
   - apiVersion: v1
     appVersion: 0.9.0
     created: "2020-11-10T08:31:57.544609799Z"
@@ -11222,6 +11391,27 @@ entries:
   hoverfly:
   - apiVersion: v1
     appVersion: 1.1.1
+    created: "2020-11-14T07:58:40.980623-05:00"
+    deprecated: true
+    description: DEPRECATED Hoverfly is a lightweight, open source API simulation
+      tool. Using Hoverfly, you can create realistic simulations of the APIs your
+      application depends on.
+    digest: 064189db07d1e3c2f49cf70bcc0ec1030d5f8bdc84c60105d3ccd753cfaab42d
+    home: https://hoverfly.io
+    keywords:
+    - hoverfly
+    - api-simulation
+    - mocking
+    - stubbing
+    - service-virtualization
+    name: hoverfly
+    sources:
+    - https://github.com/SpectoLabs/hoverfly
+    urls:
+    - https://charts.helm.sh/incubator/hoverfly-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    appVersion: 1.1.1
     created: "2020-11-09T19:45:13.841462292Z"
     description: Hoverfly is a lightweight, open source API simulation tool. Using
       Hoverfly, you can create realistic simulations of the APIs your application
@@ -11311,6 +11501,464 @@ entries:
     - https://github.com/SpectoLabs/hoverfly
     urls:
     - https://charts.helm.sh/incubator/packages/hoverfly-0.1.0.tgz
+    version: 0.1.0
+  istio:
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:41.025405-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 1a961b72144bdea810c67347d256d8767549d0701dcf672f92a3f0b5dcc795a3
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: 0.2.12
+    created: "2020-11-14T07:58:41.008748-05:00"
+    deprecated: true
+    description: Istio Helm chart for Kubernetes
+    digest: e3d1af0458828dfaca1b21aa0babf9c75a84fa3b14d44c73f5a0ce3f7a0adae4
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.13-chart4.tgz
+    version: 0.2.13-chart4
+  - apiVersion: v1
+    appVersion: 0.2.12
+    created: "2020-11-14T07:58:41.007179-05:00"
+    deprecated: true
+    description: Istio Helm chart for Kubernetes
+    digest: 12a440ed1622c7effdbfa0fa104e9a5a849be0096fadb7f3c275e9a8c042ea62
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.12-chart4.tgz
+    version: 0.2.12-chart4
+  - apiVersion: v1
+    appVersion: 0.2.12
+    created: "2020-11-14T07:58:41.005659-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 527b3b0bb2b33e05e9edede89ea65ce9272106f4dd5a796610fbc85e231f359c
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.12-chart3.tgz
+    version: 0.2.12-chart3
+  - apiVersion: v1
+    appVersion: 0.2.8
+    created: "2020-11-14T07:58:41.023582-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 7ac6b4c6f8c3a9d8e17546f8309830fd1866fc44503bd8f1eea1084a5e1406a0
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.8-chart2.tgz
+    version: 0.2.8-chart2
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.02223-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: c3c7dc8ed68ad10f506d30fe80471e74d0a82faa9a385ba07e914660b7657845
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart7.tgz
+    version: 0.2.7-chart7
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.020813-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 7c171ce092c00fe787bf1ddc388c77c42c0a07925f21788971e5a766697c9cc0
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart6.tgz
+    version: 0.2.7-chart6
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.019466-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 78cbbc8cbcfca50658b1c5f25fd1cc7c4fc4d8183b3e35547d22b7359ffbb7e5
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart5.tgz
+    version: 0.2.7-chart5
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.018059-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 62fd0d91655889d7b0fc2c0f4c62b494fc508a62d6a1388c7f519f5af0cbdd77
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart4.tgz
+    version: 0.2.7-chart4
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.016289-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: aea4789a337ff11bcb8b378aae3c0b933522d4fde3e24ed499ce6b804a532a60
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart3.tgz
+    version: 0.2.7-chart3
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.014312-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: d8948dee3ca624154ad6191c42e93a91492475d45633caa95de33bb2b954e74c
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart2.tgz
+    version: 0.2.7-chart2
+  - apiVersion: v1
+    appVersion: 0.2.7
+    created: "2020-11-14T07:58:41.012802-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 551844c1aead84370e171100c8ce7bf0c63e752fc8d93d6f62af220ccee39691
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.7-chart1.tgz
+    version: 0.2.7-chart1
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:41.011444-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: d7b45ccb284a42292bff50c531b71552045bf0544b3e7d8b0ba716f7cb188ce8
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.6-chart5.tgz
+    version: 0.2.6-chart5
+  - apiVersion: v1
+    appVersion: 0.2.6
+    created: "2020-11-14T07:58:41.010132-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 5fa7cfa2d0d9c8fdbc088688bc1cf6856d3914023a5fd7508aa807a06b0042a3
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.6-chart1.tgz
+    version: 0.2.6-chart1
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:41.003524-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 33bd53a3a6cadf65d39ca293e36e82fe949febc1f83346c6068da105d3f98b5d
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v1
+    created: "2020-11-14T07:58:41.002129-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: cb4adf1ccb172d994b6c007dae5ab5917a33e9a2d42ba73106e7877054b8d69e
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
+    created: "2020-11-14T07:58:41.000289-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 0968d8ac4c978da717a2a5510ab667d43f1c0c789ee979ad6dfb41766332ea69
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.998865-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 9203b5407bb73fced50415cb1c0c05f821f364a892ddd0efcd7d5091a638e201
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.99745-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: b99a3d2a4cf81ffb2f6ed0976bbe97a92743a161baca8be792370263bec69a2f
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart6.tgz
+    version: 0.1.6-chart6
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.995999-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 9fbfeb7a3cd3926f137fa9146aa0fc08037c8eb9ad4972a8d65c5a620ea4b012
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart5.tgz
+    version: 0.1.6-chart5
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.994511-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 4c771eb2e36d23aa08c1cbf6a56751da2c8d77cd4cf608e41032c624238b8192
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart4.tgz
+    version: 0.1.6-chart4
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.993026-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: ee5034ff7dd5c10c8fb516cd13602a6b32a8967ebd85bd9afd27ad414afb99c8
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart3.tgz
+    version: 0.1.6-chart3
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.990902-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: c22ddf32d359b4eb30c591606b4e34ac91807d835ff294ad8451c32572f4b7cc
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart2.tgz
+    version: 0.1.6-chart2
+  - apiVersion: v1
+    appVersion: 0.1.6
+    created: "2020-11-14T07:58:40.989388-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: c377d4cb7d26c1df0f087845859cdf4a049cd745b2a174ecfc617afd32afac70
+    home: https://istio.io/
+    icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.6-chart1.tgz
+    version: 0.1.6-chart1
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.987916-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 65602a1e908a828fa57f032e7f5e8ec660ab3fe34cd41aefe2b61c62e14aac59
+    home: https://istio.io/
+    icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.986572-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 7ffab40324b8b19891cf47dc710f40f50e277a9b88fa22242b8ba07f517dc002
+    home: https://istio.io/
+    icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.984575-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 76e1d60a039d0b2bcf97e4bded960ec1a91b1a06b210efc1ad6d341df4eaa2cc
+    home: https://istio.io/
+    icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.983334-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: caf05f35b2ce9d0508b99d52aba8f9b5ae5616600d4892ca212b985f70c8e609
+    home: https://istio.io/
+    icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
+    created: "2020-11-14T07:58:40.981708-05:00"
+    description: Istio Helm chart for Kubernetes
+    digest: 0ac385d919695bb0486f8e02a4f3a3b2dfdba244ebff9595cb6d2377fff46482
+    home: https://istio.io/
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    name: istio
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://charts.helm.sh/incubator/istio-0.1.0.tgz
     version: 0.1.0
   jaeger:
   - apiVersion: v1
@@ -17674,6 +18322,40 @@ entries:
   kube-downscaler:
   - apiVersion: v1
     appVersion: 20.5.0
+    created: "2020-11-14T07:58:41.026512-05:00"
+    deprecated: true
+    description: DEPRECATED A Helm chart for kube-downscaler
+    digest: 29aa4e961aca88822bad82a0408ac193e526fb6bff5bcd08d90c51f51ae6d6ee
+    home: https://github.com/hjacobs/kube-downscaler
+    keywords:
+    - k8s pods scheduler
+    - scheduled lifecycle
+    name: kube-downscaler
+    sources:
+    - https://github.com/hjacobs/kube-downscaler
+    urls:
+    - https://charts.helm.sh/incubator/kube-downscaler-0.6.2.tgz
+    version: 0.6.2
+  - apiVersion: v1
+    appVersion: 20.5.0
+    created: "2020-11-14T07:58:41.026024-05:00"
+    description: A Helm chart for kube-downscaler
+    digest: dff3591d7885500a3d4af67be0c9f112adf5052af46963001cee33f15932bffd
+    home: https://github.com/hjacobs/kube-downscaler
+    keywords:
+    - k8s pods scheduler
+    - scheduled lifecycle
+    maintainers:
+    - email: c.tresarrieu@gmail.com
+      name: Rowern
+    name: kube-downscaler
+    sources:
+    - https://github.com/hjacobs/kube-downscaler
+    urls:
+    - https://charts.helm.sh/incubator/kube-downscaler-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v1
+    appVersion: 20.5.0
     created: "2020-10-21T13:03:35.763834226Z"
     description: A Helm chart for kube-downscaler
     digest: 833201ae6b2a9ed43f444ce2c3fcb426524b9240dfbfa6848a0d3afcd3b7ab21
@@ -17819,6 +18501,19 @@ entries:
   kube-janitor:
   - apiVersion: v1
     appVersion: v0.1.0
+    created: "2020-11-14T07:58:41.026871-05:00"
+    deprecated: true
+    description: DEPRECATED A Helm chart for running kube-janitor
+    digest: 72841a3151ab3f9d5637c1086b84149708fcfd6198683f158f2055d8b18dd153
+    home: https://github.com/themagicalkarp/kube-janitor
+    name: kube-janitor
+    sources:
+    - https://github.com/themagicalkarp/kube-janitor
+    urls:
+    - https://charts.helm.sh/incubator/kube-janitor-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v1
+    appVersion: v0.1.0
     created: "2020-11-09T22:22:16.529812057Z"
     description: A Helm chart for running kube-janitor
     digest: fec134d8bbc503d549306f93c17a6ef66362195c46dcb811dd80e8b2ede5a609
@@ -17883,6 +18578,30 @@ entries:
     - https://charts.helm.sh/incubator/packages/kube-ops-view-0.1.0.tgz
     version: 0.1.0
   kube-registry-proxy:
+  - apiVersion: v1
+    appVersion: "0.4"
+    created: "2020-11-14T07:58:41.027565-05:00"
+    deprecated: true
+    description: DEPRECATED Installs the kubernetes-registry-proxy cluster addon.
+    digest: f689e6f2b2fec63c7792fab15ca0beee3a65cc1a0acebe64d2abb00364dbccb3
+    home: https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/registry
+    name: kube-registry-proxy
+    urls:
+    - https://charts.helm.sh/incubator/kube-registry-proxy-0.3.4.tgz
+    version: 0.3.4
+  - apiVersion: v1
+    appVersion: "0.4"
+    created: "2020-11-14T07:58:41.027227-05:00"
+    description: Installs the kubernetes-registry-proxy cluster addon.
+    digest: 9264e2d450ad412883087358a40dcee58021f8590117cbb553ab591edc0a95f5
+    home: https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/registry
+    maintainers:
+    - email: maor.friedman@redhat.com
+      name: maorfr
+    name: kube-registry-proxy
+    urls:
+    - https://charts.helm.sh/incubator/kube-registry-proxy-0.3.3.tgz
+    version: 0.3.3
   - apiVersion: v1
     appVersion: "0.4"
     created: "2020-10-15T10:42:07.571329-04:00"
@@ -18100,6 +18819,29 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/kubeless-2.1.3.tgz
     version: 2.1.3
+  - apiVersion: v1
+    appVersion: v1.0.5
+    created: "2020-11-14T07:58:41.029146-05:00"
+    description: Kubeless is a Kubernetes-native serverless framework. It runs on
+      top of your Kubernetes cluster and allows you to deploy small unit of code without
+      having to build container images.
+    digest: f662898b75a7a6182a9d64064d850d1c0825b2fd3483eddc2d9dc2b9648fb964
+    home: http://kubeless.io/
+    icon: https://cloud.githubusercontent.com/assets/4056725/25480209/1d5bf83c-2b48-11e7-8db8-bcd650f31297.png
+    keywords:
+    - kubeless
+    - serverless
+    - function-as-a-service
+    - faas
+    maintainers:
+    - email: containers@bitnami.com
+      name: Bitnami
+    name: kubeless
+    sources:
+    - https://github.com/kubeless/kubeless
+    urls:
+    - https://charts.helm.sh/incubator/kubeless-2.1.2.tgz
+    version: 2.1.2
   - apiVersion: v1
     appVersion: v1.0.5
     created: "2020-10-15T10:42:07.589789-04:00"
@@ -18577,6 +19319,22 @@ entries:
     version: 0.2.3
   - apiVersion: v1
     appVersion: 0.5.2
+    created: "2020-11-14T07:58:41.029599-05:00"
+    description: The Kubernetes-Vault project allows pods to automatically receive
+      a Vault token using Vaults AppRole auth backend.
+    digest: 36b880284686a94e09d360146566947880e914f629e7636ed246839838b4466a
+    home: https://github.com/Boostport/kubernetes-vault
+    maintainers:
+    - email: briggs.brenton@gmail.com
+      name: bbriggs
+    name: kubernetes-vault
+    sources:
+    - https://github.com/Boostport/kubernetes-vault
+    urls:
+    - https://charts.helm.sh/incubator/kubernetes-vault-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v1
+    appVersion: 0.5.2
     created: "2020-10-15T10:42:07.590854-04:00"
     description: The Kubernetes-Vault project allows pods to automatically receive
       a Vault token using Vaults AppRole auth backend.
@@ -18624,6 +19382,25 @@ entries:
     - https://charts.helm.sh/incubator/packages/kubernetes-vault-0.1.0.tgz
     version: 0.1.0
   kubewatch:
+  - apiVersion: v1
+    appVersion: v0.0.3
+    created: "2020-11-14T07:58:41.030059-05:00"
+    description: Kubewatch notifies your slack rooms when changes to your cluster
+      occur
+    digest: c99936b441f3d8e65f02ea9369d4650a5431b9c51abee6162fbf798ca30102e7
+    home: https://github.com/skippbox/kubewatch
+    keywords:
+    - kubernetes
+    - slack
+    maintainers:
+    - email: casey@monax.io
+      name: compleatang
+    name: kubewatch
+    sources:
+    - https://github.com/skippbox/kubewatch
+    urls:
+    - https://charts.helm.sh/incubator/kubewatch-0.3.1.tgz
+    version: 0.3.1
   - apiVersion: v1
     appVersion: v0.0.3
     created: "2020-10-15T10:42:07.59214-04:00"
@@ -19280,6 +20057,23 @@ entries:
   mysqlha:
   - apiVersion: v1
     appVersion: 5.7.13
+    created: "2020-11-14T07:58:41.030964-05:00"
+    deprecated: true
+    description: DEPRECATED MySQL cluster with a single master and zero or more slave
+      replicas
+    digest: 4eab0b2cbe327d29d16a821f36102cc16833ef736a9ada8f88777ed9c997165d
+    home: https://www.mysql.com/
+    icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+    keywords:
+    - mysql
+    - database
+    - sql
+    name: mysqlha
+    urls:
+    - https://charts.helm.sh/incubator/mysqlha-2.0.2.tgz
+    version: 2.0.2
+  - apiVersion: v1
+    appVersion: 5.7.13
     created: "2020-11-09T00:58:46.667755835Z"
     description: MySQL cluster with a single master and zero or more slave replicas
     digest: 3584ac3f24bae077c282d712173fd991aac9d42483ac59ac3d00d905e0a85c81
@@ -19867,6 +20661,35 @@ entries:
   orientdb:
   - apiVersion: v1
     appVersion: 3.0.13
+    created: "2020-11-14T07:58:41.032445-05:00"
+    deprecated: true
+    description: DEPRECATED A Helm chart for Distributed OrientDB
+    digest: 3e00839ee643f77561706e74f8148e863548b464a8c8117a01da4d78fffc6294
+    home: https://orientdb.com
+    icon: https://orientdb.com/wp-content/uploads/cropped-favicon-orientdb-192x192.png
+    name: orientdb
+    urls:
+    - https://charts.helm.sh/incubator/orientdb-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    appVersion: 3.0.13
+    created: "2020-11-14T07:58:41.031635-05:00"
+    description: A Helm chart for Distributed OrientDB
+    digest: 501ce377cd60a338abf8af8872d240a772b53a7ae845f23106bb71bcf570690e
+    home: https://orientdb.com
+    icon: https://orientdb.com/wp-content/uploads/cropped-favicon-orientdb-192x192.png
+    maintainers:
+    - email: sommeliers@b-yond.com
+      name: b-yond-infinite-network
+      url: https://www.b-yond.com
+    - email: eli.kasik@b-yond.com
+      name: soujiro32167
+    name: orientdb
+    urls:
+    - https://charts.helm.sh/incubator/orientdb-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v1
+    appVersion: 3.0.13
     created: "2020-10-15T10:42:07.624302-04:00"
     description: A Helm chart for Distributed OrientDB
     digest: eb26ae8bc7e2dd8e8b1f9270531c11b9be1defcc1edccbb151fa380f80f1fe90
@@ -19883,6 +20706,33 @@ entries:
     - https://charts.helm.sh/incubator/packages/orientdb-0.1.2.tgz
     version: 0.1.2
   patroni:
+  - apiVersion: v1
+    appVersion: 1.5-p5
+    created: "2020-11-14T07:58:41.03555-05:00"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    deprecated: true
+    description: 'DEPRECATED Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: b27b74dddcfd3cdb4c1fc9829b02268f2999e6f8467905164aa6b76136b4a70b
+    home: https://github.com/zalando/patroni
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://charts.helm.sh/incubator/patroni-0.16.3.tgz
+    version: 0.16.3
   - apiVersion: v1
     appVersion: 1.5-p5
     created: "2020-10-30T15:41:29.901216471Z"
@@ -20736,6 +21586,22 @@ entries:
   puppet-forge:
   - apiVersion: v1
     appVersion: 1.10.0
+    created: "2020-11-14T07:58:41.036113-05:00"
+    deprecated: true
+    description: DEPRECATED Distribute locally developed Puppet modules and proxy
+      to the official Puppet Forge server
+    digest: 6576e8fc2b0410d734978ed1a2140e198d1c07ab8fda3f0d6bc6f5d1d44ecc37
+    home: https://github.com/unibet/puppet-forge-server
+    keywords:
+    - puppet
+    - repository
+    - forge
+    name: puppet-forge
+    urls:
+    - https://charts.helm.sh/incubator/puppet-forge-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v1
+    appVersion: 1.10.0
     created: "2020-11-10T09:21:58.776836896Z"
     description: Distribute locally developed Puppet modules and proxy to the official
       Puppet Forge server
@@ -20789,6 +21655,18 @@ entries:
     - https://charts.helm.sh/incubator/packages/puppet-forge-0.1.7.tgz
     version: 0.1.7
   raw:
+  - apiVersion: v1
+    appVersion: 0.2.3
+    created: "2020-11-14T07:58:41.036446-05:00"
+    deprecated: true
+    description: DEPRECATED A place for all the Kubernetes resources which don't already
+      have a home.
+    digest: 56b3e35a6567e0f335e703bf6802edd3e8c9b065fc8d9d58305c98c2ca81970d
+    home: https://github.com/helm/charts/blob/master/incubator/raw
+    name: raw
+    urls:
+    - https://charts.helm.sh/incubator/raw-0.2.5.tgz
+    version: 0.2.5
   - apiVersion: v1
     appVersion: 0.2.3
     created: "2020-11-10T09:25:56.258479578Z"
@@ -20884,6 +21762,21 @@ entries:
     - https://charts.helm.sh/incubator/packages/raw-0.1.0.tgz
     version: 0.1.0
   redis-cache:
+  - apiVersion: v1
+    appVersion: 4.0.12-alpine
+    created: "2020-11-14T07:58:41.036995-05:00"
+    deprecated: true
+    description: DEPRECATED A pure in-memory redis cache, using statefulset and redis-sentinel-micro
+    digest: eaa22231f25d94d34778eb98dc9364fd17f9c0b1da5a8e5c316dee3d90e25622
+    home: https://redis.io/
+    icon: https://redis.io/images/redis-white.png
+    name: redis-cache
+    sources:
+    - https://github.com/antirez/redis
+    - https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s
+    urls:
+    - https://charts.helm.sh/incubator/redis-cache-0.5.2.tgz
+    version: 0.5.2
   - apiVersion: v1
     appVersion: 4.0.12-alpine
     created: "2020-11-09T22:23:02.77738216Z"
@@ -21055,6 +21948,25 @@ entries:
   riemann:
   - apiVersion: v1
     appVersion: 0.2.14
+    created: "2020-11-14T07:58:41.037398-05:00"
+    deprecated: true
+    description: DEPRECATED Riemann monitors distributed systems. Riemann aggregates
+      events from your servers and applications with a powerful stream processing
+      language.
+    digest: b6f180a0c5cc34dd6deec485b8e9e1c4647fda235b2fd3502e1c4a2a732806e7
+    home: http://riemann.io/
+    keywords:
+    - riemann
+    - metrics
+    - monitoring
+    name: riemann
+    sources:
+    - https://github.com/raykrueger/riemann-docker
+    urls:
+    - https://charts.helm.sh/incubator/riemann-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    appVersion: 0.2.14
     created: "2020-11-10T09:56:10.941328159Z"
     description: Riemann monitors distributed systems. Riemann aggregates events from
       your servers and applications with a powerful stream processing language.
@@ -21134,6 +22046,48 @@ entries:
     - https://charts.helm.sh/incubator/packages/riemann-0.1.0.tgz
     version: 0.1.0
   rundeck:
+  - apiVersion: v1
+    appVersion: 3.2.7
+    created: "2020-11-14T07:58:41.038889-05:00"
+    deprecated: true
+    description: DEPRECATED A Rundeck chart for Kubernetes
+    digest: a271ca55c97418ba1e294e02032ca05e1864ad820aefcd53a65946e7aeb55d7c
+    home: https://github.com/rundeck/rundeck
+    keywords:
+    - rundeck
+    - jobs
+    - automation
+    - operations
+    name: rundeck
+    sources:
+    - https://github.com/rundeck/rundeck
+    urls:
+    - https://charts.helm.sh/incubator/rundeck-0.3.6.tgz
+    version: 0.3.6
+  - apiVersion: v1
+    appVersion: 3.2.7
+    created: "2020-11-14T07:58:41.038159-05:00"
+    description: A Rundeck chart for Kubernetes
+    digest: d2747d6e375b33526053d7e95381dc239c8e059e640cbaca3b3f38ddde8a7489
+    home: https://github.com/rundeck/rundeck
+    keywords:
+    - rundeck
+    - jobs
+    - automation
+    - operations
+    maintainers:
+    - email: hello@dwardu.com
+      name: dwardu89
+    - email: fabioviana.bh@gmail.com
+      name: fabioviana
+    - email: diego.fl.duarte@gmail.com
+      name: dfduarte
+    name: rundeck
+    sources:
+    - https://github.com/rundeck/rundeck
+    urls:
+    - https://charts.helm.sh/incubator/rundeck-0.3.5.tgz
+    version: 0.3.5
   - apiVersion: v1
     appVersion: 3.2.7
     created: "2020-10-15T10:42:07.681893-04:00"
@@ -21391,6 +22345,35 @@ entries:
     - https://charts.helm.sh/incubator/packages/rundeck-0.1.0.tgz
     version: 0.1.0
   schema-registry:
+  - apiVersion: v1
+    appVersion: 5.0.1
+    created: "2020-11-14T07:58:41.042058-05:00"
+    dependencies:
+    - condition: kafka.enabled
+      name: kafka
+      repository: https://charts.helm.sh/incubator
+      version: 0.21.2
+    deprecated: true
+    description: DEPRECATED Schema Registry provides a serving layer for your metadata.
+      It provides a RESTful interface for storing and retrieving Avro schemas. It
+      stores a versioned history of all schemas, provides multiple compatibility settings
+      and allows evolution of schemas according to the configured compatibility setting.
+      It provides serializers that plug into Kafka clients that handle schema storage
+      and retrieval for Kafka messages that are sent in the Avro format.
+    digest: ce11f60ea1b3687b3288758c9f32965b8bf4333263510cb37c03b9d67413d503
+    home: https://docs.confluent.io/current/schema-registry/docs/index.html
+    icon: https://www.confluent.io/wp-content/themes/confluent/assets/images/confluent-logo-300.png
+    keywords:
+    - confluent
+    - kafka
+    - schema-registry
+    name: schema-registry
+    sources:
+    - https://github.com/confluentinc/schema-registry
+    - https://github.com/confluentinc/cp-docker-images
+    urls:
+    - https://charts.helm.sh/incubator/schema-registry-1.2.3.tgz
+    version: 1.2.3
   - apiVersion: v1
     appVersion: 5.0.1
     created: "2020-11-09T22:23:24.474368343Z"
@@ -22296,6 +23279,25 @@ entries:
     version: 0.2.6
   - apiVersion: v1
     appVersion: latest
+    created: "2020-11-14T07:58:41.042487-05:00"
+    description: A Helm chart for sentry-kubernetes (https://github.com/getsentry/sentry-kubernetes)
+    digest: 9f800c9ae8c45f757228a4619095b6f0476dd06fdd0500d5d18e631513bd5889
+    home: https://github.com/getsentry/sentry-kubernetes
+    icon: https://sentry-brand.storage.googleapis.com/sentry-glyph-white.png
+    keywords:
+    - sentry
+    - report kubernetes events
+    maintainers:
+    - email: ctadeu@gmail.com
+      name: cpanato
+    name: sentry-kubernetes
+    sources:
+    - https://github.com/getsentry/sentry-kubernetes
+    urls:
+    - https://charts.helm.sh/incubator/sentry-kubernetes-0.2.5.tgz
+    version: 0.2.5
+  - apiVersion: v1
+    appVersion: latest
     created: "2020-10-15T10:42:07.745324-04:00"
     description: A Helm chart for sentry-kubernetes (https://github.com/getsentry/sentry-kubernetes)
     digest: 424839f01384e181096868f60ab87ba03e3eebed75318ac4a7678fc5d89751d1
@@ -22508,6 +23510,25 @@ entries:
     - https://charts.helm.sh/incubator/packages/sentry-kubernetes-0.1.0.tgz
     version: 0.1.0
   solr:
+  - apiVersion: v1
+    appVersion: 8.4.0
+    created: "2020-11-14T07:58:41.044303-05:00"
+    dependencies:
+    - name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 2.1.3
+    deprecated: true
+    description: 'DEPRECATED A helm chart to install Apache Solr: http://lucene.apache.org/solr/'
+    digest: ba18909f1972a61b472bc88c5b3eea6fa003e1a5d3d310c4d0d4bf403abf11a0
+    home: http://lucene.apache.org/solr/
+    keywords:
+    - solr
+    name: solr
+    sources:
+    - https://gitbox.apache.org/repos/asf?p=lucene-solr.git
+    urls:
+    - https://charts.helm.sh/incubator/solr-1.5.5.tgz
+    version: 1.5.5
   - apiVersion: v1
     appVersion: 8.4.0
     created: "2020-10-30T16:13:47.089085829Z"
@@ -24059,6 +25080,22 @@ entries:
   tensorflow-inception:
   - apiVersion: v1
     appVersion: 1.4.0
+    created: "2020-11-14T07:58:41.045132-05:00"
+    deprecated: true
+    description: DEPRECATED Open source software library for numerical computation
+      using data flow graphs.
+    digest: d9e3d0cd126d6753f8cef5d09f3e82fcf3a5c5956091b83d06860c1e5c319fdd
+    home: https://github.com/kubernetes/charts
+    icon: https://camo.githubusercontent.com/ee91ac3c9f5ad840ebf70b54284498fe0e6ddb92/68747470733a2f2f7777772e74656e736f72666c6f772e6f72672f696d616765732f74665f6c6f676f5f7472616e73702e706e67
+    name: tensorflow-inception
+    sources:
+    - https://github.com/tensorflow/
+    - https://tensorflow.github.io/serving/serving_inception.html
+    urls:
+    - https://charts.helm.sh/incubator/tensorflow-inception-0.4.3.tgz
+    version: 0.4.3
+  - apiVersion: v1
+    appVersion: 1.4.0
     created: "2020-11-10T10:04:03.806660528Z"
     description: Open source software library for numerical computation using data
       flow graphs.
@@ -25531,6 +26568,18 @@ entries:
   vaultingkube:
   - apiVersion: v1
     appVersion: 0.1.1
+    created: "2020-11-14T07:58:41.045602-05:00"
+    deprecated: true
+    description: DEPRECATED vaultingkube takes config maps and secrets stored inside
+      Hashicorp Vault and syncs them to your Kubernetes cluster.
+    digest: eb8293c7611499eb92ce8a8cd0328075c4aa8022c2c58681feea271b647114f6
+    home: https://github.com/sunshinekitty/vaultingkube
+    name: vaultingkube
+    urls:
+    - https://charts.helm.sh/incubator/vaultingkube-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    appVersion: 0.1.1
     created: "2020-11-10T09:41:55.506265752Z"
     description: vaultingkube takes config maps and secrets stored inside Hashicorp
       Vault and syncs them to your Kubernetes cluster.
@@ -26002,6 +27051,44 @@ entries:
     - https://charts.helm.sh/incubator/packages/xray-0.3.0.tgz
     version: 0.3.0
   zookeeper:
+  - apiVersion: v1
+    appVersion: 3.5.5
+    created: "2020-11-14T07:58:41.047964-05:00"
+    deprecated: true
+    description: DEPRECATED Centralized service for maintaining configuration information,
+      naming, providing distributed synchronization, and providing group services.
+    digest: 0e4ca3803609bb424e8496c89b423317c6a4872c2f451ec66ccb5d9ecf8f5597
+    home: https://zookeeper.apache.org/
+    icon: https://zookeeper.apache.org/images/zookeeper_small.gif
+    kubeVersion: ^1.10.0-0
+    name: zookeeper
+    sources:
+    - https://github.com/apache/zookeeper
+    - https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
+    urls:
+    - https://charts.helm.sh/incubator/zookeeper-2.1.6.tgz
+    version: 2.1.6
+  - apiVersion: v1
+    appVersion: 3.5.5
+    created: "2020-11-14T07:58:41.04679-05:00"
+    description: Centralized service for maintaining configuration information, naming,
+      providing distributed synchronization, and providing group services.
+    digest: 4cbe2e248d30b825da0785a45dbe69948fbd66cdcef02348dd26e7a6a1ef9c86
+    home: https://zookeeper.apache.org/
+    icon: https://zookeeper.apache.org/images/zookeeper_small.gif
+    kubeVersion: ^1.10.0-0
+    maintainers:
+    - email: lachlan.evenson@microsoft.com
+      name: lachie83
+    - email: owensk@google.com
+      name: kow3ns
+    name: zookeeper
+    sources:
+    - https://github.com/apache/zookeeper
+    - https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
+    urls:
+    - https://charts.helm.sh/incubator/zookeeper-2.1.5.tgz
+    version: 2.1.5
   - apiVersion: v1
     appVersion: 3.5.5
     created: "2020-10-15T10:42:07.923156-04:00"
@@ -26890,4 +27977,4 @@ entries:
     urls:
     - https://charts.helm.sh/incubator/packages/zookeeper-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-13T16:46:28.812227505Z"
+generated: "2020-11-14T07:58:40.970932-05:00"
