@@ -1350,7 +1350,7 @@ entries:
     - https://github.com/hyperledger/burrow
     - https://quay.io/monax/db
     urls:
-    - https://charts.helm.sh/incubator/burrow-0.4.3.tgz
+    - https://charts.helm.sh/incubator/packages/burrow-0.4.3.tgz
     version: 0.4.3
   - apiVersion: v1
     appVersion: 0.17.1
@@ -8529,7 +8529,7 @@ entries:
     - https://github.com/kubernetes/charts
     - https://github.com/fluent/fluentd-kubernetes-daemonset
     urls:
-    - https://charts.helm.sh/incubator/fluentd-cloudwatch-0.13.2.tgz
+    - https://charts.helm.sh/incubator/packages/fluentd-cloudwatch-0.13.2.tgz
     version: 0.13.2
   - apiVersion: v1
     appVersion: v1.7.3-debian-cloudwatch-1.0
@@ -11408,7 +11408,7 @@ entries:
     sources:
     - https://github.com/SpectoLabs/hoverfly
     urls:
-    - https://charts.helm.sh/incubator/hoverfly-0.1.4.tgz
+    - https://charts.helm.sh/incubator/packages/hoverfly-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: 1.1.1
@@ -11517,7 +11517,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.3.0.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.2.12
@@ -11534,7 +11534,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.13-chart4.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.13-chart4.tgz
     version: 0.2.13-chart4
   - apiVersion: v1
     appVersion: 0.2.12
@@ -11551,7 +11551,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.12-chart4.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.12-chart4.tgz
     version: 0.2.12-chart4
   - apiVersion: v1
     appVersion: 0.2.12
@@ -11567,7 +11567,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.12-chart3.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.12-chart3.tgz
     version: 0.2.12-chart3
   - apiVersion: v1
     appVersion: 0.2.8
@@ -11583,7 +11583,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.8-chart2.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.8-chart2.tgz
     version: 0.2.8-chart2
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11599,7 +11599,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart7.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart7.tgz
     version: 0.2.7-chart7
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11615,7 +11615,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart6.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart6.tgz
     version: 0.2.7-chart6
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11631,7 +11631,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart5.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart5.tgz
     version: 0.2.7-chart5
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11647,7 +11647,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart4.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart4.tgz
     version: 0.2.7-chart4
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11663,7 +11663,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart3.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart3.tgz
     version: 0.2.7-chart3
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11679,7 +11679,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart2.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart2.tgz
     version: 0.2.7-chart2
   - apiVersion: v1
     appVersion: 0.2.7
@@ -11695,7 +11695,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.7-chart1.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.7-chart1.tgz
     version: 0.2.7-chart1
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11711,7 +11711,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.6-chart5.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.6-chart5.tgz
     version: 0.2.6-chart5
   - apiVersion: v1
     appVersion: 0.2.6
@@ -11727,7 +11727,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.6-chart1.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.6-chart1.tgz
     version: 0.2.6-chart1
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11743,7 +11743,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.1.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v1
     created: "2020-11-14T07:58:41.002129-05:00"
@@ -11758,7 +11758,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.2.0.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
     created: "2020-11-14T07:58:41.000289-05:00"
@@ -11773,7 +11773,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.7.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.7.tgz
     version: 0.1.7
   - apiVersion: v1
     created: "2020-11-14T07:58:40.998865-05:00"
@@ -11788,7 +11788,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11804,7 +11804,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart6.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart6.tgz
     version: 0.1.6-chart6
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11820,7 +11820,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart5.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart5.tgz
     version: 0.1.6-chart5
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11836,7 +11836,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart4.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart4.tgz
     version: 0.1.6-chart4
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11852,7 +11852,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart3.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart3.tgz
     version: 0.1.6-chart3
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11868,7 +11868,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart2.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart2.tgz
     version: 0.1.6-chart2
   - apiVersion: v1
     appVersion: 0.1.6
@@ -11884,7 +11884,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.6-chart1.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.6-chart1.tgz
     version: 0.1.6-chart1
   - apiVersion: v1
     created: "2020-11-14T07:58:40.987916-05:00"
@@ -11899,7 +11899,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.5.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v1
     created: "2020-11-14T07:58:40.986572-05:00"
@@ -11914,7 +11914,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.4.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     created: "2020-11-14T07:58:40.984575-05:00"
@@ -11929,7 +11929,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.3.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     created: "2020-11-14T07:58:40.983334-05:00"
@@ -11944,7 +11944,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.1.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v1
     created: "2020-11-14T07:58:40.981708-05:00"
@@ -11958,7 +11958,7 @@ entries:
     sources:
     - https://github.com/istio/istio
     urls:
-    - https://charts.helm.sh/incubator/istio-0.1.0.tgz
+    - https://charts.helm.sh/incubator/packages/istio-0.1.0.tgz
     version: 0.1.0
   jaeger:
   - apiVersion: v1
@@ -20070,7 +20070,7 @@ entries:
     - sql
     name: mysqlha
     urls:
-    - https://charts.helm.sh/incubator/mysqlha-2.0.2.tgz
+    - https://charts.helm.sh/incubator/packages/mysqlha-2.0.2.tgz
     version: 2.0.2
   - apiVersion: v1
     appVersion: 5.7.13
@@ -20669,7 +20669,7 @@ entries:
     icon: https://orientdb.com/wp-content/uploads/cropped-favicon-orientdb-192x192.png
     name: orientdb
     urls:
-    - https://charts.helm.sh/incubator/orientdb-0.1.4.tgz
+    - https://charts.helm.sh/incubator/packages/orientdb-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: 3.0.13
@@ -20686,7 +20686,7 @@ entries:
       name: soujiro32167
     name: orientdb
     urls:
-    - https://charts.helm.sh/incubator/orientdb-0.1.3.tgz
+    - https://charts.helm.sh/incubator/packages/orientdb-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v1
     appVersion: 3.0.13
@@ -21665,7 +21665,7 @@ entries:
     home: https://github.com/helm/charts/blob/master/incubator/raw
     name: raw
     urls:
-    - https://charts.helm.sh/incubator/raw-0.2.5.tgz
+    - https://charts.helm.sh/incubator/packages/raw-0.2.5.tgz
     version: 0.2.5
   - apiVersion: v1
     appVersion: 0.2.3
@@ -21775,7 +21775,7 @@ entries:
     - https://github.com/antirez/redis
     - https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s
     urls:
-    - https://charts.helm.sh/incubator/redis-cache-0.5.2.tgz
+    - https://charts.helm.sh/incubator/packages/redis-cache-0.5.2.tgz
     version: 0.5.2
   - apiVersion: v1
     appVersion: 4.0.12-alpine
@@ -21963,7 +21963,7 @@ entries:
     sources:
     - https://github.com/raykrueger/riemann-docker
     urls:
-    - https://charts.helm.sh/incubator/riemann-0.1.4.tgz
+    - https://charts.helm.sh/incubator/packages/riemann-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: 0.2.14
@@ -22062,7 +22062,7 @@ entries:
     sources:
     - https://github.com/rundeck/rundeck
     urls:
-    - https://charts.helm.sh/incubator/rundeck-0.3.6.tgz
+    - https://charts.helm.sh/incubator/packages/rundeck-0.3.6.tgz
     version: 0.3.6
   - apiVersion: v1
     appVersion: 3.2.7
@@ -22086,7 +22086,7 @@ entries:
     sources:
     - https://github.com/rundeck/rundeck
     urls:
-    - https://charts.helm.sh/incubator/rundeck-0.3.5.tgz
+    - https://charts.helm.sh/incubator/packages/rundeck-0.3.5.tgz
     version: 0.3.5
   - apiVersion: v1
     appVersion: 3.2.7
@@ -22372,7 +22372,7 @@ entries:
     - https://github.com/confluentinc/schema-registry
     - https://github.com/confluentinc/cp-docker-images
     urls:
-    - https://charts.helm.sh/incubator/schema-registry-1.2.3.tgz
+    - https://charts.helm.sh/incubator/packages/schema-registry-1.2.3.tgz
     version: 1.2.3
   - apiVersion: v1
     appVersion: 5.0.1
@@ -23294,7 +23294,7 @@ entries:
     sources:
     - https://github.com/getsentry/sentry-kubernetes
     urls:
-    - https://charts.helm.sh/incubator/sentry-kubernetes-0.2.5.tgz
+    - https://charts.helm.sh/incubator/packages/sentry-kubernetes-0.2.5.tgz
     version: 0.2.5
   - apiVersion: v1
     appVersion: latest
@@ -23527,7 +23527,7 @@ entries:
     sources:
     - https://gitbox.apache.org/repos/asf?p=lucene-solr.git
     urls:
-    - https://charts.helm.sh/incubator/solr-1.5.5.tgz
+    - https://charts.helm.sh/incubator/packages/solr-1.5.5.tgz
     version: 1.5.5
   - apiVersion: v1
     appVersion: 8.4.0
@@ -25092,7 +25092,7 @@ entries:
     - https://github.com/tensorflow/
     - https://tensorflow.github.io/serving/serving_inception.html
     urls:
-    - https://charts.helm.sh/incubator/tensorflow-inception-0.4.3.tgz
+    - https://charts.helm.sh/incubator/packages/tensorflow-inception-0.4.3.tgz
     version: 0.4.3
   - apiVersion: v1
     appVersion: 1.4.0
@@ -26576,7 +26576,7 @@ entries:
     home: https://github.com/sunshinekitty/vaultingkube
     name: vaultingkube
     urls:
-    - https://charts.helm.sh/incubator/vaultingkube-0.1.4.tgz
+    - https://charts.helm.sh/incubator/packages/vaultingkube-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v1
     appVersion: 0.1.1
@@ -27066,7 +27066,7 @@ entries:
     - https://github.com/apache/zookeeper
     - https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
     urls:
-    - https://charts.helm.sh/incubator/zookeeper-2.1.6.tgz
+    - https://charts.helm.sh/incubator/packages/zookeeper-2.1.6.tgz
     version: 2.1.6
   - apiVersion: v1
     appVersion: 3.5.5
@@ -27087,7 +27087,7 @@ entries:
     - https://github.com/apache/zookeeper
     - https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper
     urls:
-    - https://charts.helm.sh/incubator/zookeeper-2.1.5.tgz
+    - https://charts.helm.sh/incubator/packages/zookeeper-2.1.5.tgz
     version: 2.1.5
   - apiVersion: v1
     appVersion: 3.5.5
