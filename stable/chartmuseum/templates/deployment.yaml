@@ -44,11 +44,19 @@ spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- if .Values.securityContext.runAsNonRoot }}
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+        {{- end }}
+        {{- if .Values.securityContext.supplementalGroups }}
+        supplementalGroups: {{ .Values.securityContext.supplementalGroups }}
+        {{- end }}
       {{- else if .Values.persistence.enabled }}
       initContainers:
       - name: volume-permissions
         image: {{ template "chartmuseum.volumePermissions.image" . }}
         imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        securityContext:
+          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
         command: ['sh', '-c', 'chown -R {{ .Values.securityContext.fsGroup }}:{{ .Values.securityContext.fsGroup }} {{ .Values.persistence.path }}']
         volumeMounts:
         - mountPath: {{ .Values.persistence.path }}
@@ -59,6 +67,8 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
         env:
 {{- range $name, $value := .Values.env.open }}
 {{- if not (empty $value) }}
@@ -160,10 +170,12 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.serviceAccount.create }}
+    {{- if .Values.deployment.schedulerName }}
       schedulerName: {{ .Values.deployment.schedulerName }}
     {{- end -}}
-    {{- if .Values.serviceAccount.create }}
+    {{- if and .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- else if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "chartmuseum.fullname" . }}
     {{- else if .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}

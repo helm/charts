@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Hyperledger Fabric Orderer
 
 [Hyperledger Fabric Orderer](http://hyperledger-fabric.readthedocs.io/) is the node type responsible for "consensus" for the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -88,6 +97,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                 | Image pull policy                                             | `IfNotPresent`                                             |
 | `service.port`                     | TCP port                                                      | `7050`                                                     |
 | `service.type`                     | K8S service type exposing ports, e.g. `ClusterIP`             | `ClusterIP`                                                |
+| `service.portMetrics`              | TCP port for the metrics service                              | `9443`                                                     |
 | `ingress.enabled`                  | If true, Ingress will be created                              | `false`                                                    |
 | `ingress.annotations`              | Ingress annotations                                           | `{}`                                                       |
 | `ingress.path`                     | Ingress path                                                  | `/`                                                        |
@@ -101,7 +111,6 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                              | `OrdererMSP`                                               |
 | `ord.tls.server.enabled`           | Do we enable server-side TLS?                                 | `false`                                                    |
 | `ord.tls.client.enabled`           | Do we enable client-side TLS?                                 | `false`                                                    |
-| `ord.operations.listenAddress`     | Host and port for the operations server                       | ``                                                         |
 | `ord.metrics.provider`             | Metrics provider, can be `statsd`, `prometheus` or `disabled` | `disabled`                                                 |
 | `ord.metrics.statsd.network`       | Network type, can be `udp` or `tcp`                           | `udp`                                                      |
 | `ord.metrics.statsd.address`       | Address of the StatsD server                                  | `127.0.0.1:8125`                                           |

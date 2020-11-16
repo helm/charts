@@ -112,11 +112,19 @@ spec:
             {{- if .Values.firefoxDebug.extraEnvs }}
 {{ toYaml .Values.firefoxDebug.extraEnvs | indent 12 }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.firefoxDebug.volumeMounts -}}
+{{ toYaml .Values.firefoxDebug.volumeMounts | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.firefoxDebug.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.firefoxDebug.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.firefoxDebug.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.firefoxDebug.volumes -}}
+{{ toYaml .Values.firefoxDebug.volumes | indent 8 }}
 {{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}

@@ -31,6 +31,12 @@ spec:
         app: {{ template "opa.fullname" . }}
       name: {{ template "opa.fullname" . }}
     spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+{{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
@@ -77,6 +83,13 @@ spec:
 {{- end }}
       containers:
         - name: opa
+          ports:
+          - name: https
+            containerPort: {{ .Values.port }}
+{{- if .Values.prometheus.enabled }}
+          - name: http
+            containerPort: {{ .Values.mgmt.port }}
+{{- end }}
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           resources:
@@ -98,12 +111,15 @@ spec:
             - "--ignore=.*"
 {{- end }}
 {{- if .Values.prometheus.enabled }}
-            - "--addr=http://0.0.0.0:8181"
+            - "--addr=http://0.0.0.0:{{ .Values.mgmt.port }}"
 {{- else if .Values.mgmt.enabled }}
-            - "--addr=http://127.0.0.1:8181"
+            - "--addr=http://127.0.0.1:{{ .Values.mgmt.port }}"
 {{- end }}
 {{- if or .Values.authz.enabled .Values.bootstrapPolicies }}
             - "/bootstrap"
+{{- end }}
+{{- range .Values.extraArgs }}
+            - {{ . }}
 {{- end }}
           volumeMounts:
             - name: certs
@@ -133,7 +149,7 @@ spec:
 {{- if .Values.authz.enabled }}
             - --opa-auth-token-file=/bootstrap/mgmt-token
 {{- end }}
-            - --opa-url=http://127.0.0.1:8181/v1
+            - --opa-url=http://127.0.0.1:{{ .Values.mgmt.port }}/v1
             - --replicate-path={{ .Values.mgmt.replicate.path }}
             - --enable-data={{ .Values.mgmt.data.enabled }}
             - --enable-policies={{ .Values.mgmt.configmapPolicies.enabled }}

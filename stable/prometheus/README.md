@@ -1,5 +1,7 @@
 # Prometheus
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 [Prometheus](https://prometheus.io/), a [Cloud Native Computing Foundation](https://cncf.io/) project, is a systems and service monitoring system. It collects metrics from configured targets at given intervals, evaluates rule expressions, displays the results, and can trigger alerts if some condition is observed to be true.
 
 ## TL;DR;
@@ -185,7 +187,7 @@ Parameter | Description | Default
 `configmapReload.prometheus.enabled` | If false, the configmap-reload container for Prometheus will not be deployed | `true`
 `configmapReload.prometheus.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.prometheus.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
-`configmapReload.prometheus.image.tag` | configmap-reload container image tag | `v0.3.0`
+`configmapReload.prometheus.image.tag` | configmap-reload container image tag | `v0.4.0`
 `configmapReload.prometheus.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.prometheus.extraArgs` | Additional configmap-reload container arguments | `{}`
 `configmapReload.prometheus.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
@@ -194,7 +196,7 @@ Parameter | Description | Default
 `configmapReload.alertmanager.enabled` | If false, the configmap-reload container for AlertManager will not be deployed | `true`
 `configmapReload.alertmanager.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.alertmanager.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
-`configmapReload.alertmanager.image.tag` | configmap-reload container image tag | `v0.3.0`
+`configmapReload.alertmanager.image.tag` | configmap-reload container image tag | `v0.4.0`
 `configmapReload.alertmanager.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.alertmanager.extraArgs` | Additional configmap-reload container arguments | `{}`
 `configmapReload.alertmanager.extraVolumeDirs` | Additional configmap-reload volume directories | `{}`
@@ -282,7 +284,7 @@ Parameter | Description | Default
 `server.enabled` | If false, Prometheus server will not be created | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.19.0`
+`server.image.tag` | Prometheus server container image tag | `v2.20.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.configPath` |  Path to a prometheus server config file on the container FS  | `/etc/config/prometheus.yml`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`

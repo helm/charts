@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # kube-state-metrics Helm Chart
 
 * Installs the [kube-state-metrics agent](https://github.com/kubernetes/kube-state-metrics).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Installing the Chart
 
@@ -78,3 +87,5 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.honorLabels`             | Honor metric labels                                                                   | `false`                                    |
 | `namespaceOverride`                          | Override the deployment namespace                                                     | `""` (`Release.Namespace`)                 |
 | `kubeTargetVersionOverride`                  | Override the k8s version of the target cluster                                        | `""`                                       |
+| `kubeconfig.enabled`                         | Adds --kubeconfig arg to container at startup                                         | `""`                                       |
+| `kubeconfig.secret`                          | Base64 encoded kubeconfig file                                                        | `""`                                       |

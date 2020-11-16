@@ -1,5 +1,14 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Cassandra
 A Cassandra Chart for Kubernetes
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Install Chart
 To install the Cassandra Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart. To create storage class, see [Persist data](#persist_data) section)
@@ -165,6 +174,9 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `exporter.port`                      | Exporter port                                   | `5556`                                                     |
 | `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
 | `exporter.resources`                 | Exporter CPU/Memory resource requests/limits    | `{}`                                                       |
+| `extraContainers`                    | Sidecar containers for the pods                 | `[]`                                                       |
+| `extraVolumes`                       | Additional volumes for the pods                 | `[]`                                                       |
+| `extraVolumeMounts`                  | Extra volume mounts for the pods                | `[]`                                                       |
 | `affinity`                           | Kubernetes node affinity                        | `{}`                                                       |
 | `tolerations`                        | Kubernetes node tolerations                     | `[]`                                                       |
 

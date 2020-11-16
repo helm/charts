@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Hyperledger Fabric Peer
 
 [Hyperledger Fabric Peer](http://hyperledger-fabric.readthedocs.io/) is the node type responsible for endorsing transactions and recording them on the Blockchain for the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -78,6 +87,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `image.pullPolicy`                  | Image pull policy                                              | `IfNotPresent`            |
 | `service.portRequest`               | TCP port for requests to Peer                                  | `7051`                    |
 | `service.portEvent`                 | TCP port for event service on Peer                             | `7053`                    |
+| `service.portMetrics`               | TCP port for the metrics service on Peer                       | `9443`                    |
 | `service.type`                      | K8S service type exposing ports, e.g. `ClusterIP`              | `ClusterIP`               |
 | `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite                            | `ReadWriteOnce`           |
 | `persistence.annotations`           | Persistent Volume annotations                                  | `{}`                      |
@@ -113,7 +123,6 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `peer.chaincode.runtime.golang`     | Image of the chaincode runtime for Go                          | ``                        |
 | `peer.chaincode.runtime.java`       | Image of the chaincode runtime for Java                        | ``                        |
 | `peer.chaincode.runtime.node`       | Image of the chaincode runtime for Node.js                     | ``                        |
-| `peer.operations.listenAddress`     | Host and port for the operations server                        | ``                        |
 | `peer.metrics.provider`             | Metrics provider, can be `statsd`, `prometheus`, or `disabled` | `disabled`                |
 | `peer.metrics.statsd.network`       | Network type, can be `tcp` or `udp`                            | `udp`                     |
 | `peer.metrics.statsd.address`       | Address of the StatsD server                                   | `127.0.0.1:8125`          |

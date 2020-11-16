@@ -1,5 +1,9 @@
-# Graylog
+# DEPRECATED - Graylog
 
+**This chart has been deprecated and moved to its new home:**
+  - **GitHub repo:** https://github.com/KongZ/charts
+  - **Charts repo:** https://charts.kong-z.com/
+---
 This chart provide the [Graylog][1] deployments.
 Note: It is strongly recommend to use on Official Graylog image to run this chart.
 
@@ -176,6 +180,7 @@ The following table lists the configurable parameters of the Graylog chart and t
 | `graylog.journal.deleteBeforeStart`            | Delete all journal files before start Graylog                                                                                                         | `false`                           |
 | `graylog.init.resources`                       | Configure resource requests and limits for the Graylog StatefulSet initContainer                                                                      | `{}`                              |
 | `graylog.provisioner.enabled`                  | Enable optional Job to run an arbitrary Bash script                                                                                                   | `false`                           |
+| `graylog.provisioner.annotations`              | Graylog provisioner Job annotations                                                                                                                    | `{}`                              |
 | `graylog.provisioner.useGraylogServiceAccount` | Use the same ServiceAccount used by Graylog pod                                                                                                       | `false`                           |
 | `graylog.provisioner.script`                   | The contents of the provisioner Bash script                                                                                                           |                                   |
 | `graylog.sidecarContainers`                    | Sidecar containers to run in the server statefulset                                                                                                   | `[]`                              |

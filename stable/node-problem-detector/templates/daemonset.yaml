@@ -11,6 +11,12 @@ metadata:
     {{ $key }}: {{ $val | quote }}
     {{- end}}
 spec:
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+{{- if eq .Values.updateStrategy "RollingUpdate"}}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.maxUnavailable }}
+{{- end}}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}

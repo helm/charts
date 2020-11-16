@@ -1,8 +1,17 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Etcd Helm Chart
 
 Credit to https://github.com/ingvagabund. This is an implementation of that work
 
 * https://github.com/kubernetes/contrib/pull/1295
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites Details
 * Kubernetes 1.5 (for `StatefulSets` support)

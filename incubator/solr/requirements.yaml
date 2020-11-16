@@ -3,4 +3,4 @@
 dependencies:
   - name: zookeeper
     version: 2.1.3
-    repository: "https://kubernetes-charts-incubator.storage.googleapis.com/"
+    repository: https://charts.helm.sh/incubator

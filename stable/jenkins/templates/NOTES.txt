@@ -1,3 +1,8 @@
+*******************
+****DEPRECATED*****
+*******************
+* The Jenkins chart is deprecated. Future development has been moved to https://github.com/jenkinsci/helm-charts
+
 1. Get your '{{ .Values.master.adminUser }}' user password by running:
   printf $(kubectl get secret --namespace {{ template "jenkins.namespace" . }} {{ template "jenkins.fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 

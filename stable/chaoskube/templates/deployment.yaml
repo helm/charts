@@ -1,8 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "apps/v1beta1" }}
-apiVersion: apps/v1beta1
-{{- else }}
 apiVersion: apps/v1
-{{- end }}
 kind: Deployment
 metadata:
   name: {{ include "chaoskube.fullname" . }}
@@ -32,6 +28,9 @@ spec:
           args:
             - --interval={{ .Values.interval }}
             - --labels={{ .Values.labels }}
+            {{- if .Values.kinds }}
+            - --kinds={{ .Values.kinds }}
+            {{- end }}
             - --annotations={{ .Values.annotations }}
             - --namespaces={{ .Values.namespaces }}
             {{- if not .Values.dryRun }}
@@ -77,6 +76,10 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -16,6 +16,13 @@ agent:
   # agent.endpointPort is the port number (as a String) of the Instana server your agents will connect to.
   endpointPort: 443
 
+  # These are additional backends the Instana agent will report to besides
+  # the one configured via the `agent.endpointHost`, `agent.endpointPort` and `agent.key` setting
+  additionalBackends: []
+    # - endpointHost: ingress.instana.io
+    #   endpointPort: 443
+    #   key: <agent_key>
+
   image:
     # agent.image.name is the name of the container image of the Instana agent.
     name: instana/agent
@@ -32,6 +39,10 @@ agent:
     #   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     tolerations: []
 
+    # agent.pod.priorityClassName is the name of an existing PriorityClass that should be set on the agent pods
+    #   https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+    priorityClassName: null
+
     requests:
       # agent.pod.requests.memory is the requested memory allocation in MiB for the agent pods.
       memory: 512
@@ -46,15 +57,15 @@ agent:
   # agent.proxyHost sets the INSTANA_AGENT_PROXY_HOST environment variable.
   # proxyHost: null
   # agent.proxyPort sets the INSTANA_AGENT_PROXY_PORT environment variable.
-  # proxyPort: null
+  # proxyPort: 80
   # agent.proxyProtocol sets the INSTANA_AGENT_PROXY_PROTOCOL environment variable.
-  # proxyProtocol: null
+  # proxyProtocol: HTTP
   # agent.proxyUser sets the INSTANA_AGENT_PROXY_USER environment variable.
   # proxyUser: null
   # agent.proxyPassword sets the INSTANA_AGENT_PROXY_PASSWORD environment variable.
   # proxyPassword: null
   # agent.proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
-  # proxyUseDNS: null
+  # proxyUseDNS: false
 
   # use this to set additional environment variables for the instana agent
   # for example:

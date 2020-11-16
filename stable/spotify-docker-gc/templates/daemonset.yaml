@@ -1,16 +1,31 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "name" . }}
+  name: {{ include "spotify-docker-gc.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "spotify-docker-gc.name" . }}
+    helm.sh/chart: {{ include "spotify-docker-gc.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   {{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: RollingUpdate
   {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "spotify-docker-gc.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        daemonset: {{ template "name" . }}
+        app.kubernetes.io/name: {{ include "spotify-docker-gc.name" . }}
+        helm.sh/chart: {{ include "spotify-docker-gc.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        kubernetes.io/cluster-service: "true"
     spec:
       {{- if .Values.serviceAccount }}
       serviceAccountName: {{ .Values.serviceAccount }}
@@ -20,7 +35,7 @@ spec:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ template "name" . }}
+      - name: {{ include "spotify-docker-gc.name" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.org }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/sh"]

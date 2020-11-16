@@ -205,6 +205,9 @@ historical:
 
   nodeSelector: {}
 
+  securityContext:
+    fsGroup: 1000
+
   tolerations: []
 
   resources: {}
@@ -283,6 +286,9 @@ middleManager:
   nodeAffinity: {}
 
   nodeSelector: {}
+
+  securityContext:
+    fsGroup: 1000
 
   tolerations: []
 

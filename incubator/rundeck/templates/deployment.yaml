@@ -30,7 +30,14 @@ spec:
       serviceAccountName: {{ include "rundeck.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
       containers:
+        {{- if .Values.sideCars }}
+          {{- toYaml .Values.sideCars | nindent 8 }}
+        {{- end }}
         - name: nginx
           image: nginx:stable
           ports:
@@ -74,8 +81,9 @@ spec:
             - name: RUNDECK_LOGGING_STRATEGY
               value: "CONSOLE"
           volumeMounts:
-          - name: data
-            mountPath: /home/rundeck/server/data
+        {{- if .Values.volumeMounts }}
+          {{- toYaml .Values.volumeMounts | nindent 10}}
+        {{- end }}
         {{- if .Values.rundeck.sshSecrets }}
           - name: sshkeys
             mountPath: /home/rundeck/.ssh
@@ -92,9 +100,6 @@ spec:
         {{- if .Values.rundeck.extraConfigSecret }}
           - name: extra-config
             mountPath: /home/rundeck/extra/
-        {{- end }}
-        {{- if .Values.volumeMounts }}
-          {{- toYaml .Values.volumeMounts | nindent 10}}
         {{- end }}
           ports:
             - name: rundeck

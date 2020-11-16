@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "airflow.fullname" . }}-scripts
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  install-requirements.sh: |
+    #!/bin/bash -e
+    if [ ! -d {{ .Values.dags.path | quote }} ]; then
+      echo 'No folder {{ .Values.dags.path | quote }}'
+      exit 0
+    fi
+
+    cd {{ .Values.dags.path | quote }}
+    if [ -f requirements.txt ]; then
+      pip install --user -r requirements.txt
+    else
+      exit 0
+    fi
+  graceful-stop-celery-worker.sh: |
+    #!/bin/bash -e
+    echo "*** starting graceful worker shutdown"
+
+    # set the required environment variables
+    export AIRFLOW__CELERY__BROKER_URL=$(eval $AIRFLOW__CELERY__BROKER_URL_CMD)
+
+    # prevent the worker accepting new tasks
+    echo "*** preventing worker accepting new tasks"
+    celery control --broker $AIRFLOW__CELERY__BROKER_URL --destination celery@$HOSTNAME cancel_consumer default
+    sleep 5
+
+    # loop until all active task are finished
+    echo "*** waiting for active tasks to finish"
+    while (( celery inspect --broker $AIRFLOW__CELERY__BROKER_URL --destination celery@$HOSTNAME --json active | python3 -c "import json; active_tasks = json.loads(input())['celery@$HOSTNAME']; print(len(active_tasks))" > 0 )); do
+      sleep 10
+    done
+  preinit-db.sh: |
+    #!/bin/bash
+    echo "*** Waiting 10s for database"
+    sleep 10
+
+    COUNT=0
+    while [ "${COUNT}" -lt 5 ]; do
+      echo "*** Initializing airflow db"
+      if airflow initdb; then
+        echo "*** Initdb succeeded"
+        exit 0
+      else
+        ((COUNT++))
+        echo "*** Initdb failed: waiting 5s before retry #${COUNT}"
+        sleep 5
+      fi
+    done
+
+    echo "*** Initdb failed after ${COUNT} retries; failed."
+    exit 1

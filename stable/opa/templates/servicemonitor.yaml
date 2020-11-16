@@ -6,7 +6,9 @@ metadata:
     app: {{ template "opa.name" . }}
     chart: {{ template "opa.chart" . }}
     heritage: {{ .Release.Service }}
+    {{- if not .Values.serviceMonitor.additionalLabels.release }}
     release: {{ .Release.Name }}
+    {{- end }}
     {{- if .Values.serviceMonitor.additionalLabels }}
     {{- toYaml .Values.serviceMonitor.additionalLabels | nindent 4}}
     {{- end }}
@@ -16,15 +18,14 @@ metadata:
   {{- end }}
 spec:
   endpoints:
-  - targetPort: 8181
+  - port: http
     interval: {{ .Values.serviceMonitor.interval }}
-    path: "/metrics"
   jobLabel: {{ template "opa.fullname" . }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app: {{ template "opa.name" . }}
+      app: {{ template "opa.fullname" . }}
       release: {{ .Release.Name }}
 {{- end }}

@@ -19,7 +19,7 @@ spec:
         heritage: "{{ .Release.Service }}"
       {{- with .Values.firefox.podLabels }}
       {{ toYaml .| indent 2 }}
-      {{- end }}  
+      {{- end }}
       {{- if .Values.firefox.podAnnotations }}
       annotations:
 {{ toYaml .Values.firefox.podAnnotations | indent 8 }}
@@ -105,11 +105,19 @@ spec:
             {{- if .Values.firefox.extraEnvs }}
 {{ toYaml .Values.firefox.extraEnvs | indent 12 }}
             {{- end }}
+          volumeMounts:
+{{ if .Values.firefox.volumeMounts -}}
+{{ toYaml .Values.firefox.volumeMounts | trim | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.firefox.resources | indent 12 }}
 {{- if or .Values.global.imagePullSecrets .Values.firefox.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.firefox.imagePullSecrets | default .Values.global.imagePullSecrets | quote }}
+{{- end }}
+      volumes:
+{{ if .Values.firefox.volumes -}}
+{{ toYaml .Values.firefox.volumes | trim | indent 8 }}
 {{- end }}
       hostAliases:
 {{ toYaml .Values.global.hostAliases | indent 8 }}

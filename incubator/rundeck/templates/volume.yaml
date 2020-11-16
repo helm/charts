@@ -1,4 +1,3 @@
-  
 {{- if and .Values.persistence.enabled .Values.persistence.claim.create }}
 kind: PersistentVolumeClaim
 apiVersion: v1

@@ -12,11 +12,22 @@ image:
   #   - name: registry-secret
 
 testFramework:
+  # When enabled, performs helm tests
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - name: registry-secret
+  # Backend test image when backend.type == "es"
+  curlJq:
+    image: dwdraju/alpine-curl-jq
+    tag: latest
+  # Backend test image when backend.type == "forward"
+  # NOTE image runs as root user
+  fluentd:
+    image: fluent/fluentd
+    tag: v1.4-debian-1
 
 nameOverride: ""
 fullnameOverride: ""

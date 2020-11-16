@@ -43,3 +43,5 @@ An example Ingress that makes use of the controller:
                 serviceName: exampleService
                 servicePort: 80
               path: /
+
+DEPRECATION: incubator/haproxy-ingress is deprecated in favor of https://github.com/haproxy-ingress/charts

@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # COSBench Helm Chart
 
 [COSBench](https://github.com/intel-cloud/cosbench), is a benchmark tool for cloud object storage services. It is compatible with OpenStack Swift, Amazon S3, Scality Zenko, Ceph, CDMI, Google Cloud Storage, and other services.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 

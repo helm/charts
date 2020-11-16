@@ -1,8 +1,8 @@
 apiVersion: v1
 name: satisfy
-version: 1.0.0
+version: 1.1.2
 appVersion: "3.0.4"
-description: Composer repo hosting with Satisfy
+description: DEPRECATED - Composer repo hosting with Satisfy
 home: https://github.com/anapsix/docker-satisfy
 icon: https://getcomposer.org/img/logo-composer-transparent.png
 sources:
@@ -10,6 +10,4 @@ sources:
 - https://github.com/ludofleury/satisfy
 - https://github.com/composer/satis
 - https://unit.nginx.org/
-maintainers:
-- name: anapsix
-  email: anapsix@random.io
+deprecated: true

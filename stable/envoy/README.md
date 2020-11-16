@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # stable/envoy
 
 [Envoy](https://www.envoyproxy.io/) is an open source edge and service proxy, designed for cloud-native applications.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Installing the Chart
 
@@ -44,6 +53,7 @@ Parameter | Description | Default
 `volumeMounts` | Additional volume mounts to be added to Envoy containers(Primary containers of Envoy pods) | ``
 `initContainerTemplate` | Golang template of the init container added to Envoy pods| ``
 `sidecarContainersTemplate` | Golang template of additional containers added after the primary container of Envoy pods | ``
+`service.loadBalancerSourceRanges` | An optional list of CIDR-formatted IP ranges for limiting access to the proxy to these source addresses | ``
 
 All other user-configurable settings, default values and some commentary about them can be found in [values.yaml](values.yaml).
 

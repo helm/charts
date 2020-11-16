@@ -1,4 +1,4 @@
-apiVersion: {{ default "apps/v1beta2" .Values.kubeMeta.deploymentApiVersion }}
+apiVersion: {{ default "apps/v1" .Values.kubeMeta.deploymentApiVersion }}
 kind: Deployment
 metadata:
   name: {{ include "clamav.fullname" . }}
