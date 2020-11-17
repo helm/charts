@@ -151,7 +151,7 @@ entries:
     sources:
     - https://github.com/kubernetes-sigs/aws-alb-ingress-controller
     urls:
-    - https://charts.helm.sh/incubator/aws-alb-ingress-controller-1.0.4.tgz
+    - https://charts.helm.sh/incubator/packages/aws-alb-ingress-controller-1.0.4.tgz
     version: 1.0.4
   - apiVersion: v1
     appVersion: v1.1.8
@@ -491,7 +491,7 @@ entries:
     sources:
     - https://github.com/microsoft/Docker-Provider/tree/ci_prod
     urls:
-    - https://charts.helm.sh/incubator/azuremonitor-containers-2.7.8.tgz
+    - https://charts.helm.sh/incubator/packages/azuremonitor-containers-2.7.8.tgz
     version: 2.7.8
   - apiVersion: v1
     appVersion: 7.0.0-1
@@ -3429,7 +3429,7 @@ entries:
       name: chartmuseum
     name: chartmuseum
     urls:
-    - https://charts.helm.sh/incubator/chartmuseum-1.4.0.tgz
+    - https://charts.helm.sh/incubator/packages/chartmuseum-1.4.0.tgz
     version: 1.4.0
   - apiVersion: v1
     appVersion: 0.5.1
@@ -9926,7 +9926,7 @@ entries:
     sources:
     - https://github.com/gocd/gocd
     urls:
-    - https://charts.helm.sh/incubator/gocd-1.0.7.tgz
+    - https://charts.helm.sh/incubator/packages/gocd-1.0.7.tgz
     version: 1.0.7
   - apiVersion: v1
     appVersion: 0.0.1
@@ -10609,7 +10609,7 @@ entries:
     sources:
     - https://github.com/Caiyeon/goldfish
     urls:
-    - https://charts.helm.sh/incubator/goldfish-0.2.9.tgz
+    - https://charts.helm.sh/incubator/packages/goldfish-0.2.9.tgz
     version: 0.2.9
   - apiVersion: v1
     appVersion: 0.9.0
@@ -18334,7 +18334,7 @@ entries:
     sources:
     - https://github.com/hjacobs/kube-downscaler
     urls:
-    - https://charts.helm.sh/incubator/kube-downscaler-0.6.2.tgz
+    - https://charts.helm.sh/incubator/packages/kube-downscaler-0.6.2.tgz
     version: 0.6.2
   - apiVersion: v1
     appVersion: 20.5.0
@@ -18352,7 +18352,7 @@ entries:
     sources:
     - https://github.com/hjacobs/kube-downscaler
     urls:
-    - https://charts.helm.sh/incubator/kube-downscaler-0.6.1.tgz
+    - https://charts.helm.sh/incubator/packages/kube-downscaler-0.6.1.tgz
     version: 0.6.1
   - apiVersion: v1
     appVersion: 20.5.0
@@ -18510,7 +18510,7 @@ entries:
     sources:
     - https://github.com/themagicalkarp/kube-janitor
     urls:
-    - https://charts.helm.sh/incubator/kube-janitor-0.1.2.tgz
+    - https://charts.helm.sh/incubator/packages/kube-janitor-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v1
     appVersion: v0.1.0
@@ -18587,7 +18587,7 @@ entries:
     home: https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/registry
     name: kube-registry-proxy
     urls:
-    - https://charts.helm.sh/incubator/kube-registry-proxy-0.3.4.tgz
+    - https://charts.helm.sh/incubator/packages/kube-registry-proxy-0.3.4.tgz
     version: 0.3.4
   - apiVersion: v1
     appVersion: "0.4"
@@ -18600,7 +18600,7 @@ entries:
       name: maorfr
     name: kube-registry-proxy
     urls:
-    - https://charts.helm.sh/incubator/kube-registry-proxy-0.3.3.tgz
+    - https://charts.helm.sh/incubator/packages/kube-registry-proxy-0.3.3.tgz
     version: 0.3.3
   - apiVersion: v1
     appVersion: "0.4"
@@ -18840,7 +18840,7 @@ entries:
     sources:
     - https://github.com/kubeless/kubeless
     urls:
-    - https://charts.helm.sh/incubator/kubeless-2.1.2.tgz
+    - https://charts.helm.sh/incubator/packages/kubeless-2.1.2.tgz
     version: 2.1.2
   - apiVersion: v1
     appVersion: v1.0.5
@@ -19331,7 +19331,7 @@ entries:
     sources:
     - https://github.com/Boostport/kubernetes-vault
     urls:
-    - https://charts.helm.sh/incubator/kubernetes-vault-0.2.2.tgz
+    - https://charts.helm.sh/incubator/packages/kubernetes-vault-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v1
     appVersion: 0.5.2
@@ -19399,7 +19399,7 @@ entries:
     sources:
     - https://github.com/skippbox/kubewatch
     urls:
-    - https://charts.helm.sh/incubator/kubewatch-0.3.1.tgz
+    - https://charts.helm.sh/incubator/packages/kubewatch-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v1
     appVersion: v0.0.3
