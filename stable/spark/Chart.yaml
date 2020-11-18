@@ -1,15 +1,11 @@
 apiVersion: v1
 name: spark
-version: 1.0.3
+version: 1.0.5
 appVersion: 1.5.1
-description: Fast and general-purpose cluster computing system.
+description: DEPRECATED - Fast and general-purpose cluster computing system.
 home: http://spark.apache.org
 icon: http://spark.apache.org/images/spark-logo-trademark.png
 sources:
   - https://github.com/kubernetes/kubernetes/tree/master/examples/spark
   - https://github.com/apache/spark
-maintainers:
-  - name: lachie83
-    email: lachlan.evenson@gmail.com
-  - name: daixiang0
-    email: 764524258@qq.com
+deprecated: true

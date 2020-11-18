@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Weave Cloud Agents
 
 > ***NOTE: This chart is for Kubernetes version 1.6 and later.***
@@ -9,6 +14,10 @@ This package contains the agents which connect your cluster to Weave Cloud.
 _To learn more and sign up please visit [Weaveworks website](https://weave.works)._
 
 You will need a service token which you can get from [cloud.weave.works](https://cloud.weave.works/).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Installing the Chart
 

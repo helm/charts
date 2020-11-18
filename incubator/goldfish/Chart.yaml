@@ -1,7 +1,7 @@
 apiVersion: v1
-description: A Helm chart for Goldfish - Vault UI
+description: DEPRECATED A Helm chart for Goldfish - Vault UI
 name: goldfish
-version: 0.2.7
+version: 0.2.9
 icon: https://github.com/Caiyeon/goldfish/blob/master/frontend/client/assets/logo@2x.png?raw=true
 home: https://vault-ui.io
 appVersion: 0.9.0
@@ -10,8 +10,4 @@ keywords:
 - vault-ui
 sources:
 - https://github.com/Caiyeon/goldfish
-maintainers:
-- name: tuannvm
-  email: me@tuannvm.com
-- name: mlaccetti
-  email: michael@laccetti.com
+deprecated: true

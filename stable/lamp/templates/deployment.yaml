@@ -607,7 +607,7 @@ spec:
         - name: GIT_SYNC_REV
           value: {{ .Values.git.revision }}
         - name: GIT_SYNC_WAIT
-          value: {{ .Values.git.wait }}
+          value: {{ quote .Values.git.wait }}
         - name: GIT_SYNC_DEST
           value: /git
         volumeMounts:

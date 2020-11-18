@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Apache Ignite
 
 This is a helm chart for [Apache Ignite](https://ignite.apache.org/)
@@ -5,6 +10,10 @@ This is a helm chart for [Apache Ignite](https://ignite.apache.org/)
 Apache Ignite is an open-source memory-centric distributed database, caching,
 and processing platform for transactional, analytical, and streaming workloads
 delivering in-memory speeds at petabyte scale
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Install
 

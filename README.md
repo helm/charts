@@ -1,13 +1,16 @@
+|![](https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/156px-Warning.svg.png) | This project is no longer supported.
+|---|---|
+
 # Helm Charts
 
-The canonical source for Helm charts is the [Helm Hub](https://hub.helm.sh/), an aggregator for distributed chart repos.
+The canonical source for Helm charts is the [Artifact Hub](https://artifacthub.io), an aggregator for distributed chart repos.
 
-This GitHub project is the source for Helm `stable` and `incubator` [Helm chart repositories](https://v3.helm.sh/docs/topics/chart_repository/), currently listed on the Hub.
+This GitHub project is the source for Helm `stable` and `incubator` [Helm chart repositories](https://v3.helm.sh/docs/topics/chart_repository/). This is now an archive no longer under active development.
 
 For more information about installing and using Helm, see the
 [Helm Docs](https://helm.sh/docs/). For a quick introduction to Charts, see the [Chart Guide](https://helm.sh/docs/topics/charts/).
 
-## Status of the Project
+## ⚠️ Deprecation and Archive Notice
 
 Similar to the [Helm 2 Support Plan](https://helm.sh/blog/2019-10-22-helm-2150-released/#helm-2-support-plan), this GitHub project has begun transition to a 1 year "maintenance mode" (see [Deprecation Timeline](#deprecation-timeline) below). Given the deprecation plan, this project is intended for [apiVersion: v1](https://helm.sh/docs/topics/charts/#the-apiversion-field) Charts (installable by both Helm 2 and 3), and not for `apiVersion: v2` charts (installable by Helm 3 only).
 
@@ -31,7 +34,7 @@ For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.m
 
 ## How Do I Install These Charts?
 
-Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
+Just `helm install stable/<chart>`. This is the default repository for Helm v2 which is located at https://charts.helm.sh/stable/ and was installed by default prior to Helm v3.
 
 For more information on using Helm, refer to the [Helm documentation](https://github.com/kubernetes/helm#docs).
 
@@ -40,7 +43,7 @@ For more information on using Helm, refer to the [Helm documentation](https://gi
 To add the Helm Stable Charts for your local client, run `helm repo add`:
 
 ```
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm repo add stable https://charts.helm.sh/stable
 "stable" has been added to your repositories
 ```
 
@@ -49,7 +52,7 @@ $ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 To add the Incubator charts for your local client, run `helm repo add`:
 
 ```
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
+$ helm repo add incubator https://charts.helm.sh/incubator
 "incubator" has been added to your repositories
 ```
 
@@ -63,7 +66,7 @@ Before contributing a Chart, become familiar with the format. Note that the proj
 
 ## Repository Structure
 
-This GitHub repository contains the source for the packaged and versioned charts released in the [`gs://kubernetes-charts` Google Storage bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts/) (the Chart Repository).
+This GitHub repository contains the source for the packaged and versioned charts released using [GitHub pages](https://github.com/helm/charts/tree/gh-pages/stable) (the Chart Repository).
 
 The Charts in the `stable/` directory in the master branch of this repository match the latest packaged Chart in the Chart Repository, though there may be previous versions of a Chart available in that Chart Repository.
 
@@ -76,7 +79,7 @@ The Charts in this repository are organized into two folders:
 
 Stable Charts meet the criteria in the [technical requirements](CONTRIBUTING.md#technical-requirements).
 
-Incubator Charts are those that do not meet these criteria. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder. The charts in the `incubator/` directory can be found in the [`gs://kubernetes-charts-incubator` Google Storage Bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts-incubator).
+Incubator Charts are those that do not meet these criteria. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder. The charts in the `incubator/` directory can be found on the [`gh-pages` branch of the repository](https://github.com/helm/charts/tree/gh-pages/incubator).
 
 In order to get a Chart from incubator to stable, Chart maintainers should open a pull request that moves the chart folder.
 

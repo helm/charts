@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Hyperledger Composer
 
 [Hyperledger Composer](https://hyperledger.github.io/composer) is a set of tools to aid in the development of Blockchain solutions using the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 

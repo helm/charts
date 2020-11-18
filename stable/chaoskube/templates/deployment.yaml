@@ -28,6 +28,9 @@ spec:
           args:
             - --interval={{ .Values.interval }}
             - --labels={{ .Values.labels }}
+            {{- if .Values.kinds }}
+            - --kinds={{ .Values.kinds }}
+            {{- end }}
             - --annotations={{ .Values.annotations }}
             - --namespaces={{ .Values.namespaces }}
             {{- if not .Values.dryRun }}

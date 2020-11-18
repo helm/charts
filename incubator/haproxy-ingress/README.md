@@ -2,6 +2,10 @@
 
 [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress) is an Ingress controller that uses ConfigMap to store the global haproxy configuration, and ingress annotations to configure per-backend settings.
 
+## DEPRECATION NOTICE
+
+This chart repository is deprecated. It was moved to https://github.com/haproxy-ingress/charts
+
 ## Introduction
 
 This chart bootstraps an haproxy-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.

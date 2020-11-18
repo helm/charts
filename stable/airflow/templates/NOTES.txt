@@ -1,3 +1,13 @@
+!WARNING! !WARNING! !WARNING! !WARNING! !WARNING!
+
+This chart has MOVED to a new repository!
+
+https://github.com/airflow-helm/charts/tree/main/charts/airflow
+
+!WARNING! !WARNING! !WARNING! !WARNING! !WARNING!
+
+--------------------
+
 Congratulations. You have just deployed Apache Airflow!
 
 {{- if .Values.ingress.enabled }}
