@@ -20731,7 +20731,7 @@ entries:
     - https://github.com/zalando/patroni
     - https://github.com/zalando/spilo
     urls:
-    - https://charts.helm.sh/incubator/patroni-0.16.3.tgz
+    - https://charts.helm.sh/incubator/packages/patroni-0.16.3.tgz
     version: 0.16.3
   - apiVersion: v1
     appVersion: 1.5-p5
@@ -21598,7 +21598,7 @@ entries:
     - forge
     name: puppet-forge
     urls:
-    - https://charts.helm.sh/incubator/puppet-forge-0.1.10.tgz
+    - https://charts.helm.sh/incubator/packages/puppet-forge-0.1.10.tgz
     version: 0.1.10
   - apiVersion: v1
     appVersion: 1.10.0
