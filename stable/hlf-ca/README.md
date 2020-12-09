@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Hyperledger Fabric CA
 
 [Hyperledger Fabric CA](http://hyperledger-fabric-ca.readthedocs.io/) is a Certificate Authority node for the [Hyperledger](https://www.hyperledger.org/) Fabric permissioned blockchain framework. Learn more about it by visiting the [user's guide](http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 

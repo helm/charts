@@ -1,7 +1,16 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # risk-advisor
 Risk advisor module for Kubernetes. This project is licensed under the terms of the Apache 2.0 license.
 
 It allows you to check how the cluster state would change if the request of creating provided pods was accepted by Kubernetes.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR
 
@@ -58,5 +67,3 @@ Chart exposes a service with a REST API on 11111 port, accepting following endpo
          * `result`: (string) `Scheduled` if the pod would be successfully scheduled, `failedScheduling` otherwise
          * `message`: (string) Additional information about the result (e.g. nodes which were tried, or the reason why scheduling failed)
  * `/healthz`  Health check endpoint, responds with HTTP 200 if successful
-
-

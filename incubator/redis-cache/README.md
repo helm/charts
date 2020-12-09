@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 ## Redis-cache
 
 This chart will allow us to use redis as a pure in-memory cache, this uses a special utility to perform master-slave promotion which overcomes this [problem](https://redis.io/topics/replication#safety-of-replication-when-master-has-persistence-turned-off), K8s could restart the master way before it is detected and agreed among the redis-sentinels.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ###Prerequisites
 * Kubernetes 1.10+

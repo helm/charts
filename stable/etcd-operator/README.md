@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # CoreOS etcd-operator
 
 [etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster
@@ -5,6 +10,10 @@ configuration and management.
 
 __DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in beta.
 Current project status is available [here](https://github.com/coreos/etcd-operator).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 

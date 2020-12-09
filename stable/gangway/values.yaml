@@ -30,6 +30,8 @@ gangway:
   # Env var: GANGWAY_HOST
   # host: 0.0.0.0
 
+  serviceAccountName: ""
+
   # The port to listen on. Defaults to 8080.
   # Env var: GANGWAY_PORT
   port: 8080

@@ -146,10 +146,10 @@ volumes: ""
   # - name: plugins
   #   emptyDir: {}
 
-# volumeMounts to add to the rundeck container
-volumeMounts: ""
-  # - mountPath: /home/rundeck/libext/
-  #   name: plugins
+# volumeMounts to add to the rundeck container and configurable paths
+volumeMounts:
+  - name: data
+    mountPath: /home/rundeck/server/data
 
 # initContainers can be used to download plugins or customise your rundeck installation
 initContainers: ""

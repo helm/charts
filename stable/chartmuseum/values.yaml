@@ -189,6 +189,12 @@ serviceAccount:
 securityContext:
   enabled: true
   fsGroup: 1000
+  ## Optionally, specify supplementalGroups and/or
+  ## runAsNonRoot for security purposes
+  # runAsNonRoot: true
+  # supplementalGroups: [1000]
+
+containerSecurityContext: {}
 
 priorityClassName: ""
 

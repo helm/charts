@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Apache Druid
 
 [Apache Druid](https://druid.apache.org/) is a high performance real-time analytics database.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Install Chart
 
@@ -126,6 +135,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.resources`                   | historical node resources requests & limits             | `{}`                                       |
 | `historical.podAnnotations`              | historical Deployment annotations                       | `{}`                                       |
 | `historical.nodeSelector`                | node labels for historical pod assignment               | `{}`                                       |
+| `historical.securityContext`             | custom security context for historical containers       | `{ fsGroup: 1000 }`                        |
 | `historical.tolerations`                 | historical tolerations                                  | `[]`                                       |
 | `historical.config`                       | historical node private config such as `JAVA_OPTS`       |                                            |
 | `historical.persistence.enabled`         | historical persistent enabled/disabled                  | `true`                                     |
@@ -147,6 +157,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `middleManager.resources`                | middleManager node resources requests & limits          | `{}`                                       |
 | `middleManager.podAnnotations`           | middleManager Deployment annotations                    | `{}`                                       |
 | `middleManager.nodeSelector`             | Node labels for middleManager pod assignment            | `{}`                                       |
+| `middleManager.securityContext`          | custom security context for middleManager containers    | `{ fsGroup: 1000 }`                        |
 | `middleManager.tolerations`              | middleManager tolerations                               | `[]`                                       |
 | `middleManager.config`                    | middleManager private config such as `JAVA_OPTS`         |                                            |
 | `middleManager.persistence.enabled`      | middleManager persistent enabled/disabled               | `true`                                     |

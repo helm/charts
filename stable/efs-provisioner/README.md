@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Helm chart for 'efs-provisioner'
 
 The Kubernetes project provides an AWS [EFS provisioner](https://github.com/kubernetes-incubator/external-storage/tree/master/aws/efs)
@@ -19,6 +24,10 @@ mounted on containers.
 The persisent volumes are created as folders with in an AWS EFS filesystem.
 
   https://aws.amazon.com/efs/
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prequisites
 

@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # socat-tunneller
 
 A `port-forward` proxy. Allows an onward connection from the cluster
@@ -7,6 +12,10 @@ database/cache/other service.
 In practice, this means that a hosted service can be made available
 only to the cluster, then cluster users can be granted access by
 giving them permission to run `port-forward` on the tunneller.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Basic usage
 

@@ -4,7 +4,7 @@
 
 image:
   repository: coredns/coredns
-  tag: "1.7.0"
+  tag: "1.7.1"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -61,6 +61,7 @@ prometheus:
 service:
 # clusterIP: ""
 # loadBalancerIP: ""
+# externalIPs: []
 # externalTrafficPolicy: ""
   annotations: {}
 

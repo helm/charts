@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Auditbeat
 
 [Auditbeat](https://www.elastic.co/guide/en/beats/auditbeat/current/index.html) is a lightweight shipper to audit the activities of users and processes on your systems, so that you can identify potential security policy violations. You can use Auditbeat to collect audit events from the Linux Audit Framework. You can also use Auditbeat for file integrity check, that is to detect changes to critical files, like binaries and configuration files.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 

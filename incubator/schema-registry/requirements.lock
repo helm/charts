@@ -1,6 +1,6 @@
 dependencies:
 - name: kafka
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  repository: https://charts.helm.sh/incubator
   version: 0.21.2
-digest: sha256:3826bd8193a2a1838ef8b5bbeb542d372830df1be4b0ffaaaf476b0a29e95f47
-generated: "2020-07-18T13:14:09.592396-04:00"
+digest: sha256:d19bc31b4c6e21092ab54321cd921d048c65f11fb768a6865adb9779e95242c0
+generated: "2020-10-30T00:43:01.899435-04:00"

@@ -1,8 +1,17 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # ChartMuseum Helm Chart
 
 Deploy your own private ChartMuseum.
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Table of Content
 
@@ -102,6 +111,9 @@ their default values. See values.yaml for all available options.
 | `serviceAccount.annotations`            | Additional Service Account annotations                                      | `{}`                                 |
 | `securityContext.enabled`               | Enable securityContext                                                      | `true`                               |
 | `securityContext.fsGroup`               | Group ID for the container                                                  | `1000`                               |
+| `securityContext.runAsNonRoot`          | Running Pods as non-root                                                    | ``                                   |
+| `securityContext.supplementalGroups`    | Control which group IDs containers add                                      | ``                                   |
+| `containerSecurityContext`              | Additional Container securityContext (ex. allowPrivilegeEscalation)         | `{}`                                 |
 | `priorityClassName      `               | priorityClassName                                                           | `""`                                 |
 | `nodeSelector`                          | Map of node labels for pod assignment                                       | `{}`                                 |
 | `tolerations`                           | List of node taints to tolerate                                             | `[]`                                 |

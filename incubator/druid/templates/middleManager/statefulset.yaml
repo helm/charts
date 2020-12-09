@@ -60,6 +60,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.middleManager.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.middleManager.securityContext }}
+      securityContext:
+{{ toYaml .Values.middleManager.securityContext | indent 8 }}
+{{- end }}
 {{- if .Values.middleManager.tolerations }}
       tolerations:
 {{ toYaml .Values.middleManager.tolerations | indent 8 }}
@@ -97,7 +101,7 @@ spec:
         - containerPort: {{ .Values.middleManager.port }}
           name: http
         volumeMounts:
-        - mountPath: /var/druid/
+        - mountPath: /opt/druid/var/druid/
           name: data
   {{- if .Values.gCloudStorage.enabled }}
         - name: google-cloud-key

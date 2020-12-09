@@ -1,4 +1,33 @@
+# ⚠️ THIS CHART HAS MOVED ⚠️
+
+### New location: https://github.com/airflow-helm/charts/tree/main/charts/airflow
+
+---
+---
+
 # Upgrading Steps
+
+## `v7.12.X` → `v7.13.0`
+
+__The following values have been ADDED:__
+* `flower.oauthDomains`
+
+## `v7.11.X` → `v7.12.0`
+
+__The following values have been ADDED:__
+* `ingress.web.labels`
+* `ingress.flower.labels`
+* `ingress.flower.precedingPaths`
+* `ingress.flower.succeedingPaths`
+
+## `v7.10.X` → `v7.11.0`
+
+__The following IMPROVEMENTS have been made:__
+* You can now use `scheduler.existingSecretConnections` with an externally created Secret to store airflow connections. 
+  (Rather than storing them in plain-text with `scheduler.connections`)
+
+__The following values have been ADDED:__
+* `scheduler.existingSecretConnections`
 
 ## `v7.9.X` → `v7.10.0`
 

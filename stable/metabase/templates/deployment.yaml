@@ -118,6 +118,14 @@ spec:
           - name: MB_SITE_URL
             value: {{ .Values.siteUrl | quote }}
           {{- end }}
+          {{- if .Values.session.maxSessionAge }}
+          - name: MAX_SESSION_AGE
+            value: {{ .Values.session.maxSessionAge | quote }}
+          {{- end }}
+          {{- if .Values.session.sessionCookies }}
+          - name: MB_SESSION_COOKIES
+            value: {{ .Values.session.sessionCookies | quote }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:

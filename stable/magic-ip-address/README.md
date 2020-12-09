@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # magic-ip-address
 
 [magic-ip-address](https://github.com/mumoshu/kube-magic-ip-address)  is a Kubernetes daemonset to implement [magic IP addresses](https://github.com/kubernetes/kubernetes/issues/15169#issuecomment-231267078), that are useful to serve [node-local services](https://github.com/kubernetes/kubernetes/issues/28610).
@@ -11,6 +16,10 @@ One of typical use-cases of this project is to connect your applicaton pod to a 
 A possible alternative to use `magic-ip-address` is to use the downward API to obtain the IP address of the node, while running the agent pod with `hostNetwork: true`. However, it has two downsides. One is that you have to open up your network to allow pods to directly access the nodes running them, which results in a extra attack surface. Another alternative would be to use a deployment, which means that you're giving up adding a meaningful node-related metadata(node's ip address, name, namespace, and labels that your application pod is running on) to the traces collected by the agents.
 
 In contrast to the two alternatives, `magic-ip-address` allows you add meaningful node metadata to your application traces, without exposing the agent pods via the host network.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites
 

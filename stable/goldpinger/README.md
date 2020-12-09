@@ -1,6 +1,19 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Goldpinger
 
 [Goldpinger](https://github.com/bloomberg/goldpinger) makes calls between its instances for visibility and alerting.
+
+----------------------------------------
+# Deprecation Warning
+*As part of the [deprecation timeline](https://github.com/helm/charts/#deprecation-timeline), another repository has taken over the chart [here](https://github.com/okgolove/helm-charts/tree/master/charts/goldpinger)*
+
+Please make PRs / Issues here from now on.
+
+----------------------------------------
 
 ## TL;DR;
 

@@ -1,7 +1,7 @@
 name: burrow
-version: 1.5.2
+version: 1.5.4
 appVersion: 0.29.0
-description: Burrow is a permissionable smart contract machine
+description: DEPRECATED Burrow is a permissionable smart contract machine
 home: https://github.com/hyperledger/burrow
 icon: https://raw.githubusercontent.com/hyperledger/burrow/develop/docs/assets/images/burrow.png
 keywords:
@@ -11,13 +11,8 @@ keywords:
 - hyperledger
 - evm
 - web3
-maintainers:
-- name: compleatang
-  email: casey@monax.io
-- name: gregdhill
-  email: greg.hill@monax.io
 sources:
 - https://github.com/hyperledger/burrow
 apiVersion: v1
 engine: gotpl
-deprecated: false
+deprecated: true

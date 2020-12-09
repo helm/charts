@@ -1,17 +1,11 @@
 apiVersion: v1
 appVersion: 0.19.0
-description: Apache Druid is a high performance real-time analytics database.
+description: DEPRECATED Apache Druid is a high performance real-time analytics database.
 name: druid
-version: 0.2.12
+version: 0.2.18
 home: https://druid.apache.org/
 icon: https://druid.apache.org/img/favicon.png
-maintainers:
-  - name: maver1ck
-    email: maciek@brynski.pl
-  - name: AWaterColorPen
-    email: hellis@foxmail.com
-  - name: asdf2014
-    email: asdf2014@apache.org
+deprecated: true
 sources:
   - https://github.com/apache/druid
 keywords:

@@ -1,10 +1,8 @@
 apiVersion: v1
 name: tomcat
-description: Deploy a basic tomcat application server with sidecar as web archive container
+description: DEPRECATED - Deploy a basic tomcat application server with sidecar as web archive container
 icon: http://tomcat.apache.org/res/images/tomcat.png
-version: 0.4.1
+version: 0.4.3
 appVersion: "7.0"
 home: https://github.com/yahavb
-maintainers:
-  - name: yahavb
-    email: ybiran@ananware.systems
+deprecated: true

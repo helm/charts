@@ -79,6 +79,7 @@ nfs:
 
 gcs:
   enableGCS: false
+  enableIAM: false
   secret: history-secrets
   key: sparkonk8s.json
   logDirectory: gs://spark-hs/

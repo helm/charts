@@ -1,6 +1,6 @@
 image:
   repository: quay.io/bitnami/sealed-secrets-controller
-  tag: v0.12.4
+  tag: v0.13.1
   pullPolicy: IfNotPresent
 
 resources: {}
@@ -61,3 +61,24 @@ podAnnotations: {}
 podLabels: {}
 
 priorityClassName: ""
+
+serviceMonitor:
+  # Enables ServiceMonitor creation for the Prometheus Operator
+  create: false
+  # How frequently Prometheus should scrape the ServiceMonitor
+  interval:
+  # Extra labels to apply to the sealed-secrets ServiceMonitor
+  labels:
+  # The namespace where the ServiceMonitor is deployed, defaults to the installation namespace
+  namespace:
+  # The timeout after which the scrape is ended
+  scrapeTimeout:
+
+dashboards:
+  # If enabled, sealed-secrets will create a configmap with a dashboard in json that's going to be picked up by grafana
+  # See https://github.com/helm/charts/tree/master/stable/grafana#configuration - `sidecar.dashboards.enabled`
+  create: false
+  # Extra labels to apply to the dashboard configmaps
+  labels:
+  # The namespace where the dashboards are deployed, defaults to the installation namespace
+  namespace:

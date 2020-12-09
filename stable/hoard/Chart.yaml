@@ -1,7 +1,7 @@
 name: hoard
-version: 1.0.0
+version: 1.0.2
 appVersion: 6.0.0
-description: Hoard is a stateless, deterministically encrypted, content-addressed object store
+description: DEPRECATED - Hoard is a stateless, deterministically encrypted, content-addressed object store
 home: https://github.com/monax/hoard
 icon: https://pbs.twimg.com/profile_images/781959787856687105/76s1CJER_400x400.jpg
 keywords:
@@ -13,13 +13,8 @@ keywords:
 - envelope encryption
 - content addressable
 - distributed file storage
-maintainers:
-- name: compleatang
-  email: casey@monax.io
-- name: gregdhill
-  email: greg.hill@monax.io
+deprecated: true
 sources:
 - https://github.com/monax/hoard
 apiVersion: v1
 engine: gotpl
-deprecated: false

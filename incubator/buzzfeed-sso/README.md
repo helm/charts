@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Buzzfeed SSO
 
 Single sign-on for your Kubernetes services using Google OAuth (more providers are welcomed)
@@ -12,6 +17,10 @@ This helm chart is heavily inspired in [Buzzfeed's example](https://github.com/b
 Many of the Kubernetes OAuth solutions require to run an extra container within the pod using [oauth2_proxy](https://github.com/bitly/oauth2_proxy), but the project seems to not be maintained anymore. The approach presented on this chart allows to have a global OAuth2 Proxy that can protect services even in different namespaces, thanks to [Kube DNS](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/).
 
 We use this chart in production at [MindDoc](https://minddoc.de) for protecting endpoints that have no built-in authentication (or that would require to run inner containers), like `Kibana`, `Prometheus`, etc...
+
+## DEPRECATION NOTICE
+
+This chart repository is deprecated. It was moved to [minddocdev/buzzfeed-sso](https://github.com/minddocdev/buzzfeed-sso).
 
 ## Introduction
 
@@ -28,7 +37,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/buzzfeed-sso
+helm install --name my-release incubator/buzzfeed-sso
 ```
 
 The command deploys SSO on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -40,8 +49,9 @@ This chart has required variables, see [Configuration](#configuration).
 To uninstall/delete the `my-release` deployment:
 
 ```bash
-$ helm delete --purge my-release
+helm delete --purge my-release
 ```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
@@ -106,13 +116,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
     --set key_1=value_1,key_2=value_2 \
-    stable/buzzfeed-sso
+    incubator/buzzfeed-sso
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/buzzfeed-sso
+helm install --name my-release -f values.yaml incubator/buzzfeed-sso
 ```
 
 > **Tip**: This will merge parameters with [values.yaml](values.yaml), which does not specify all the required values
@@ -160,7 +170,7 @@ google:
 Therefore, you could push your own `values.yaml` to a repo and keep `secrets.yaml` locally safe, and then install/update the chart:
 
 ```bash
-$ helm install --name my-release -f values.yaml -f secrets.yaml stable/buzzfeed-sso
+helm install --name my-release -f values.yaml -f secrets.yaml incubator/buzzfeed-sso
 ```
 
 Alternatively, you can specify your own secret key, if you have already created it in the cluster. The secret should follow the data format defined in `secret.yaml` (auth and proxy) and `google-secret.yaml` (google provider).
@@ -190,5 +200,5 @@ provider:
 You can update the chart values and trigger a pod reload. If the configmap changes, it will automatically retrieve the new values.
 
 ```bash
-$ helm upgrade -f values.yaml my-release stable/buzzfeed-sso
+helm upgrade -f values.yaml my-release incubator/buzzfeed-sso
 ```

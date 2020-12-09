@@ -1,3 +1,5 @@
+*** DEPRECATED, please use https://comcast.github.io/kuberhealthy/ instead
+
 <center><img src="https://github.com/Comcast/kuberhealthy/blob/master/images/kuberhealthy.png?raw=true"></center><br />
 
 Easy synthetic testing for [Kubernetes](https://kubernetes.io) clusters.  Supplements other solutions like [Prometheus](https://prometheus.io/) nicely.

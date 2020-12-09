@@ -1,8 +1,8 @@
 name: kube-slack
-version: 1.3.2
+version: 1.3.4
 appVersion: v4.2.0
 apiVersion: v1
-description: Chart for kube-slack, a monitoring service for Kubernetes
+description: DEPRECATED - Chart for kube-slack, a monitoring service for Kubernetes
 keywords:
 - kubernetes
 - monitoring
@@ -11,6 +11,4 @@ home: https://github.com/wongnai/kube-slack
 icon: https://upload.wikimedia.org/wikipedia/commons/1/1f/Echo_%28Notifications%29_logo.svg
 sources:
   - https://github.com/wongnai/kube-slack
-maintainers:
-- name: jstriebel
-  email: jonathan@scalableminds.com
+deprecated: true

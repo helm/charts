@@ -1,6 +1,6 @@
 dependencies:
 - name: mongodb
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 7.1.1
-digest: sha256:e9d72fdad273f21bef7be5bbc9487157953fa8421c591c4341dd82026aedb1f6
-generated: "2019-08-14T15:09:01.977989458+02:00"
+  repository: https://charts.helm.sh/stable
+  version: 7.8.10
+digest: sha256:b50315c7db722846b80de6d182e7795c8bfceb79ebf724d41eb2fb2194d762b4
+generated: "2020-10-30T11:41:51.28095-04:00"

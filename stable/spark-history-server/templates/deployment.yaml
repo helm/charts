@@ -48,8 +48,11 @@ spec:
             -Dspark.history.fs.logDirectory=file:/data/$eventsDir";
           elif [ "$enableGCS" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
-            -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key \
             -Dspark.history.fs.logDirectory=$logDirectory";
+            if [ "$enableIAM" == "false" ]; then
+              export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+              -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key";
+            fi;
           elif [ "$enableS3" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
               -Dspark.history.fs.logDirectory=$logDirectory \
@@ -101,9 +104,11 @@ spec:
         - name: data
           mountPath: /data
         {{- else if .Values.gcs.enableGCS }}
+        {{- if (not .Values.gcs.enableIAM) }}
         volumeMounts:
         - name: secrets-volume
           mountPath: /etc/secrets
+        {{- end }}
         {{- else if .Values.s3.enableS3 }}
         {{- if (not .Values.s3.enableIAM) }}
         volumeMounts:
@@ -129,10 +134,12 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.pvc.existingClaimName }}
       {{- else if .Values.gcs.enableGCS }}
+      {{- if (not .Values.gcs.enableIAM) }}
       volumes:
       - name: secrets-volume
         secret:
           secretName: {{ .Values.gcs.secret }}
+      {{- end }}
       {{- else if .Values.s3.enableS3 }}
       {{- if (not .Values.s3.enableIAM) }}
       volumes:
