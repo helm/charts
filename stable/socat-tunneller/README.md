@@ -3,6 +3,8 @@
 As of Nov 13, 2020, charts in this repo will no longer be updated.
 For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
 
+This chart continues to be maintained at https://github.com/isotoma/charts/tree/main/charts/socat-tunneller
+
 # socat-tunneller
 
 A `port-forward` proxy. Allows an onward connection from the cluster
