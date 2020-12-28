@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 Helm Chart: puppet-forge
 -----------------------
 Distribute locally developed Puppet modules and proxy to the official Puppet Forge server.
@@ -6,6 +11,10 @@ Container for running the puppet_forge_server project from Github. This
 project allow one to serve locally developed Puppet forge modules and
 proxy requests to an upstream Puppet forge server (typically the official
 server run by Puppetlabs).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 How to use this container
 -------------------------
@@ -50,4 +59,3 @@ value of the variable the list of directories with a colon (':') as the
 delimiter. This can be useful if one has multiple module repositories that
 allow module promotion. The server does not provide any access control for
 multiple repositories and needs to be controlled through the Puppetfile.
-

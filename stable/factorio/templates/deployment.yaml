@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "factorio.fullname" . }}
@@ -8,10 +8,16 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "factorio.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "factorio.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "factorio.fullname" . }}

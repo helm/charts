@@ -358,16 +358,16 @@ postgresql:
 
   ### PostgreSQL User to create.
   ##
-  postgresUser: gogs
+  postgresqlUsername: gogs
 
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  postgresPassword: gogs
+  postgresqlPassword: gogs
 
   ## PostgreSQL Database to create.
   ##
-  postgresDatabase: gogs
+  postgresqlDatabase: gogs
 
   ## PostgreSQL SSL Mode
   ##

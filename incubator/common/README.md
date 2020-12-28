@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Common: The Helm Helper Chart
 
 This chart is designed to make it easier for you to build and maintain Helm
@@ -5,6 +10,10 @@ charts.
 
 It provides utilities that reflect best practices of Kubernetes chart development,
 making it faster for you to write charts.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Tips
 

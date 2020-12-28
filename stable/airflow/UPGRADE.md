@@ -1,3 +1,10 @@
+# ⚠️ THIS CHART HAS MOVED ⚠️
+
+### New location: https://github.com/airflow-helm/charts/tree/main/charts/airflow
+
+---
+---
+
 # Upgrading Steps
 
 ## `v7.12.X` → `v7.13.0`

@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # AWS IAM Authenticator
 
 See https://github.com/kubernetes-sigs/aws-iam-authenticator
@@ -5,6 +10,10 @@ See https://github.com/kubernetes-sigs/aws-iam-authenticator
 In particular, make sure that have configured your API server as in
 https://github.com/kubernetes-sigs/aws-iam-authenticator#how-do-i-use-it. (This
 chart only installs the DaemonSet and a ConfigMap.)
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Values
 

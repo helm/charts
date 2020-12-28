@@ -1,5 +1,7 @@
 # Elasticsearch Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Prometheus exporter for various metrics about ElasticSearch, written in Go.
 
 Learn more: https://github.com/justwatchcom/elasticsearch_exporter

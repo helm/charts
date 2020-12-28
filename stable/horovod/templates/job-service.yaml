@@ -10,7 +10,7 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: ssh 
+  - name: ssh
     port: {{ .Values.ssh.port }}
     targetPort: {{ .Values.ssh.port }}
   selector:

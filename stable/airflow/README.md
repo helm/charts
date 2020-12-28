@@ -1,3 +1,10 @@
+# ⚠️ THIS CHART HAS MOVED ⚠️
+
+### New location: https://github.com/airflow-helm/charts/tree/main/charts/airflow
+
+---
+---
+
 # Airflow Helm Chart
 
 [Airflow](https://airflow.apache.org/) is a platform to programmatically author, schedule and monitor workflows.

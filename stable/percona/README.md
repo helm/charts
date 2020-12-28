@@ -1,8 +1,17 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Percona
 
 [Percona Server](https://MySQL.org) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability.
 
 Notable users include Netflix, Amazon Web Services, Alcatel-Lucent, and Smug Mug.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 
