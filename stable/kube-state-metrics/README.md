@@ -1,6 +1,6 @@
 # ⚠️ Repo Archive Notice
 
-As of Nov 13, 2020, charts in this repo will no longer be updated.
+As of Nov 13, 2020, charts in this repo will no longer be updated, further development has moved to [kubernetes/kube-state-metrics/charts](https://github.com/kubernetes/kube-state-metrics/tree/master/charts/kube-state-metrics).
 For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
 
 # kube-state-metrics Helm Chart
