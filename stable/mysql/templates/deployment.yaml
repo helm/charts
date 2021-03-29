@@ -194,10 +194,9 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         {{- if .Values.mysqlAllowEmptyPassword }}
-        command:
-        - 'sh'
-        - '-c'
-        - 'DATA_SOURCE_NAME="root@(localhost:3306)/" /bin/mysqld_exporter'
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root@(localhost:3306)/"
         {{- else }}
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -205,13 +204,14 @@ spec:
             secretKeyRef:
               name: {{ template "mysql.secretName" . }}
               key: mysql-root-password
-        command:
-        - 'sh'
-        - '-c'
-        - 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter'
+        - name: DATA_SOURCE_NAME
+          value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
         {{- end }}
+        {{- if .Values.metrics.flags }}
+        args:
         {{- range $f := .Values.metrics.flags }}
         - {{ $f | quote }}
+        {{- end }}
         {{- end }}
         ports:
         - name: metrics
