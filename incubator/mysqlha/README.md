@@ -93,7 +93,7 @@ metadata:
 provisioner: kubernetes.io/azure-disk
 parameters:
   skuName: Premium_LRS
-  location: westus
+  location: NYC
 ```
 
 In order to disable this functionality you can change the values.yaml to disable persistence and use an emptyDir instead.
