@@ -9,7 +9,7 @@ For more information, see the Helm Charts [Deprecation and Archive Notice](https
 
 ## DEPRECATION NOTICE
 
-This chart is deprecated and no longer supported.
+This chart is deprecated and no longer supported. The official chart is located at [dexidp/helm-charts](https://github.com/dexidp/helm-charts).
 
 ## Introduction
 
