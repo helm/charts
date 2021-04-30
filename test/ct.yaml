@@ -8,4 +8,4 @@ excluded-charts:
 chart-repos:
   - stable=https://charts.helm.sh/stable
   - incubator=https://charts.helm.sh/incubator
-helm-extra-args: --timeout 600
+helm-extra-args: --timeout 6000
