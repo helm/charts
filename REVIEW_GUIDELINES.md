@@ -2,6 +2,7 @@
 
 Anyone is welcome to review pull requests. Besides our [technical requirements](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements) and [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices), here's an overview of process and review guidelines.
 
+
 ## Process
 
 The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed [DCO](https://www.helm.sh/blog/helm-dco/index.html). See [Charts Testing](https://github.com/helm/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @helm/charts-maintainers`.
