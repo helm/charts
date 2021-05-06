@@ -1,4 +1,7 @@
 # Atlantis
+
+# ⚠️  DEPRECATED Further development was moved to https://github.com/runatlantis/helm-charts
+
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
 ## Introduction
@@ -50,6 +53,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `bitbucket.baseURL`                         | Base URL of Bitbucket Server installation.                                                                                                                                                                                                                                                                | n/a     |
 | `environment`                               | Map of environment variables for the container.                                                                                                                                                                                                                                                           | `{}`    |
 | `environmentSecrets`                         | Array of Kubernetes secrets that can be used to set environment variables. See `values.yaml` for example.                                                                                                                                                                                                                                                          | `{}`    |
+| `loadEnvFromSecrets`                        | Array of Kubernetes secrets to set all key-value pairs as environment variables. See `values.yaml` for example.                                                                                                                                                                                           | `[]`    |
 | `extraVolumes`                              | List of additional volumes available to the pod.                                                                                                                                                                                                                                                          | `[]`    |
 | `extraVolumeMounts`                         | List of additional volumes mounted to the container.                                                                                                                                                                                                                                                      | `[]`    |
 | `imagePullSecrets`                          | List of secrets for pulling images from private registries.                                                                                                                                                                                                                                               | `[]`    |

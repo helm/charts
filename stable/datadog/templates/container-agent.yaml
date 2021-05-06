@@ -70,18 +70,18 @@
     - name: DD_DOGSTATSD_SOCKET
       value: {{ .Values.datadog.dogstatsd.socketPath | quote }}
     {{- end }}
-    {{- if and .Values.datadog.clusterChecks.enabled (not .Values.clusterChecksRunner.enabled) }}
+    {{- if .Values.datadog.clusterChecks.enabled }}
+    {{- if .Values.clusterChecksRunner.enabled }}
+    - name: DD_EXTRA_CONFIG_PROVIDERS
+      value: "endpointschecks"
+    {{ else }}
     - name: DD_EXTRA_CONFIG_PROVIDERS
       value: "clusterchecks endpointschecks"
     {{- end }}
-    {{- if .Values.datadog.systemProbe.enabled }}
-    - name: SYSTEM_PROBE_CONFIG_SYSPROBE_SOCKET
-      value: /sysprobe/var/run
     {{- end }}
-  {{- range $value := .Values.agents.containers.agent.env }}
-    - name: {{ $value.name }}
-      value: {{ $value.value | quote }}
-  {{- end }}
+{{- if .Values.agents.containers.agent.env }}
+{{ toYaml .Values.agents.containers.agent.env | indent 4 }}
+{{- end }}
   volumeMounts:
     - name: config
       mountPath: {{ template "datadog.confPath" . }}
@@ -106,8 +106,11 @@
     {{- end }}
     {{- if .Values.datadog.systemProbe.enabled }}
     - name: sysprobe-socket-dir
-      mountPath: /sysprobe/var/run
+      mountPath: /var/run/sysprobe
       readOnly: true
+    - name: sysprobe-config
+      mountPath: /etc/datadog-agent/system-probe.yaml
+      subPath: system-probe.yaml
     {{- end }}
     - name: procdir
       mountPath: /host/proc
@@ -145,4 +148,6 @@
 {{- end }}
   livenessProbe:
 {{ toYaml .Values.agents.containers.agent.livenessProbe | indent 4 }}
+  readinessProbe:
+{{ toYaml .Values.agents.containers.agent.readinessProbe | indent 4 }}
 {{- end -}}

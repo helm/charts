@@ -119,6 +119,12 @@ podLabels: {}
 
 extraEnv: []
 
+envFrom: []
+  # - configMapRef:
+  #     name: configMap-name
+  # - secretRef:
+  #     name: secret-name
+
 extraInitContainers: []
   # - name: echo
   #   image: busybox

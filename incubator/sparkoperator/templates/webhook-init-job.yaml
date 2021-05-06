@@ -11,6 +11,12 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   template:
+    metadata:
+      name: {{ include "sparkoperator.fullname" . }}-webhook-init
+      {{- if .Values.istio.enabled }}
+      annotations:
+        "sidecar.istio.io/inject": "false"
+      {{- end }}
     spec:
       serviceAccountName: {{ include "sparkoperator.serviceAccountName" . }}
       restartPolicy: OnFailure

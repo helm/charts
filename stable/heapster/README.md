@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Retired
 
 Heapster work has been stopped. All efforts have been moved to metrics-server.
@@ -8,6 +13,10 @@ More info on: https://github.com/kubernetes-retired/heapster
 
 [Heapster](https://github.com/kubernetes/heapster) enables Container Cluster Monitoring and Performance Analysis. It collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints.
 The Chart can also enable eventer, which can send the kubernetes event logs to a remote location.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## QuickStart
 

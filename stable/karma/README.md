@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Karma
 
 Karma is an ASL2 licensed alert dashboard for Prometheus Alertmanager.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 
@@ -41,7 +50,7 @@ The following table lists the configurable parameters of the karma chart and the
 |-------------------------------------|--------------------------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                                     | `1`                                       |
 | `image.repository`                  | The image to run                                       | `lmierzwa/karma`                          |
-| `image.tag`                         | The image tag to pull                                  | `v0.60`                                   |
+| `image.tag`                         | The image tag to pull                                  | `v0.72`                                   |
 | `image.pullPolicy`                  | Image pull policy                                      | `IfNotPresent`                            |
 | `nameOverride`                      | Override name of app                                   | ``                                        |
 | `fullnameOverride`                  | Override full name of app                              | ``                                        |
@@ -57,12 +66,14 @@ The following table lists the configurable parameters of the karma chart and the
 | `nodeSelector`                      | Settings for nodeselector                              | `{}`                                      |
 | `tolerations`                       | Settings for toleration                                | `{}`                                      |
 | `affinity`                          | Settings for affinity                                  | `{}`                                      |
+| `podLabels`                         | Labels to be added to pod                              | `{}`                                      |
+| `podAnnotations`                    | Annotations to be added to pod                         | `{}`                                      |
 | `securityContext`                   | Settings for security context                          | `{}`                                      |
 | `serviceAccount.create`             | Create service-account                                 | `true`                                    |
 | `serviceAccount.name`               | Override service-account name                          | ``                                        |
 | `livenessProbe.delay`               | Specify delay in executing probe                       | `5`                                       |
 | `livenessProbe.period`              | Speicy period of liveness probe                        | `5`                                       |
-| `livenessProbe.path`                | Specify path liveness probe should hit                 | `/health`                                       |
+| `livenessProbe.path`                | Specify path liveness probe should hit                 | `/health`                                 |
 | `configMap.enabled`                 | Provide a custom karma configuration                   | `false`                                   |
 | `configMap.annotations`             | Annotations to add to the config map                   | `{}`                                      |
 | `configMap.rawConfig`               | A karma compatible YAML configuration                  | ``                                        |

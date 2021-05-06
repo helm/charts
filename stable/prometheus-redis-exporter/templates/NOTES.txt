@@ -1,3 +1,5 @@
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 1. Get the Redis Exporter URL by running these commands:
 {{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "prometheus-redis-exporter.fullname" . }})

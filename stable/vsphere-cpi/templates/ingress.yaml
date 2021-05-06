@@ -1,5 +1,4 @@
 {{- if .Values.ingress.enabled -}}
-{{- $servicePort := .Values.service.endpointPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -14,7 +13,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+  {{- toYaml .Values.ingress.annotations | indent 4 }}
   {{- end }}
 spec:
   rules:
@@ -25,10 +24,10 @@ spec:
           - path: /
             backend:
               serviceName: {{ template "cpi.name" $ }}
-              servicePort: {{ $servicePort }}
+              servicePort: {{ .Values.service.endpointPort }}
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- toYaml .Values.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}

@@ -10,4 +10,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
+  {{- if .Values.serviceAccount.serviceAccountAnnotations }}
+  annotations:
+{{ toYaml .Values.serviceAccount.serviceAccountAnnotations | indent 4 }}
+  {{- end }}
 {{- end }}

@@ -11,7 +11,7 @@ items:
       app: {{ template "cpi.name" . }}
       vsphere-cpi-infra: role-binding
       chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      component: cloud-controller
+      component: cloud-controller-manager
       heritage: {{ .Release.Service }}
       release: {{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
@@ -30,18 +30,18 @@ items:
 - apiVersion: rbac.authorization.k8s.io/v1
   kind: ClusterRoleBinding
   metadata:
-    name: system:{{ .Values.serviceAccount.name }}
+    name: {{ .Values.serviceAccount.name }}
     labels:
       app: {{ template "cpi.name" . }}
       vsphere-cpi-infra: cluster-role-binding
       chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      component: cloud-controller
+      component: cloud-controller-manager
       heritage: {{ .Release.Service }}
       release: {{ .Release.Name }}
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: ClusterRole
-    name: system:{{ .Values.serviceAccount.name }}
+    name: {{ .Values.serviceAccount.name }}
   subjects:
   - kind: ServiceAccount
     name: {{ .Values.serviceAccount.name }}

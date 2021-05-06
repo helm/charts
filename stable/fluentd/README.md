@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # fluentd
 
 [Fluentd](https://www.fluentd.org/) collects events from various data sources and writes them to files, RDBMS, NoSQL, IaaS, SaaS, Hadoop and so on. Fluentd helps you unify your logging infrastructure (Learn more about the Unified Logging Layer).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -34,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Autoscaling
 
-By enabling autoscaling the chart will use statefulset with hpa instead of ceployment with PVC.
+By enabling autoscaling the chart will use statefulset with hpa instead of deployment with PVC.
 Please be noted to [statefulset limitation](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations)
 The autoscaling is disabled by default for backward compatibility
 
@@ -53,6 +62,7 @@ Parameter | Description | Default
 `output.sslVersion` | output ssl version | `TLSv1`
 `output.buffer_chunk_limit` | output buffer chunk limit | `2M`
 `output.buffer_queue_limit` | output buffer queue limit | `8`
+`deployment.labels` | Additional labels for pods | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `gcr.io/google-containers/fluentd-elasticsearch`
 `image.tag` | Image tag | `v2.4.0`

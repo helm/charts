@@ -3,6 +3,8 @@
 image: quay.io/games_on_k8s/factorio
 imageTag: 0.15.39
 
+replicaCount: 1
+
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:

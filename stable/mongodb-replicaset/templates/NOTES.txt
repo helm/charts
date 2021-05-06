@@ -1,3 +1,14 @@
+*******************
+****DEPRECATED*****
+*******************
+*
+* This chart is deprecated and no longer maintained.
+*
+* It is recommended to use the Bitnami maintained MongoDB chart
+* (https://github.com/bitnami/charts/tree/master/bitnami/mongodb)
+* which has a similar feature set.
+
+
 1. After the statefulset is created completely, one can check which instance is primary by running:
 
     $ for ((i = 0; i < {{ .Values.replicas }}; ++i)); do kubectl exec --namespace {{ template "mongodb-replicaset.namespace" . }} {{ template "mongodb-replicaset.fullname" . }}-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done

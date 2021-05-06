@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Chaoskube Helm Chart
 
 [chaoskube](https://github.com/linki/chaoskube) periodically kills random pods in your Kubernetes cluster.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -42,9 +51,11 @@ $ helm install stable/chaoskube --set dryRun=false
 | `name`                                    | container name                                                                        | chaoskube                        |
 | `image`                                   | docker image                                                                          | quay.io/linki/chaoskube          |
 | `imageTag`                                | docker image tag                                                                      | v0.11.0                          |
+| `imagePullSecrets`                        | A list of secret names for accessing private image registries                         | `[]`                             |
 | `replicas`                                | number of replicas to run                                                             | 1                                |
 | `interval`                                | interval between pod terminations                                                     | 10m                              |
 | `labels`                                  | label selector to filter pods by                                                      | "" (matches everything)          |
+| `kinds`                                   | OwnerReference's Kind selector to filter pods by                                      | "" (matches everything)          |
 | `annotations`                             | annotation selector to filter pods by                                                 | "" (matches everything)          |
 | `namespaces`                              | namespace selector to filter pods by                                                  | "" (all namespaces)              |
 | `dryRun`                                  | don't kill pods, only log what would have been done                                   | true                             |

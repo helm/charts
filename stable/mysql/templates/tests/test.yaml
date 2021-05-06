@@ -12,29 +12,36 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
-  initContainers:
-    - name: test-framework
-      image: "{{ .Values.testFramework.image}}:{{ .Values.testFramework.tag }}"
-      command:
-      - "bash"
-      - "-c"
-      - |
-        set -ex
-        # copy bats to tools dir
-        cp -R /usr/local/libexec/ /tools/bats/
-      volumeMounts:
-      - mountPath: /tools
-        name: tools
+  {{- if .Values.testFramework.securityContext }}
+  securityContext: {{ toYaml .Values.testFramework.securityContext | nindent 4 }}
+  {{- end }}
+  {{- if .Values.imagePullSecrets }}
+  imagePullSecrets:
+  {{- range .Values.imagePullSecrets }}
+    - name: {{ . }}
+  {{- end}}
+  {{- end }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
   containers:
     - name: {{ .Release.Name }}-test
-      image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      image: "{{ .Values.testFramework.image }}:{{ .Values.testFramework.tag }}"
+      imagePullPolicy: "{{ .Values.testFramework.imagePullPolicy}}"
+      command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
         name: tests
         readOnly: true
-      - mountPath: /tools
-        name: tools
       {{- if .Values.ssl.enabled }}
       - name: certificates
         mountPath: /ssl
@@ -43,8 +50,6 @@ spec:
   - name: tests
     configMap:
       name: {{ template "mysql.fullname" . }}-test
-  - name: tools
-    emptyDir: {}
   {{- if .Values.ssl.enabled }}
   - name: certificates
     secret:

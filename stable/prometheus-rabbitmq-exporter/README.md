@@ -1,5 +1,7 @@
 # prometheus-rabbitmq-exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) is a Prometheus exporter for rabbitmq metrics.
 
 ## TL;DR;

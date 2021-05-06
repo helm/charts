@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ethereum.fullname" . }}-bootnode
@@ -27,7 +27,7 @@ spec:
         image: {{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
         - "bootnode --nodekey=/etc/bootnode/node.key --verbosity=4"
         volumeMounts:

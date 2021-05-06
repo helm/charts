@@ -1,7 +1,16 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # OPA
 
 [OPA](https://www.openpolicyagent.org) is an open source general-purpose policy
 engine designed for cloud-native environments.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites
 
@@ -69,6 +78,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `podDisruptionBudget.enabled` | Enables creation of a PodDisruptionBudget for OPA. | `false` |
 | `podDisruptionBudget.minAvailable` | Sets the minimum number of pods to be available. Cannot be set at the same time as maxUnavailable. | `1` |
 | `podDisruptionBudget.maxUnavailable` | Sets the maximum number of pods to be unavailable. Cannot be set at the same time as minAvailable. | Unset |
+| `hostNetwork.enabled` | Use hostNetwork setting on OPA pod | `false` |
 | `image` | OPA image to deploy. | `openpolicyagent/opa` |
 | `imageTag` | OPA image tag to deploy. | See [values.yaml](values.yaml) |
 | `port` | Port in the pod to which OPA will bind itself. | `443` |
@@ -83,6 +93,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `livenessProbe` | HTTP liveness probe for OPA container. | See [values.yaml](values.yaml) |
 | `opa` | OPA configuration. | See [values.yaml](values.yaml) |
 | `mgmt` | kube-mgmt configuration. | See [values.yaml](values.yaml) |
+| `mgmt.port` | kube-mgmt/prometheus port used to communicate with opa. | See [values.yaml](values.yaml) |
 | `sar.resources` | CPU and memory limits for the sar container. | `{}` |
 | `priorityClassName` | The name of the priorityClass for the pods. | Unset |
 | `prometheus.enabled` | Flag to expose the `/metrics` endpoint to be scraped. | `false` |
@@ -94,3 +105,7 @@ Reference](https://www.openpolicyagent.org/docs/configuration.html).
 | `timeoutSeconds` | Timeout for a webhook call in seconds. | `` |
 | `securityContext` | Security context for the containers | `{enabled: false, runAsNonRoot: true, runAsUser: 1}` |
 | `deploymentStrategy` | Specify deployment spec rollout strategy | `{}` |
+| `extraArgs` | Additional arguments to be added to the opa container | `[]` |
+| `extraContainers` | Additional containers to be added to the deployment | `[]` |
+| `extraVolumes` | Additional volumes to be added to the deployment | `[]` |
+| `extraPorts` | Additional ports to OPA service. Useful to expose `extraContainer` ports. | `[]` |

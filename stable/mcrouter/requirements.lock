@@ -1,6 +1,6 @@
 dependencies:
 - name: memcached
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  repository: https://charts.helm.sh/stable
   version: 3.1.0
-digest: sha256:0d00dfe04794d203aa09800185fa0b555cae1321c1ddbc2b885dd01ac7814f77
-generated: "2019-10-28T11:23:19.985686+01:00"
+digest: sha256:4dc5abca6fa50cf49046d2533e3e3768545e1fbb7ed63bdec5c9d2975c9fe65d
+generated: "2020-10-30T11:41:23.804266-04:00"

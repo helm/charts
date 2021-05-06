@@ -2,6 +2,12 @@
 
 See https://github.com/weaveworks/kured
 
+## Deprecation
+
+This chart is deprecated! It has been moved to the kured repository.
+See https://github.com/weaveworks/kured/tree/master/charts/kured for details.
+
+
 ## Autolock feature
 
 This feature is not natively supported by kured but is added using Kubernetes Cronjob to annotate daemonset when to allow kured to run using the lock configuration annotation https://github.com/weaveworks/kured#overriding-lock-configuration

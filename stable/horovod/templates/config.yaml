@@ -72,7 +72,7 @@ data:
         yes | cp /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
         set -e
       fi
-      
+
       for i in `cat $1 | awk '{print $(1)}'`;do
         if [[ "$i" != *"master" ]];then
           retry 30 ssh -o ConnectTimeout=2 -q $i exit
@@ -101,14 +101,14 @@ data:
         if [ $? -ne 0 ]; then
           exit 1
         fi
-        set -e   
+        set -e
     }
     updateSSHPort
     runCheckSSH $1
   worker.run: |
      #!/bin/bash
      set -x
-     
+
      mkdir -p /root/.ssh
      rm -f /root/.ssh/config
      touch /root/.ssh/config

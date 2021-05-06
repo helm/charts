@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # vSphere Cloud Provider Interface (CPI)
 
 [vSphere Cloud Provider Interface](https://github.com/kubernetes/cloud-provider-vsphere) handles cloud specific functionality for VMware vSphere infrastructure running on Kubernetes.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 
@@ -66,12 +75,12 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
-| `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  false                                 |
+| `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  true                                  |
 | `podSecurityPolicy.annotations`          | Annotations for pd sec policy       |  nil                                   |
 | `securityContext.enabled`                | Enable sec context for container    |  false                                 |
-| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  65534                                 |
+| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  1001                                 |
 |                                          |    distroless image                 |                                        |
-| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  65534                                 |
+| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  1001                                 |
 |                                          |    distroless image                 |                                        |
 | `config.enabled`                         | Create a simple single VC config    |  false                                 |
 | `config.vcenter`                         | FQDN or IP of vCenter               |  vcenter.local                         |

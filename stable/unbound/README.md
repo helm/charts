@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Unbound
 
 [Unbound](http://www.unbound.net) is a caching DNS resolver written in C. It is suitable for use as an upstream DNS resolver for kube-dns. The image is based on alpine and includes unbound, bind-tools and bash and is approximately 20MB in size, making for fast startup. Google's [healthz container](https://hub.docker.com/r/googlecontainer/exechealthz/) is used as a sidecar to probe the unbound container on localhost, which allows unbound to run in a default configuration with restricted network access, and still play nice with kubelet.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Configuration
 

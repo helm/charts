@@ -64,7 +64,7 @@ spec:
          - name: USESECRETS
            value: "{{ .Values.ssh.useSecrets }}"
        {{- end }}
-       {{- if .Values.master.env }}            
+       {{- if .Values.master.env }}
        {{- range $key, $value := .Values.master.env }}
          - name: "{{ $key }}"
            value: "{{ $value }}"
@@ -87,10 +87,10 @@ spec:
 {{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
-        command: 
+        command:
         - /horovod/generated/run.sh
         args:
-{{ toYaml .Values.master.args | indent 10 }}         
+{{ toYaml .Values.master.args | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.ssh.useSecrets }}
@@ -105,13 +105,13 @@ spec:
         - name: USESECRETS
           value: "{{ .Values.ssh.useSecrets }}"
         {{- end }}
-        {{- if .Values.master.env }}            
+        {{- if .Values.master.env }}
         {{- range $key, $value := .Values.master.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
         {{- end }}
-        command: 
+        command:
         - /horovod/generated/waitWorkersReady.sh
         args:
         - /horovod/generated/hostfile

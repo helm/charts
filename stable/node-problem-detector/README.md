@@ -1,3 +1,28 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
+# **DEPRECATED** This repository has moved
+
+With upcoming deprecation of `helm/charts` repository, the Node Problem Detector Helm Chart has moved to Delivery Hero's Helm Repository: https://github.com/deliveryhero/helm-charts
+
+You can use this new Helm repository by doing:
+
+```bash
+helm repo add deliveryhero https://charts.deliveryhero.io/public
+helm search repo deliveryhero
+```
+
+You can now use `deliveryhero/node-problem-detector` instead of `stable/node-problem-detector` in all your Helm commands, e.g.:
+
+```bash
+# New installation
+helm install --name <RELEASE_NAME> deliveryhero/node-problem-detector
+# Upgrade existing installation
+helm upgrade --name <RELEASE_NAME> deliveryhero/node-problem-detector
+```
+
 # Kubernetes Node Problem Detector
 
 This chart installs a [node-problem-detector](https://github.com/kubernetes/node-problem-detector) daemonset. This tool aims to make various node problems visible to the upstream layers in cluster management stack. It is a daemon which runs on each node, detects node problems and reports them to apiserver.
@@ -70,6 +95,7 @@ The following table lists the configurable parameters for this chart and their d
 | `labels`                              | Optional daemonset labels                  | `{}`                                                         |
 | `extraVolumes`                        | Optional daemonset volumes to add          | `[]`                                                         |
 | `extraVolumeMounts`                   | Optional daemonset volumeMounts to add     | `[]`                                                         |
+| `updateStrategy`                      | Manage the daemonset update strategy       | `RollingUpdate`                                              |
+| `maxUnavailable`                      | The max pods unavailable during an update  | `1`                                                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters.
-

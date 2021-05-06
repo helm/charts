@@ -1,11 +1,9 @@
 apiVersion: v1
 name: spotify-docker-gc
 home: https://github.com/spotify/docker-gc
-version: 1.0.0
+version: 1.0.2
 appVersion: latest
-description: A simple Docker container and image garbage collection script.
+description: DEPRECATED - A simple Docker container and image garbage collection script.
 sources:
   - https://github.com/spotify/docker-gc
-maintainers:
-  - name: vdice
-    email: vadice@microsoft.com
+deprecated: true

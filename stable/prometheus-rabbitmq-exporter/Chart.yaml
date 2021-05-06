@@ -1,11 +1,11 @@
 apiVersion: v1
-description: Rabbitmq metrics exporter for prometheus
+# The prometheus-rabbitmq-exporter chart is deprecated and no longer maintained. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Rabbitmq metrics exporter for prometheus
 name: prometheus-rabbitmq-exporter
-version: 0.5.5
+version: 0.5.6
 appVersion: v0.29.0
 home: https://github.com/kbudde/rabbitmq_exporter
 sources:
 - https://github.com/kbudde/rabbitmq_exporter
-maintainers:
-- name: juanchimienti
-  email: juan.chimienti@gmail.com

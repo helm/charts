@@ -17,6 +17,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      {{- with .Values.hub.podLabels }}
+      {{ toYaml .| indent 2 }}
+      {{- end }}  
       {{- if .Values.hub.podAnnotations }}
       annotations:
 {{ toYaml .Values.hub.podAnnotations | indent 8 }}

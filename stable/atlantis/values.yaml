@@ -82,7 +82,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.11.1
+  tag: v0.14.0
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -213,6 +213,15 @@ environmentSecrets: []
 #     secretKeyRef:
 #       name: the_k8s_secret_name
 #       key: the_key_of_the_value_in_the_secret
+
+# Optionally specify additional Kubernetes secrets to load environment variables from.
+# All key-value pairs within these secrets will be set as environment variables.
+# Note that any variables set here will be ignored if also defined in the env block of the atlantis statefulset.
+# For example, providing ATLANTIS_GH_USER here and defining a value for github.user will result in the github.user value being used.
+loadEnvFromSecrets: []
+# loadEnvFromSecrets:
+#   - secret_one
+#   - secret_two
 
 # Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}".
 googleServiceAccountSecrets: []

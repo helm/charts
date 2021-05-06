@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "linkerd.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "linkerd.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       annotations:

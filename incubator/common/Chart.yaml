@@ -1,11 +1,7 @@
 apiVersion: v1
-description: Common chartbuilding components and helpers
+description: DEPRECATED Common chartbuilding components and helpers
 name: common
-version: 0.0.5
+version: 0.0.7
 appVersion: 0.0.5
 home: https://helm.sh
-maintainers:
-- name: technosophos
-  email: technosophos@gmail.com
-- name: prydonius
-  email: adnan@bitnami.com
+deprecated: true

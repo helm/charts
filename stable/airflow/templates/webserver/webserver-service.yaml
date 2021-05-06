@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "airflow.fullname" . }}-web
+  {{- if .Values.web.service.annotations }}
+  annotations:
+    {{- toYaml .Values.web.service.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: web
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.web.service.type }}
+  selector:
+    app: {{ include "airflow.labels.app" . }}
+    component: web
+    release: {{ .Release.Name }}
+  sessionAffinity: {{ .Values.web.service.sessionAffinity }}
+  {{- if .Values.web.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+    {{- toYaml .Values.web.service.sessionAffinityConfig | nindent 4 }}
+  {{- end }}
+  ports:
+    - name: web
+      protocol: TCP
+      port: {{ .Values.web.service.externalPort | default 8080 }}
+      {{- if and (eq .Values.web.service.type "NodePort") (.Values.web.service.nodePort.http) }}
+      nodePort: {{ .Values.web.service.nodePort.http }}
+      {{- end }}
+      targetPort: 8080
+  {{- if eq .Values.web.service.type "LoadBalancer" }}
+  {{- if .Values.web.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.web.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if .Values.web.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.web.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -1,5 +1,7 @@
 # Prometheus Adapter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Installs the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter) for the Custom Metrics API. Custom metrics are used in Kubernetes by [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) to scale workloads based upon your own metric pulled from an external metrics provider like Prometheus. This chart complements the [metrics-server](https://github.com/helm/charts/tree/master/stable/metrics-server) chart that provides resource only metrics.
 
 ## Prerequisites
@@ -112,7 +114,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | ------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------|
 | `affinity`                      | Node affinity                                                                   | `{}`                                        |
 | `image.repository`              | Image repository                                                                | `directxman12/k8s-prometheus-adapter-amd64` |
-| `image.tag`                     | Image tag                                                                       | `v0.6.0`                                    |
+| `image.tag`                     | Image tag                                                                       | `v0.7.0`                                    |
 | `image.pullPolicy`              | Image pull policy                                                               | `IfNotPresent`                              |
 | `image.pullSecrets`             | Image pull secrets                                                              | `{}`                                        |
 | `logLevel`                      | Log level                                                                       | `4`                                         |

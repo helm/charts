@@ -1,8 +1,8 @@
 apiVersion: v1
 name: dex
-version: 2.12.0
+version: 2.15.3
 appVersion: 2.24.0
-description: OpenID Connect Identity (OIDC) and OAuth 2.0 Provider with Pluggable Connectors
+description: DEPRECATED OpenID Connect Identity (OIDC) and OAuth 2.0 Provider with Pluggable Connectors
 keywords:
 - dex
 - oidc
@@ -10,12 +10,4 @@ icon: https://github.com/dexidp/dex/raw/master/Documentation/logos/dex-glyph-col
 home: https://github.com/dexidp/dex/
 source:
 - https://github.com/dexidp/dex/
-maintainers:
-- name: kfox1111
-  email: Kevin.Fox@pnnl.gov
-- name: sstarcher
-  email: shane.starcher@gmail.com
-- name: rendhalver
-  email: pete.brown@powerhrg.com
-- name: vi7
-  email: vi7alya@gmail.com
+deprecated: true

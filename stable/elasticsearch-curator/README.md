@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Elasticsearch Curator Helm Chart
 
 This directory contains a Kubernetes chart to deploy the [Elasticsearch Curator](https://github.com/elastic/curator).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites Details
 
@@ -52,6 +61,7 @@ their default values.
 | `cronjob.failedJobsHistoryLimit`     | Specify the number of failed Jobs to keep                   | `nil`                                        |
 | `cronjob.successfulJobsHistoryLimit` | Specify the number of completed Jobs to keep                | `nil`                                        |
 | `cronjob.jobRestartPolicy`           | Control the Job restartPolicy                               | `Never`                                      |
+| `cronjob.startingDeadlineSeconds`    | Amount of time to try reschedule job if we can't run on time| `nil`                                         |
 | `pod.annotations`                    | Annotations to add to the pod                               | {}                                           |
 | `pod.labels`                         | Labels to add to the pod                                    | {}                                           |
 | `dryrun`                             | Run Curator in dry-run mode                                 | `false`                                      |

@@ -26,6 +26,20 @@ spec:
   groups:
   - name: prometheus-operator
     rules:
+    - alert: PrometheusOperatorListErrors
+      annotations:
+        message: Errors while performing List operations in controller {{`{{`}}$labels.controller{{`}}`}} in {{`{{`}}$labels.namespace{{`}}`}} namespace.
+      expr: (sum by (controller,namespace) (rate(prometheus_operator_list_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[1h])) / sum by (controller,namespace) (rate(prometheus_operator_list_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[1h]))) > 0.4
+      for: 15m
+      labels:
+        severity: warning
+    - alert: PrometheusOperatorWatchErrors
+      annotations:
+        message: Errors while performing Watch operations in controller {{`{{`}}$labels.controller{{`}}`}} in {{`{{`}}$labels.namespace{{`}}`}} namespace.
+      expr: (sum by (controller,namespace) (rate(prometheus_operator_watch_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[1h])) / sum by (controller,namespace) (rate(prometheus_operator_watch_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[1h]))) > 0.4
+      for: 15m
+      labels:
+        severity: warning
     - alert: PrometheusOperatorReconcileErrors
       annotations:
         message: Errors while reconciling {{`{{`}} $labels.controller {{`}}`}} in {{`{{`}} $labels.namespace {{`}}`}} Namespace.

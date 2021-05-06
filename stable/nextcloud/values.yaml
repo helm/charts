@@ -345,3 +345,39 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+
+  replicaCount: 1
+  # The metrics exporter needs to know how you serve Nextcloud either http or https
+  https: false
+  timeout: 5s
+
+  image:
+    repository: xperimental/nextcloud-exporter
+    tag: v0.3.0
+    pullPolicy: IfNotPresent
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+
+  ## Metrics exporter pod Annotation and Labels
+  # podAnnotations: {}
+
+  # podLabels: {}
+
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9205"
+    labels: {}

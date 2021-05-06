@@ -91,6 +91,28 @@ Return the appropriate apiVersion for RBAC APIs.
 {{- end -}}
 
 {{/*
+Return the appropriate os label
+*/}}
+{{- define "label.os" -}}
+{{- if semverCompare "^1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+kubernetes.io/os
+{{- else -}}
+beta.kubernetes.io/os
+{{- end -}}
+{{- end -}}
+
+{{/*
+Correct `clusterAgent.metricsProvider.service.port` if Kubernetes <= 1.15
+*/}}
+{{- define "clusterAgent.metricsProvider.port" -}}
+{{- if semverCompare "^1.15-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- .Values.clusterAgent.metricsProvider.service.port -}}
+{{- else -}}
+443
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the container runtime socket
 */}}
 {{- define "datadog.dockerOrCriSocketPath" -}}

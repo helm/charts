@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Apache Druid
 
 [Apache Druid](https://druid.apache.org/) is a high performance real-time analytics database.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Install Chart
 
@@ -63,12 +72,14 @@ The following table lists the configurable parameters of the Druid chart and the
 | Parameter                                | Description                                             | Default                                    |
 |------------------------------------------|---------------------------------------------------------|--------------------------------------------|
 | `image.repository`                       | container image name                                    | `apache/druid`                             |
-| `image.tag`                              | container image tag                                     | `0.18.1`                                   |
+| `image.tag`                              | container image tag                                     | `0.19.0`                                   |
 | `image.pullPolicy`                       | container pull policy                                   | `IfNotPresent`                             |
 | `image.pullSecrets`                      | image pull secrest for private repositoty               | `[]`                                       |
+| `configMap.enabled`                       | enable druid configuration as configmap                   | `true`                                     |
 | `configVars`                              | druid configuration variables for all components         | ``                                         |
 | `gCloudStorage.enabled`                  | look for secret to set google cloud credentials         | `false`                                    |
 | `gCloudStorage.secretName`               | secretName to be mounted as google cloud credentials    | `false`                                    |
+| `broker.enabled`                         | enable broker                                           | `true`                                     |
 | `broker.name`                            | broker component name                                   | `broker`                                   |
 | `broker.replicaCount`                    | broker node replicas (deployment)                       | `1`                                        |
 | `broker.port`                            | port of broker component                                | `8082`                                     |
@@ -84,6 +95,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `broker.ingress.path`                    | path of the broker api                                  | `/`                                        |
 | `broker.ingress.annotations`             | annotations for the broker api ingress                  | `{}`                                       |
 | `broker.ingress.tls`                     | TLS configuration for the ingress                        | `[]`                                       |
+| `coordinator.enabled`                    | enable coordinator                                      | `true`                                     |
 | `coordinator.name`                       | coordinator component name                              | `coordinator`                              |
 | `coordinator.replicaCount`               | coordinator node replicas (deployment)                  | `1`                                        |
 | `coordinator.port`                       | port of coordinator component                           | `8081`                                     |
@@ -115,6 +127,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `overlord.ingress.path`                  | path of the overlord api                                | `/`                                        |
 | `overlord.ingress.annotations`           | annotations for the overlord api ingress                | `{}`                                       |
 | `overlord.ingress.tls`                   | TLS configuration for the ingress                        | `[]`                                       |
+| `historical.enabled`                     | enable historical                                       | `true`                                     |
 | `historical.name`                        | historical component name                               | `historical`                               |
 | `historical.replicaCount`                | historical node replicas (statefulset)                  | `1`                                        |
 | `historical.port`                        | port of historical component                            | `8083`                                     |
@@ -122,6 +135,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.resources`                   | historical node resources requests & limits             | `{}`                                       |
 | `historical.podAnnotations`              | historical Deployment annotations                       | `{}`                                       |
 | `historical.nodeSelector`                | node labels for historical pod assignment               | `{}`                                       |
+| `historical.securityContext`             | custom security context for historical containers       | `{ fsGroup: 1000 }`                        |
 | `historical.tolerations`                 | historical tolerations                                  | `[]`                                       |
 | `historical.config`                       | historical node private config such as `JAVA_OPTS`       |                                            |
 | `historical.persistence.enabled`         | historical persistent enabled/disabled                  | `true`                                     |
@@ -135,6 +149,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `historical.ingress.path`                | path of the historical api                              | `/`                                        |
 | `historical.ingress.annotations`         | annotations for the historical api ingress              | `{}`                                       |
 | `historical.ingress.tls`                 | TLS configuration for the ingress                        | `[]`                                       |
+| `middleManager.enabled`                  | enable middleManager                                    | `true`                                     |
 | `middleManager.name`                     | middleManager component name                            | `middleManager`                            |
 | `middleManager.replicaCount`             | middleManager node replicas (statefulset)               | `1`                                        |
 | `middleManager.port`                     | port of middleManager component                         | `8091`                                     |
@@ -142,6 +157,7 @@ The following table lists the configurable parameters of the Druid chart and the
 | `middleManager.resources`                | middleManager node resources requests & limits          | `{}`                                       |
 | `middleManager.podAnnotations`           | middleManager Deployment annotations                    | `{}`                                       |
 | `middleManager.nodeSelector`             | Node labels for middleManager pod assignment            | `{}`                                       |
+| `middleManager.securityContext`          | custom security context for middleManager containers    | `{ fsGroup: 1000 }`                        |
 | `middleManager.tolerations`              | middleManager tolerations                               | `[]`                                       |
 | `middleManager.config`                    | middleManager private config such as `JAVA_OPTS`         |                                            |
 | `middleManager.persistence.enabled`      | middleManager persistent enabled/disabled               | `true`                                     |

@@ -123,9 +123,16 @@ spec:
         - name: TZ
           value: {{ .Values.timezone }}
         {{- end }}
+        {{- if .Values.extraEnvVars }}
+{{ tpl .Values.extraEnvVars . | indent 8 }}
+        {{- end }}
         ports:
         - name: mysql
           containerPort: 3306
+        {{- if .Values.mysqlx.port.enabled }}
+        - name: mysqlx
+          port: 33060
+        {{- end }}
         livenessProbe:
           exec:
             command:

@@ -81,11 +81,11 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    volumes:
-      - name: katafygio-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "katafygio.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end -}}
+      volumes:
+        - name: katafygio-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "katafygio.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

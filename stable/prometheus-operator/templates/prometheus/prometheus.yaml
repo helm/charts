@@ -34,6 +34,9 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
   version: {{ .Values.prometheus.prometheusSpec.image.tag }}
+  {{- if .Values.prometheus.prometheusSpec.image.sha }}
+  sha: {{ .Values.prometheus.prometheusSpec.image.sha }}
+  {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalLabels }}
   externalLabels:
@@ -201,10 +204,15 @@ spec:
   imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 4 }}
 {{- end }}
-{{- if or .Values.prometheus.prometheusSpec.additionalScrapeConfigs .Values.prometheus.prometheusSpec.additionalScrapeConfigsExternal }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigs }}
   additionalScrapeConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
     key: additional-scrape-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.enabled }}
+  additionalScrapeConfigs:
+    name: {{ .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.name }}
+    key: {{ .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.key }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
   additionalAlertManagerConfigs:

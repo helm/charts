@@ -1,8 +1,9 @@
 apiVersion: v1
+deprecated: true
 name: uchiwa
-version: 1.0.0
+version: 1.0.2
 appVersion: 0.22
-description: Dashboard for the Sensu monitoring framework
+description: DEPRECATED Dashboard for the Sensu monitoring framework
 keywords:
 - uchiwa
 - sensu
@@ -12,8 +13,5 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/sstarcher/docker-uchiwa
 - https://github.com/sensu/uchiwa
-maintainers:
-- name: sstarcher
-  email: shane.starcher@gmail.com
 icon: https://uchiwa.io/img/favicon.png
 engine: gotpl

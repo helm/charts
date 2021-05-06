@@ -1,5 +1,7 @@
 # Prometheus Node Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [node exporter](https://github.com/prometheus/node_exporter)
 
 ## TL;DR;
@@ -39,7 +41,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 |             Parameter                 |                                                          Description                                                          |                 Default                          |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | `image.repository`                    | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`               |
-| `image.tag`                           | Image tag                                                                                                                     | `v1.0.0`                                         |
+| `image.tag`                           | Image tag                                                                                                                     | `v1.0.1`                                         |
 | `image.pullPolicy`                    | Image pull policy                                                                                                             | `IfNotPresent`                                   |
 | `extraArgs`                           | Additional container arguments                                                                                                | `[]`                                             |
 | `extraHostVolumeMounts`               | Additional host volume mounts                                                                                                 | `[]`                                             |

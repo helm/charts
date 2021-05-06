@@ -1,4 +1,175 @@
+# ⚠️ THIS CHART HAS MOVED ⚠️
+
+### New location: https://github.com/airflow-helm/charts/tree/main/charts/airflow
+
+---
+---
+
 # Upgrading Steps
+
+## `v7.12.X` → `v7.13.0`
+
+__The following values have been ADDED:__
+* `flower.oauthDomains`
+
+## `v7.11.X` → `v7.12.0`
+
+__The following values have been ADDED:__
+* `ingress.web.labels`
+* `ingress.flower.labels`
+* `ingress.flower.precedingPaths`
+* `ingress.flower.succeedingPaths`
+
+## `v7.10.X` → `v7.11.0`
+
+__The following IMPROVEMENTS have been made:__
+* You can now use `scheduler.existingSecretConnections` with an externally created Secret to store airflow connections. 
+  (Rather than storing them in plain-text with `scheduler.connections`)
+
+__The following values have been ADDED:__
+* `scheduler.existingSecretConnections`
+
+## `v7.9.X` → `v7.10.0`
+
+__The following IMPROVEMENTS have been made:__
+* We now make use of the `_CMD` variables for `AIRFLOW__CORE__SQL_ALCHEMY_CONN_CMD`, `AIRFLOW__CELERY__RESULT_BACKEND_CMD`, and `AIRFLOW__CELERY__BROKER_URL_CMD`:
+  * This fixes the Scheduler liveness probe implemented in `7.8.0`
+  * This fixes using `kubectl exec` to run commands like `airflow create_user`
+* Configs passed with `airflow.config` are now passed as-defined in your `values.yaml`:
+  * This fixes an issue where people had to escape `"` characters in JSON strings
+
+## `v7.8.X` → `v7.9.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* You can now give the airflow ServiceAccount GET/LIST on Event resources
+    * This is needed for `KubernetesPodOperator(log_events_on_failure=True)`
+    * To enable, set `rbac.events` to `true` (Default: `false`)
+
+__The following values have been ADDED:__
+* `rbac.events`
+
+## `v7.7.X` → `v7.8.0`
+
+> __WARNING:__ 
+>
+> If you install many pip packages with: `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+> 
+> Ensure you set `scheduler.livenessProbe.initialDelaySeconds` to longer than the install time
+>
+
+__The following IMPROVEMENTS have been made:__
+* Upgraded to Airflow: `1.10.12`
+* The scheduler now has a liveness probe which will force the pod to restart if it becomes unhealthy for more than some threshold of time (default: 150sec)
+  * NOTE: this is on by default, but can be disabled with: `scheduler.livenessProbe.enabled`
+
+__The following values have been ADDED:__
+* `scheduler.livenessProbe.enabled`
+* `scheduler.livenessProbe.initialDelaySeconds`
+* `scheduler.livenessProbe.periodSeconds`
+* `scheduler.livenessProbe.failureThreshold`
+
+## `v7.6.X` → `v7.7.0`
+
+__If you are using an INTERNAL redis database, some configs have changed:__
+
+| 7.6.x | 7.7.x | Notes |
+| --- | --- | ---|
+| `redis.existingSecretKey` | `redis.existingSecretPasswordKey` | Changed to align with [stable/redis](https://github.com/helm/charts/tree/master/stable/redis) |
+
+## `v7.5.X` → `v7.6.0`
+
+> __WARNING:__ 
+>
+> We now annotate all pods with `cluster-autoscaler.kubernetes.io/safe-to-evict` by default.
+> 
+> If you want to disable this:
+>  - Set: `flower.safeToEvict`, `scheduler.safeToEvict`, `web.safeToEvict`, `workers.safeToEvict` to `false`
+>  - Set: `postgresql.master.podAnnotations`, `redis.master.podAnnotations`, `redis.slave.podAnnotations` to `{}`
+>
+> Note for GKE:
+>  - GKE's cluster-autoscaler will not honor a `gracefulTerminationPeriod` of more than 10min,
+>    if your jobs need more than this amount of time to finish, please set `workers.safeToEvict` to `false`
+> 
+
+__The following IMPROVEMENTS have been made:__
+* The chart YAML has been refactored
+* You can now configure `safe-to-evict` annotations (so that pods with emptyDir Volumes can be evicted by cluster-autoscaler)
+* You can now create PodDisruptionBudgets for all components: {flower, webserver, worker}
+* The chart now forces the correct ports to be used (NOTE: this will not prevent you changing Service/Ingress ports)
+* You can now run multiple instances of flower
+* You can now specify minReadySeconds for flower
+
+__The following values have CHANGED DEFAULTS:__
+* `workers.celery.instances`:
+    * Is now `16` by default (letting each worker take 16 tasks)
+* `postgresql.master.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+* `redis.master.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+* `redis.slave.podAnnotations`:
+    * Is now `{"cluster-autoscaler.kubernetes.io/safe-to-evict": "true"}`
+
+__The following values have been ADDED:__
+* `flower.minReadySeconds`
+* `flower.podDisruptionBudget.*`
+* `flower.replicas`
+* `flower.safeToEvict`
+* `scheduler.safeToEvict`
+* `web.podDisruptionBudget.*`
+* `web.safeToEvict`
+* `workers.podDisruptionBudget.*`
+* `workers.safeToEvict`
+
+## `v7.4.X` → `v7.5.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to setup external database connection propertites with the value `externalDatabase.properties` for TLS or other advanced parameters
+
+__The following values have been ADDED:__
+
+* `externalDatabase.properties`
+
+## `v7.3.X` → `v7.4.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Reduced how likely it is for a celery worker to receive SIGKILL with graceful termination enabled.
+  New celery worker graceful shutdown lifecycle:
+    1. prevent worker accepting new tasks
+    2. wait AT MOST `workers.celery.gracefullTerminationPeriod` for tasks to finish
+    3. send `SIGTERM` to worker
+    4. wait AT MOST `workers.terminationPeriod` for kill to finish
+    5. send `SIGKILL` to worker
+
+__The following values have been ADDED:__
+
+* `workers.celery.gracefullTerminationPeriod`:
+    * if you currently use a high value of `workers.terminationPeriod`, consider lowering it to `60` and setting a high value for `workers.celery.gracefullTerminationPeriod`
+
+## `v7.2.X` → `v7.3.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to specify a specific port for Flower when using NodePort service type with the value `flower.service.nodePort.http`
+
+__The following values have been ADDED:__
+
+* `flower.service.nodePort.http`
+
+## `v7.1.X` → `v7.2.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Fixed Flower's liveness probe when Basic Authentication is enabled for Flower.
+  You can specify a basic auth value via a Kubernetes Secret using the values `flower.basicAuthSecret` and `flower.basicAuthSecretKey`.
+  The secret value will get encoded and included in the liveness probe's header.
+
+__The following values have been ADDED:__
+
+* `flower.basicAuthSecret`
+* `flower.basicAuthSecretKey`
 
 ## `v7.0.X` → `v7.1.0`
 

@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Seq
 
 [Seq](https://getseq.net/) is the easiest way for development teams to capture, search and visualize structured log events!
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -46,7 +55,7 @@ The following table lists the configurable parameters of the Seq chart and their
 | Parameter                            | Description                                                                                           | Default                               |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------|
 | `image.repository`                   | Image repository                                                                                      | `datalust/seq`                        |
-| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `5`                                   |
+| `image.tag`                          | Seq image tag. Possible values listed [here](https://hub.docker.com/r/datalust/seq/tags/).            | `2020`                                   |
 | `image.pullPolicy`                   | Image pull policy                                                                                     | `IfNotPresent`                        |
 | `acceptEULA`                         | Accept EULA                                                                                           | `Y`                                   |
 | `baseURI`                            | Base URL for ingress/AAD (see values.yaml)                                                            |                                       |
@@ -76,6 +85,7 @@ The following table lists the configurable parameters of the Seq chart and their
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                                                                             | `ReadWriteOnce`                       |
 | `persistence.subPath`                | Mount a sub directory of the persistent volume if set                                                 | `""`                                  |
 | `resources`                          | CPU/Memory resource requests/limits                                                                   | `{}`                                  |
+| `cache.targetSize`                   | The target amount of RAM to use for the in-memory cache                                               | `0.7`                                 |
 | `nodeSelector`                       | Node labels for pod assignment                                                                        | `{}`                                  |
 | `affinity`                           | Affinity settings for pod assignment                                                                  | `{}`                                  |
 | `tolerations`                        | Toleration labels for pod assignment                                                                  | `[]`                                  |

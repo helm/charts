@@ -15,13 +15,12 @@ spec:
   podSelector:
     matchLabels:
       app: {{ template "prometheus-pushgateway.name" .}}
+      release: {{ .Release.Name }}
   ingress:
     - ports:
       - port: {{ .Values.service.targetPort }}
 {{- if .Values.networkPolicy.customSelectors }}
-    - from:
+      from:
 {{ toYaml .Values.networkPolicy.customSelectors | indent 8 }}
-{{- else if .Values.networkPolicy.allowAll }}
-    - {}
 {{- end -}}
 {{- end -}}

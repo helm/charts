@@ -6,14 +6,16 @@ metadata:
     app: {{ template "cpi.name" . }}
     vsphere-cpi-infra: daemonset
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: cloud-controller
+    component: cloud-controller-manager
+    tier: control-plane
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
-{{- if .Values.daemonset.annotations }}
   annotations:
-{{ toYaml .Values.daemonset.annotations | indent 4 }}
-{{- end }}
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+    {{- if .Values.daemonset.annotations }}
+    {{- toYaml .Values.daemonset.annotations | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -22,46 +24,44 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-{{- if .Values.daemonset.podAnnotations }}
+      {{- if .Values.daemonset.podAnnotations }}
       annotations:
-{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
-{{- end }}
+      {{- toYaml .Values.daemonset.podAnnotations | nindent 8 }}
+      {{- end }}
       labels:
         app: {{ template "cpi.name" . }}
-        component: cloud-controller
+        component: cloud-controller-manager
+        tier: control-plane
         release: {{ .Release.Name }}
         vsphere-cpi-infra: daemonset
-{{- if .Values.daemonset.podLabels }}
-{{ toYaml .Values.daemonset.podLabels | indent 8 }}
-{{- end }}
+        {{- if .Values.daemonset.podLabels }}
+        {{- toYaml .Values.daemonset.podLabels | nindent 8 }}
+        {{- end }}
     spec:
       nodeSelector:
-{{- if .Values.daemonset.nodeSelector }}
-{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
-{{- else }}
         node-role.kubernetes.io/master: ""
-{{- end }}
-      securityContext:
-        runAsUser: 0
+      {{- if .Values.daemonset.nodeSelector }}
+      {{- toYaml .Values.daemonset.nodeSelector | nindent 8 }}
+      {{- end }}
       tolerations:
-{{- if .Values.daemonset.tolerations }}
-{{ toYaml .Values.daemonset.tolerations | indent 8 }}
-{{- else }}
       - key: node.cloudprovider.kubernetes.io/uninitialized
         value: "true"
         effect: NoSchedule
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
- {{- end }}
+      - key: node.kubernetes.io/not-ready
+        effect: NoSchedule
+        operator: Exists
+      {{- if .Values.daemonset.tolerations }}
+      {{- toYaml .Values.daemonset.tolerations | nindent 6 }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: true
-      {{- end }}
       dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
       containers:
       - name: {{ template "cpi.name" . }}
@@ -91,8 +91,10 @@ spec:
           - mountPath: {{ .Values.daemonset.cmdline.cloudConfig.dir }}
             name: vsphere-config-volume
             readOnly: true
+        {{- if .Values.daemonset.resources }}
         resources:
-{{ toYaml .Values.daemonset.resources | indent 10 }}
+          {{- toYaml .Values.daemonset.resources | nindent 10 }}
+        {{- end }}
       volumes:
         - name: vsphere-config-volume
           configMap:

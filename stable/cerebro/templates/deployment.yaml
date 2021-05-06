@@ -45,6 +45,9 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -63,6 +66,9 @@ spec:
               mountPath: /opt/cerebro/logs/
             - name: tmp
               mountPath: /tmp
+          {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+          {{- end }}
           {{- if .Values.env }}
           env:
           {{- range $index, $element := .Values.env }}
@@ -101,6 +107,9 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+    {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

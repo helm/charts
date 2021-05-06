@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-nginx-configmap
-type: Opaque
+  labels: {{ include "rundeck.labels" . | indent 4 }}
 data:
   nginx.conf: |-
 {{- if .Values.nginxConfOverride }}

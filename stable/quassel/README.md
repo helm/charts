@@ -1,8 +1,17 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Quassel
 
 [Quassel IRC](https://quassel-irc.org/) is a modern, cross-platform,
 distributed IRC client, meaning that one (or multiple) client(s) can attach to
 and detach from a central core.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 

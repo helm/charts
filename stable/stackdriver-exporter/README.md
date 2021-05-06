@@ -1,3 +1,8 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Stackdriver Exporter
 
 Prometheus exporter for Stackdriver, allowing for Google Cloud metrics.  You
@@ -12,6 +17,10 @@ access scopes, then you must have
 `https://www.googleapis.com/auth/monitoring.read`.
 
 Learn more: https://github.com/frodenas/stackdriver_exporter
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -66,6 +75,7 @@ Parameter                           | Description                               
 `resources`                         | Resource requests & limits                                                      | `{}`
 `serviceAccount.name`               | Name of Kubernetes service account to use                                       | `""` (defaults to `default`)
 `serviceAccount.create`             | Toggle for service account creation                                             | `false`
+`serviceAccount.annotations`        | Annotations for service account. Only used if `create` is `true`.               | `nil`
 `service.type`                      | Type of service to create                                                       | `ClusterIP`
 `service.httpPort`                  | Port for the http service                                                       | `9255`
 `stackdriver.projectId`             | GCP Project ID                                                                  | ``

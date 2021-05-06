@@ -12,11 +12,22 @@ image:
   #   - name: registry-secret
 
 testFramework:
+  # When enabled, performs helm tests
+  enabled: true
   image: "dduportal/bats"
   tag: "0.4.0"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - name: registry-secret
+  # Backend test image when backend.type == "es"
+  curlJq:
+    image: dwdraju/alpine-curl-jq
+    tag: latest
+  # Backend test image when backend.type == "forward"
+  # NOTE image runs as root user
+  fluentd:
+    image: fluent/fluentd
+    tag: v1.4-debian-1
 
 nameOverride: ""
 fullnameOverride: ""
@@ -250,6 +261,7 @@ input:
     ignore_older: ""
     dockerMode: false
     dockerModeFlush: 4
+    exclude_path: ""
   systemd:
     enabled: false
     filters:
@@ -330,3 +342,21 @@ securityContext: {}
 podSecurityContext: {}
   # podSecurityContext:
   #   runAsUser: 1000
+
+## Add your own init container (example installation of Lua filter plugin)
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: {}
+  # load-plugin:
+  #   image: "appropriate/curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   # Assumed plugins volume is configured at Pod level via extraVolumes
+  #   volumeMounts:
+  #     - name: plugins
+  #       mountPath: /fluent-bit/plugins
+  #   command:
+  #     - "/bin/sh"
+  #     - "-c"
+  #     - |
+  #       curl -sS <download-url> -o /plugin.zip
+  #       unzip /plugin.zip
+  #       cp -av <plugin-zip-contents> /fluent-bit/plugins/

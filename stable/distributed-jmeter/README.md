@@ -1,8 +1,17 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Distributed JMeter
 
 Based on the work done [here](https://github.com/pedrocesar-ti/distributed-jmeter-docker).
 
 Apache Jmeter™ is an open source tool that helps creating and running load test plans. This helm/chart was created to help you running different versions of JMeter in a distributed fashion (master -> server architecture), for more info.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Chart Details:
 This chart will do the following:

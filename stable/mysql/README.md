@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # MySQL
 
 [MySQL](https://MySQL.org) is one of the most popular database servers in the world. Notable users include Wikipedia, Facebook and Google.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Introduction
 
@@ -49,17 +58,20 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `args`                                       | Additional arguments to pass to the MySQL container.                                         | `[]`                                                 |
 | `initContainer.resources`                    | initContainer resource requests/limits                                                       | Memory: `10Mi`, CPU: `10m`                           |
 | `image`                                      | `mysql` image repository.                                                                    | `mysql`                                              |
-| `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
+| `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.30`                                             |
 | `busybox.image`                              | `busybox` image repository.                                                                  | `busybox`                                            |
-| `busybox.tag`                                | `busybox` image tag.                                                                         | `1.29.3`                                             |
+| `busybox.tag`                                | `busybox` image tag.                                                                         | `1.32`                                               |
 | `testFramework.enabled`                      | `test-framework` switch.                                                                     | `true`                                               |
-| `testFramework.image`                        | `test-framework` image repository.                                                           | `dduportal/bats`                                     |
-| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `0.4.0`                                              |
+| `testFramework.image`                        | `test-framework` image repository.                                                           | `bats/bats`                                          |
+| `testFramework.tag`                          | `test-framework` image tag.                                                                  | `1.2.1`                                              |
+| `testFramework.imagePullPolicy`              | `test-framework` image pull policy.                                                          | `IfNotPresent`                                       |
+| `testFramework.securityContext`              | `test-framework` securityContext                                                             | `{}`                                                 |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
 | `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
 | `extraVolumeMounts`                          | Additional volumeMounts as a string to be passed to the `tpl` function                       |                                                      |
 | `extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function                    |                                                      |
+| `extraEnvVars`                               | Additional environment variables as a string to be passed to the `tpl` function              |                                                      |
 | `mysqlRootPassword`                          | Password for the `root` user. Ignored if existing secret is provided                         | Random 10 characters                                 |
 | `mysqlUser`                                  | Username of new user to create.                                                              | `nil`                                                |
 | `mysqlPassword`                              | Password for the new user. Ignored if existing secret is provided                            | Random 10 characters                                 |
@@ -75,6 +87,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.successThreshold`            | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                                                    |
 | `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3                                                    |
 | `schedulerName`                              | Name of the k8s scheduler (other than default)                                               | `nil`                                                |
+| `mysqlx.port.enabled`                        | Boolean to toggle a port for mysqlx `33060` protocol.                                        | false                                                |
 | `persistence.enabled`                        | Create a volume to store data                                                                | true                                                 |
 | `persistence.size`                           | Size of persistent volume claim                                                              | 8Gi RW                                               |
 | `persistence.storageClass`                   | Type of persistent volume claim                                                              | nil                                                  |

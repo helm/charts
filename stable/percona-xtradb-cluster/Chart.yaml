@@ -1,8 +1,8 @@
 apiVersion: v1
 name: percona-xtradb-cluster
-version: 1.0.4
+version: 1.0.8
 appVersion: 5.7.19
-description: free, fully compatible, enhanced, open source drop-in replacement for
+description: DEPRECATED - free, fully compatible, enhanced, open source drop-in replacement for
   MySQL with Galera Replication (xtradb)
 keywords:
 - mysql
@@ -17,7 +17,5 @@ icon: https://www.percona.com/sites/all/themes/percona2015/logo.png
 sources:
 - https://github.com/kubernetes/charts
 - https://github.com/percona-lab/percona-docker/
-maintainers:
-- name: paulczar
-  email: username.taken@gmail.com
+deprecated: true
 engine: gotpl

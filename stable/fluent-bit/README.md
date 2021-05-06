@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Fluent-Bit Chart
 
 [Fluent Bit](http://fluentbit.io/) is an open source and multi-platform Log Forwarder.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Chart Details
 
@@ -112,6 +121,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `extraPorts`                       | List of extra ports                        |                       |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
+| `initContainers`                   | Init containers                            | `{}`                                           |
 | `service.flush`                    | Interval to flush output (seconds)        | `1`                   |
 | `service.logLevel`                 | Diagnostic level (error/warning/info/debug/trace)        | `info`                   |
 | `filter.enableExclude`             | Enable the use of monitoring for a pod annotation of `fluentbit.io/exclude: true`. If present, discard logs from that pod.         | `true`                                 |
@@ -137,6 +147,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `input.tail.ignore_older`          | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax.        | ``                                             |
 | `input.tail.dockerMode`            | Recombine split Docker log lines before passing them to the parser.        | `false`                                             |
 | `input.tail.dockerModeFlush`       | Wait period time in seconds to flush queued unfinished split lines in docker mode.        | `4`                                             |
+| `input.tail.exclude_path`          | Exclude paths from tail input (`Exclude_Path` configuration parameter).        | ``                                             |
 | `input.systemd.enabled`            | [Enable systemd input](https://docs.fluentbit.io/manual/input/systemd)                   | `false`                                       |
 | `input.systemd.filters.systemdUnit` | Please see https://docs.fluentbit.io/manual/input/systemd | `[docker.service, kubelet.service`, `node-problem-detector.service]`                                       |
 | `input.systemd.maxEntries`         | Please see https://docs.fluentbit.io/manual/input/systemd | `1000`                             |
@@ -170,9 +181,14 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.serviceMonitor.interval`         | Scrape interval. If not set, the Prometheus default scrape interval is used           | `nil`   |
 | `metrics.serviceMonitor.scrapeTimeout`    | Scrape timeout. If not set, the Prometheus default scrape timeout is used             | `nil`   |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
-| `testFramework.image`              | `test-framework` image repository.         | `dduportal/bats`                                  |
+| `testFramework.enabled`            | Set `false` to disable tests               | `true`                                            |
+| `testFramework.image`              | `test-framework` image repository          | `dduportal/bats`                                  |
 | `testFramework.pullSecrets`        | `test-framework` image pull secrets        | `nil`                                             |
-| `testFramework.tag`                | `test-framework` image tag.                | `0.4.0`                                           |
+| `testFramework.tag`                | `test-framework` image tag                 | `0.4.0`                                           |
+| `testFramework.curlJq.image`       | Image repository for curl/jq tests         | `dwdraju/alpine-curl-jq`                          |
+| `testFramework.curlJq.tag`         | Image tag for curl/jq tests                | `latest`                                          |
+| `testFramework.fluentd.image`      | Image repository for fluentd tests         | `fluent/fluentd`                                  |
+| `testFramework.fluentd.tag`        | Image tag for fluentd tests                | `v1.4-debian-1`                                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

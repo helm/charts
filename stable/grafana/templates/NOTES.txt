@@ -1,3 +1,8 @@
+*******************
+****DEPRECATED*****
+*******************
+* The chart is deprecated. Future development has been moved to https://github.com/grafana/helm2-grafana
+
 1. Get your '{{ .Values.adminUser }}' user password by running:
 
    kubectl get secret --namespace {{ template "grafana.namespace" . }} {{ template "grafana.fullname" . }} -o jsonpath="{.data.admin-password}" | base64 --decode ; echo

@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # kube2iam
 
 Installs [kube2iam](https://github.com/jtblin/kube2iam) to provide IAM credentials to pods based on annotations.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -62,6 +71,12 @@ Parameter | Description | Default
 `prometheus.serviceMonitor.interval` | Interval at which the metrics endpoint is scraped | `10s`
 `prometheus.serviceMonitor.namespace` | An alternative namespace in which to install the ServiceMonitor | `""`
 `prometheus.serviceMonitor.labels` | Labels to add to the ServiceMonitor | `{}`
+`probe.enabled`|Enable/disable pod liveness probe|`true`
+`probe.initialDelaySeconds`|Liveness probe initial delay|`30`
+`probe.periodSeconds`|Liveness probe check inteval|`5`
+`probe.successThreshold`|Liveness probe success threshold|`1`
+`probe.failureThreshold`|Liveness probe fail threshold|`3`
+`probe.timeoutSeconds`|Livenees probe timeout|`1`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`

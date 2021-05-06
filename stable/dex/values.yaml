@@ -6,6 +6,7 @@
 image: quay.io/dexidp/dex
 imageTag: "v2.24.0"
 imagePullPolicy: "IfNotPresent"
+imagePullSecrets: {}
 
 inMiniKube: false
 
@@ -14,6 +15,8 @@ nodeSelector: {}
 podLabels: {}
 
 podAnnotations: {}
+
+priorityClassName: ""
 
 initContainers: []
 
@@ -135,6 +138,24 @@ certs:
       caName: dex-web-server-ca
     pod:
       annotations: {}
+      nodeSelector: {}
+      tolerations: []
+        # - key: CriticalAddonsOnly
+        #   operator: Exists
+        # - key: foo
+        #   operator: Equal
+        #   value: bar
+        #   effect: NoSchedule
+      affinity: {}
+        # podAntiAffinity:
+        #   preferredDuringSchedulingIgnoredDuringExecution:
+        #   - weight: 5
+        #     podAffinityTerm:
+        #       topologyKey: "kubernetes.io/hostname"
+        #       labelSelector:
+        #         matchLabels:
+        #           app: {{ template "dex.name" . }}
+        #           release: "{{ .Release.Name }}"
   # Section below is relevant only when grpc support is enabled
   grpc:
     create: true
@@ -148,6 +169,24 @@ certs:
       caName: dex-grpc-ca
     pod:
       annotations: {}
+      nodeSelector: {}
+      tolerations: []
+        # - key: CriticalAddonsOnly
+        #   operator: Exists
+        # - key: foo
+        #   operator: Equal
+        #   value: bar
+        #   effect: NoSchedule
+      affinity: {}
+        # podAntiAffinity:
+        #   preferredDuringSchedulingIgnoredDuringExecution:
+        #   - weight: 5
+        #     podAffinityTerm:
+        #       topologyKey: "kubernetes.io/hostname"
+        #       labelSelector:
+        #         matchLabels:
+        #           app: {{ template "dex.name" . }}
+        #           release: "{{ .Release.Name }}"
 
 env: []
 

@@ -15,9 +15,12 @@ data:
     system_probe_config:
       enabled: {{ $.Values.datadog.systemProbe.enabled }}
       debug_port:  {{ $.Values.datadog.systemProbe.debugPort }}
-      sysprobe_socket: /opt/datadog-agent/run/sysprobe.sock
-      enable_conntrack : {{ $.Values.datadog.systemProbe.enableConntrack }}
+      sysprobe_socket: /var/run/sysprobe/sysprobe.sock
+      enable_conntrack: {{ $.Values.datadog.systemProbe.enableConntrack }}
       bpf_debug: {{ $.Values.datadog.systemProbe.bpfDebug }}
+      enable_tcp_queue_length: {{ $.Values.datadog.systemProbe.enableTCPQueueLength }}
+      enable_oom_kill: {{ $.Values.datadog.systemProbe.enableOOMKill }}
+      collect_dns_stats: {{ $.Values.datadog.systemProbe.collectDNSStats }}
 
 {{- if eq .Values.datadog.systemProbe.seccomp "localhost/system-probe" }}
 ---
@@ -111,11 +114,13 @@ data:
             "lseek",
             "lstat",
             "lstat64",
+            "madvise",
             "mkdir",
             "mkdirat",
             "mmap",
             "mmap2",
             "mprotect",
+            "mremap",
             "munmap",
             "nanosleep",
             "newfstatat",
@@ -128,6 +133,7 @@ data:
             "poll",
             "ppoll",
             "prctl",
+            "pread64",
             "prlimit64",
             "pselect6",
             "read",
