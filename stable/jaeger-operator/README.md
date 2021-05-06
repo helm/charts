@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |
 | `affinity`              | Affinity settings for pod assignment                                                                        | `{}`                            |
 | `securityContext`       | Security context for pod                                                                                    | `{}`                            |
+| `priorityClassName`     | Priority class name for the pod                                                                             | `None`                          |
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
