@@ -1528,7 +1528,8 @@ externalRedis:
   ## the key within `externalRedis.passwordSecret` containing the password string
   ##
   passwordSecretKey: "redis-password"
-
+  ## the connection properties for external reids. for eg ?ssl_cert_reqs=CERT_OPTIONAL
+  properties: ""
 ###################################
 # Prometheus - ServiceMonitor
 ###################################

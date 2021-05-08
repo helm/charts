@@ -6,6 +6,15 @@
 ---
 
 # Upgrading Steps
+## `v7.13.X` → `v7.14.0`
+
+__The following IMPROVEMENTS have been made:__
+
+* Added an ability to setup external redis connection propertites with the value `externalRedis.properties` for TLS or other advanced parameters
+
+__The following values have been ADDED:__
+
+* `externalRedis.properties`
 
 ## `v7.12.X` → `v7.13.0`
 

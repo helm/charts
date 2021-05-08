@@ -58,7 +58,7 @@ kubectl exec \
 ## Upgrade Steps
 
 Chart version numbers: [Chart.yaml](Chart.yaml) or [Artifact Hub](https://artifacthub.io/packages/helm/helm-stable/airflow)
-
+- [v7.13.X → v7.14.0](UPGRADE.md#v713x--v7140)
 - [v7.12.X → v7.13.0](UPGRADE.md#v712x--v7130)
 - [v7.11.X → v7.12.0](UPGRADE.md#v711x--v7120)
 - [v7.10.X → v7.11.0](UPGRADE.md#v710x--v7110)
@@ -854,7 +854,7 @@ __Airflow Redis (External) Values:__
 | `externalRedis.databaseNumber` | the database number to use within the the external redis | `1` |
 | `externalRedis.passwordSecret` | the name of a pre-created secret containing the external redis password | `""` |
 | `externalRedis.passwordSecretKey` | the key within `externalRedis.passwordSecret` containing the password string | `redis-password` |
-
+| `externalDatabase.properties` | the connection properties eg ?ssl_cert_reqs=CERT_OPTIONAL | `""` |
 __Airflow Prometheus Values:__
 
 | Parameter | Description | Default |

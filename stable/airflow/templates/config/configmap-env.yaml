@@ -58,6 +58,7 @@ data:
   REDIS_CONNECTION_CMD: |-
     {{ include "REDIS_CONNECTION_CMD" . }}
   {{- end }}
+  REDIS_PROPERTIES: "{{.Values.externalRedis.properties}}"
 
   ## ----------------
   ## Airflow

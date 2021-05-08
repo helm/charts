@@ -106,7 +106,7 @@ NOTE:
  - the `REDIS_PASSWORD_CMD` sub-command is set in `configmap-env`
 */}}
 {{- define "REDIS_CONNECTION_CMD" -}}
-echo -n "redis://$(eval $REDIS_PASSWORD_CMD)${REDIS_HOST}:${REDIS_PORT}/${REDIS_DBNUM}"
+echo -n "redis://$(eval $REDIS_PASSWORD_CMD)${REDIS_HOST}:${REDIS_PORT}/${REDIS_DBNUM}${REDIS_PROPERTIES}"
 {{- end -}}
 
 {{/*
