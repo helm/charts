@@ -18,4 +18,8 @@ spec:
       {{- if .Values.prometheus.monitor.scrapeTimeout }}
       scrapeTimeout: {{ .Values.prometheus.monitor.scrapeTimeout }}
       {{- end }}
+{{- if .Values.prometheus.monitor.relabelings }}
+      relabelings:
+{{ toYaml .Values.prometheus.monitor.relabelings | indent 6 }}
+{{- end }}
 {{- end }}

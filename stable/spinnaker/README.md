@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Spinnaker Chart
 
 [Spinnaker](http://spinnaker.io/) is an open source, multi-cloud continuous delivery platform.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Chart Details
 This chart will provision a fully functional and fully featured Spinnaker installation
@@ -290,6 +299,14 @@ This will result in the specified BOM contents being written to a `1.16.1.yml` B
 halyard:
   annotations:
     iam.amazonaws.com/role: <role_arn>
+```
+
+### Set custom annotations for the halyard serviceaccount
+
+```yaml
+serviceAccount:
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: <role_arn>
 ```
 
 ### Set environment variables on the halyard pod

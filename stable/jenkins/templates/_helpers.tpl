@@ -103,7 +103,7 @@ jenkins:
       connectTimeout: "{{ .Values.master.slaveConnectTimeout }}"
       readTimeout: "{{ .Values.master.slaveReadTimeout }}"
       {{- if .Values.master.slaveJenkinsUrl }}
-      jenkinsUrl: "{{ tpl .Values.master.slaveJenkinsUrl }}"
+      jenkinsUrl: "{{ tpl .Values.master.slaveJenkinsUrl . }}"
       {{- else if .Values.master.slaveKubernetesNamespace }}
       jenkinsUrl: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
       {{- else }}
@@ -175,13 +175,13 @@ Returns kubernetes pod template configuration as code
     command: {{ .Values.agent.command }}
     {{- end }}
     envVars:
-    - containerEnvVar:
-        key: "JENKINS_URL"
-    {{- if .Values.master.slaveJenkinsUrl }}
-        value: {{ tpl .Values.master.slaveJenkinsUrl . }}
-    {{- else }}
-        value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
-    {{- end }}
+      - envVar:
+          key: "JENKINS_URL"
+          {{- if .Values.master.slaveJenkinsUrl }}
+          value: {{ tpl .Values.master.slaveJenkinsUrl . }}
+          {{- else }}
+          value: "http://{{ template "jenkins.fullname" . }}.{{ template "jenkins.namespace" . }}.svc.{{.Values.clusterZone}}:{{.Values.master.servicePort}}{{ default "" .Values.master.jenkinsUriPrefix }}"
+          {{- end }}
     {{- if .Values.agent.imageTag }}
     image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag }}"
     {{- else }}
@@ -192,6 +192,8 @@ Returns kubernetes pod template configuration as code
     resourceLimitMemory: {{.Values.agent.resources.limits.memory}}
     resourceRequestCpu: {{.Values.agent.resources.requests.cpu}}
     resourceRequestMemory: {{.Values.agent.resources.requests.memory}}
+    runAsUser: {{ .Values.agent.runAsUser }}
+    runAsGroup: {{ .Values.agent.runAsGroup }}
     ttyEnabled: {{ .Values.agent.TTYEnabled }}
     workingDir: {{ .Values.agent.workingDir }}
 {{- if .Values.agent.envVars }}

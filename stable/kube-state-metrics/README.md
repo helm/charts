@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # kube-state-metrics Helm Chart
 
 * Installs the [kube-state-metrics agent](https://github.com/kubernetes/kube-state-metrics).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Installing the Chart
 
@@ -15,7 +24,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                                    | Description                                                                           | Default                                    |
 |:---------------------------------------------|:--------------------------------------------------------------------------------------|:-------------------------------------------|
 | `image.repository`                           | The image repository to pull from                                                     | `quay.io/coreos/kube-state-metrics`        |
-| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.6`                                   |
+| `image.tag`                                  | The image tag to pull from                                                            | `v1.9.7`                                   |
 | `image.pullPolicy`                           | Image pull policy                                                                     | `IfNotPresent`                             |
 | `imagePullSecrets`                           | List of container registry secrets                                                    | `[]`                                       |
 | `replicas`                                   | Number of replicas                                                                    | `1`                                        |
@@ -29,6 +38,7 @@ $ helm install stable/kube-state-metrics
 | `serviceAccount.create`                      | If true, create & use serviceAccount                                                  | `true`                                     |
 | `serviceAccount.name`                        | If not set & create is true, use template fullname                                    |                                            |
 | `serviceAccount.imagePullSecrets`            | Specify image pull secrets field                                                      | `[]`                                       |
+| `serviceAccount.annotations`                 | Annotations to be added to the serviceAccount                                         | `{}`                                       |
 | `podSecurityPolicy.enabled`                  | If true, create & use PodSecurityPolicy resources. Note that related RBACs are created only if `rbac.enabled` is `true`. | `false` |
 | `podSecurityPolicy.annotations`              | Specify pod annotations in the pod security policy                                    | `{}`                                       |
 | `podSecurityPolicy.additionalVolumes`        | Specify allowed volumes in the pod security policy (`secret` is always allowed)       | `[]`                                       |
@@ -76,3 +86,6 @@ $ helm install stable/kube-state-metrics
 | `prometheus.monitor.namespace`               | Namespace where servicemonitor resource should be created                             | `the same namespace as kube-state-metrics` |
 | `prometheus.monitor.honorLabels`             | Honor metric labels                                                                   | `false`                                    |
 | `namespaceOverride`                          | Override the deployment namespace                                                     | `""` (`Release.Namespace`)                 |
+| `kubeTargetVersionOverride`                  | Override the k8s version of the target cluster                                        | `""`                                       |
+| `kubeconfig.enabled`                         | Adds --kubeconfig arg to container at startup                                         | `""`                                       |
+| `kubeconfig.secret`                          | Base64 encoded kubeconfig file                                                        | `""`                                       |

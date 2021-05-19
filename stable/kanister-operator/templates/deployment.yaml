@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "kanister-operator.fullname" . }}
@@ -6,6 +6,10 @@ metadata:
 {{ include "kanister-operator.helmLabels" . | indent 4 }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "kanister-operator.name" . }}
   template:
     metadata:
       labels:

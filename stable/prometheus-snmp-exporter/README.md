@@ -1,5 +1,7 @@
 # Prometheus SNMP Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 Prometheus exporter for snmp monitoring
 
 Learn more: [https://github.com/prometheus/snmp_exporter](https://github.com/prometheus/snmp_exporter)

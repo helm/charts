@@ -38,7 +38,7 @@ rules:
   verbs: ["*"]
   {{- if .Values.enableBatchScheduler }}
   # This api resources below is configured for the `volcano` batch scheduler.
-- apiGroups: ["scheduling.incubator.k8s.io", "scheduling.sigs.dev"]
+- apiGroups: ["scheduling.incubator.k8s.io", "scheduling.sigs.dev", "scheduling.volcano.sh"]
   resources: ["podgroups"]
   verbs: ["*"]
   {{- end }}

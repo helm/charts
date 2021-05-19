@@ -1,0 +1,46 @@
+{{- if and (.Values.flower.enabled) (eq .Values.airflow.executor "CeleryExecutor") (.Values.ingress.enabled) }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "airflow.fullname" . }}-flower
+  {{- if .Values.ingress.flower.annotations }}
+  annotations:
+    {{- toYaml .Values.ingress.flower.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: flower
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.ingress.flower.labels }}
+    {{- toYaml .Values.ingress.flower.labels | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.ingress.flower.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.flower.host }}
+      secretName: {{ .Values.ingress.flower.tls.secretName }}
+  {{- end }}
+  rules:
+    - http:
+        paths:
+          {{- range .Values.ingress.flower.precedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
+          - path: {{ .Values.ingress.flower.path }}
+            backend:
+              serviceName: {{ include "airflow.fullname" . }}-flower
+              servicePort: flower
+          {{- range .Values.ingress.flower.succeedingPaths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ .serviceName }}
+              servicePort: {{ .servicePort }}
+          {{- end }}
+      host: {{ .Values.ingress.flower.host }}
+{{- end }}

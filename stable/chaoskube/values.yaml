@@ -5,7 +5,11 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.14.0
+imageTag: v0.21.0
+
+## secrets for pulling images from a private docker registry.
+# imagePullSecrets:
+#   - name: secret_name
 
 # number of replicas to run
 replicas: 1
@@ -15,6 +19,9 @@ interval: 10m
 
 # label selector to filter pods by, e.g. app=foo,stage!=prod
 labels:
+
+# kinds selector to filter pods by, e.g. '!DaemonSet' (use quotes)
+kinds:
 
 # annotation selector to filter pods by, e.g. chaos.alpha.kubernetes.io/enabled=true
 annotations:

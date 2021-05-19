@@ -10,6 +10,8 @@ image:
   pullPolicy: "IfNotPresent"
 
 service:
+  labels: {}
+  annotations: {}
   name: mysql-exporter
   type: ClusterIP
   externalPort: 9104
@@ -27,6 +29,7 @@ serviceMonitor:
   jobLabel: ""
   targetLabels: []
   podTargetLabels: []
+  metricRelabelings: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

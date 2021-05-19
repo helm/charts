@@ -1,7 +1,7 @@
 apiVersion: v1
-description: A Helm chart for the Interplanetary File System
+description: DEPRECATED - A Helm chart for the Interplanetary File System
 name: ipfs
-version: 0.4.1
+version: 0.4.4
 icon: https://raw.githubusercontent.com/ipfs/logo/master/raster-generated/ipfs-logo-128-ice-text.png
 home: https://ipfs.io/
 appVersion: v0.4.22
@@ -10,6 +10,4 @@ keywords:
 - distributed-web
 sources:
 - https://github.com/ipfs/go-ipfs
-maintainers:
-- name: bclermont
-  email: bruno@robotinfra.com
+deprecated: true

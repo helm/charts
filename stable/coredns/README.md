@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # CoreDNS
 
 [CoreDNS](https://coredns.io/) is a DNS server that chains plugins and provides DNS Services
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 # TL;DR;
 
@@ -47,7 +56,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                               | Description                                                                           | Default                                                     |
 |:----------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
 | `image.repository`                      | The image repository to pull from                                                     | coredns/coredns                                             |
-| `image.tag`                             | The image tag to pull from                                                            | `v1.6.9`                                                    |
+| `image.tag`                             | The image tag to pull from                                                            | `v1.7.1`                                                    |
 | `image.pullPolicy`                      | Image pull policy                                                                     | IfNotPresent                                                |
 | `replicaCount`                          | Number of replicas                                                                    | 1                                                           |
 | `resources.limits.cpu`                  | Container maximum CPU                                                                 | `100m`                                                      |
@@ -55,13 +64,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | `resources.requests.cpu`                | Container requested CPU                                                               | `100m`                                                      |
 | `resources.requests.memory`             | Container requested memory                                                            | `128Mi`                                                     |
 | `serviceType`                           | Kubernetes Service type                                                               | `ClusterIP`                                                 |
+| `prometheus.service.enabled`            | Set this to `true` to create Service for Prometheus metrics                           | `false`                                                     |
+| `prometheus.service.annotations`        | Annotations to add to the metrics Service                                             | `{prometheus.io/scrape: "true", prometheus.io/port: "9153"}`|
 | `prometheus.monitor.enabled`            | Set this to `true` to create ServiceMonitor for Prometheus operator                   | `false`                                                     |
 | `prometheus.monitor.additionalLabels`   | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus | {}                                                          |
 | `prometheus.monitor.namespace`          | Selector to select which namespaces the Endpoints objects are discovered from.        | `""`                                                        |
 | `service.clusterIP`                     | IP address to assign to service                                                       | `""`                                                        |
 | `service.loadBalancerIP`                | IP address to assign to load balancer (if supported)                                  | `""`                                                        |
-| `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | `[]`                                                        |
-| `service.annotations`                   | Annotations to add to service                                                         | `{prometheus.io/scrape: "true", prometheus.io/port: "9153"}`|
+| `service.externalIPs`                   | External IP addresses                                                                 | []                                                          |
+| `service.externalTrafficPolicy`         | Enable client source IP preservation                                                  | []                                                          |
+| `service.annotations`                   | Annotations to add to service                                                         | {}                                                          |
 | `serviceAccount.create`                 | If true, create & use serviceAccount                                                  | false                                                       |
 | `serviceAccount.name`                   | If not set & create is true, use template fullname                                    |                                                             |
 | `rbac.create`                           | If true, create & use RBAC resources                                                  | true                                                        |
@@ -77,7 +89,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraVolumeMounts`                     | Optional array of volumes to mount inside the CoreDNS container                       | []                                                          |
 | `extraSecrets`                          | Optional array of secrets to mount inside the CoreDNS container                       | []                                                          |
 | `customLabels`                          | Optional labels for Deployment(s), Pod, Service, ServiceMonitor objects               | {}                                                          |
+| `rollingUpdate.maxUnavailable`          | Maximum number of unavailable replicas during rolling update                          | `1`                                                         |
+| `rollingUpdate.maxSurge`                | Maximum number of pods created above desired number of pods                           | `25%`                                                       |
 | `podDisruptionBudget`                   | Optional PodDisruptionBudget                                                          | {}                                                          |
+| `podAnnotations`                        | Optional Pod only Annotations                                                         | {}                                                          |
+| `terminationGracePeriodSeconds`         | Optional duration in seconds the pod needs to terminate gracefully.                   | 30                                                          |
+| `preStopSleep`                          | Definition of Kubernetes preStop hook executed before Pod termination                 | {}                                                          |
+| `hpa.enabled`                           | Enable Hpa autoscaler instead of proportional one                                     | `false`                                                     |
+| `hpa.minReplicas`                       | Hpa minimum number of CoreDNS replicas                                                | `1`                                                         |
+| `hpa.maxReplicas`                       | Hpa maximum number of CoreDNS replicas                                                | `2`                                                         |
+| `hpa.metrics`                           | Metrics definitions used by Hpa to scale up and down                                  | {}                                                          |
 | `autoscaler.enabled`                    | Optionally enabled a cluster-proportional-autoscaler for CoreDNS                      | `false`                                                     |
 | `autoscaler.coresPerReplica`            | Number of cores in the cluster per CoreDNS replica                                    | `256`                                                       |
 | `autoscaler.nodesPerReplica`            | Number of nodes in the cluster per CoreDNS replica                                    | `16`                                                        |
@@ -142,3 +163,7 @@ This also creates a ServiceAccount, ClusterRole, and ClusterRoleBinding for
 the autoscaler deployment.
 
 `replicaCount` is ignored if this is enabled.
+
+By setting `hpa.enabled = true` a [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+is enabled for Coredns deployment. This can scale number of replicas based on meitrics
+like CpuUtilization, MemoryUtilization or Custom ones.

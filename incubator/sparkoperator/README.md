@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 ### Helm Chart for Spark Operator
 
 This is the Helm chart for the [Kubernetes Operator for Apache Spark](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 #### Prerequisites
 
@@ -43,7 +52,7 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter                 | Description                                                  | Default                                |
 | ------------------------- | ------------------------------------------------------------ | -------------------------------------- |
 | `operatorImageName`       | The name of the operator image                               | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.1.2-2.4.5`                  |
+| `operatorVersion`         | The version of the operator to install                       | `v1beta2-1.2.0-3.0.0`                  |
 | `imagePullPolicy`         | Docker image pull policy                                     | `IfNotPresent`                         |
 | `imagePullSecrets`        | Docker image pull secrets                                    |                                        |
 | `replicas`                | The number of replicas of the operator Deployment            | 1                                      |
@@ -70,6 +79,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `leaderElection.lockName` | Lock name to use for leader election                         | `spark-operator-lock`                  |
 | `leaderElection.lockNamespace` | Namespace to use for leader election                    | (namespace of release)                 |
 | `securityContext` | Defines security context for operator container. | `{}` |
+| `istio.enabled`  			| Whether Jobs will run in service mesh						   | false									| 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

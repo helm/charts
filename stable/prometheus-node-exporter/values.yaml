@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v1.0.0
+  tag: v1.0.1
   pullPolicy: IfNotPresent
 
 service:
@@ -21,6 +21,7 @@ prometheus:
     additionalLabels: {}
     namespace: ""
 
+    relabelings: []
     scrapeTimeout: 10s
 
 ## Customize the updateStrategy if set

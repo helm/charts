@@ -1,9 +1,18 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # TensorFlow Serving
 
 TensorFlow Serving is an open-source software library for serving machine learning models. We hope to demonstrate how to deploy a generic TensorFlow Model Server and serve a model from distributed storage instead of baking into the image like [TensorFlow inception](../../incubator/tensorflow-inception/README.md). 
 
 For more information,
 [visit the project on github](https://github.com/tensorflow/serving).
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## Prerequisites
 
@@ -147,6 +156,3 @@ chart and their default values.
 |`persistence.enabled` | enable pvc for the tensorflow serving | `false` |
 |`persistence.size`| the storage size to request | `5Gi` |
 |`persistence.matchLabels`| the selector for pv | `{}` |
-
-
-

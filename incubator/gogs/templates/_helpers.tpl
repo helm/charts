@@ -48,7 +48,7 @@ Determine database user based on use of postgresql dependency.
 */}}
 {{- define "gogs.database.user" -}}
 {{- if .Values.postgresql.install -}}
-{{- .Values.postgresql.postgresUser | quote -}}
+{{- .Values.postgresql.postgresqlUsername | quote -}}
 {{- else -}}
 {{- .Values.service.gogs.databaseUser | quote -}}
 {{- end -}}
@@ -59,7 +59,7 @@ Determine database password based on use of postgresql dependency.
 */}}
 {{- define "gogs.database.password" -}}
 {{- if .Values.postgresql.install -}}
-{{- .Values.postgresql.postgresPassword | quote -}}
+{{- .Values.postgresql.postgresqlPassword | quote -}}
 {{- else -}}
 {{- .Values.service.gogs.databasePassword | quote -}}
 {{- end -}}
@@ -70,7 +70,7 @@ Determine database name based on use of postgresql dependency.
 */}}
 {{- define "gogs.database.name" -}}
 {{- if .Values.postgresql.install -}}
-{{- .Values.postgresql.postgresDatabase | quote -}}
+{{- .Values.postgresql.postgresqlDatabase | quote -}}
 {{- else -}}
 {{- .Values.service.gogs.databaseName | quote -}}
 {{- end -}}

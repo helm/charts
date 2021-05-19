@@ -91,17 +91,17 @@ spec:
               containerPort: {{ .Values.prometheus.metricsPort }}
             {{- end}}
             {{- end}}
-        {{- if .Values.probe }}
+        {{- if .Values.probe.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.host.port }}
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probe.periodSeconds }}
+            successThreshold: {{ .Values.probe.successThreshold }}
+            failureThreshold: {{ .Values.probe.failureThreshold }}
+            timeoutSeconds: {{ .Values.probe.timeoutSeconds }}
         {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

@@ -2,6 +2,10 @@
 
 [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress) is an Ingress controller that uses ConfigMap to store the global haproxy configuration, and ingress annotations to configure per-backend settings.
 
+## DEPRECATION NOTICE
+
+This chart repository is deprecated. It was moved to https://github.com/haproxy-ingress/charts
+
 ## Introduction
 
 This chart bootstraps an haproxy-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
@@ -99,7 +103,7 @@ Parameter | Description | Default
 `controller.nodeSelector` | to control scheduling | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
-`controller.service.clusterIP` | internal controller cluster service IP | `""`
+`controller.service.clusterIP` | internal controller cluster service IP | `nil`
 `controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `Local`
 `controller.service.externalIPs` | list of IP addresses at which the controller services are available | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -110,7 +114,7 @@ Parameter | Description | Default
 `controller.stats.enabled` | whether to enable exporting stats |  `false`
 `controller.stats.port` | The port number used haproxy-ingress-controller for haproxy statistics | `1936`
 `controller.stats.service.annotations` | annotations for stats service | `{}`
-`controller.stats.service.clusterIP` | internal stats cluster service IP | `""`
+`controller.stats.service.clusterIP` | internal stats cluster service IP | `nil`
 `controller.stats.service.externalIPs` | list of IP addresses at which the stats service is available | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` |  | `[]`
@@ -123,7 +127,7 @@ Parameter | Description | Default
 `controller.metrics.extraArgs` | Extra arguments to the haproxy_exporter |  `{}`
 `controller.metrics.resources` | prometheus-exporter container resource requests & limits |  `{}`
 `controller.metrics.service.annotations` | annotations for metrics service | `{}`
-`controller.metrics.service.clusterIP` | internal metrics cluster service IP | `""`
+`controller.metrics.service.clusterIP` | internal metrics cluster service IP | `nil`
 `controller.metrics.service.externalIPs` | list of IP addresses at which the metrics service is available | `[]`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` |  | `[]`
@@ -151,7 +155,7 @@ Parameter | Description | Default
 `defaultBackend.resources.limits.memory` | default backend memory resources limit | `20Mi`
 `defaultBackend.service.name` | name of default backend service to create | `ingress-default-backend`
 `defaultBackend.service.annotations` | annotations for metrics service | `{}`
-`defaultBackend.service.clusterIP` | internal metrics cluster service IP | `""`
+`defaultBackend.service.clusterIP` | internal metrics cluster service IP | `nil`
 `defaultBackend.service.externalIPs` | list of IP addresses at which the metrics service is available | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` |  | `[]`

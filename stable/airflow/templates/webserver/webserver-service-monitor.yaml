@@ -1,0 +1,25 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "airflow.fullname" . }}
+  labels:
+    app: {{ include "airflow.labels.app" . }}
+    component: web
+    chart: {{ include "airflow.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.serviceMonitor.selector }}
+    {{- toYaml .Values.serviceMonitor.selector | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "airflow.labels.app" . }}
+      component: web
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: web
+    path: {{ .Values.serviceMonitor.path }}
+    interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}

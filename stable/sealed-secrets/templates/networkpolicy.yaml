@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ template "sealed-secrets.fullname" . }}
+  namespace: {{ template "sealed-secrets.namespace" . }}
   labels:
     app.kubernetes.io/name: {{ template "sealed-secrets.name" . }}
     helm.sh/chart: {{ template "sealed-secrets.chart" . }}

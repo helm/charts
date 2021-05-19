@@ -9,7 +9,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "node.rules" | trunc 63 | trimSuffix "-" }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -24,12 +24,12 @@ spec:
   groups:
   - name: node.rules
     rules:
-    - expr: sum(min(kube_pod_info) by (cluster, node))
+    - expr: sum(min(kube_pod_info{node!=""}) by (cluster, node))
       record: ':kube_pod_info_node_count:'
     - expr: |-
         topk by(namespace, pod) (1,
           max by (node, namespace, pod) (
-            label_replace(kube_pod_info{job="kube-state-metrics"}, "pod", "$1", "pod", "(.*)")
+            label_replace(kube_pod_info{job="kube-state-metrics",node!=""}, "pod", "$1", "pod", "(.*)")
         ))
       record: 'node_namespace_pod:kube_pod_info:'
     - expr: |-

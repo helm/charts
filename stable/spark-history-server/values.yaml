@@ -16,7 +16,10 @@ image:
 
 service:
   type: LoadBalancer
-  port: 18080
+  # nodePort: 32000
+  port:
+    number: 18080
+    name: http-historyport
   annotations: {}
 
 environment:
@@ -76,6 +79,7 @@ nfs:
 
 gcs:
   enableGCS: false
+  enableIAM: false
   secret: history-secrets
   key: sparkonk8s.json
   logDirectory: gs://spark-hs/

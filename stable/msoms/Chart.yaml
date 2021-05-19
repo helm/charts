@@ -1,8 +1,8 @@
 apiVersion: v1
 name: msoms
-version: 0.2.0
+version: 0.2.2
 appVersion: 1.0.0-30
-description: A chart for deploying omsagent as a daemonset Kubernetes
+description: DEPRECATED - A chart for deploying omsagent as a daemonset Kubernetes
 keywords:
   - monitoring
   - alerting
@@ -15,8 +15,4 @@ sources:
   - https://github.com/Microsoft/OMS-docker
   - https://github.com/Microsoft/OMS-Agent-for-Linux
   - https://github.com/Microsoft/Docker-Provider
-maintainers:
-  - name: Sambit Mishra
-    email: samis@microsoft.com
-  - name: Keiko Harada
-    email: keikhara@microsoft.com
+deprecated: true

@@ -1,8 +1,8 @@
 apiVersion: v1
-description: Inbucket is an email testing application
+description: DEPRECATED - Inbucket is an email testing application
 name: inbucket
 appVersion: 2.0.0
-version: 3.1.0
+version: 3.1.2
 keywords:
   - inbucket
   - mail
@@ -14,8 +14,4 @@ keywords:
 home: https://www.inbucket.org/
 sources:
   - https://github.com/jhillyerd/inbucket
-maintainers:
-  - name: cpanato
-    email: ctadeu@gmail.com
-  - name: jhillyerd
-    email: github@hillyerd.com
+deprecated: true

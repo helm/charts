@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   name: {{ template "prometheus-operator.fullname" . }}-prometheus
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}
@@ -17,7 +17,7 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
 {{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
 {{- else if .Values.alertmanager.enabled }}
-      - namespace: {{ $.Release.Namespace }}
+      - namespace: {{ template "prometheus-operator.namespace" . }}
         name: {{ template "prometheus-operator.fullname" . }}-alertmanager
         port: {{ .Values.alertmanager.alertmanagerSpec.portName }}
         {{- if .Values.alertmanager.alertmanagerSpec.routePrefix }}
@@ -34,6 +34,9 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.image }}
   baseImage: {{ .Values.prometheus.prometheusSpec.image.repository }}
   version: {{ .Values.prometheus.prometheusSpec.image.tag }}
+  {{- if .Values.prometheus.prometheusSpec.image.sha }}
+  sha: {{ .Values.prometheus.prometheusSpec.image.sha }}
+  {{- end }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalLabels }}
   externalLabels:
@@ -54,7 +57,7 @@ spec:
 {{- else if and .Values.prometheus.ingress.enabled .Values.prometheus.ingress.hosts }}
   externalUrl: "http://{{ tpl (index .Values.prometheus.ingress.hosts 0) . }}{{ .Values.prometheus.prometheusSpec.routePrefix }}"
 {{- else }}
-  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ $.Release.Namespace }}:{{ .Values.prometheus.service.port }}
+  externalUrl: http://{{ template "prometheus-operator.fullname" . }}-prometheus.{{ template "prometheus-operator.namespace" . }}:{{ .Values.prometheus.service.port }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.nodeSelector }}
   nodeSelector:
@@ -201,10 +204,15 @@ spec:
   imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 4 }}
 {{- end }}
-{{- if or .Values.prometheus.prometheusSpec.additionalScrapeConfigs .Values.prometheus.prometheusSpec.additionalScrapeConfigsExternal }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigs }}
   additionalScrapeConfigs:
     name: {{ template "prometheus-operator.fullname" . }}-prometheus-scrape-confg
     key: additional-scrape-configs.yaml
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.enabled }}
+  additionalScrapeConfigs:
+    name: {{ .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.name }}
+    key: {{ .Values.prometheus.prometheusSpec.additionalScrapeConfigsSecret.key }}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.additionalAlertManagerConfigs }}
   additionalAlertManagerConfigs:

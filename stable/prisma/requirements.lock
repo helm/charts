@@ -1,6 +1,6 @@
 dependencies:
 - name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.15.0
-digest: sha256:bbc1e13abc845c3e5cad4c328105a9c50ee5692d73547065ffbf63f15e6fd533
-generated: 2018-08-09T17:19:54.160902267-07:00
+  repository: https://charts.helm.sh/stable
+  version: 0.15.2
+digest: sha256:44b3286405023a09d2213b2aa9c2afc0e59c57ffe5991e5c27117ff3dffa8a6b
+generated: "2020-10-30T11:41:31.254047-04:00"

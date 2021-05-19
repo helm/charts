@@ -39,10 +39,6 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- if .Values.image.pullSecrets }}
-          imagePullSecrets:
-    {{ toYaml .Values.image.pullSecrets | indent 10 }}
-          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ACCEPT_EULA
@@ -105,6 +101,10 @@ spec:
              periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

@@ -56,6 +56,17 @@ spec:
               port: {{ .Values.overlord.port }}
           resources:
 {{ toYaml .Values.overlord.resources | indent 12 }}
+          volumeMounts:
+  {{- if .Values.gCloudStorage.enabled }}
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+  {{- end }}
+      volumes:
+  {{- if .Values.gCloudStorage.enabled }}
+      - name: google-cloud-key
+        secret:
+          secretName: {{ .Values.gCloudStorage.secretName }}
+  {{- end }}
     {{- with .Values.overlord.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # Metabase
 
 [Metabase](http://metabase.com) is the easy, open source way for everyone in your company to ask questions and learn from data.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported.
 
 ## TL;DR;
 
@@ -48,7 +57,7 @@ The following table lists the configurable parameters of the Metabase chart and 
 | podAnnotations                   | controller pods annotations                                 | {}                |
 | podLabels                        | extra pods labels                                           | {}                |
 | image.repository                 | controller container image repository                       | metabase/metabase |
-| image.tag                        | controller container image tag                              | v0.35.3           |
+| image.tag                        | controller container image tag                              | v0.36.3           |
 | image.pullPolicy                 | controller container image pull policy                      | IfNotPresent      |
 | fullnameOverride                 | String to fully override metabase.fullname template         | null              |
 | listen.host                      | Listening on a specific network host                        | 0.0.0.0           |
@@ -102,8 +111,11 @@ The following table lists the configurable parameters of the Metabase chart and 
 | jetty.minThreads                 | Jetty min number of threads                                 | null              |
 | jetty.maxQueued                  | Jetty max queue size                                        | null              |
 | jetty.maxIdleTime                | Jetty max idle time                                         | null              |
+| siteUrl                          | Base URL, useful for serving behind a reverse proxy         | null              |
+| session.maxSessionAge            | Session expiration defined in minutes                       | 20160             |
+| session.sessionCookies           | When browser is closed, user login session will expire      | null              |
 
-The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.35.3/).
+The above parameters map to the env variables defined in [metabase](http://github.com/metabase/metabase). For more information please refer to the [metabase documentations](http://www.metabase.com/docs/v0.36.3/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

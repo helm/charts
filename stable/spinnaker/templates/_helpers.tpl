@@ -37,6 +37,13 @@ release: {{ .Release.Name | quote }}
 {{- end -}}
 
 {{/*
+Create comma separated list of namespaces in Kubernetes
+*/}}
+{{- define "nameSpaces" -}}
+{{- join "," .Values.kubeConfig.nameSpaces }}
+{{- end -}}
+
+{{/*
 Create comma separated list of omitted namespaces in Kubernetes
 */}}
 {{- define "omittedNameSpaces" -}}

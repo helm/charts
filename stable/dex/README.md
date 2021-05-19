@@ -1,6 +1,15 @@
+# ⚠️ Repo Archive Notice
+
+As of Nov 13, 2020, charts in this repo will no longer be updated.
+For more information, see the Helm Charts [Deprecation and Archive Notice](https://github.com/helm/charts#%EF%B8%8F-deprecation-and-archive-notice), and [Update](https://helm.sh/blog/charts-repo-deprecation/).
+
 # dex
 
 [Dex][dex] is an identity service that uses OpenID Connect to drive authentication for other apps.
+
+## DEPRECATION NOTICE
+
+This chart is deprecated and no longer supported. The official chart is located at [dexidp/helm-charts](https://github.com/dexidp/helm-charts).
 
 ## Introduction
 
@@ -64,7 +73,13 @@ Parameters introduced starting from v2
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `certs.grpc.pod.annotations` | Annotations for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.affinity` | Affinity for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.nodeSelector` | nodeSelector for the pod created by the `grpc-certs` job | `{}` |
+| `certs.grpc.pod.tolerations` | Tolerations for the pod created by the `grpc-certs` job | `[]` |
 | `certs.web.pod.annotations` | Annotations for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.affinity` | Affinity for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.nodeSelector` | nodeSelector for the pod created by the `web-certs` job | `{}` |
+| `certs.web.pod.tolerations` | Tolerations for the pod created by the `web-certs` job | `[]` |
 | `config.connectors` | Maps to the dex config `connectors` dict param | `{}` |
 | `config.enablePasswordDB` | Maps to the dex config `enablePasswordDB` param | `true` |
 | `config.frontend` | Maps to the dex config `frontend` dict param | `""` |
@@ -110,6 +125,7 @@ Parameters introduced starting from v2
 | `readinessProbe.periodSeconds` | How often (in seconds) to perform the probe  |  `10` |
 | `readinessProbe.timeoutSeconds` | Number of seconds after which the probe times out | `1`  |
 | `readinessProbe.failureThreshold` | Times to perform probe before marking the container `Unready` |  `3` |
+| `imagePullSecrets` | Allows to run containers based on images in private registries. |  `{}` |
 
 
 Check [values.yaml](values.yaml) notes together with [dex documentation][dex] and [config examples](https://github.com/dexidp/dex/tree/master/examples) for all the possible configuration options.

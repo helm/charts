@@ -238,16 +238,24 @@ vault:
     aliveIfSealed: true
     initialDelaySeconds: 30
     periodSeconds: 10
+    failureThreshold: 3
+    successThreshold: 1
+    timeoutSeconds: 1
   readiness:
     readyIfSealed: false
     readyIfStandby: true
     readyIfUninitialized: true
     initialDelaySeconds: 10
     periodSeconds: 10
+    failureThreshold: 3
+    successThreshold: 1
+    timeoutSeconds: 1
+
   # Set the `VAULT_API_ADDR` environment variable to the Pod IP Address
   # This is the address (full URL) to advertise to other Vault servers in the cluster for client redirection.
   # See https://www.vaultproject.io/docs/configuration/#api_addr
   podApiAddress: true
+
   ## Use an existing config in a named ConfigMap
   # existingConfigName: vault-cm
   config:

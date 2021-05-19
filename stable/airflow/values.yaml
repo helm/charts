@@ -6,7 +6,7 @@ airflow:
   ##
   image:
     repository: apache/airflow
-    tag: 1.10.10-python3.6
+    tag: 1.10.12-python3.6
     ## values: Always or IfNotPresent
     pullPolicy: IfNotPresent
     pullSecret: ""
@@ -85,7 +85,7 @@ airflow:
   ##
   ## EXAMPLE:
   ##   podAnnotations:
-  ##     iam.amazonaws.com/role: airflow-Role
+  ##     iam.amazonaws.com/role: "airflow-Role"
   ##
   podAnnotations: {}
 
@@ -183,6 +183,10 @@ scheduler:
   ##
   tolerations: []
 
+  ## the security context for the scheduler Pods
+  ##
+  securityContext: {}
+
   ## labels for the scheduler Deployment
   ##
   labels: {}
@@ -198,6 +202,10 @@ scheduler:
   ## Pod Annotations for the scheduler Deployment
   ##
   podAnnotations: {}
+
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
 
   ## configs for the PodDisruptionBudget of the scheduler
   ##
@@ -220,21 +228,50 @@ scheduler:
 
   ## custom airflow connections for the airflow scheduler
   ##
-  ## NOTE:
-  ## - connections are created with a script that is stored in a K8s secret and mounted into the scheduler container
-  ##
   ## EXAMPLE:
   ##   connections:
   ##     - id: my_aws
   ##       type: aws
   ##       extra: |
   ##         {
-  ##           "aws_access_key_id": "XXXXXXXXXXXXXXXXXXX",
-  ##           "aws_secret_access_key": "XXXXXXXXXXXXXXX",
+  ##           "aws_access_key_id": "XXXXXXXX",
+  ##           "aws_secret_access_key": "XXXXXXXX",
   ##           "region_name":"eu-central-1"
   ##         }
   ##
   connections: []
+
+  ## if `scheduler.connections` are deleted and re-added after each scheduler restart
+  ##
+  refreshConnections: true
+
+  ## the name of an existing Secret containing an `add-connections.sh` script to run on scheduler start
+  ##
+  ## NOTE:
+  ##  - if this is non-empty, `scheduler.connections` will be ignored
+  ##  - use this if you don't want to store connections in your values.yaml
+  ##
+  ## EXAMPLE SECRET:
+  ##   apiVersion: v1
+  ##   kind: Secret
+  ##   metadata:
+  ##     name: my-airflow-connections
+  ##   type: Opaque
+  ##   stringData:
+  ##     add-connections.sh: |
+  ##       #!/usr/bin/env bash
+  ##
+  ##       # remove any existing connection
+  ##       airflow connections --delete \
+  ##         --conn_id "my_aws"
+  ##
+  ##       # re-add your custom connection
+  ##       airflow connections --add \
+  ##         --conn_id "my_aws" \
+  ##         --conn_type "aws" \
+  ##         --conn_extra "{\"region_name\":\"eu-central-1\"}"
+  ##
+  existingSecretConnections: ""
 
   ## custom airflow variables for the airflow scheduler
   ##
@@ -289,6 +326,24 @@ scheduler:
   ##
   initialStartupDelay: 0
 
+  ## configs for the scheduler liveness probe
+  ##
+  ## NOTE:
+  ## - the maximum number of seconds the scheduler can be unhealthy =
+  ##   `livenessProbe.periodSeconds` x `livenessProbe.failureThreshold`
+  ##
+  livenessProbe:
+    enabled: true
+    ## the number of seconds to wait before checking pod health
+    ##
+    ## NOTE:
+    ## - make larger if you are installing many packages with:
+    ##   `airflow.extraPipPackages`, `web.extraPipPackages`, or `dags.installRequirements`
+    ##
+    initialDelaySeconds: 300
+    periodSeconds: 30
+    failureThreshold: 5
+
   ## extra init containers to run before the scheduler Pod
   ##
   ## EXAMPLE:
@@ -332,6 +387,10 @@ web:
   ##
   tolerations: []
 
+  ## the security context for the web Pods
+  ##
+  securityContext: {}
+
   ## labels for the web Deployment
   ##
   labels: {}
@@ -347,6 +406,29 @@ web:
   ## Pod annotations for the web Deployment
   ##
   podAnnotations: {}
+
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
+
+  ## configs for the PodDisruptionBudget of the web Deployment
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the web Deployment
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `web.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the web Deployment
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the web Deployment
+    ##
+    minAvailable: ""
 
   ## configs for the Service of the web Pods
   ##
@@ -424,22 +506,16 @@ web:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{web.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-web-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{web.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides web.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `web.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Worker Configs
@@ -478,6 +554,10 @@ workers:
   ##
   tolerations: []
 
+  ## the security context for the worker Pods
+  ##
+  securityContext: {}
+
   ## labels for the worker StatefulSet
   ##
   labels: {}
@@ -493,6 +573,32 @@ workers:
   ## Pod annotations for the worker StatefulSet
   ##
   podAnnotations: {}
+
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
+
+  ## configs for the PodDisruptionBudget of the worker StatefulSet
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the worker StatefulSet
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `workers.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ## - if you enable `workers.celery.gracefullTermination`, you should consider
+    ##   specifying a `workers.podDisruptionBudget.minAvailable` to prevent there
+    ##   not being enough available workers during graceful termination waiting periods
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the worker StatefulSet
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the worker StatefulSet
+    ##
+    minAvailable: ""
 
   ## configs for the HorizontalPodAutoscaler of the worker Pods
   ##
@@ -528,16 +634,32 @@ workers:
     ## NOTE:
     ## - sets AIRFLOW__CELERY__WORKER_CONCURRENCY
     ##
-    instances: 1
+    instances: 16
 
-    ## if we should wait for tasks to finish on a celery worker before SIGTERM of Pod
+    ## if we should wait for tasks to finish before SIGTERM of the celery worker
     ##
-    ## NOTE:
-    ## - `workers.terminationPeriod` is still the overall timeout before worker Pods are killed using SIGKILL
+    ## WARNING:
+    ## - consider using `workers.podDisruptionBudget.*` to prevent there not being
+    ##   enough available workers during graceful termination waiting periods
     ##
     gracefullTermination: false
 
-  ## how many seconds to wait for tasks on a worker to finish before SIGKILL
+    ## how many seconds to wait for tasks to finish before SIGTERM of the celery worker
+    ##
+    ## graceful shutdown lifecycle:
+    ##   1. prevent worker accepting new tasks
+    ##   2. wait AT MOST `workers.celery.gracefullTerminationPeriod` for tasks to finish
+    ##   3. send SIGTERM to worker
+    ##   4. wait AT MOST `workers.terminationPeriod` for kill to finish
+    ##   5. send SIGKILL to worker
+    ##
+    gracefullTerminationPeriod: 600
+
+  ## how many seconds to wait after SIGTERM before SIGKILL of the celery worker
+  ##
+  ## WARNING:
+  ## - tasks that are still running during SIGKILL will be orphaned, this is important
+  ##   to understand with KubernetesPodOperator(), as Pods may continue running
   ##
   terminationPeriod: 60
 
@@ -545,22 +667,16 @@ workers:
   ##
   secretsDir: /var/airflow/secrets
 
-  ## secret names which will be mounted as a file at `{workers.secretsDir}/<secret_name>`
-  ##
-  ## EXAMPLE:
-  ##   secrets:
-  ##     - airflow-worker-secret
+  ## the names of existing Kubernetes Secrets to mount as files at `{workers.secretsDir}/<secret_name>/<keys_in_secret>`
   ##
   secrets: []
 
-  ## you can use secretsMap to specify a map and all the secrets will be stored within it
-  ## secrets will be mounted as files at `{workers.secretsDir}/<secrets_in_map>`
-  ## If you use web.secretsMap, then it overrides workers.secrets.
+  ## the name of an existing Kubernetes Secret to mount as files to `{web.secretsDir}/<keys_in_secret>`
   ##
-  ## EXAMPLE:
-  ## secretsMap: airflow-secrets
+  ## NOTE:
+  ##  - overrides `worker.secrets`
   ##
-  secretsMap:
+  secretsMap: ""
 
 ###################################
 # Airflow - Flower Configs
@@ -583,6 +699,10 @@ flower:
   ##
   resources: {}
 
+  ## the number of flower Pods to run
+  ##
+  replicas: 1
+
   ## the nodeSelector configs for the flower Pods
   ##
   nodeSelector: {}
@@ -594,6 +714,10 @@ flower:
   ## the toleration configs for the flower Pods
   ##
   tolerations: []
+
+  ## the security context for the flower Pods
+  ##
+  securityContext: {}
 
   ## labels for the flower Deployment
   ##
@@ -611,6 +735,47 @@ flower:
   ##
   podAnnotations: {}
 
+  ## if we should tell Kubernetes Autoscaler that its safe to evict these Pods
+  ##
+  safeToEvict: true
+
+  ## configs for the PodDisruptionBudget of the flower Deployment
+  ##
+  podDisruptionBudget:
+    ## if a PodDisruptionBudget resource is created for the flower Deployment
+    ##
+    ## WARNING:
+    ## - if you enable a PodDisruptionBudget, you should set `flower.replicas` to a value
+    ##   large enough for Kubernetes to evict at least 1 Pod at a time
+    ##
+    enabled: false
+
+    ## the maximum unavailable pods/percentage for the flower Deployment
+    ##
+    maxUnavailable: ""
+
+    ## the minimum available pods/percentage for the flower Deployment
+    ##
+    minAvailable: ""
+
+  ## the value of the flower `--auth` argument
+  ##
+  ## NOTE:
+  ##  - see flower docs: https://flower.readthedocs.io/en/latest/auth.html#google-oauth-2-0
+  ##
+  oauthDomains: ""
+
+  ## the name of a pre-created secret containing the basic authentication value for flower
+  ##
+  ## NOTE:
+  ## - This sets `AIRFLOW__CELERY__FLOWER_BASIC_AUTH`
+  ##
+  basicAuthSecret: ""
+
+  ## the key within `flower.basicAuthSecret` containing the basic authentication string
+  ##
+  basicAuthSecretKey: ""
+
   ## sets `AIRFLOW__CELERY__FLOWER_URL_PREFIX`
   ##
   ## NOTE:
@@ -626,10 +791,16 @@ flower:
     externalPort: 5555
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+    nodePort:
+      http: ""
 
   ## the number of seconds to wait (in bash) before starting the flower container
   ##
   initialStartupDelay: 0
+
+  ## the number of seconds to wait before declaring a new Pod available
+  ##
+  minReadySeconds: 5
 
   ## extra ConfigMaps to mount on the flower Pods
   ##
@@ -913,6 +1084,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the web Ingress
+    ##
+    labels: {}
+
     ## the path for the web Ingress
     ##
     ## WARNING:
@@ -980,6 +1155,10 @@ ingress:
     ##
     annotations: {}
 
+    ## additional labels for the flower Ingress
+    ##
+    labels: {}
+
     ## the path for the flower Ingress
     ##
     ## WARNING:
@@ -1021,6 +1200,26 @@ ingress:
       ##
       secretName: ""
 
+    ## http paths to add to the flower Ingress before the default path
+    ##
+    ## EXAMPLE:
+    ##   precedingPaths:
+    ##     - path: "/*"
+    ##       serviceName: "ssl-redirect"
+    ##       servicePort: "use-annotation"
+    ##
+    precedingPaths: []
+
+    ## http paths to add to the flower Ingress after the default path
+    ##
+    ## EXAMPLE:
+    ##   succeedingPaths:
+    ##     - path: "/extra-service"
+    ##       serviceName: "extra-service"
+    ##       servicePort: "use-annotation"
+    ##
+    succeedingPaths: []
+
 ###################################
 # Kubernetes - RBAC
 ###################################
@@ -1032,6 +1231,13 @@ rbac:
   ##   which is required for the KubernetesPodOperator() to function
   ##
   create: true
+
+  ## if the created RBAC Role has GET/LIST on Event resources
+  ##
+  ## NOTE:
+  ## - this is needed for KubernetesPodOperator() to use `log_events_on_failure=True`
+  ##
+  events: false
 
 ###################################
 # Kubernetes - Service Account
@@ -1113,7 +1319,7 @@ postgresql:
   ##
   existingSecret: ""
 
-  ## the key in `postgresql.existingSecret` containing the password string
+  ## the key within `postgresql.existingSecret` containing the password string
   ##
   existingSecretKey: "postgresql-password"
 
@@ -1139,6 +1345,13 @@ postgresql:
     ## the size of PVC to request
     ##
     size: 8Gi
+
+  ## configs for the postgres StatefulSet
+  master:
+    ## annotations for the postgres Pod
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
 ###################################
 # Database - External Database
@@ -1173,6 +1386,9 @@ externalDatabase:
   ##
   passwordSecretKey: "postgresql-password"
 
+  ## the connection properties for external database, e.g. "?sslmode=require"
+  properties: ""
+
 ###################################
 # Database - Redis Chart
 # - https://github.com/helm/charts/tree/master/stable/redis
@@ -1197,9 +1413,9 @@ redis:
   ##
   existingSecret: ""
 
-  ## the key in `redis.existingSecret` containing the password string
+  ## the key within `redis.existingSecret` containing the password string
   ##
-  existingSecretKey: "redis-password"
+  existingSecretPasswordKey: "redis-password"
 
   ## configs for redis cluster mode
   ##
@@ -1224,6 +1440,11 @@ redis:
     ##       memory: "256Mi"
     ##
     resources: {}
+
+    ## annotations for the master Pod
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     ## configs for the PVC of the redis master
     ##
@@ -1257,6 +1478,11 @@ redis:
     ##       memory: "256Mi"
     ##
     resources: {}
+
+    ## annotations for the slave Pods
+    ##
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     ## configs for the PVC of the redis slaves
     ##

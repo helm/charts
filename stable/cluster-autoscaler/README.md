@@ -1,4 +1,8 @@
-# cluster-autoscaler
+# DEPRECATED
+
+This Helm chart has been moved to the [kubernetes/autoscaler](https://github.com/kubernetes/autoscaler) repository.
+
+## cluster-autoscaler
 
 [The cluster autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) scales worker nodes within an AWS autoscaling group (ASG) or Spotinst Elastigroup.
 
@@ -168,7 +172,7 @@ Parameter | Description | Default
 `nameOverride` | String to partially override cluster-autoscaler.fullname template (will maintain the release name) | `""`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.create` | If true, create & use RBAC resources | `true`
 `rbac.serviceAccount.create` | If true and rbac.create is also true, a service account will be created | `true`
 `rbac.serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `nil`
 `rbac.serviceAccountAnnotations` | Additional Service Account annotations	| `{}`

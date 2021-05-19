@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.prometheus.ingress.annotations | indent 4 }}
 {{- end }}
   name: {{ $serviceName }}
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ template "prometheus-operator.namespace" . }}
   labels:
     app: {{ template "prometheus-operator.name" . }}-prometheus
 {{ include "prometheus-operator.labels" . | indent 4 }}

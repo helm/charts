@@ -1,6 +1,10 @@
 MinIO
 =====
 
+## NOTICE: This chart has moved!
+￼
+Due to the [deprecation and obsoletion plan](https://github.com/helm/charts#status-of-the-project) of the Helm charts repository this chart has been moved to a new repository. The source for the MinIO Charts is moved to [MinIO Helm Charts](https://github.com/minio/charts). The chart is hosted at https://hub.helm.sh/charts?q=minio.
+
 [MinIO](https://min.io) is a High Performance Object Storage released under Apache License v2.0. It is API compatible with Amazon S3 cloud storage service. Use MinIO to build high performance infrastructure for machine learning, analytics and application data workloads.
 
 MinIO supports [distributed mode](https://docs.minio.io/docs/distributed-minio-quickstart-guide). In distributed mode, you can pool multiple drives (even on different machines) into a single object storage server.
@@ -105,6 +109,7 @@ The following table lists the configurable parameters of the MinIO chart and the
 | `image.repository`                        | Image repository                                                                                                                        | `minio/minio`                              |
 | `image.tag`                               | MinIO image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).                                             | `RELEASE.2020-06-14T18-32-17Z`             |
 | `image.pullPolicy`                        | Image pull policy                                                                                                                       | `IfNotPresent`                             |
+| `imagePullSecrets`                        | List of container registry secrets                                                                                                      | `[]`                                       |
 | `mcImage.repository`                      | Client image repository                                                                                                                 | `minio/mc`                                 |
 | `mcImage.tag`                             | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).                                                   | `RELEASE.2020-05-28T23-43-36Z`             |
 | `mcImage.pullPolicy`                      | mc Image pull policy                                                                                                                    | `IfNotPresent`                             |

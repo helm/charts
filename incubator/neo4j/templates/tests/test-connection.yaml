@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "neo4j.fullname" . }}-test-connection"
+  labels:
+{{ include "neo4j.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "neo4j.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

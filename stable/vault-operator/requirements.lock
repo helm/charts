@@ -1,6 +1,6 @@
 dependencies:
 - name: etcd-operator
-  repository: https://kubernetes-charts.storage.googleapis.com/
+  repository: https://charts.helm.sh/stable
   version: 0.8.0
-digest: sha256:469fd7ac741beb4956d4695a1fa4d6583f0f81c4d89fbf8400367fd87bfc2e4f
-generated: 2018-06-21T13:00:45.7632645-04:00
+digest: sha256:25e50a05c427c881b815208a70a553bae06471bd1fdc3be15c25fea597b222db
+generated: "2020-10-30T11:42:47.79202-04:00"

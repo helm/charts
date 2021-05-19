@@ -1,5 +1,7 @@
 # Prometheus Node Exporter
 
+DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
+
 * Installs prometheus [node exporter](https://github.com/prometheus/node_exporter)
 
 ## TL;DR;
@@ -39,7 +41,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 |             Parameter                 |                                                          Description                                                          |                 Default                          |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | `image.repository`                    | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`               |
-| `image.tag`                           | Image tag                                                                                                                     | `v1.0.0`                                         |
+| `image.tag`                           | Image tag                                                                                                                     | `v1.0.1`                                         |
 | `image.pullPolicy`                    | Image pull policy                                                                                                             | `IfNotPresent`                                   |
 | `extraArgs`                           | Additional container arguments                                                                                                | `[]`                                             |
 | `extraHostVolumeMounts`               | Additional host volume mounts                                                                                                 | `[]`                                             |
@@ -67,6 +69,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `prometheus.monitor.enabled`          | Set this to `true` to create ServiceMonitor for Prometheus operator                                                           | `false`                                          |
 | `prometheus.monitor.additionalLabels` | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                         | `{}`                                             |
 | `prometheus.monitor.namespace`        | namespace where servicemonitor resource should be created                                                                     | `the same namespace as prometheus node exporter` |
+| `prometheus.monitor.relabelings`      | Relabelings that should be applied on the ServerMonitor                                                                       | `{}` |
 | `prometheus.monitor.scrapeTimeout`    | Timeout after which the scrape is ended                                                                                       | `10s`                                            |
 | `configmaps`                          | Allow mounting additional configmaps.                                                                                         | `[]`                                             |
 | `namespaceOverride`                   | Override the deployment namespace                                                                                             | `""` (`Release.Namespace`)                       |
