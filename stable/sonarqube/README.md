@@ -1,7 +1,7 @@
 # SonarQube
 
 **This chart has been deprecated and moved to [Oteemo Charts](https://github.com/oteemo/charts)**
-* Alternatively, **a newer chart, maintained by SonarSource, is found in the repo [helm-chart-sonarqube](https://github.com/SonarSource/helm-chart-sonarqube).**
+* Alternatively, **a newer chart, maintained by SonarSource, is found in the repo [helm-chart-sonarqube](https://github.com/SonarSource/helm-chart-sonarqube)**.
 
 [SonarQube](https://www.sonarqube.org/) is an open sourced code quality scanning tool.
 
