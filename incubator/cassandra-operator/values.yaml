@@ -5,7 +5,7 @@ image:
   tag: 0.3.1-master
   pullPolicy: Always
   imagePullSecrets:
-    enabled: false
+    enabled: true
     # name:
 
 ## Prometheus-operator resource limits & requests
