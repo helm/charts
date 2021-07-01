@@ -40,6 +40,9 @@ spec:
         {{- end }}
         - name: nginx
           image: nginx:stable
+          imagePullSecrets:
+          - name: {{ .Values.imagePullSecret }}
+          {{- end }}   
           ports:
             - name: http
               containerPort: 80
@@ -66,6 +69,10 @@ spec:
           - echo {{ .Values.rundeck.adminUser  }} > /home/rundeck/server/config/realm.properties && /home/rundeck/docker-lib/entry.sh
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.imagePullSecret }}
+          imagePullSecrets:
+          - name: {{ .Values.imagePullSecret }}
+          {{- end }}
           envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-environment-configmap
