@@ -7,6 +7,10 @@ image:
   tag: 3.2.7
   pullPolicy: IfNotPresent
 
+# Image pull secret for container registry
+
+imagePullSecret
+
 deployment:
   replicaCount: 1
   annotations: {}
