@@ -9,7 +9,7 @@ image:
 
 # Image pull secret for container registry
 
-imagePullSecret
+imagePullSecret:
 
 deployment:
   replicaCount: 1
