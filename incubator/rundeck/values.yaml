@@ -7,6 +7,10 @@ image:
   tag: 3.2.7
   pullPolicy: IfNotPresent
 
+nginx_image:
+  repository: nginx
+  tag: latest
+
 deployment:
   replicaCount: 1
   annotations: {}
