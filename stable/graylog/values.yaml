@@ -46,7 +46,11 @@ graylog:
   image:
     repository: "graylog/graylog:3.1"
     pullPolicy: "IfNotPresent"
-
+    
+  ## Additional labels to be added to Graylog pods
+  ##
+  podLabels: {}
+  
   ## Number of Graylog instance
   ##
   replicas: 2
