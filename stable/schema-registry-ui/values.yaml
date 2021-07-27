@@ -29,6 +29,7 @@ ingress:
   enabled: false
   annotations: {}
   path: /
+  pathType: Prefix
   hosts:
     - schema-registry-ui.local
   tls: []
