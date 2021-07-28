@@ -2,6 +2,7 @@
 {{- $fullName := include "schema-registry-ui.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPathType := .Values.ingress.pathType -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -32,7 +33,7 @@ spec:
       http:
         paths:
           - path: {{ $ingressPath }}
-            pathType: {{ .Values.ingress.pathType }}
+            pathType: {{ $ingressPathType }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: http
