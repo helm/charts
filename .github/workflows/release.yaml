@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  CHART_REPO: charts
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,6 +27,18 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.6.3
+
+      - name: Setup python3
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+
+      - name: Install yq
+        run: |
+          pip install yq
+
+      - name: Get chart dependencies
+        run: bash ./scripts/add_dependent_chart_repos.sh
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
