@@ -39,20 +39,20 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --config test/ct.yaml)
+          changed=$(ct list-changed --config .ci/ct.yaml)
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
 
       - name: Run chart-testing (lint)
         id: lint
-        run: ct lint --config test/ct.yaml
+        run: ct lint --config .ci/ct.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
         with:
           node_image: "kindest/node:${{ matrix.kubernetesVersion }}"
-          config: test/kind-config.yaml
+          config: .ci/kind-config.yaml
         # Only build a kind cluster if there are chart changes to test.
         if: steps.list-changed.outputs.changed == 'true'
 
@@ -65,6 +65,6 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
-        run: ct install --config test/ct.yaml
+        run: ct install --config .ci/ct.yaml
         # Only install if there are chart changes to test.
         if: steps.list-changed.outputs.changed == 'true'
