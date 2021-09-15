@@ -1,2 +1,0 @@
-Seq can be accessed via port {{ .Values.ui.service.port }} (or the limited ingestion port {{ .Values.ingestion.service.port }}) on the following DNS name from within your cluster:
-{{ template "seq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

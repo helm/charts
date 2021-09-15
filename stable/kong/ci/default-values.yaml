@@ -1,3 +1,0 @@
-# install chart with default values
-proxy:
-  type: NodePort

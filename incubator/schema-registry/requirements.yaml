@@ -1,5 +1,0 @@
-dependencies:
-- name: kafka
-  version: 0.21.2
-  repository: https://charts.helm.sh/incubator
-  condition: kafka.enabled

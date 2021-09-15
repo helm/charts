@@ -1,3 +1,0 @@
-env:
-- name: ALERTMANAGER_URI
-  value: http://monitoring-prometheus-alertmanager

@@ -1,7 +1,0 @@
-data:
-  updateStrategy:
-    type: RollingUpdate
-
-master:
-  updateStrategy:
-    type: RollingUpdate

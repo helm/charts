@@ -1,5 +1,0 @@
-dependencies:
-- name: zookeeper
-  version: 2.1.0
-  repository: https://charts.helm.sh/incubator
-  condition: kafka.zookeeper.enabled,zookeeper.enabled

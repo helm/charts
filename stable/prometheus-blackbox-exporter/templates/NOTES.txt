@@ -1,3 +1,0 @@
-DEPRECATED and moved to <https://github.com/prometheus-community/helm-charts>
-
-See https://github.com/prometheus/blackbox_exporter/ for how to configure Prometheus and the Blackbox Exporter.

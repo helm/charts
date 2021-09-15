@@ -1,4 +1,0 @@
-# Allocate a FSGroup that owns the pod’s volumes via podSecurityContext
----
-podSecurityContext:
-  fsGroup: 2000

@@ -1,4 +1,0 @@
----
-service:
-  selector:
-    foo: bar

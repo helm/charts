@@ -1,3 +1,0 @@
-service:
-  targetPort: 9102
-  port: 9102

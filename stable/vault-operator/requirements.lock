@@ -1,6 +1,0 @@
-dependencies:
-- name: etcd-operator
-  repository: https://charts.helm.sh/stable
-  version: 0.8.0
-digest: sha256:25e50a05c427c881b815208a70a553bae06471bd1fdc3be15c25fea597b222db
-generated: "2020-10-30T11:42:47.79202-04:00"

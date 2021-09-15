@@ -1,7 +1,0 @@
-apiVersion: v1
-description: DEPRECATED Common chartbuilding components and helpers
-name: common
-version: 0.0.7
-appVersion: 0.0.5
-home: https://helm.sh
-deprecated: true

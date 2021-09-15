@@ -1,5 +1,0 @@
-controller:
-  kind: DaemonSet
-
-podSecurityPolicy:
-  enabled: true
