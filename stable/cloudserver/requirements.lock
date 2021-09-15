@@ -1,9 +1,0 @@
-dependencies:
-- name: mongodb-replicaset
-  repository: https://charts.helm.sh/stable
-  version: 3.17.2
-- name: redis-ha
-  repository: https://charts.helm.sh/stable
-  version: 4.4.4
-digest: sha256:cf2dd42951be358016127839d7df0afd86dc60f533a375cea9d646b2fd472a19
-generated: "2020-11-10T11:40:04.050851+01:00"

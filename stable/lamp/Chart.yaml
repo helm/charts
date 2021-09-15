@@ -1,7 +1,0 @@
-apiVersion: v1
-description: DEPRECATED - Modular and transparent LAMP stack chart supporting PHP-FPM, Release Cloning, LoadBalancer, Ingress, SSL and lots more!
-name: lamp
-version: 1.1.6
-appVersion: 7
-home: https://github.com/lead4good/helm-lamp-stack
-deprecated: true

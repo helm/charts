@@ -1,6 +1,0 @@
-dependencies:
-- name: sensu
-  repository: https://charts.helm.sh/stable
-  version: 0.1.2
-digest: sha256:9470d3eb901ebb2b190b35db4228fbe0177829c587d20287b86e35fe5bef27ca
-generated: "2020-10-30T11:42:40.789899-04:00"

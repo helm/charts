@@ -1,8 +1,0 @@
-{{- if .Values.templating }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Release.Namespace }}
-  labels:
-    {{- include "instana-agent.commonLabels" . | nindent 4 }}
-{{- end }}

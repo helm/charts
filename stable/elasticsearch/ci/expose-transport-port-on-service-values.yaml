@@ -1,5 +1,0 @@
----
-# Expose transport port on ClusterIP service
-
-client:
-  exposeTransportPort: true

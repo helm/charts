@@ -1,9 +1,0 @@
-apiVersion: v1
-deprecated: true
-description: DEPRECATED CoreOS zetcd Helm chart for Kubernetes
-name: zetcd
-version: 0.1.11
-appVersion: 0.0.3
-home: https://github.com/coreos/zetcd
-sources:
-  - https://github.com/coreos/zetcd

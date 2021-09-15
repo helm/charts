@@ -1,1 +1,0 @@
-replicaCount: 2  # Enables PodDisruptionBudget which is disabled when replicaCount is 1

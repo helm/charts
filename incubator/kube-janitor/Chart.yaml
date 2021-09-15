@@ -1,9 +1,0 @@
-apiVersion: v1
-appVersion: "v0.1.0"
-description: DEPRECATED A Helm chart for running kube-janitor
-name: kube-janitor
-version: 0.1.2
-home: https://github.com/themagicalkarp/kube-janitor
-deprecated: true
-sources:
-  - https://github.com/themagicalkarp/kube-janitor

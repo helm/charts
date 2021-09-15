@@ -1,3 +1,0 @@
-controller:
-  autoscaling:
-    enabled: true
