@@ -1,0 +1,70 @@
+---
+name: Lint and Test Chart
+on: pull_request
+
+jobs:
+  chart-testing:
+    name: Lint and Test kubernetes ${{ matrix.kubernetesVersion }}
+    strategy:
+      fail-fast: false
+      matrix:
+        kubernetesVersion: [
+          "v1.20.7",
+          "v1.21.1",
+          "v1.22.0"
+        ]
+
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.6.3
+
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --config test/ct.yaml)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Run chart-testing (lint)
+        id: lint
+        run: ct lint --config test/ct.yaml
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+        with:
+          node_image: "kindest/node:${{ matrix.kubernetesVersion }}"
+          config: test/kind-config.yaml
+        # Only build a kind cluster if there are chart changes to test.
+        if: steps.list-changed.outputs.changed == 'true'
+
+      - name: Verify kind
+        run: |
+          kubectl cluster-info
+          kubectl get nodes -o wide
+          kubectl get pods -n kube-system
+        # Only build a kind cluster if there are chart changes to test.
+        if: steps.list-changed.outputs.changed == 'true'
+
+      - name: Run chart-testing (install)
+        run: ct install --config test/ct.yaml
+        # Only install if there are chart changes to test.
+        if: steps.list-changed.outputs.changed == 'true'
