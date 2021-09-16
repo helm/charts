@@ -1,6 +1,0 @@
-master:
-  JCasC:
-    enabled: true
-  sidecars:
-    configAutoReload:
-      enabled: true

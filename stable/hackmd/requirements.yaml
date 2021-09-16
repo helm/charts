@@ -1,5 +1,0 @@
-dependencies:
-- name: postgresql
-  version: 0.8.4
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: postgresql.install

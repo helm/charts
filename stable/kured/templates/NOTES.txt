@@ -1,3 +1,0 @@
-Kured will check for /var/run/reboot-required, and reboot nodes when needed.
-
-See https://github.com/weaveworks/kured/ for details.

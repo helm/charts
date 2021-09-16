@@ -1,7 +1,0 @@
-dependencies:
-- name: mariadb
-  version: 5.x.x
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  condition: db.bundleTestDB
-  tags:
-    - phpmyadmin-database

@@ -1,3 +1,0 @@
-To verify that heartbeat has started, run:
-
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "heartbeat.name" . }},release={{ .Release.Name }}"
