@@ -8,7 +8,7 @@ annotations:
     - name: sftpgo-alpine
       image: ghcr.io/drakkan/sftpgo:v2.1.0-alpine
 apiVersion: v2
-appVersion: 2.1.0
+appVersion: 2.1.2
 description: Fully featured and highly configurable SFTP server with optional FTP/S
   and WebDAV support.
 home: https://github.com/drakkan/sftpgo
@@ -27,4 +27,4 @@ sources:
 - https://github.com/bdashrad/helm-charts
 - https://github.com/sagikazarmark/helm-charts/tree/master/charts/sftpgo
 type: application
-version: 1.2.1
+version: 1.2.2
