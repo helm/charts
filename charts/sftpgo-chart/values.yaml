@@ -166,6 +166,13 @@ services: {}
   #       nodePort:
   #   externalTrafficPolicy:
 
+ingress:
+  enabled: false
+  tls: false
+  hostname: sftpgo.local
+  annotations: {}
+  # secretName:
+
 # -- Container resource [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
 # See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#resources) for details.
 # @default -- No requests or limits.

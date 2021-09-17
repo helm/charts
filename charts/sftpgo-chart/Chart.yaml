@@ -18,13 +18,13 @@ keywords:
 - webdav
 kubeVersion: '>=1.16.0-0'
 maintainers:
-- email: brad@eleanorhealth.com
+- email: bdashrad@gmail.com
   name: bdashrad
-  url: https://eleanorhealth.com
+  url: https://bdashrad.com
 name: sftpgo
 sources:
 - https://github.com/drakkan/sftpgo
-- https://github.com/eleanorhealth/sftpgo-chart
+- https://github.com/bdashrad/helm-charts
 - https://github.com/sagikazarmark/helm-charts/tree/master/charts/sftpgo
 type: application
-version: 1.2.0
+version: 1.2.1
