@@ -1,6 +1,6 @@
 # Helm Charts
 
-This GitHub project is the source for Helm `bdashrad` and `incubator` [Helm chart repositories](https://bdashrad.github.io/helm-charts).
+This GitHub project is the source for Helm `bdashrad` [Helm chart repository](https://bdashrad.github.io/helm-charts).
 
 For more information about installing and using Helm, see the
 [Helm Docs](https://helm.sh/docs/). For a quick introduction to Charts, see the [Chart Guide](https://helm.sh/docs/topics/charts/).
