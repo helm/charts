@@ -1,0 +1,220 @@
+# Default values for sftpgo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Number of replicas (pods) to launch.
+replicaCount: 1
+
+image:
+  # -- Name of the image repository to pull the container image from.
+  repository: ghcr.io/drakkan/sftpgo
+
+  # -- [Image pull policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for updating already existing images on a node.
+  pullPolicy: IfNotPresent
+
+  # -- Image tag override for the default value (chart appVersion).
+  tag: ""
+
+# -- Reference to one or more secrets to be used when [pulling images](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-pod-that-uses-your-secret) (from private registries).
+imagePullSecrets: []
+
+# -- A name in place of the chart name for `app:` labels.
+nameOverride: ""
+
+# -- A name to substitute for the full names of resources.
+fullnameOverride: ""
+
+sftpd:
+  # -- Enable SFTP service.
+  enabled: true
+
+ftpd:
+  # -- Enable FTP service.
+  enabled: false
+
+webdavd:
+  # -- Enable WebDAV service.
+  enabled: false
+
+# -- Application configuration.
+# See the [official documentation](https://github.com/drakkan/sftpgo/blob/master/docs/full-configuration.md).
+config: {}
+
+# -- Additional storage [volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#volumes-1) for details.
+volumes: []
+
+# -- Additional [volume mounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#volumes-1) for details.
+volumeMounts: []
+
+# -- Additional environment variables mounted from [secrets](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables) or [config maps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables) for details.
+envFrom: []
+
+# -- Additional environment variables passed directly to containers.
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables) for details.
+envVars: []
+  # - name: SOME_ENV_VAR
+  #   value: SOME_VALUE
+  # - name: SOME_ENV_VAR2
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: SOME_SECRET_NAME
+  #       key: SOME_SECRET_KEY
+  # - name: SOME_ENV_VAR3
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: SOME_CONFIGMAP_NAME
+  #       key: SOME_CONFIGMAP_KEY
+
+
+# -- Additional environment variables passed directly to containers using a simplified key-value syntax.
+env: {}
+  # SOME_ENV_VAR: SOME_VALUE
+
+serviceAccount:
+  # -- Enable service account creation.
+  create: true
+
+  # -- Annotations to be added to the service account.
+  annotations: {}
+
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name: ""
+
+# -- Annotations to be added to pods.
+podAnnotations: {}
+
+# -- Labels to be added to pods.
+podLabels: {}
+
+# -- Pod [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context) for details.
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# -- Container [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1) for details.
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  # -- Annotations to be added to the service.
+  annotations: {}
+
+  # -- Kubernetes [service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types).
+  type: ClusterIP
+
+  # -- (string) Only applies when the service type is LoadBalancer. Load balancer will get created with the IP specified in this field.
+  loadBalancerIP:
+
+  # -- (list) If specified (and supported by the cloud provider), traffic through the load balancer will be restricted to the specified client IPs.
+  # Valid values are IP CIDR blocks.
+  loadBalancerSourceRanges: []
+
+  ports:
+    sftp:
+      # -- SFTP service port.
+      port: 22
+
+      # -- (int) SFTP node port (when applicable).
+      nodePort:
+
+    ftp:
+      # -- FTP service port.
+      port: 21
+
+      # -- (int) FTP node port (when applicable).
+      nodePort:
+
+    webdav:
+      # -- WebDAV service port.
+      port: 81
+
+      # -- (int) WebDAV node port (when applicable).
+      nodePort:
+
+    http:
+      # -- REST API service port.
+      port: 80
+
+      # -- (int) REST API node port (when applicable).
+      nodePort:
+
+  # -- Route external traffic to node-local or cluster-wide endoints.
+  # Useful for [preserving the client source IP](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip).
+  externalTrafficPolicy:
+
+# -- Additional services exposing servers (SFTP, FTP, WebDAV, HTTP) individually.
+# The schema matches the one under the `service` key. Additional services need at least one port.
+services: {}
+  # public:
+  #   annotations: {}
+  #   type: LoadBalancer
+  #   loadBalancerIP:
+  #   loadBalancerSourceRanges: []
+  #   ports:
+  #     sftp: # Only SFTP will be exposed
+  #       port: 22
+  #       nodePort:
+  #   externalTrafficPolicy:
+
+# -- Container resource [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#resources) for details.
+# @default -- No requests or limits.
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# -- Autoscaling configuration (see [values.yaml](values.yaml) for details).
+# @default -- Disabled by default.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# -- [Node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) configuration.
+nodeSelector: {}
+
+# -- [Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) for node taints.
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling) for details.
+tolerations: []
+
+# -- [Affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) configuration.
+# See the [API reference](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling) for details.
+affinity: {}
+
+# -- Run pods in the host network of nodes.
+# Warning: The use of host network is [discouraged](https://kubernetes.io/docs/concepts/configuration/overview/#services). Make sure to use it only when absolutely necessary.
+hostNetwork: false
+
+topologySpreadConstraints:
+  # -- Enable pod [Topology Spread Constraints](https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/).
+  enabled: false
+
+  # -- Degree to which pods may be unevenly distributed.
+  maxSkew: 1
+
+  # -- The key of node labels.
+  # See https://kubernetes.io/docs/reference/kubernetes-api/labels-annotations-taints/
+  topologyKey: topology.kubernetes.io/zone
+
+  # -- How to deal with a Pod if it doesn't satisfy the spread constraint.
+  whenUnsatisfiable: DoNotSchedule

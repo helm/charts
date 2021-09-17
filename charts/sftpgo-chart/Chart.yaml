@@ -1,0 +1,30 @@
+annotations:
+  artifacthub.io/changes: |
+    - kind: added
+      description: Support for topology spread constraints
+  artifacthub.io/images: |
+    - name: sftpgo
+      image: ghcr.io/drakkan/sftpgo:v2.1.0
+    - name: sftpgo-alpine
+      image: ghcr.io/drakkan/sftpgo:v2.1.0-alpine
+apiVersion: v2
+appVersion: 2.1.0
+description: Fully featured and highly configurable SFTP server with optional FTP/S
+  and WebDAV support.
+home: https://github.com/drakkan/sftpgo
+keywords:
+- sftp
+- ftp
+- webdav
+kubeVersion: '>=1.16.0-0'
+maintainers:
+- email: brad@eleanorhealth.com
+  name: bdashrad
+  url: https://eleanorhealth.com
+name: sftpgo
+sources:
+- https://github.com/drakkan/sftpgo
+- https://github.com/eleanorhealth/sftpgo-chart
+- https://github.com/sagikazarmark/helm-charts/tree/master/charts/sftpgo
+type: application
+version: 1.2.0

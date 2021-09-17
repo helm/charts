@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sftpgo.fullname" . }}
+  labels:
+    {{- include "sftpgo.labels" . | nindent 4 }}
+    {{- if .Values.podLabels }}
+      {{- toYaml .Values.podLabels | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "sftpgo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "sftpgo.selectorLabels" . | nindent 8 }}
+        {{- if .Values.podLabels }}
+          {{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sftpgo.serviceAccountName" . }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "v%s" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - sftpgo
+            - serve
+          env:
+            {{- if .Values.sftpd.enabled }}
+            - name: SFTPGO_SFTPD__BINDINGS__0__PORT
+              value: "2022"
+            - name: SFTPGO_SFTPD__BINDINGS__0__ADDRESS
+              value: "0.0.0.0"
+            {{- end }}
+            {{- if .Values.ftpd.enabled }}
+            - name: SFTPGO_FTPD__BINDINGS__0__PORT
+              value: "2021"
+            - name: SFTPGO_FTPD__BINDINGS__0__ADDRESS
+              value: "0.0.0.0"
+            {{- end }}
+            {{- if .Values.webdavd.enabled }}
+            - name: SFTPGO_WEBDAVD__BINDINGS__0__PORT
+              value: "8081"
+            - name: SFTPGO_WEBDAVD__BINDINGS__0__ADDRESS
+              value: "0.0.0.0"
+            {{- end }}
+            - name: SFTPGO_HTTPD__BINDINGS__0__PORT
+              value: "8080"
+            - name: SFTPGO_HTTPD__BINDINGS__0__ADDRESS
+              value: "0.0.0.0"
+            - name: SFTPGO_TELEMETRY__BIND_PORT
+              value: "10000"
+            - name: SFTPGO_TELEMETRY__BIND_ADDRESS
+              value: "0.0.0.0"
+            {{- with .Values.envVars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            {{- if .Values.sftpd.enabled }}
+            - name: sftp
+              containerPort: 2022
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ftpd.enabled }}
+            - name: ftp
+              containerPort: 2021
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.webdavd.enabled }}
+            - name: webdav
+              containerPort: 8081
+              protocol: TCP
+            {{- end }}
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: telemetry
+              containerPort: 10000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: telemetry
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: telemetry
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/sftpgo
+              readOnly: true
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if .Values.sidecarContainers }}
+          {{- toYaml .Values.sidecarContainers | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "sftpgo.fullname" . }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints.enabled }}
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              {{- include "sftpgo.selectorLabels" . | nindent 14 }}
+          maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
+          topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
+          whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
+      {{- end }}

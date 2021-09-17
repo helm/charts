@@ -1,0 +1,157 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sftpgo.fullname" . }}
+  labels:
+    {{- include "sftpgo.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- with .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  {{- if eq .Values.service.type "LoadBalancer" }}
+  {{- with .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- with .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  ports:
+    {{- if .Values.sftpd.enabled }}
+    - name: sftp
+      port: {{ .Values.service.ports.sftp.port }}
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.ports.sftp.nodePort }}
+      nodePort: {{ .Values.service.ports.sftp.nodePort }}
+      {{- end }}
+      targetPort: sftp
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" .Capabilities.KubeVersion.GitVersion }}
+      appProtocol: sftp-ssh
+      {{- end }}
+    {{- end }}
+    {{- if .Values.ftpd.enabled }}
+    - name: ftp
+      port: {{ .Values.service.ports.ftp.port }}
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.ports.ftp.nodePort }}
+      nodePort: {{ .Values.service.ports.ftp.nodePort }}
+      {{- end }}
+      targetPort: ftp
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" .Capabilities.KubeVersion.GitVersion }}
+      appProtocol: ftp
+      {{- end }}
+    {{- end }}
+    {{- if .Values.webdavd.enabled }}
+    - name: webdav
+      port: {{ .Values.service.ports.webdav.port }}
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.ports.webdav.nodePort }}
+      nodePort: {{ .Values.service.ports.webdav.nodePort }}
+      {{- end }}
+      targetPort: webdav
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" .Capabilities.KubeVersion.GitVersion }}
+      appProtocol: webdav
+      {{- end }}
+    {{- end }}
+    - name: http
+      port: {{ .Values.service.ports.http.port }}
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.ports.http.nodePort }}
+      nodePort: {{ .Values.service.ports.http.nodePort }}
+      {{- end }}
+      targetPort: http
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" .Capabilities.KubeVersion.GitVersion }}
+      appProtocol: http
+      {{- end }}
+    - name: telemetry
+      port: 10000
+      targetPort: telemetry
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" .Capabilities.KubeVersion.GitVersion }}
+      appProtocol: http
+      {{- end }}
+  selector:
+    {{- include "sftpgo.selectorLabels" . | nindent 4 }}
+
+{{- range $name, $service := .Values.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sftpgo.componentname" (list $ $name) }}
+  labels:
+    {{- include "sftpgo.labels" $ | nindent 4 }}
+  {{- with $service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ required (printf "Service type is required for service %q" $name) $service.type }}
+  {{- with $service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  {{- if eq $service.type "LoadBalancer" }}
+  {{- with $service.loadBalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- with $service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  ports:
+    {{- if and $.Values.sftpd.enabled $service.ports.sftp }}
+    - name: sftp
+      port: {{ required (printf "SFTP service port is required for service %q" $name) $service.ports.sftp.port }}
+      {{- if and (or (eq $service.type "NodePort") (eq $service.type "LoadBalancer")) $service.ports.sftp.nodePort }}
+      nodePort: {{ $service.ports.sftp.nodePort }}
+      {{- end }}
+      targetPort: sftp
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" $.Capabilities.KubeVersion.GitVersion }}
+      appProtocol: sftp-ssh
+      {{- end }}
+    {{- end }}
+    {{- if and $.Values.ftpd.enabled $service.ports.ftp }}
+    - name: ftp
+      port: {{ required (printf "SFP service port is required for service %q" $name) $service.ports.ftp.port }}
+      {{- if and (or (eq $service.type "NodePort") (eq $service.type "LoadBalancer")) $service.ports.ftp.nodePort }}
+      nodePort: {{ $service.ports.ftp.nodePort }}
+      {{- end }}
+      targetPort: ftp
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" $.Capabilities.KubeVersion.GitVersion }}
+      appProtocol: ftp
+      {{- end }}
+    {{- end }}
+    {{- if and $.Values.webdavd.enabled $service.ports.webdav }}
+    - name: webdav
+      port: {{ required (printf "WebDAV service port is required for service %q" $name) $service.ports.webdav.port }}
+      {{- if and (or (eq $service.type "NodePort") (eq $service.type "LoadBalancer")) $service.ports.webdav.nodePort }}
+      nodePort: {{ $service.ports.webdav.nodePort }}
+      {{- end }}
+      targetPort: webdav
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" $.Capabilities.KubeVersion.GitVersion }}
+      appProtocol: webdav
+      {{- end }}
+    {{- end }}
+    {{- if $service.ports.http }}
+    - name: http
+      port: {{ required (printf "HTTP service port is required for service %q" $name) $service.ports.http.port }}
+      {{- if and (or (eq $service.type "NodePort") (eq $service.type "LoadBalancer")) $service.ports.http.nodePort }}
+      nodePort: {{ $service.ports.http.nodePort }}
+      {{- end }}
+      targetPort: http
+      protocol: TCP
+      {{- if semverCompare ">=1.20-0" $.Capabilities.KubeVersion.GitVersion }}
+      appProtocol: http
+      {{- end }}
+    {{- end }}
+  selector:
+    {{- include "sftpgo.selectorLabels" $ | nindent 4 }}
+{{- end }}
