@@ -227,6 +227,9 @@ acme:
   ## Specify a custom ACME server endpoint
   ## Optional
   # caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  ## Specify the preferred chain to use.
+  ## Optional
+  # preferredChain: "ISRG Root X1"
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
   # This is the only way to request wildcard certificates (works only with dns challenge).

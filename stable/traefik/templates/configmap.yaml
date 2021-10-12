@@ -314,6 +314,9 @@ data:
     caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
       {{- end }}
     {{- end -}}
+    {{- if .Values.acme.preferredChain }}
+    preferredChain = {{ .Values.acme.preferredChain | quote }}
+    {{- end }}
     {{- if .Values.acme.logging }}
     acmeLogging = true
     {{- end }}
