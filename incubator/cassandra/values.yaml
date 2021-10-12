@@ -104,7 +104,7 @@ readinessProbe:
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-# selector:
+selector: {}
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
 
