@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mongodb.fullname" . }}-arbiter
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:

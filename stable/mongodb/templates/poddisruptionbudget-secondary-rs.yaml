@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mongodb.fullname" . }}-secondary
+  namespace: {{ .Release.Namespace }}
 spec:
   {{- if .Values.replicaSet.pdb.minAvailable }}
   {{- if .Values.replicaSet.pdb.minAvailable.secondary }}

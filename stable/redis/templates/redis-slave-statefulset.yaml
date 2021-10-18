@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-slave
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}

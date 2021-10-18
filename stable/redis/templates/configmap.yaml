@@ -7,6 +7,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "redis.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 data:
   redis.conf: |-
 {{- if .Values.configmap }}

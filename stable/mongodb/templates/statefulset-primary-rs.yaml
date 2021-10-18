@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mongodb.fullname" . }}-primary
+  namespace: {{ .Release.Namespace }}
 spec:
   serviceName: {{ template "mongodb.fullname" . }}-headless
   replicas: 1
