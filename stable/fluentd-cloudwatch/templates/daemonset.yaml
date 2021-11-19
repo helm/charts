@@ -1,0 +1,119 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1" }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: DaemonSet
+metadata:
+  name: {{ template "fluentd-cloudwatch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-cloudwatch.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluentd-cloudwatch.name" . }}
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluentd-cloudwatch.name" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{ if .Values.awsRole }}iam.amazonaws.com/role: {{ .Values.awsRole }}{{ end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      initContainers:
+        - name: copy-fluentd-config
+          image: "{{.Values.busybox.repository}}:{{.Values.busybox.tag}}"
+          command: ['sh', '-c', 'cp /config-volume/* /etc/fluentd']
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config-volume
+            - name: config
+              mountPath: /etc/fluentd
+      containers:
+      - name: {{ template "fluentd-cloudwatch.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        #hostNetwork: {{ default false .Values.hostNetwork }}
+        env:
+        - name: AWS_REGION
+          value: {{ .Values.awsRegion }}
+        - name: LOG_GROUP_NAME
+          value: {{ .Values.logGroupName }}
+{{- if not .Values.awsRole }}
+{{- if .Values.awsAccessKeyId }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: AWS_ACCESS_KEY_ID
+              name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- end }}
+{{- if .Values.awsSecretAccessKey }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: AWS_SECRET_ACCESS_KEY
+              name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- end }}
+{{- end }}
+{{- range $env := .Values.extraVars }}
+        - {{ $env  }}
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: config
+          mountPath: /fluentd/etc
+        - name: config-volume
+          mountPath: /config-volume
+{{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: config
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 6 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
