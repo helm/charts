@@ -52,7 +52,7 @@ annotations: {}
 #  prometheus.io/port: 9419
 
 prometheus:
-  monitor:
+  ServiceMonitor:
     enabled: false
     additionalLabels: {}
     interval: 15s
